@@ -8,42 +8,52 @@ NCAanalyze<-function(TotalSingledata, Dose, xaxis,yaxis, separateWindows=TRUE)
 cat("****************************************************************************\n")
 cat("*                      Noncompartmental Analysis (NCA)                     *\n")
 cat("*--------------------------------------------------------------------------*\n")
-cat("* We provide noncompartmental analysis (NCA) approach to compute AUCs and  *\n")
-cat("* terminal elimination rate constant (kel) for plasma concentration.  Here *\n")
-cat("* we provide extravascular model.  Linear trapezoidal rule is used to      *\n")
-cat("* calculate AUC.(time = 0 to infinity)                                     *\n")
+cat("* Noncompartmental analysis (NCA) approach will be used to compute AUCs and*\n")
+cat("* terminal elimination rate constants (lambda(z)) for drug plasma          *\n")
+cat("* concentration.  The linear trapezoidal rule is used to calculate AUC(time*\n")
+cat("* 0 to the last measurable Cp).  The extrapolated AUC (from time of the    *\n")
+cat("* last measurable Cp to infinity will be estimated from the last measurable*\n")
+cat("* Cp divided by lambda(z).                                                 *\n")
 cat("****************************************************************************\n")
 cat("\n\n")
 cat("Enter Dose\n")
 Dose<- scan(nlines=1,quiet=TRUE)
 cat("\n\n")
 cat("\nEnter the title of x-axis(Time)\n")
-cat("(or a blank line to use default)\n\n") 
+cat("(or a blank line to use default - Time)\n\n") 
 xaxis<-readline()
 if (substr(xaxis, 1, 1) == "")  xaxis<-"Time"  else xaxis<-xaxis
 cat("\nEnter the title of y-axis(Conc.)\n")
-cat("(or a blank line to use default)\n\n") 
+cat("(or a blank line to use default - Conc.)\n\n")
 yaxis<-readline()
  #cat("\n\n Please Wait.  Data is Processing. \n")
 if (substr(yaxis, 1, 1) == "")  yaxis<-"Conc."  else yaxis<-yaxis
 #cat("\n\n Please Wait.  Data is Processing. \n")
 
 cat("****************************************************************************\n")
-cat("*       drug 1:Reference                                                   *\n")
-cat("*       drug 2:Test                                                        *\n")
+cat("*     drug# 1: Reference                                                   *\n")
+cat("*     drug# 2: Test                                                        *\n")
 cat("****************************************************************************\n")   
 
 Singledata<-split(TotalSingledata, list(TotalSingledata$seq, TotalSingledata$prd))
 Ref<-rbind(Singledata[[1]],Singledata[[4]])
-Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), time=Ref$time, conc=Ref$conc)
+Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), 
+                    time=Ref$time, conc=Ref$conc)
 SingleRdata<-Refdata[ do.call(order, Refdata) ,]
 show(SingleRdata)
+SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
+SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
+SingleRdata1 <- na.omit(SingleRdata1)
 cat("\n\n")
 Test<-rbind(Singledata[[2]],Singledata[[3]])
-Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), time=Test$time, conc=Test$conc)
+Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), 
+                     time=Test$time, conc=Test$conc)
 SingleTdata<-Testdata[ do.call(order, Testdata) ,]
 show(SingleTdata)
-
+SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
+SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
+SingleTdata1 <- na.omit(SingleTdata1)
+cat("\n\n")
 #'Total" for NCAplot
 Totalplot<- rbind(SingleRdata,SingleTdata)
 
@@ -51,16 +61,16 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
 ########Reference data
 cat("\n\n")
 cat("****************************************************************************\n")
-cat("* Referenece Data:                                                         *\n")          
+cat("* Data for the Ref. Products:                                              *\n")
 cat("*--------------------------------------------------------------------------*\n")
-cat("* calculate AUC(0~t), AUC(0~inf), AUMC(0~t), AUMC(0~inf),                  *\n")
-cat("*            lamda, Cl/F, Vd, MRT, half life (T1/2)                        *\n")
-cat("* Calculation Method: linear trapezoidal                                   *\n")
+cat("* To calculate AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf),               *\n")
+cat("*            lambda, Cl/F, Vd, MRT, and half-life (T1/2)                   *\n")
+cat("* AUC(0-t) was calculated with the linear trapezoidal.                     *\n")
 cat("*                                                                          *\n")
 cat("****************************************************************************\n")
 cat("\n\n")
 #split dataframe into sub-dataframe by subject for reference data
-   R.split<-split(SingleRdata, list(SingleRdata$subj))
+   R.split<-split(SingleRdata1, list(SingleRdata1$subj))
   
 subj<-0 
      for (j in 1:(length(R.split))){
@@ -68,7 +78,7 @@ subj<-0
      }
      
 
-get(getOption("device"))()
+windows(record = TRUE )
 par(mfrow=c(2,2))
 #calculate kel for reference data 
 co_data1<-NULL
@@ -78,11 +88,12 @@ for(i in seq_along(R.split)){
  xx1<-R.split[[i]]$time
  yy1<-R.split[[i]]$conc
  main<-paste(c("Please, select 3 points. Subject# ref_", R.split[[i]]$subj[1]),collapse=" ")
- plot(0,0, xlim=range(xx1), ylim=range(yy1),xlab=xaxis, ylab=yaxis, main=main,
-      cex.lab = 1.5,pch=19,lab=c(20,20,30))
- points(xx1,yy1,pch=19,col=i,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
- lines(xx1,yy1, lty=20,col=i)
- 
+ plot(xx1,yy1,log="y", xlim=range(xx1), ylim=range(yy1),xlab="Time", ylab= "Conc.(Log10 Scale)", main=main,
+      cex.lab = 1.5,pch=19,lab=c(20,20,30), xaxt="n")
+ lines(xx1,yy1, lty=20)
+   axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
+   axis(1,at=0:100,tcl=-.2, labels=FALSE)
+   
  co_data1[[i]]<-identify(R.split[[i]]$time,  R.split[[i]]$conc, n=3)
 }
 
@@ -176,10 +187,10 @@ keindex_ref<-data.frame(subj=subj, time.ref=-2.3*(coef(Lm1)[2]), R_square=summar
                   ClFRef[j]<-Dose/aucINF
                              
                  cat("\n") 
-                 cat("<< Summary Table--Ref_Subject:",su,">>\n")
+                 cat("<< NCA Summary Table--Subject# ",su," (Ref.)>>\n")
                  cat("--------------------------------------------------------------------------\n")
                  output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],auc_ref,aumc_ref )
-                 colnames(output)<-list("subj","time","conc", "AUC(0~t)","AUMC(0~t)")
+                 colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
                
               cat("\n<<Final Parameters>>\n")
@@ -191,12 +202,12 @@ keindex_ref<-data.frame(subj=subj, time.ref=-2.3*(coef(Lm1)[2]), R_square=summar
               cat("Cl/F =",Dose/aucINF,"\n")
               cat("Vd/F =", Dose/(aucINF*ke),"\n")
               cat("T1/2 =",0.693/ke,"\n")
-              cat("AUC(0~t)=",auc_ref[length(R.split[[j]][["conc"]])],"\n") 
-              cat("AUC(0~inf) =" ,aucINF,"\n")
-              cat("AUMC(0~t)=",aumc_ref[length(R.split[[j]][["conc"]])],"\n")
-              cat("AUMC(0~inf) =" ,aumcINF,"\n")
-              cat("MRT(0~t)=",(aumc_ref[length(R.split[[j]][["conc"]])])/(auc_ref[length(R.split[[j]][["conc"]])]),"\n")
-              cat("MRT(0~inf)=",aumcINF/aucINF,"\n")
+              cat("AUC(0-t)=",auc_ref[length(R.split[[j]][["conc"]])],"\n") 
+              cat("AUC(0-inf) =" ,aucINF,"\n")
+              cat("AUMC(0-t)=",aumc_ref[length(R.split[[j]][["conc"]])],"\n")
+              cat("AUMC(0-inf) =" ,aumcINF,"\n")
+              cat("MRT(0-t)=",(aumc_ref[length(R.split[[j]][["conc"]])])/(auc_ref[length(R.split[[j]][["conc"]])]),"\n")
+              cat("MRT(0-inf)=",aumcINF/aucINF,"\n")
               cat("--------------------------------------------------------------------------\n") 
               cat("\n\n")
   }
@@ -204,18 +215,18 @@ keindex_ref<-data.frame(subj=subj, time.ref=-2.3*(coef(Lm1)[2]), R_square=summar
   
 ######Test data
 cat("****************************************************************************\n")
-cat("* Test Data:                                                               *\n")          
+cat("* Data for the Test Products:                                              *\n")          
 cat("*--------------------------------------------------------------------------*\n")
-cat("* calculate AUC(0~t), AUC(0~inf), AUMC(0~t), AUMC(0~inf),                  *\n")
-cat("*            lamda, Cl/F, Vd, MRT, half life (T1/2)                        *\n")
-cat("* Calculation Method: linear trapezoidal                                   *\n")
+cat("* To calculate AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf),               *\n")
+cat("*            lambda, Cl/F, Vd, MRT, and half-life (T1/2)                   *\n")
+cat("* AUC(0-t) was calculated with the linear trapezoidal.                     *\n")
 cat("*                                                                          *\n")
 cat("****************************************************************************\n")
 cat("\n\n")
 
 
 #split dataframe into sub-dataframe by subject for test data
-   T.split<-split(SingleTdata, list(SingleTdata$subj))
+   T.split<-split(SingleTdata1, list(SingleTdata1$subj))
   
 subj1<-0 
      for (j in 1:(length(T.split))){
@@ -223,18 +234,19 @@ subj1<-0
      }
 #calculate kel for test data 
 co_data2<-NULL
-get(getOption("device"))()
+
 par(mfrow=c(2,2))
 for(i in seq_along(T.split)){
    
  xx2<-T.split[[i]]$time
  yy2<-T.split[[i]]$conc
  main<-paste(c("Please, select 3 points. Subject# test_", T.split[[i]]$subj[1]),collapse=" ")
-  plot(0,0, xlim=range(xx2), ylim=range(yy2),xlab=xaxis, ylab=yaxis, main=main ,
-      cex.lab = 1.5,pch=1,lab=c(20,20,30))
-  points(xx2,yy2,pch=1,col=i,bty="l", font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-  lines(xx2,yy2,lwd=1,col=i)
-
+  plot(xx2,yy2, log="y",xlim=range(xx2), ylim=range(yy2),xlab="Time", ylab= "Conc.(Log10 Scale)", main=main ,
+      cex.lab = 1.5,pch=1,lab=c(20,20,30), xaxt="n")
+  lines(xx2,yy2,lwd=1)
+   axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
+   axis(1,at=0:100,tcl=-.2, labels=FALSE) 
+   
  co_data2[[i]]<-identify(T.split[[i]]$time,  T.split[[i]]$conc, n=3)
 }
 
@@ -256,7 +268,7 @@ dd2<-NULL
            dd1[[j]]<-c(xy2[[j]]$time)  
            dd2[[j]]<-c(xy2[[j]]$conc) 
            }  
-
+dev.off()
 yy0<-melt(ss1) 
 yy1<-melt(dd1)
 yy2<-melt(dd2)  
@@ -331,10 +343,10 @@ ClFTest<-0
                   ClFTest[j]<-Dose/aucINF
                                    
                  cat("\n") 
-                 cat("<< Summary Table--Test_Subject:",su1,">>\n")
+                 cat("<< NCA Summary Table--Subject# ",su1," (Test) >>\n")
                  cat("--------------------------------------------------------------------------\n")
                  output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],auc_test,aumc_test )
-                 colnames(output)<-list("subj","time","conc", "AUC(0~t)","AUMC(0~t)")
+                 colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
                
               cat("\n<<Final Parameters>>\n")
@@ -346,12 +358,12 @@ ClFTest<-0
               cat("Cl/F =",Dose/aucINF,"\n")
               cat("Vd/F =", Dose/(aucINF*ke1),"\n")
               cat("T1/2 =",0.693/ke1,"\n")
-              cat("AUC(0~t)=",auc_test[length(T.split[[j]][["conc"]])],"\n") 
-              cat("AUC(0~inf) =" ,aucINF,"\n")
-              cat("AUMC(0~t)=",aumc_test[length(T.split[[j]][["conc"]])],"\n")
-              cat("AUMC(0~inf) =" ,aumcINF,"\n")
-              cat("MRT(0~t)=",(aumc_test[length(T.split[[j]][["conc"]])])/(auc_test[length(T.split[[j]][["conc"]])]),"\n")
-              cat("MRT(0~inf)=",aumcINF/aucINF,"\n")
+              cat("AUC(0-t)=",auc_test[length(T.split[[j]][["conc"]])],"\n") 
+              cat("AUC(0-inf) =" ,aucINF,"\n")
+              cat("AUMC(0-t)=",aumc_test[length(T.split[[j]][["conc"]])],"\n")
+              cat("AUMC(0-inf) =" ,aumcINF,"\n")
+              cat("MRT(0-t)=",(aumc_test[length(T.split[[j]][["conc"]])])/(auc_test[length(T.split[[j]][["conc"]])]),"\n")
+              cat("MRT(0-inf)=",aumcINF/aucINF,"\n")
               cat("--------------------------------------------------------------------------\n") 
               cat("\n\n")
   }
@@ -372,9 +384,11 @@ cat("--------------------------------------------------------------------------\
  
 cat("\n")
 cat("****************************************************************************\n")
-cat("*<<Plots >>                                                                *\n")
-cat("* Plasma concentration (Ref and Test) vs. Time                             *\n")
-cat("* Log Transformation_Plasma concentration (Ref and Test) vs. Time          *\n")
+cat("*<<Conc.-Time Plots >>                                                     *\n")
+cat("* Plasma concentration (Ref. and Test) vs. Time                            *\n")
+cat("* Log transformaed drug plasma concentration (Ref. and Test) vs. Time      *\n")
+cat("*--------------------------------------------------------------------------*\n")
+cat("* Please use PageUp/PageDown to scroll up and down these plots.            *\n")
 cat("****************************************************************************\n")
 cat("\n")
 
@@ -392,8 +406,8 @@ LT$conc[LT$conc == 0] <- NA
 LT <- na.omit(LT)	
 LT.split<-split(LT, list(LT$subj))
 
+windows(record = TRUE )
  for(i in seq_along(LT.split)){
-  get(getOption("device"))()   
      xx1<-LR.split[[i]]$time
      yy1<-LR.split[[i]]$conc
   
@@ -401,21 +415,24 @@ LT.split<-split(LT, list(LT$subj))
      yy2<-LT.split[[i]]$conc
 
         main<-paste(c("Subject #", LT.split[[i]]$subj[1]),collapse=" ")
-        plot(0, 0, log="y",xlim=range(xx1), ylim=range(yy1,yy2), ylab="Conc.(Log10 Scale)", xlab="Time", main=main, cex.lab = 1.5,pch=19,lab=c(20,20,30))
+        plot(0, 0, log="y",xlim=range(xx1), ylim=range(yy1,yy2), ylab="Conc.(Log10 Scale)", xlab="Time",
+         main=main, cex.lab = 1.5, font.lab=2,cex.axis=1,cex.main=1,las=1,pch=19,xaxt="n")
  
-        points(xx1,yy1,pch=19,col=i,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-        points(xx2,yy2,pch=1,col=i,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
+        points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
+        points(xx2,yy2,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
  
-        lines(xx1,yy1, lty=20,col=i)
-        lines(xx2,yy2, lwd=1,col=i)
+        lines(xx1,yy1, lty=20)
+        lines(xx2,yy2, lwd=1)
+        
+        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
+        axis(1,at=0:100,tcl=-.2, labels=FALSE)
         temp <- legend("topright", legend = c("Test", "Reference"),
                text.width = strwidth("1,000,000"),
                lty = 1:2, xjust = 1, yjust = 1)
   }
-  
+
+
 for(i in seq_along(T.split)){
-     get(getOption("device"))()
-  
        xx1<-R.split[[i]]$time
        yy1<-R.split[[i]]$conc
   
@@ -423,13 +440,18 @@ for(i in seq_along(T.split)){
        yy2<-T.split[[i]]$conc
 
          main<-paste(c("Subject #", T.split[[i]]$subj[1]),collapse=" ")
-         plot(0, 0, xlim=range(xx1), ylim=range(yy1,yy2), xlab=xaxis, ylab=yaxis,,  main=main, cex.lab = 1.5,pch=1,lab=c(20,20,30))
+         plot(0, 0, xlim=range(xx1), ylim=range(yy1,yy2), xlab=xaxis, ylab=yaxis,,  
+         main=main, cex.lab = 1.5, font.lab=2,cex.axis=1,cex.main=1,las=1,pch=1,xaxt="n")
  
-         points(xx1,yy1,pch=19,col=i,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-         points(xx2,yy2,pch=1,col=i,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
+         points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
+         points(xx2,yy2,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
  
-         lines(xx1,yy1, lty=20,col=i)
-         lines(xx2,yy2, lwd=1,col=i)
+         lines(xx1,yy1, lty=20)
+         lines(xx2,yy2, lwd=1)
+         
+         axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
+         axis(1,at=0:100,tcl=-.2, labels=FALSE)
+         axis(2,yaxp=c(0, 4000, 40),las=1,tcl=-.2, labels=FALSE)
          temp <- legend("topright", legend = c("Test", "Reference"),
                text.width = strwidth("1,000,000"),
                lty = 1:2, xjust = 1, yjust = 1) 
@@ -439,16 +461,16 @@ for(i in seq_along(T.split)){
   
 cat("****************************************************************************\n")
 cat("*<<Summary Result >>                                                       *\n")
-cat("* AUC(0~t), AUC(0~inf), Cmax for Reference and Test data                   *\n")
+cat("* AUC(0-t), AUC(0-inf), Cmax for the Reference and Test product            *\n")
 cat("*--------------------------------------------------------------------------*\n")
-cat("* TestAUC0t: area under the predicted plasma concentration time curve       *\n")
-cat("*           for test data. (time = 0 to t)                                 *\n")
-cat("* TestAUC0inf: area under the predicted plasma concentration time curve     *\n")
-cat("*            for test data. (time = 0 to infinity)                         *\n")
-cat("* RefAUC0t: area under the predicted plasma concentration time curve        *\n")
-cat("*           for reference data. (time = 0 to t)                            *\n")
-cat("* RefAUC0inf: area under the predicted plasma concentration time curve      *\n")
-cat("*            for reference data. (time = 0 to infinity)                    *\n")
+cat("* TestAUC0t: area under the plasma concentration time curve for Test       *\n")
+cat("*            product. (time = 0 to t)                                      *\n")
+cat("* TestAUC0inf: area under the plasma concentration time curve for Test     *\n")
+cat("*              product. (time = 0 to infinity)                             *\n")
+cat("* RefAUC0t: area under the plasma concentration time curve for Reference   *\n")
+cat("*           product. (time = 0 to t)                                       *\n")
+cat("* RefAUC0inf: area under the predicted plasma concentration time curve     *\n")
+cat("*             for Reference product. (time = 0 to infinity)                *\n")
 cat("****************************************************************************\n")
 cat("\n")
  
@@ -469,19 +491,18 @@ cat("\n")
      prdT[j]<-T.split[[j]][["prd"]][1]
      }    
 
-cat("\n\n")
 cat("****************************************************************************\n")
-cat("* Coded Data:                                                              *\n")          
+cat("* Data Codes:                                                               *\n")          
 cat("*--------------------------------------------------------------------------*\n")
 cat("* Drug:                                                                    *\n")
-cat("*     1:Reference                                                          *\n")
-cat("*     2:Test                                                               *\n")                                       
+cat("*     1: Reference                                                         *\n")
+cat("*     2: Test                                                              *\n")                                       
 cat("* Sequence:                                                                *\n") 
-cat("*     1:Reference-->Test sequence                                          *\n")
-cat("*     2:Test-->Reference sequence                                          *\n")
+cat("*     1: Reference --> Test                                                *\n")
+cat("*     2: Test --> Reference                                                *\n")
 cat("* Period:                                                                  *\n") 
-cat("*     1:first treatment period                                             *\n")
-cat("*     2:second treatmetn period                                            *\n")                                    
+cat("*     1: lst treatment period                                              *\n")
+cat("*     2: 2nd treatment period                                              *\n")                                    
 cat("****************************************************************************\n")
 cat("\n\n")
 sumindexR<-data.frame(subj=subj,drug=c(1),seq=seqR,prd=prdR,Cmax=CmaxRef,AUC0t=AUCTRef,AUC0INF=AUCINFRef,

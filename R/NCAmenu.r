@@ -3,11 +3,11 @@ NCAmenu<-function()
 {
 cat("\n")
   file.menu <- c("Single Dose",
-                 "Demo for Single Dose",
+                 "Run demo for Single Dose",
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << Noncompartment Analysis (NCA) menu >> ")
+  pick <- menu(file.menu, title = " << Noncompartmental Analysis (NCA) menu >> ")
     if (pick == 1){
       cat("\n")
         NCAdata()

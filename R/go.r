@@ -3,13 +3,13 @@ go<-function()
 {
 options(warn=-1)
 cat("\n")
-  file.menu <- c("Sample size estimation for average BE ",
-                 "Noncompartment Analysis (NCA)",
-                 "Generalized Linear Models (GLM)",
-                 "NCA-->GLM",
+  file.menu <- c("Sample size estimation for ABE ",
+                 "Noncompartmental Analysis (NCA)",
+                 "ANOVA (lm)",
+                 "NCA--> ANOVA (lm)",
                  "Quit")
    cat("\n")
-  pick <- menu(file.menu, title = " << Go menu >> ")
+  pick <- menu(file.menu, title = " << menu >> ")
     if (pick == 1){
       cat("\n")
         sizemenu()}

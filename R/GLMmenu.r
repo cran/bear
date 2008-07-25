@@ -2,15 +2,15 @@
 GLMmenu<-function(TotalData)
 {
 cat("\n")
-  file.menu <- c("Generalized Linear Models (GLM)",
-                 "Demo for GLM",
+  file.menu <- c("ANOVA (lm)",
+                 "Run demo for ANOVA (lm)",
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << Generalized Linear Models (GLM) menu >> ")
+  pick <- menu(file.menu, title = " << ANOVA (lm) menu >> ")
     if (pick == 1){
       cat("\n")
-        GLManalyze(TotalData)
+        GLMdata(TotalData)
         }
     else {
     if (pick == 2){

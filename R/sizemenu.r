@@ -2,10 +2,10 @@
 sizemenu<-function()
 {
 cat("\n")
-  file.menu <- c("Sample size estimation (Raw data)",
-                 "Sample size estimation (Log transformation)",
-                 "Demo for sample size estimation (Raw data)",
-                 "Back to go menu",
+  file.menu <- c("Sample size estimation (raw data)",
+                 "Sample size estimation (log transformation)",
+                 "Run demo for sample size estimation (raw data)",
+                 "Back to top menu",
                  "Quit")
    cat("\n")
   pick <- menu(file.menu, title = " << Sample size estimation menu >> ")

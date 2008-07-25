@@ -2,7 +2,7 @@
 library(sciplot)
 NCAplot<-function(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
 {
-
+options(warn=-1)
 #d.split<-split(TotalSingledata,list(TotalSingledata$drug))
 s.split<-split(Totalplot,list(Totalplot$subj))
 
@@ -78,7 +78,7 @@ lineplot.CI(SingleRdata$time, SingleRdata$conc, group = SingleRdata$subj, type="
 main<-paste(c("Observed mean plasma concentration n=",L),collapse=" ")
 lineplot.CI(Totalplot$time, Totalplot$conc, group = Totalplot$drug, cex = 1, main=main,
             xlab=xaxis, ylab=yaxis,cex.lab = 1,x.leg =100000, bty="l",
-            font.lab=2,cex.axis=1,cex.main=1,x.cont=TRUE,xaxt="n" ,err.lty=1
+            font.lab=2,cex.axis=1,cex.main=1,x.cont=TRUE,xaxt="n" ,err.lty=1,err.width=0.05
              )
             axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
             axis(1,at=0:100,tcl=-.2, labels=FALSE)

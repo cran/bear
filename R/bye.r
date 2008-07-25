@@ -2,7 +2,7 @@
 bye<-function()
 {
 cat("\n")
-  file.menu <- c("Back to bear menu",
+  file.menu <- c("Back to Top menu",
                  "Quit")
   cat("\n")
   pick <- menu(file.menu, title = " << Try again or bye~ >> ")
