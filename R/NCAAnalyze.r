@@ -17,14 +17,30 @@ cat("* Cp divided by lambda(z).                                                 
 cat("****************************************************************************\n")
 cat("\n\n")
 cat("Enter Dose\n")
-Dose<- scan(nlines=1,quiet=TRUE)
-cat("\n\n")
+    Dose<- readline() 
+    if (substr(Dose, 1, 1) == ""|| Dose<=0)  Dose<-0  else Dose<-as.numeric(Dose) 
+       repeat{ 
+        if (Dose==0 ){
+         cat("\n")
+         cat("*******************************************\n")
+         cat(" Parameter value can not be zero or empty. \n")
+         cat(" Press enter to continue.                  \n")
+         cat("*******************************************\n\n")
+         cat("\n")
+           Dose<- readline()
+           if (substr(Dose, 1, 1) == ""|| Dose<=0)  Dose<-0  else Dose<-as.numeric(Dose)
+         }     
+    else{
+       break
+       return (Dose<-as.numeric(Dose)) 
+    } 
+   }   
 cat("\nEnter the title of x-axis(Time)\n")
-cat("(or a blank line to use default - Time)\n\n") 
+cat("(or press Enter to use default - Time)\n\n") 
 xaxis<-readline()
 if (substr(xaxis, 1, 1) == "")  xaxis<-"Time"  else xaxis<-xaxis
 cat("\nEnter the title of y-axis(Conc.)\n")
-cat("(or a blank line to use default - Conc.)\n\n")
+cat("(or press Enter to use default - Conc.)\n\n")
 yaxis<-readline()
  #cat("\n\n Please Wait.  Data is Processing. \n")
 if (substr(yaxis, 1, 1) == "")  yaxis<-"Conc."  else yaxis<-yaxis
@@ -569,10 +585,7 @@ cat("\nSave data (y/n) ?\n")
                  save(TotalData,file=Totalname)
                   }
             }
-cat("\n\n")
-cat("****************************************************************************\n")
-cat("*         Now, Go to Generalized Linear Models (GLM)                       *\n")
-cat("****************************************************************************\n\n") 
+
  GLMmenu(TotalData)              
 }          
   
