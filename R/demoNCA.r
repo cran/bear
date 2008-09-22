@@ -121,6 +121,9 @@ show(SingleTdata)
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
 SingleTdata1 <- na.omit(SingleTdata1)
+
+#'Total" for NCAplot
+Totalplot<- rbind(SingleRdata,SingleTdata)
 ########Reference data
 cat("\n\n")
 cat("****************************************************************************\n")
@@ -576,6 +579,11 @@ TotalData<-data.frame (subj=as.factor(Total$subj), drug=as.factor(Total$drug),se
                    prd=as.factor(Total$prd),Cmax=Total$Cmax, AUC0t=Total$AUC0t, AUC0INF=Total$AUC0INF,
                    LnCmax=log(Total$Cmax),LnAUC0t=log(Total$AUC0t),LnAUC0INF=log(Total$AUC0INF))
 show(TotalData)
+
+##export with txt file
+NCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData )
+
+NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
 
 NCAmenu()
 }

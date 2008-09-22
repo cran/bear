@@ -15,10 +15,10 @@ cat("* 3. Theta=Ut/Ur, where Ut and Ur denote the median BA for the Test and    
 cat("*    the Reference products.                                               *\n")
 cat("****************************************************************************\n")
 cat("\n")
-cat("Enter Theta (%)(e.g. 105)\n")
-Theta <- 105 
+cat("Enter Theta (%)(e.g. 95)\n")
+Theta <- 95 
 ratio<-Theta/100 
-cat(" 105\n")
+cat(" 95\n")
 
 cat("\n") 
 cat("Enter CV (%)(e.g. 20)\n")

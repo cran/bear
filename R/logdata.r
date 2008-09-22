@@ -12,10 +12,10 @@ cat("* 3. Theta=Ut/Ur, where Ut and Ur denote the median BA for the Test and    
 cat("*    the Reference products.                                               *\n")
 cat("****************************************************************************\n")
 cat("\n")
-cat("Enter Theta (%)(or press Enter to use default value : 105 )\n") 
+cat("Enter Theta (%)(or press Enter to use default value : 95 )\n") 
 #Theta <- scan(nlines=1,quiet=TRUE)
 Theta <-readline()
-if (substr(Theta, 1, 1) == "" || Theta<=0)  Theta<-105  else Theta<-as.numeric(Theta) 
+if (substr(Theta, 1, 1) == "" || Theta<=0)  Theta<-95  else Theta<-as.numeric(Theta) 
 ratio<-Theta/100 
 
 cat("\n") 

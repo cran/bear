@@ -546,7 +546,7 @@ cat("\nSave data (y/n) ?\n")
                return(NCAdata())
                       }
               else {
-               cat("Enter name you want to call this data\n")
+               cat("\nEnter Data file name (without file extention)\n")
                Totalname <-readline()
                Totalname<-paste(Totalname,".RData",sep="")
                  if(file.exists(Totalname)){
@@ -561,7 +561,7 @@ cat("\nSave data (y/n) ?\n")
                       cat("\n")
                               }
                       else{
-                      cat("\nEnter name you want to call this data\n")
+                      cat("\nEnter Data file name (without file extention)\n")
                       Totalname <-readline()
                       Totalname<-paste(Totalname,".RData",sep="")
                         repeat{
