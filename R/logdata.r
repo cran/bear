@@ -2,43 +2,34 @@
 logdata <-function()
 {
 cat("\n")
-cat("****************************************************************************\n")
-cat("*                            Required data                                 *\n")
-cat("*--------------------------------------------------------------------------*\n")
-cat("* 1. CV stands for the coefficient of variation.                           *\n")
-cat("* 2. Theta is the difference in average BA between the two formulations    *\n")
-cat("*    expressed in percentage of the average reference BA.                  *\n")
-cat("* 3. Theta=Ut/Ur, where Ut and Ur denote the median BA for the Test and    *\n")
-cat("*    the Reference products.                                               *\n")
-cat("****************************************************************************\n")
-cat("\n")
-cat("Enter Theta (%)(or press Enter to use default value : 95 )\n") 
+description_size()
+cat("Enter Theta (%)(or press Enter to use default value: 95 )\n") 
 #Theta <- scan(nlines=1,quiet=TRUE)
 Theta <-readline()
 if (substr(Theta, 1, 1) == "" || Theta<=0)  Theta<-95  else Theta<-as.numeric(Theta) 
 ratio<-Theta/100 
 
 cat("\n") 
-cat("Enter CV (%)(or press Enter to use default value : 20 )\n")
+cat("Enter CV (%)(or press Enter to use default value: 20 )\n")
 CV1 <- readline()
 if (substr(CV1, 1, 1) == "" || CV1<=0)  CV1<-20  else CV1<-as.numeric(CV1) 
 CV<-CV1/100
  
 cat("\n")
-cat("Enter power (%)(or press Enter to use default value : 80 )\n") 
+cat("Enter power (%)(or press Enter to use default value: 80 )\n") 
 epower <- readline()
 if (substr(epower, 1, 1) == "" || epower<=0)  epower<-80  else epower<-as.numeric(epower)
 target<-epower/100
 
 cat("\n")
-cat("Enter upper acceptance limit (%)(or press Enter to use default value : 125 )\n")
+cat("Enter upper acceptance limit (%)(or press Enter to use default value: 125 )\n")
 Um<-readline()
 if (substr(Um, 1, 1) == ""|| Um<=0)  Um<-125  else Um<-as.numeric(Um)
 theta2 <- Um/100      # theta2: upper acceptance limit
 
 
 cat("\n")
-cat("Enter lower acceptance limit (%)(or press Enter to use default value : 80 )\n")
+cat("Enter lower acceptance limit (%)(or press Enter to use default value: 80 )\n")
 Lm<-readline()
 if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
 theta1 <- Lm/100      # theta1: lower acceptance limit
@@ -85,10 +76,10 @@ for (i in CV)            # CV loop
   if(i==CV[1]){
     title=paste(
       paste("--------------------------------------------------------------------------\n",
-            "                               <<Estimation>>                             \n",
+            "                           <<Sample Szie Estimation>>                     \n",
             "                                                                          \n",
             " Sample size estimation for a standard RT/TR 2x2x2 cross-over design      \n", 
-            "(multi-plicative model).\n",
+            "(multiplicative model).\n",
             " Expected ratio T/R =",
                format(round(ratio*100,2),nsmall=2,width=4),"%.\n\n"),
       paste(paste(format(round(target*100,2),nsmall=2,width=17),

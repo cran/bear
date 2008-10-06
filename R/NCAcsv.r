@@ -1,22 +1,22 @@
 #choose separator and decimal type
-NCAcsv<-function()
+NCAcsv<-function(BANOVA=FALSE)
 {
 cat("\n")
-file.menu <- c("sep = comma (,) &  dec= point (.)",
-               "sep = semicolon (;) &  dec= comma (,)",
-               "sep = semicolon (;) &  dec= point (.)",
-               "sep = {space} &  dec= comma (,)",
-               "sep = {space} &  dec= point (.)",
-               "sep = {tab} &  dec= comma (,)",
-               "sep = {tab} &  dec= point (.)",
-               "sep = colon (:) &  dec= comma (,)",
-               "sep = colon (:) &  dec= point (.)",
+file.menu <- c("separator = comma (,) &  decimal = point (.)",
+               "separator = semicolon (;) &  decimal = comma (,)",
+               "separator = semicolon (;) &  decimal = point (.)",
+               "separator = {space} &  decimal = comma (,)",
+               "separator = {space} &  decimal = point (.)",
+               "separator = {tab} &  decimal = comma (,)",
+               "separator = {tab} &  decimal = point (.)",
+               "separator = colon (:) &  decimal = comma (,)",
+               "separator = colon (:) &  decimal = point (.)",
                "Back to NCAmenu")
 cat("\n")
-pick <- menu(file.menu, title = " << Separator type and Decimal type >> ")
+pick <- menu(file.menu, title = " << Separator and decimal formats >> ")
 if (pick == 1){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of .csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -31,7 +31,7 @@ if (pick == 1){
  else {
   if (pick == 2){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -46,7 +46,7 @@ if (pick == 1){
  else {
   if (pick == 3){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -60,7 +60,7 @@ if (pick == 1){
 else {
   if (pick == 4){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -74,7 +74,7 @@ else {
 else {
   if (pick == 5){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -88,7 +88,7 @@ else {
 else {
   if (pick == 6){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -102,7 +102,7 @@ else {
 else {
   if (pick == 7){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -116,7 +116,7 @@ else {
 else {
   if (pick == 8){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")
@@ -130,7 +130,7 @@ else {
 else {
   if (pick == 9){
   cat("\n\n")
-        cat("\nEnter Data file name(without file extention of.csv)\n")
+        description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         cnames<-c("subj", "seq","prd", "time", "conc")

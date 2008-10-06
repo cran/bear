@@ -11,6 +11,8 @@ cat("\n")
      go()}
     else {
      if (pick == 2){
-        cat("\nBye~~ \n\n")}
+        cat("\n")
+        cat("\nThank you for using bear!  Bye now. \n\n")
+           }
         }
   }

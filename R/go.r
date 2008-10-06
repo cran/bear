@@ -10,12 +10,12 @@ if (noquote(unlist(format(.Platform)))[1] == "unix") {
       
 cat("\n")
   file.menu <- c("Sample size estimation for ABE ",
-                 "Noncompartmental Analysis (NCA)",
-                 "ANOVA (lm)",
-                 "NCA--> ANOVA (lm)",
+                 "Noncompartmental analysis (NCA)",
+                 "Statistical analysis (ANOVA(lm), 90%CI...)",
+                 "NCA --> Statistical analysis (ANOVA(lm), 90%CI...)",
                  "Quit")
    cat("\n")
-  pick <- menu(file.menu, title = " << menu >> ")
+  pick <- menu(file.menu, title = " << Top menu >> ")
     if (pick == 1){
       cat("\n")
         sizemenu()}
@@ -28,15 +28,15 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-        GLMmenu()
+        BANOVAmenu()
          }
    else {
     if (pick == 4){
-        NCAGLMmenu()
+        NCA.BANOVAmenu()
          }
     else {
     if (pick == 5){
-        cat("\nBye~~ \n\n")}
+        cat("\nThank you for using bear!  Bye now. \n\n")}
          }  
       }
    }

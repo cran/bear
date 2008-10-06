@@ -4,36 +4,27 @@ demosize<-function()
 {
 # Sample size estimation for log transformation data
 
+description_size()
 cat("\n")
-cat("****************************************************************************\n")
-cat("*                            Required data                                 *\n")
-cat("*--------------------------------------------------------------------------*\n")
-cat("* 1. CV stands for the coefficient of variation.                           *\n")
-cat("* 2. Theta is the difference in average BA between the two formulations    *\n")
-cat("*    expressed in percentage of the average reference BA.                  *\n")
-cat("* 3. Theta=Ut/Ur, where Ut and Ur denote the median BA for the Test and    *\n")
-cat("*    the Reference products.                                               *\n")
-cat("****************************************************************************\n")
-cat("\n")
-cat("Enter Theta (%)(e.g. 95)\n")
+cat("Enter Theta (%) (e.g. 95):\n")
 Theta <- 95 
 ratio<-Theta/100 
 cat(" 95\n")
 
 cat("\n") 
-cat("Enter CV (%)(e.g. 20)\n")
+cat("Enter CV (%) (e.g. 20):\n")
 CV1 <- 20 
 CV<-CV1/100
 cat(" 20\n")
  
 cat("\n")
-cat("Enter power (%)(e.g. 80 or 90)\n")
+cat("Enter power (%) (e.g. 80 or 90):\n")
 epower <- 80 
 target<-epower/100
 cat(" 80\n")
 
 cat("\n")
-cat("Enter lower acceptance limit (%)(e.g. 80)\n")
+cat("Enter lower acceptance limit (%)(e.g. 80):\n")
 LL<-80 
 theta1 <- LL/100       # theta1: lower acceptance limit
 cat(" 80\n")
@@ -82,11 +73,11 @@ for (i in CV)            # CV loop
   if(i==CV[1]){
     title=paste(
       paste("--------------------------------------------------------------------------\n",
-            "                               <<Estimation>>                             \n",
+            "                       <<Sampler Size Estimation>>                        \n",
             "                                                                          \n",
             " Sample size estimation for a standard RT/TR 2x2x2 cross-over design      \n", 
-            "(multi-plicative model).\n",
-            " Expected ratio T/R =",
+            "(multiplicative model).\n",
+            " Expected ratio T/R = ",
                format(round(ratio*100,2),nsmall=2,width=4),"%.\n\n"),
       paste(paste(format(round(target*100,2),nsmall=2,width=17),
         "%",sep="",collapse=""),"\n"),

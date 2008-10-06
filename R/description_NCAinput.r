@@ -1,0 +1,16 @@
+description_NCAinput<-function(){
+cat("****************************************************************************\n")
+cat("Input/Edit Data                                                             \n")
+cat("----------------------------------------------------------------------------\n")
+cat("   -> subject no.(subj)                                                     \n")
+cat("   -> sequence (seq)                                                        \n")
+cat("          1:Ref.-->Test                                                     \n")
+cat("          2:Test-->Ref.                                                     \n")
+cat("   -> period (prd)                                                          \n")
+cat("          1: 1st-treatment period                                           \n")
+cat("          2: 2nd-treatment period                                           \n")
+cat("   -> sampling time                                                         \n")
+cat("   -> drug plasma/serum/blood concentration (conc)                          \n")
+cat("****************************************************************************\n")
+cat("\n")
+}
