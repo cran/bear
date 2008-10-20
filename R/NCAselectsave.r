@@ -1,5 +1,5 @@
 NCAselectsave<-function(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis
-                        ,BANOVA=FALSE)
+                        ,rdata.split,tdata.split,BANOVA=FALSE)
 {
 comdata<-rbind(ref_data,test_data)
 cat("****************************************************************************\n")
@@ -14,10 +14,10 @@ show(comdata)
               if (ans == "n" | ans == "N"){
                return(
                  if(BANOVA){ 
-                     NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+                     NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
                       }
                       else{
-                     NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+                     NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
                       } )
                      } 
               else {
@@ -60,10 +60,10 @@ show(comdata)
                  save(comdata,file=comdataname)
                   }
             if(BANOVA){ 
-             NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+             NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
              } 
              else{
-              NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+              NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
             }
        }
  }

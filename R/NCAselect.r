@@ -37,7 +37,7 @@ cat("\n\n")
 
           r_melt<-melt(co_data1)
           Y.split<-split(r_melt,list(r_melt$L1))
-
+          
 xy1<-NULL
 s1<-NULL
 d1<-NULL
@@ -51,11 +51,14 @@ d2<-NULL
            s1[[j]]<-c(xy1[[j]]$subj)
            d1[[j]]<-c(xy1[[j]]$time)
            d2[[j]]<-c(xy1[[j]]$conc)
+           
            }
 y0<-melt(s1)
 y1<-melt(d1)
 y2<-melt(d2)
 ref_data<-data.frame(subj=y0$L1,time=y1$value,conc=log10(y2$value), drug=c(1))
+rdata<-data.frame(subj=y0$L1,time=y1$value,conc=y2$value)
+rdata.split<-split(rdata,list(rdata$subj))
 
       ######Test data
       cat("****************************************************************************\n")
@@ -92,7 +95,8 @@ ref_data<-data.frame(subj=y0$L1,time=y1$value,conc=log10(y2$value), drug=c(1))
 
               t_melt<-melt(co_data2)
               YY.split<-split(t_melt,list(t_melt$L1))
-
+              
+              
                  xy2<-NULL
                  ss1<-NULL
                  dd1<-NULL
@@ -115,25 +119,28 @@ ref_data<-data.frame(subj=y0$L1,time=y1$value,conc=log10(y2$value), drug=c(1))
 
 #fitting data with linear regression model
 test_data<-data.frame(subj=yy0$L1,time=yy1$value,conc=log10(yy2$value), drug=c(2))
+tdata<-data.frame(subj=yy0$L1,time=yy1$value,conc=yy2$value)
+tdata.split<-split(tdata,list(tdata$subj))
+
 
 if (Demo){
     if(BANOVA){
      #Demo=TRUE, BANOVA=TRUE
-     NCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+     NCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
     } 
      else{
      #Demo=TRUE, BANOVA=FALSE
-     NCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+     NCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
         }
      }   
   else {
      if(BANOVA){
      ##Demo=FALSE, BANOVA=TRUE
-     NCAselectsave.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+     NCAselectsave.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
      }
       else{
      #Demo=FALSE, BANOVA=FALSE
-     NCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+     NCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
     }
    } 
 }

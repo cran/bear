@@ -4,7 +4,7 @@ TTT<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,S
 {
 description_TTT()
 #split dataframe into sub-dataframe by subject for reference data
- R.split<-split(SingleRdata1, list(SingleRdata1$subj))
+ R.split<-split(SingleRdata, list(SingleRdata$subj))
 
  subj<-0
  for (j in 1:(length(R.split))){
@@ -73,7 +73,7 @@ description_TTT()
                  cat("\n")
                  cat("<< NCA Outputs:- Subj.#",R.split[[j]][["subj"]][1]," (Ref.)>>\n")
                  cat("--------------------------------------------------------------------------\n")
-                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],auc_ref,aumc_ref )
+                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3))
                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
                  
@@ -111,7 +111,7 @@ AR_melt<-melt(AR_sq)
 keindex_ref<-data.frame(subj=subj, time=ke_melt$value, R_squared=R_melt$value,Adj_R_squared=AR_melt$value )
 
 #split dataframe into sub-dataframe by subject for test data
- T.split<-split(SingleTdata1, list(SingleTdata1$subj))
+ T.split<-split(SingleTdata, list(SingleTdata$subj))
 
  subj1<-0
  for (j in 1:(length(T.split))){
@@ -178,7 +178,7 @@ keindex_ref<-data.frame(subj=subj, time=ke_melt$value, R_squared=R_melt$value,Ad
                  cat("\n")
                  cat("<< NCA Outputs:- Subj.#",T.split[[j]][["subj"]][1]," (Test) >>\n")
                  cat("--------------------------------------------------------------------------\n")
-                 output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],auc_test,aumc_test )
+                 output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3))
                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
                  cat("--------------------------------------------------------------------------\n")

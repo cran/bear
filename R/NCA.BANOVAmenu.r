@@ -3,9 +3,7 @@ NCA.BANOVAmenu<-function()
 {
 cat("\n")
   file.menu <- c("NCA --> Statistical analysis (ANOVA(lm), 90%CI...)",
-                 "Run demo for NCA (exact 3 data points)--> Statistical analysis",
-                 "Run demo for NCA (ARS)--> Statistical analysis",
-                 "Run demo for NCA (TTT)--> Statistical analysis",
+                 "Run demo for NCA --> Statistical analysis",
                  "Back to the previous step",
                  "Quit")
  cat("\n")
@@ -17,30 +15,19 @@ cat("\n")
     else {
     if (pick == 2){
         cat("\n")
-       demoNCA.BANOVA()
+       demomenu1()
        }
     else {
     if (pick == 3){
         cat("\n")
-       demoARS.BANOVA()
-       }
-    else {
-    if (pick == 4){
-        cat("\n")
-       demoTTT.BANOVA()
-       }      
-    else {
-    if (pick == 5){
-        cat("\n")
        go()
          }
    else {
-    if (pick == 6){
+    if (pick == 4){
         cat("\nThank you for using bear!  Bye now. \n\n")
               }
            }
        }
-     }
-   }
-  }
- }  
+    }
+}
+  

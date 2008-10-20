@@ -1,14 +1,14 @@
 ##NCA
 NCA<-function(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
-               SingleTdata,SingleTdata1,xaxis, yaxis, Demo=FALSE,BANOVA=FALSE)
+               SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Demo=FALSE,BANOVA=FALSE)
 {
 
 #fitting data with linear regression model
 #cat("<<Output: linear regression model: conc. vs. time>>\n")
 #split dataframe into sub-dataframe by subject for reference data
 
-   R.split<-split(SingleRdata1, list(SingleRdata1$subj))
-
+   R.split<-split(SingleRdata, list(SingleRdata$subj))
+   
    Lm1 <- lmList(conc ~ time |subj, data = ref_data)
        
        subj<-0
@@ -89,10 +89,14 @@ keindex_ref<-data.frame(subj=subj, time=-2.3*(coef(Lm1)[2]),
                  cat("\n")
                  cat("<< NCA Outputs:- Subj.#",su," (Ref.)>>\n")
                  cat("--------------------------------------------------------------------------\n")
-                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],auc_ref,aumc_ref )
+                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3))
                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
 
+              cat("\n<<Selected data points for lambda_z estimation>>\n")
+              cat("--------------------------------------------------\n")
+              show(rdata.split[[j]])
+              
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n")
               cat("           R sq. =",R_sq ,"\n")
@@ -114,7 +118,7 @@ keindex_ref<-data.frame(subj=subj, time=-2.3*(coef(Lm1)[2]),
   }
 ################################################################# Test linear regression
 #split dataframe into sub-dataframe by subject for test data
-        T.split<-split(SingleTdata1, list(SingleTdata1$subj))
+        T.split<-split(SingleTdata, list(SingleTdata$subj))
 
         Lm2 <- lmList(conc ~ time |subj, data = test_data)
          subj1<-0
@@ -193,10 +197,14 @@ ClFTest<-0
                  cat("\n")
                  cat("<< NCA Outputs:- Subj.#",su1," (Test) >>\n")
                  cat("--------------------------------------------------------------------------\n")
-                 output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],auc_test,aumc_test )
+                 output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3) )
                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
 
+              cat("\n<<Selected data points for lambda_z estimation>>\n")
+              cat("--------------------------------------------------\n")
+              show(tdata.split[[j]]) 
+              
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n")
               cat("           R sq. =",R_sq1 ,"\n")
@@ -333,7 +341,7 @@ TotalData<-data.frame (subj=as.factor(Total$subj), drug=as.factor(Total$drug),se
 show(TotalData)
 
 ##export with txt file
-NCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData )
+NCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData,rdata.split ,tdata.split )
 
 NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
 

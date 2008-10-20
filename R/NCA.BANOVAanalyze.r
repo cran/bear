@@ -33,7 +33,10 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    file.menu <- c("Select the exact 3 data points manually",
                   "Load previous selection (the exact 3 data points)",
                   "Use Adjusted Rsq. (ARS) method",
-                  "Use the Two-Times-Tmax(TTT) method")
+                  "Use Akaike information criterion (AIC) method",                     
+                  "Use the Two-Times-Tmax(TTT) method",
+                  "Use TTT and ARS method",
+                  "Use TTT and AIC method")         
    cat("\n")               
    pick <- menu(file.menu, title = "<< Lambda_z options >>")
 
@@ -64,24 +67,48 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
        ref_data<-data.frame(subj=Tcomdata[[1]]$subj,time=Tcomdata[[1]]$time,conc=Tcomdata[[1]]$conc) 
        test_data<-data.frame(subj=Tcomdata[[2]]$subj,time=Tcomdata[[2]]$time,conc=Tcomdata[[2]]$conc)
   
-    NCA.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis)
+       rdata.split<-split(ref_data,list(ref_data$subj))
+       tdata.split<-split(test_data,list(test_data$subj))
+    
+    NCA.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
     bye()
   }
- 
+
  else {
   if (pick == 3){ 
      ARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
       bye()
-     }
- 
- else {
+       }   
+  
+  else {
   if (pick == 4){ 
-       TTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       bye()
-      }           
-    } 
-   }
-  }
+     AIC_BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+      bye()
+       }           
+  
+  else {
+  if (pick == 5){ 
+     TTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       bye()  
+      }
+      
+  else {
+  if (pick == 6){ 
+     TTTARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       bye()  
+     }
+      
+  else {
+  if (pick == 7){ 
+     TTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       bye()    
+         }  
+        }
+       }
+      } 
+     }
+    }
+   } 
  })
 }      
  

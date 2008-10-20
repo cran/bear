@@ -3,7 +3,7 @@ BANOVAmenu<-function(TotalData)
 {
 cat("\n")
   file.menu <- c("Statistical analysis (ANOVA(lm), 90%CI...)",
-                 "Run demo:- Statistical analysis (ANOVA(lm), 90%CI...)",
+                 "Run demo: Statistical analysis (ANOVA(lm), 90%CI...)",
                  "Back to the previous step",
                  "Quit")
  cat("\n")

@@ -1,9 +1,13 @@
 ##########.txt output
 options(warn=-1)
 NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex_test, Dose, TotalData,
+                    rdata.split,tdata.split,
                     NCA=TRUE,
                     ARS=FALSE,
-                    TTT=FALSE)
+                    TTT=FALSE,
+                    aic=FALSE,
+                    TTTARS=FALSE,
+                    TTTAIC=FALSE)
 {
 filepath<-getwd()
 cat("\n")
@@ -28,6 +32,49 @@ sink(zz)
 #############################################################################################################################   
 #NCA_output
 description_version()
+cat("\n")
+         if (NCA){
+              cat("Lambda_z is calculated with manual selection of the exact 3 data points.\n") 
+              cat("----------------------------------------------------------------------------\n") 
+                 }
+                else {
+                 if(ARS){
+                 cat("Lambda_z is calculated using the adjusted R squared (ARS) method\n") 
+                 cat("without including the data point of (Tmax, Cmax).\n")
+                 cat("--------------------------------------------------------------------------\n") 
+                 }
+                else{
+                  if(TTT){
+                  cat("Lambda_z is calculated using the Two-Times-Tmax (TTT) method.            \n")
+                  cat("ref.:Scheerans C, Derendorf H and C Kloft. Proposal for a Standardised   \n")
+									cat("     Identification of the Mono-Exponential Terminal Phase for Orally    \n")
+									cat("     Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).        \n") 
+                  cat("--------------------------------------------------------------------------\n")    
+                     }
+                else {
+                 if(aic){
+                 cat("Lambda_z is calculated using the Akaike information criterion (AIC) method\n") 
+                 cat("without including the data point of (Tmax, Cmax).\n")
+                 cat("--------------------------------------------------------------------------\n") 
+                 }
+                 else {
+                 if(TTTARS){
+                 cat("Lambda_z is calculated using the Two-Times-Tmax (TTT) and adjusted R squared\n") 
+                 cat("(ARS) method without including the data point of (Tmax, Cmax).\n")
+                 cat("--------------------------------------------------------------------------\n") 
+                 }
+                 else {
+                 if(TTTAIC){
+                 cat("Lambda_z is calculated using Two-Times-Tmax (TTT) and Akaike information \n") 
+                 cat("criterion (AIC) method without including the data point of (Tmax, Cmax).\n")
+                 cat("--------------------------------------------------------------------------\n") 
+                       } 
+                      } 
+                     }
+                   }       
+                 }
+                } 
+cat("\n")
 cat("\n")
 cat("\n")
 cat("\n")
@@ -98,14 +145,101 @@ cat("---------------------------------------------------\n")
                  cat("\n") 
                  cat("<< NCA Output:- Subject#",su," (Ref.)>>\n")
                  cat("--------------------------------------------------------------------------\n")
-                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],auc_ref,aumc_ref )
+                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3))
                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
-               
+              
+                cat("\n<<Selected data points for lambda_z estimation>>\n")
+                cat("--------------------------------------------------\n")
+                if (NCA){
+                 show(rdata.split[[j]])  
+                  }
+                else {
+                 if(ARS){
+                   n_lambda=0
+                   r.adj=0
+                   xr<-which.max(R.split[[j]]$conc)
+                     for (i in (length(R.split[[j]]$conc)-2):(which.max(R.split[[j]]$conc+1))) {
+                      if (r.adj - summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared <
+                         (0.0001)) {
+                         n_lambda <- nrow(R.split[[j]])-i+1
+                         r.adj <- summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared
+                        }
+                      }
+                    show(R.split[[j]][(nrow(R.split[[j]])-n_lambda+1):nrow(R.split[[j]]),])
+                    }
+                 else{
+                  if(TTT){
+                    xr<-which.max(R.split[[j]]$conc)
+                    show(R.split[[j]][R.split[[j]]$time>=(R.split[[j]]$time[xr]*2),])
+                     }
+                 else{
+                  if(aic){
+                    xr<-which.max(R.split[[j]]$conc)
+                    f1 <-  function(xr) return(cbind((nrow(R.split[[j]])-xr+1),
+                          (extractAIC(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),])))[2],
+                          summary(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),]))$adj.r.squared))
+                          overview <- as.data.frame(do.call(rbind,lapply((xr+1):(nrow(R.split[[j]])-2),f1)))
+                          names(overview) <- c("n","AIC","adjR2")
+                          n_AIC<-overview$n[which.min(overview$AIC)]
+                     show(R.split[[j]][(nrow(R.split[[j]])-n_AIC+1):nrow(R.split[[j]]),])
+                     }   
+                 else{
+                  if(TTTARS){
+                    n_TTT_ARS=0
+                    r.adj2=0
+                   for (i in (nrow(R.split[[j]])-2):(min(seq_along(R.split[[j]]$time)[R.split[[j]]$time>=R.split[[j]]$time[which.max(R.split[[j]]$conc)]*2]))) {
+                      if (r.adj2 - summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared <(0.0001)) {
+                      n_TTT_ARS = nrow(R.split[[j]])-i+1
+                        r.adj2 = summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared
+                         }
+                      }
+                    show(R.split[[j]][(nrow(R.split[[j]])-n_TTT_ARS+1):nrow(R.split[[j]]),])
+                     }
+                 else{
+                  if(TTTAIC){
+                     for (i in (nrow(R.split[[j]])-2):(which.max(R.split[[j]]$conc)+1)) {
+                      f11 <-  function(i) return(cbind((nrow(R.split[[j]])-i+1),
+                             (extractAIC(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),])))[2]))
+                             overview <- as.data.frame(do.call(rbind,lapply((i+1):(nrow(R.split[[j]])-2),f11)))
+                              names(overview) <- c("n","AIC")
+                            }
+                           n_TTT_AIC<-overview$n[which.min(overview$AIC)]
+                      show(R.split[[j]][(nrow(R.split[[j]])-n_TTT_AIC+1):nrow(R.split[[j]]),])
+                     }       
+                    }
+                   }
+                  }     
+                 }
+                }     
+              cat("\n")
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n") 
               cat("           R sq. =",R_sq ,"\n")
               cat("Adj. R sq. (ARS) =",AR_sq ,"\n")
+                  if (aic){
+                  xr<-which.max(R.split[[j]]$conc)
+                    f1 <-  function(xr) return(cbind((nrow(R.split[[j]])-xr+1),
+                          (extractAIC(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),])))[2],
+                          summary(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),]))$adj.r.squared))
+                          overview <- as.data.frame(do.call(rbind,lapply((xr+1):(nrow(R.split[[j]])-2),f1)))
+                          names(overview) <- c("n","AIC","adjR2")
+                          n_AIC<-overview$n[which.min(overview$AIC)]
+              cat("             AIC =",min(overview$AIC) ,"\n")
+                    
+                  }
+                else {
+                 if(TTTAIC){
+                   for (i in (nrow(R.split[[j]])-2):(which.max(R.split[[j]]$conc)+1)) {
+                      f11 <-  function(i) return(cbind((nrow(R.split[[j]])-i+1),
+                             (extractAIC(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),])))[2]))
+                             overview <- as.data.frame(do.call(rbind,lapply((i+1):(nrow(R.split[[j]])-2),f11)))
+                              names(overview) <- c("n","AIC")
+                            }
+                      n_TTT_AIC<-overview$n[which.min(overview$AIC)]
+              cat("             AIC =",min(overview$AIC) ,"\n")
+                      }
+                    }        
               cat("        lambda_z =",ke ,"\n")
               cat("            Cmax =",Cmax_ref ,"\n")
               cat("            Tmax =",tmax_ref[,5] ,"\n")
@@ -119,29 +253,11 @@ cat("---------------------------------------------------\n")
               cat("        MRT(0-t) =",(aumc_ref[length(R.split[[j]][["conc"]])])/(auc_ref[length(R.split[[j]][["conc"]])]),"\n")
               cat("      MRT(0-inf) =",aumcINF/aucINF,"\n")
               cat("----------------------------\n") 
-              if (NCA){
-              cat("Lambda_z is calculated with manual selection of the exact 3 data points.\n") 
-              cat("----------------------------------------------------------------------------\n") 
-                 }
-                else {
-                 if(ARS){
-                 cat("Lambda_z is calculated using the adjusted R squared (ARS) method\n") 
-                 cat("without including the data point of (Tmax, Cmax).\n")
-                 cat("--------------------------------------------------------------------------\n") 
-                 }
-                else{
-                  if(TTT){
-                  cat("Lambda_z is calculated using the Two-Times-Tmax (TTT) method.\n")
-                  cat(" Ref.:Scheerans C, Derendorf H and C Kloft. Proposal for a Standardised       \n")
-                  cat("      Identification of the Mono-Exponential Terminal Phase for Orally        \n")
-                  cat("      Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).            \n")
-                  cat("--------------------------------------------------------------------------\n")    
-                     }
-                 }     
-              }
-         cat("\n\n")
   }  
-
+cat("\n")
+cat("\n")
+cat("\n")
+cat("\n")
 
 cat("                    Test                           \n")
 cat("---------------------------------------------------\n")
@@ -209,14 +325,105 @@ ClFTest<-0
                  cat("\n") 
                  cat("<< NCA Outputs:- Subj.#",su1," (Test) >>\n")
                  cat("--------------------------------------------------------------------------\n")
-                 output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],auc_test,aumc_test )
+                 output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3) )
                  colnames(output)<-list("subj","time","conc", "AUC(0~t)","AUMC(0~t)")
                  show(output)
                
+              
+                cat("\n<<Selected data points for lambda_z estimation>>\n")
+                cat("--------------------------------------------------\n")
+                if (NCA){
+                 show(tdata.split[[j]])  
+                  }
+                else {
+                 if(ARS){
+                   n_lambda=0
+                   r.adj=0
+                   xt<-which.max(T.split[[j]]$conc)
+                     for (i in (length(T.split[[j]]$conc)-2):(which.max(T.split[[j]]$conc+1))) {
+                       if (r.adj - summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared <
+                       (0.0001)) {
+                       n_lambda <- nrow(T.split[[j]])-i+1
+                       r.adj <- summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
+                       }
+                         }
+                     show(T.split[[j]][(nrow(T.split[[j]])-n_lambda+1):nrow(T.split[[j]]),])
+                   }
+                   
+                 else{
+                  if(TTT){
+                    xt<-which.max(T.split[[j]]$conc)
+                    show(T.split[[j]][T.split[[j]]$time>=(T.split[[j]]$time[xt]*2),])
+                     }
+                     
+                 else{
+                  if(aic){
+                    xt<-which.max(T.split[[j]]$conc)
+                    f2 <-  function(xt) return(cbind((nrow(T.split[[j]])-xt+1),
+                          (extractAIC(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),])))[2],
+                           summary(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),]))$adj.r.squared))
+                    overview <- as.data.frame(do.call(rbind,lapply((xt+1):(nrow(T.split[[j]])-2),f2)))
+                    names(overview) <- c("n","AIC","adjR2")
+                    n_AIC<-overview$n[which.min(overview$AIC)]
+                    show(T.split[[j]][(nrow(T.split[[j]])-n_AIC+1):nrow(T.split[[j]]),])
+                     }
+                        
+                 else{
+                  if(TTTARS){
+                      n_TTT_ARS=0
+                      r.adj2=0
+                   for (i in (nrow(T.split[[j]])-2):(min(seq_along(T.split[[j]]$time)[T.split[[j]]$time>=T.split[[j]]$time[which.max(T.split[[j]]$conc)]*2]))) {
+                      if (r.adj2 - summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared <(0.0001)) {
+                      n_TTT_ARS = nrow(T.split[[j]])-i+1
+                      r.adj2 = summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
+                            }
+                       }
+                   show(T.split[[j]][(nrow(T.split[[j]])-n_TTT_ARS+1):nrow(T.split[[j]]),])
+                     }
+                 else{
+                  if(TTTAIC){
+                    for (i in (nrow(T.split[[j]])-2):(which.max(T.split[[j]]$conc)+1)) {
+                        f22 <-  function(i) return(cbind((nrow(T.split[[j]])-i+1),
+                        (extractAIC(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),])))[2]))
+                         overview <- as.data.frame(do.call(rbind,lapply((i+1):(nrow(T.split[[j]])-2),f22)))
+                         names(overview) <- c("n","AIC")
+                         }
+                        n_TTT_AIC<-overview$n[which.min(overview$AIC)]
+                    show(T.split[[j]][(nrow(T.split[[j]])-n_TTT_AIC+1):nrow(T.split[[j]]),])
+                     }       
+                    }
+                   }
+                  }     
+                 }
+                }     
+               cat("\n")
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n") 
               cat("           R sq. =",R_sq1 ,"\n")
               cat("Adj. R sq. (ARS) =",AR_sq1 ,"\n")
+                  if (aic){
+                    xt<-which.max(T.split[[j]]$conc)
+                    f2 <-  function(xt) return(cbind((nrow(T.split[[j]])-xt+1),
+                          (extractAIC(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),])))[2],
+                           summary(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),]))$adj.r.squared))
+                    overview <- as.data.frame(do.call(rbind,lapply((xt+1):(nrow(T.split[[j]])-2),f2)))
+                    names(overview) <- c("n","AIC","adjR2")
+                    n_AIC<-overview$n[which.min(overview$AIC)]
+              cat("             AIC =",min(overview$AIC) ,"\n")
+                    
+                  }
+                else {
+                 if(TTTAIC){
+                   for (i in (nrow(T.split[[j]])-2):(which.max(T.split[[j]]$conc)+1)) {
+                        f22 <-  function(i) return(cbind((nrow(T.split[[j]])-i+1),
+                        (extractAIC(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),])))[2]))
+                         overview <- as.data.frame(do.call(rbind,lapply((i+1):(nrow(T.split[[j]])-2),f22)))
+                         names(overview) <- c("n","AIC")
+                         }
+                        n_TTT_AIC<-overview$n[which.min(overview$AIC)]
+              cat("             AIC =",min(overview$AIC) ,"\n")
+                      }
+                    }        
               cat("        lambda_z =",ke1 ,"\n")
               cat("            Cmax =",Cmax_test ,"\n")
               cat("            Tmax =",tmax_test[,5] ,"\n")
@@ -229,30 +436,12 @@ ClFTest<-0
               cat("     AUMC(0-inf) =",aumcINF,"\n")
               cat("        MRT(0-t) =",(aumc_test[length(T.split[[j]][["conc"]])])/(auc_test[length(T.split[[j]][["conc"]])]),"\n")
               cat("      MRT(0-inf) =",aumcINF/aucINF,"\n")
-              cat("----------------------------\n") 
-              if (NCA){
-              cat("Lambda_z is calculated with manual selection of the exact 3 data points.\n") 
-              cat("----------------------------------------------------------------------------\n") 
-                 }
-                else {
-                 if(ARS){
-                 cat("Lambda_z is calculated using the adjusted R squared (ARS) method\n") 
-                 cat("without including the data point of (Tmax, Cmax).\n")
-                 cat("--------------------------------------------------------------------------\n") 
-                 }
-                else{
-                  if(TTT){
-                  cat("Lambda_z is calculated using the Two-Times-Tmax (TTT) method.\n")
-                  cat("ref.:Scheerans C, Derendorf H and C Kloft. Proposal for a Standardised\n")
-									cat("     Identification of the Mono-Exponential Terminal Phase for Orally\n")
-									cat("     Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).\n") 
-                  cat("--------------------------------------------------------------------------\n")    
-                     }
-                 }     
-              }
-              cat("\n\n")
-  }
-
+              cat("----------------------------\n")              
+  }  
+cat("\n")
+cat("\n")
+cat("\n")
+cat("\n")
 cat("\n<< PK parameter summaries >>\n")
 cat("\n")
 cat("\n")
@@ -533,7 +722,7 @@ cat("\n")
 cat("         Statistical Summaries for Bioequivalence Study (N=",L1+L2,")\n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
- outputS1<-data.frame(parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
+ outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
                       Test_Mean=c(round(mean(outputCmax$Test),3),round(mean(outputAUC0t$Test),3),round(mean(outputAUC0INF$Test),3),
                                   round(mean(outputLnCmax$Test),3),round(mean(outputLnAUC0t$Test),3),round(mean(outputLnAUC0INF$Test),3)), 
                       Test_SD=c(round(sd(outputCmax$Test),3),round(sd(outputAUC0t$Test),3),round(sd(outputAUC0INF$Test),3),
@@ -551,14 +740,14 @@ cat("\n")
 cat("                           Statistical Analysis                           \n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
-outputS2<-data.frame(parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
+outputS2<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
                       F_value=c(round(anova(Cmax)[4,4],3), round(anova(AUC0t)[4,4],3), round(anova(AUC0INF)[4,4],3),
                                 round(anova(LnCmax)[4,4],3),round(anova(LnAUC0t)[4,4],3),round(anova(LnAUC0INF)[4,4],3)), 
                       P_value=c(round(anova(Cmax)[4,5],3),round(anova(AUC0t)[4,5],3), round(anova(AUC0INF)[4,5],3),
                           round(anova(LnCmax)[4,5],3),round(anova(LnAUC0t)[4,5],3),round(anova(LnAUC0INF)[4,5],3)),  
                       CI90_lower= c("-","-","-",round(lowerCmax,3),round(lowerAUC0t,3),round(LowerAUC0INF,3)), 
                       CI90_upper= c("-","-","-",round(upperCmax,3),round(UpperAUC0t,3),round(UpperAUC0INF,3)),  
-                      power=c("-","-","-",formatC(PowerCmaxT,format="f",digits=3),formatC(PowerTAUC0t,format="f",digits=3),formatC(PowerTAUC0INF,format="f",digits=3))) 
+                      Power=c("-","-","-",formatC(PowerCmaxT,format="f",digits=3),formatC(PowerTAUC0t,format="f",digits=3),formatC(PowerTAUC0INF,format="f",digits=3))) 
 
 
 show(outputS2)
@@ -577,35 +766,29 @@ cat("\n")
 cat("Summaries for Pharmacokinetic Analysis (NCA)\n")
 cat("\n")
 cat("\n")
-cat("                        Test                     \n")
-cat("-------------------------------------------------\n")
+cat("                      Test           Reference        \n")
+cat("------------------------------------------------------\n")
 cat("\n")
-outputTest<-data.frame(parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUCratio" ),
-                        Mean=c(round(mean(outputClF$Test),3),round(mean(outputLambda$Test),3),round(mean(outputTmax$Test),3),round(mean(outputT12$Test),3),
+outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUCratio" ),
+                        Mean_T=c(round(mean(outputClF$Test),3),round(mean(outputLambda$Test),3),round(mean(outputTmax$Test),3),round(mean(outputT12$Test),3),
                                     round(mean(outputVdF$Test),3),round(mean(outputMRT0INF$Test),3),round(mean(outputAUC0t_AUC0INF$Test),3)),
-                        SD=c(round(sd(outputClF$Test),3),round(sd(outputLambda$Test),3),round(sd(outputTmax$Test),3),round(sd(outputT12$Test),3),
+                        SD_T=c(round(sd(outputClF$Test),3),round(sd(outputLambda$Test),3),round(sd(outputTmax$Test),3),round(sd(outputT12$Test),3),
                                   round(sd(outputVdF$Test),3),round(sd(outputMRT0INF$Test),3),round(sd(outputAUC0t_AUC0INF$Test),3) ),
-                        CV=c(round(((sd(outputClF$Test)/mean(outputClF$Test))*100),3),round(((sd(outputLambda$Test)/mean(outputLambda$Test))*100),3),
+                        CV_T=c(round(((sd(outputClF$Test)/mean(outputClF$Test))*100),3),round(((sd(outputLambda$Test)/mean(outputLambda$Test))*100),3),
                                   round(((sd(outputTmax$Test)/mean(outputTmax$Test))*100),3),round(((sd(outputT12$Test)/mean(outputT12$Test))*100),3),
                                   round(((sd(outputVdF$Test)/mean(outputVdF$Test))*100),3),round(((sd(outputMRT0INF$Test)/mean(outputMRT0INF$Test))*100),3),
-                                  round(((sd(outputAUC0t_AUC0INF$Test)/mean(outputAUC0t_AUC0INF$Test))*100),3)))
-                        
-show(outputTest)
-cat("\n")
-cat("\n")
-cat("                        Reference                   \n")
-cat("----------------------------------------------------\n")
-cat("\n")
-outputRef<-data.frame(parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUCratio" ),
-                        Mean=c(round(mean(outputClF$Ref),3),round(mean(outputLambda$Ref),3),round(mean(outputTmax$Ref),3),round(mean(outputT12$Ref),3),
+                                  round(((sd(outputAUC0t_AUC0INF$Test)/mean(outputAUC0t_AUC0INF$Test))*100),3)),
+                                 
+                        Mean_R=c(round(mean(outputClF$Ref),3),round(mean(outputLambda$Ref),3),round(mean(outputTmax$Ref),3),round(mean(outputT12$Ref),3),
                                    round(mean(outputVdF$Ref),3),round(mean(outputMRT0INF$Ref),3),round(mean(outputAUC0t_AUC0INF$Ref),3)),
-                        SD=c(round(sd(outputClF$Ref),3),round(sd(outputLambda$Ref),3),round(sd(outputTmax$Ref),3),round(sd(outputT12$Ref),3), 
+                        SD_R=c(round(sd(outputClF$Ref),3),round(sd(outputLambda$Ref),3),round(sd(outputTmax$Ref),3),round(sd(outputT12$Ref),3), 
                                  round(sd(outputVdF$Ref),3),round(sd(outputMRT0INF$Ref),3),round(sd(outputAUC0t_AUC0INF$Ref),3)),
-                        CV=c(round(((sd(outputClF$Ref)/mean(outputClF$Ref))*100),3),round(((sd(outputLambda$Ref)/mean(outputLambda$Ref))*100),3), 
+                        CV_R=c(round(((sd(outputClF$Ref)/mean(outputClF$Ref))*100),3),round(((sd(outputLambda$Ref)/mean(outputLambda$Ref))*100),3), 
                                  round(((sd(outputTmax$Ref)/mean(outputTmax$Ref))*100),3),round(((sd(outputT12$Ref)/mean(outputT12$Ref))*100),3),
                                  round(((sd(outputVdF$Ref)/mean(outputVdF$Ref))*100),3),round(((sd(outputMRT0INF$Ref)/mean(outputMRT0INF$Ref))*100),3),
-                                 round(((sd(outputAUC0t_AUC0INF$Ref)/mean(outputAUC0t_AUC0INF$Ref))*100),3)))
-show(outputRef)
+                                 round(((sd(outputAUC0t_AUC0INF$Ref)/mean(outputAUC0t_AUC0INF$Ref))*100),3)))          
+                        
+show(outputTest)
 cat("\n")
 cat("-----------------------------------------------------\n")
 cat("AUC ratio: (AUC0-t/AUC0-inf)*100 \n")

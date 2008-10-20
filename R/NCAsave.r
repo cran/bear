@@ -1,14 +1,8 @@
+##save the NCA results 
 NCAsave<-function(TotalData){
 
   cat("\n\n")
-   cat("\nSave NCA outputs (y/n)?\n")
-            ans<-readline()
-            cat("\n")
-              if (ans == "n" | ans == "N"){
-               return(NCAmenu())
-                      }
-              else {
-               cat("\nEnter the file name (without file extention):\n")
+     cat("\nEnter the file name (without file extention):\n")
                Totalname <-readline()
                Totalname<-paste(Totalname,".RData",sep="")
                  if(file.exists(Totalname)){
@@ -47,6 +41,6 @@ NCAsave<-function(TotalData){
                  save(TotalData,file=Totalname)
                   }
               BANOVAmenu(TotalData)
-            }
- }
+}
+
  

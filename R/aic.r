@@ -1,17 +1,17 @@
 ###Aceto revised NCA codes for lambda_z (WinNolin)
 options(warn=-1)
-ARS<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, 
-              separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE)
+aic<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1,
+               Demo=FALSE, BANOVA=FALSE)
 {
-description_ARS()
+description_AIC()
 #split dataframe into sub-dataframe by subject for reference data
  R.split<-split(SingleRdata, list(SingleRdata$subj))
- 
+
  subj<-0
  for (j in 1:(length(R.split))){
  subj[j]<-R.split[[j]][["subj"]][1]
  }
-       
+
      #fitting data with linear regression model
      #cat("<<Output: linear regression model: conc. vs. time>>\n")
      #calculate AUC
@@ -27,28 +27,29 @@ description_ARS()
       ke<-0
       R_sq<-0
       AR_sq<-0
-            
+      aic<-0
       for(j in seq_along(R.split)){
-       n_lambda=0
-       r.adj=0
-       xr<-which.max(R.split[[j]]$conc)
-       tmax_ref<-R.split[[j]][xr,5] 
-            for (i in (length(R.split[[j]]$conc)-2):(which.max(R.split[[j]]$conc+1))) {
-               if (r.adj - summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared <
-               (0.0001)) {
-               n_lambda <- nrow(R.split[[j]])-i+1
-                r.adj <- summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared
-                        }
-               }
-           Lm1<-lm(log(conc)~time,R.split[[j]][(nrow(R.split[[j]])-n_lambda+1):nrow(R.split[[j]]),])
+      
+         xr<-which.max(R.split[[j]]$conc)
+         f1 <-  function(xr) return(cbind((nrow(R.split[[j]])-xr+1),
+               (extractAIC(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),])))[2],
+               summary(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),]))$adj.r.squared))
+         overview <- as.data.frame(do.call(rbind,lapply((xr+1):(nrow(R.split[[j]])-2),f1)))
+         names(overview) <- c("n","AIC","adjR2")
+
+          n_AIC<-overview$n[which.min(overview$AIC)]
+          Lm1<-lm(log(conc)~time,R.split[[j]][(nrow(R.split[[j]])-n_AIC+1):nrow(R.split[[j]]),])
+
            ke[j]<-(-coef(Lm1)[2])
-           R_sq[j]<-summary(Lm1)$r.sq 
+           R_sq[j]<-summary(Lm1)$r.sq
            AR_sq[j]<-summary(Lm1)$adj.r.squared
+           aic[j]<-min(overview$AIC)
+           
              auc_ref <-0
              tmax_ref<-0
              Cmax_ref<-0
              aumc_ref<-0
-             for(i in 2:length(R.split[[j]][["time"]])){
+            for(i in 2:length(R.split[[j]][["time"]])){
              #calculate AUC and exclude AUC==NA (auc<-0)
              auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5
              auc_ref[i]<-auc_ref[i]+auc_ref[i-1]
@@ -58,8 +59,7 @@ description_ARS()
              aumc_ref[i]<-aumc_ref[i]+aumc_ref[i-1]
              Cmax_ref<-max(R.split[[j]][["conc"]], na.rm = FALSE)
               }
-            
-      
+
               #calculate AUC (0~INF)
                auc.infinity<-R.split[[j]][["conc"]][length(R.split[[j]][["conc"]])]/ke[j]
                aucINF<-auc_ref[length(R.split[[j]][["conc"]])]+auc.infinity
@@ -83,23 +83,24 @@ description_ARS()
                  cat("\n")
                  cat("<< NCA Output:- Subject#",R.split[[j]][["subj"]][1]," (Ref.)>>\n")
                  cat("--------------------------------------------------------------------------\n")
-                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3) )
+                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3))
                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
-                 
+
                  cat("--------------------------------------------------------------------------\n")
                  cat("<<Output: linear regression model: conc. vs. time>>\n")
                  print( summary(Lm1))
-                 
+
                  cat("\n<<Selected data points for lambda_z estimation>>\n")
                  cat("--------------------------------------------------\n")
-                 show(R.split[[j]][(nrow(R.split[[j]])-n_lambda+1):nrow(R.split[[j]]),])
-                 
-                 
+                 show(R.split[[j]][(nrow(R.split[[j]])-n_AIC+1):nrow(R.split[[j]]),])
+
+
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n")
               cat("           R sq. =",R_sq[j] ,"\n")
               cat("Adj. R sq. (ARS) =",AR_sq[j] ,"\n")
+              cat("             AIC =",aic[j] ,"\n")
               cat("        lambda_z =",ke[j] ,"\n")
               cat("            Cmax =",Cmax_ref ,"\n")
               cat("            Tmax =",R.split[[j]][xr,5] ,"\n")
@@ -118,9 +119,9 @@ description_ARS()
 ke_melt<-melt(ke)
 R_melt<-melt(R_sq)
 AR_melt<-melt(AR_sq)
-
+aic_melt<-melt(aic)
 #"time.ref" means "kel"
-keindex_ref<-data.frame(subj=subj, time=ke_melt$value, R_squared=R_melt$value,Adj_R_squared=AR_melt$value )
+keindex_ref<-data.frame(subj=subj, time=ke_melt$value, R_squared=R_melt$value,Adj_R_squared=AR_melt$value,AIC=aic_melt$value)
 
 #split dataframe into sub-dataframe by subject for test data
  T.split<-split(SingleTdata, list(SingleTdata$subj))
@@ -144,23 +145,22 @@ keindex_ref<-data.frame(subj=subj, time=ke_melt$value, R_squared=R_melt$value,Ad
     ke1<-0
     R_sq1<-0
     AR_sq1<-0
+    aic1<-0
     for(j in seq_along(T.split)){
-      n_lambda=0
-      r.adj=0
       xt<-which.max(T.split[[j]]$conc)
-      tmax_test<-T.split[[j]][xt,5] 
-          for (i in (length(T.split[[j]]$conc)-2):(which.max(T.split[[j]]$conc+1))) {
-          if (r.adj - summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared <
-          (0.0001)) {
-          n_lambda <- nrow(T.split[[j]])-i+1
-          r.adj <- summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
-                  }
-           }
-         Lm2 <-lm(log(conc)~time,T.split[[j]][(nrow(T.split[[j]])-n_lambda+1):nrow(T.split[[j]]),])
+      f2 <-  function(xt) return(cbind((nrow(T.split[[j]])-xt+1),
+            (extractAIC(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),])))[2],
+             summary(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),]))$adj.r.squared))
+      overview <- as.data.frame(do.call(rbind,lapply((xt+1):(nrow(T.split[[j]])-2),f2)))
+      names(overview) <- c("n","AIC","adjR2")
+
+       n_AIC<-overview$n[which.min(overview$AIC)]
+       Lm2<-lm(log(conc)~time,T.split[[j]][(nrow(T.split[[j]])-n_AIC+1):nrow(T.split[[j]]),])
+
          ke1[j]<-(-coef(Lm2)[2])
          R_sq1[j]<-summary(Lm2)$r.sq
          AR_sq1[j]<-summary(Lm2)$adj.r.squared
-
+         aic1[j]<-min(overview$AIC)
           auc_test <-0
           Cmax_test<-0
           tmax_test<-0
@@ -203,20 +203,21 @@ keindex_ref<-data.frame(subj=subj, time=ke_melt$value, R_squared=R_melt$value,Ad
                  output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3) )
                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
                  show(output)
-                 
+
                  cat("--------------------------------------------------------------------------\n")
                  cat("<<Output: linear regression model: conc. vs. time>>\n")
                  print(summary(Lm2))
-                 
+
                  cat("\n<<Selected data points for lambda_z estimation>>\n")
                  cat("--------------------------------------------------\n")
-                 show(T.split[[j]][(nrow(T.split[[j]])-n_lambda+1):nrow(T.split[[j]]),])
-                 
+                 show(T.split[[j]][(nrow(T.split[[j]])-n_AIC+1):nrow(T.split[[j]]),])
+
 
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n")
               cat("           R sq. =",R_sq1[j] ,"\n")
               cat("Adj. R sq. (ARS) =",AR_sq1[j] ,"\n")
+              cat("             AIC =",aic1[j] ,"\n")
               cat("        lambda_z =",ke1[j] ,"\n")
               cat("            Cmax =",Cmax_test ,"\n")
               cat("            Tmax =",T.split[[j]][xt,5] ,"\n")
@@ -230,21 +231,22 @@ keindex_ref<-data.frame(subj=subj, time=ke_melt$value, R_squared=R_melt$value,Ad
               cat("        MRT(0-t) =",(aumc_test[length(T.split[[j]][["conc"]])])/(auc_test[length(T.split[[j]][["conc"]])]),"\n")
               cat("      MRT(0-inf) =",aumcINF/aucINF,"\n")
               cat("--------------------------------------------------------------------------\n")
-              cat("\n\n") 
+              cat("\n\n")
  }
 ke1_melt<-melt(ke1)
 R1_melt<-melt(R_sq1)
 AR1_melt<-melt(AR_sq1)
+aic1_melt<-melt(aic1)
 #"time.test" means "kel"
-keindex_test<-data.frame(subj=subj1, time=ke1_melt$value,R_squared=R1_melt$value,Adj_R_squared=AR1_melt$value)
+keindex_test<-data.frame(subj=subj1, time=ke1_melt$value,R_squared=R1_melt$value,Adj_R_squared=AR1_melt$value, AIC=aic1_melt$value)
 
-cat("-----------------------------------------\n")
+cat("-------------------------------------------------------\n")
 cat("Individual PK parameters for Ref. product\n")
 show(keindex_ref)
-cat("-----------------------------------------\n")
+cat("-------------------------------------------------------\n")
 cat("Individual PK parameters for Test product\n")
 show(keindex_test)
-cat("-----------------------------------------\n")
+cat("-------------------------------------------------------\n")
 
 #Plot Cp vs Time
  #creat 3(row)*2(column) multiple figure array
@@ -311,7 +313,7 @@ for(i in seq_along(T.split)){
                lty = 1:2, xjust = 1, yjust = 1)
 
   }
- 
+
  seqR<-0
  for (j in 1:(length(R.split))){
      seqR[j]<-R.split[[j]][["seq"]][1]
@@ -343,7 +345,7 @@ TotalData<-data.frame (subj=as.factor(Total$subj), drug=as.factor(Total$drug),se
 show(TotalData)
 
 ##export with txt file
-ARSoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData )
+AICoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData )
 
 NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
 
@@ -355,7 +357,7 @@ if (Demo){
       else{
       #Demo=TRUE, BANOVA=FALSE
       NCAmenu()
-     } 
+     }
    }
  else {
       if(BANOVA){
@@ -366,8 +368,6 @@ if (Demo){
      #Demo=FALSE, BANOVA=FALSE
      NCAsave(TotalData)
      }
-   }     
-} 
-
-
+   }
+}
 
