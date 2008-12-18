@@ -36,7 +36,7 @@ cat("   -> ln(AUC0INF): Log-transformed AUC0INF                                 
 cat("*****************************************************************************\n")
 cat("\n")
      TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
-                   LnCmax=c(0),LnAUC0t=c(0),LnAUC0INF=c(0))
+                   lnCmax=c(0),lnAUC0t=c(0),lnAUC0INF=c(0))
      TotalData<-edit(TotalData)
      TotalData<- na.omit(TotalData)
      show(TotalData)
@@ -121,7 +121,7 @@ else {
      load(Totalname)
      TotalData<-edit(TotalData)
      TotalData<- na.omit(TotalData)
-     colnames(TotalData)<-list("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0t")
+     colnames(TotalData)<-list("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
      cat("\n\n")
      show(TotalData)
      save(TotalData,file=Totalname)

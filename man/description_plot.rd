@@ -1,8 +1,8 @@
-\name{description_version}
+\name{description_plot}
 
-\alias{description_version}
+\alias{description_plot}
 
-\title{Description for version}
+\title{Description for plot}
 
 \description{
 

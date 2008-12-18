@@ -533,14 +533,14 @@ cat("\n")
 #6_ln(Cmax).txt
 cat("                      ln(Cmax)                     \n")
 cat("--------------------------------------------------\n")
-  outputLnCmax<-data.frame(subject=sumindexR$subj,Test=round(log(sumindexT$Cmax),3),Ref=round(log(sumindexR$Cmax),3),  Ratio=round(log(sumindexT$Cmax)/log(sumindexR$Cmax),3))
-  show(outputLnCmax)
+  outputlnCmax<-data.frame(subject=sumindexR$subj,Test=round(log(sumindexT$Cmax),3),Ref=round(log(sumindexR$Cmax),3),  Ratio=round(log(sumindexT$Cmax)/log(sumindexR$Cmax),3))
+  show(outputlnCmax)
   cat("\n")
-  outputLnCmaxMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(round(mean(outputLnCmax$Test),3),round(sd(outputLnCmax$Test),3),round((sd(outputLnCmax$Test)/mean(outputLnCmax$Test))*100,3)),
-                             Ref=c(round(mean(outputLnCmax$Ref),3),round(sd(outputLnCmax$Ref),3),round((sd(outputLnCmax$Ref)/mean(outputLnCmax$Ref))*100,3)),
-                             Ratio=c(round(mean(outputLnCmax$Ratio),3),round(sd(outputLnCmax$Ratio),3),round((sd(outputLnCmax$Ratio)/mean(outputLnCmax$Ratio))*100,3)))
-  show(outputLnCmaxMean)
+  outputlnCmaxMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(round(mean(outputlnCmax$Test),3),round(sd(outputlnCmax$Test),3),round((sd(outputlnCmax$Test)/mean(outputlnCmax$Test))*100,3)),
+                             Ref=c(round(mean(outputlnCmax$Ref),3),round(sd(outputlnCmax$Ref),3),round((sd(outputlnCmax$Ref)/mean(outputlnCmax$Ref))*100,3)),
+                             Ratio=c(round(mean(outputlnCmax$Ratio),3),round(sd(outputlnCmax$Ratio),3),round((sd(outputlnCmax$Ratio)/mean(outputlnCmax$Ratio))*100,3)))
+  show(outputlnCmaxMean)
 cat("--------------------------------------------------\n")
 cat("\n")
 cat("\n")
@@ -549,14 +549,14 @@ cat("\n")
 #7_ln(AUC0t)
 cat("                       ln(AUC0t)                    \n")
 cat("---------------------------------------------------\n")
-  outputLnAUC0t<-data.frame(subject=sumindexR$subj,Test=round(log(sumindexT$AUC0t),3),Ref=round(log(sumindexR$AUC0t),3),Ratio=round(log(sumindexT$AUC0t)/log(sumindexR$AUC0t),3))
-  show(outputLnAUC0t)
+  outputlnAUC0t<-data.frame(subject=sumindexR$subj,Test=round(log(sumindexT$AUC0t),3),Ref=round(log(sumindexR$AUC0t),3),Ratio=round(log(sumindexT$AUC0t)/log(sumindexR$AUC0t),3))
+  show(outputlnAUC0t)
   cat("\n")
-  outputLnAUC0tMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(round(mean(outputLnAUC0t$Test),3),round(sd(outputLnAUC0t$Test),3),round((sd(outputLnAUC0t$Test)/mean(outputLnAUC0t$Test))*100,3)),
-                             Ref=c(round(mean(outputLnAUC0t$Ref),3),round(sd(outputLnAUC0t$Ref),3),round((sd(outputLnAUC0t$Ref)/mean(outputLnAUC0t$Ref))*100,3)),
-                             Ratio=c(round(mean(outputLnAUC0t$Ratio),3),round(sd(outputLnAUC0t$Ratio),3),round((sd(outputLnAUC0t$Ratio)/mean(outputLnAUC0t$Ratio))*100,3)))
-  show(outputLnAUC0tMean)
+  outputlnAUC0tMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(round(mean(outputlnAUC0t$Test),3),round(sd(outputlnAUC0t$Test),3),round((sd(outputlnAUC0t$Test)/mean(outputlnAUC0t$Test))*100,3)),
+                             Ref=c(round(mean(outputlnAUC0t$Ref),3),round(sd(outputlnAUC0t$Ref),3),round((sd(outputlnAUC0t$Ref)/mean(outputlnAUC0t$Ref))*100,3)),
+                             Ratio=c(round(mean(outputlnAUC0t$Ratio),3),round(sd(outputlnAUC0t$Ratio),3),round((sd(outputlnAUC0t$Ratio)/mean(outputlnAUC0t$Ratio))*100,3)))
+  show(outputlnAUC0tMean)
 cat("---------------------------------------------------\n")
 cat("\n")
 cat("\n")
@@ -565,15 +565,15 @@ cat("\n")
 #8_ln(AUC0inf)
 cat("                       ln(AUC0inf)                 \n")
 cat("---------------------------------------------------\n")
-  outputLnAUC0INF<-data.frame(subject=sumindexR$subj,Test=round(log(sumindexT$AUC0INF),3),Ref=round(log(sumindexR$AUC0INF),3),
+  outputlnAUC0INF<-data.frame(subject=sumindexR$subj,Test=round(log(sumindexT$AUC0INF),3),Ref=round(log(sumindexR$AUC0INF),3),
                              Ratio=round(log(sumindexT$AUC0INF)/log(sumindexR$AUC0INF),3))
-  show(outputLnAUC0INF)
+  show(outputlnAUC0INF)
   cat("\n")
-  outputLnAUC0INFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(round(mean(outputLnAUC0INF$Test),3),round(sd(outputLnAUC0INF$Test),3),round((sd(outputLnAUC0INF$Test)/mean(outputLnAUC0INF$Test))*100,3)),
-                             Ref=c(round(mean(outputLnAUC0INF$Ref),3),round(sd(outputLnAUC0INF$Ref),3),round((sd(outputLnAUC0INF$Ref)/mean(outputLnAUC0INF$Ref))*100,3)),
-                             Ratio=c(round(mean(outputLnAUC0INF$Ratio),3),round(sd(outputLnAUC0INF$Ratio),3),round((sd(outputLnAUC0INF$Ratio)/mean(outputLnAUC0INF$Ratio))*100,3)))
-  show(outputLnAUC0INFMean)
+  outputlnAUC0INFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(round(mean(outputlnAUC0INF$Test),3),round(sd(outputlnAUC0INF$Test),3),round((sd(outputlnAUC0INF$Test)/mean(outputlnAUC0INF$Test))*100,3)),
+                             Ref=c(round(mean(outputlnAUC0INF$Ref),3),round(sd(outputlnAUC0INF$Ref),3),round((sd(outputlnAUC0INF$Ref)/mean(outputlnAUC0INF$Ref))*100,3)),
+                             Ratio=c(round(mean(outputlnAUC0INF$Ratio),3),round(sd(outputlnAUC0INF$Ratio),3),round((sd(outputlnAUC0INF$Ratio)/mean(outputlnAUC0INF$Ratio))*100,3)))
+  show(outputlnAUC0INFMean)
 cat("---------------------------------------------------\n")
 cat("\n")
 cat("\n")
@@ -670,9 +670,9 @@ TestData<-Fdata[[2]]
 Cmax<- lm(Cmax ~ seq + subj + prd + drug , data=TotalData)
 AUC0t<- lm(AUC0t ~ seq + subj+ prd + drug , data=TotalData)
 AUC0INF<- lm(AUC0INF ~ seq + subj+ prd + drug , data=TotalData)
-LnCmax<- lm(LnCmax ~ seq + subj + prd + drug , data=TotalData)
-LnAUC0t<- lm(LnAUC0t ~ seq + subj + prd + drug , data=TotalData)
-LnAUC0INF<- lm(LnAUC0INF ~ seq + subj + prd + drug , data=TotalData)
+lnCmax<- lm(lnCmax ~ seq + subj + prd + drug , data=TotalData)
+lnAUC0t<- lm(lnAUC0t ~ seq + subj + prd + drug , data=TotalData)
+lnAUC0INF<- lm(lnAUC0INF ~ seq + subj + prd + drug , data=TotalData)
 
 #L1(Reference-->Test),L2(Test-->Reference sequence)
 SeqLeg<-split(RefData, list(RefData$seq))
@@ -680,17 +680,17 @@ L1<-length(SeqLeg[[1]]$seq)
 L2<-length(SeqLeg[[2]]$seq)
 T<-qt(0.95,(L1+L2-2))
 
-ref_Cmax<-mean(RefData$LnCmax)
-ref_AUC0t<-mean(RefData$LnAUC0t)
-ref_AUC0INF<-mean(RefData$LnAUC0INF)
+ref_Cmax<-mean(RefData$lnCmax)
+ref_AUC0t<-mean(RefData$lnAUC0t)
+ref_AUC0INF<-mean(RefData$lnAUC0INF)
 
-test_Cmax<-mean(TestData$LnCmax)
-test_AUC0t<-mean(TestData$LnAUC0t)
-test_AUC0INF<-mean(TestData$LnAUC0INF)
+test_Cmax<-mean(TestData$lnCmax)
+test_AUC0t<-mean(TestData$lnAUC0t)
+test_AUC0INF<-mean(TestData$lnAUC0INF)
 
-SE_Cmax<-sqrt((anova(LnCmax)[5,3]/2) * (1/L1+1/L2)) 
-SE_AUC0t<-sqrt((anova(LnAUC0t)[5,3]/2) * (1/L1+1/L2))
-SE_AUC0INF<-sqrt((anova(LnAUC0INF)[5,3]/2) * (1/L1+1/L2)) 
+SE_Cmax<-sqrt((anova(lnCmax)[5,3]/2) * (1/L1+1/L2)) 
+SE_AUC0t<-sqrt((anova(lnAUC0t)[5,3]/2) * (1/L1+1/L2))
+SE_AUC0INF<-sqrt((anova(lnAUC0INF)[5,3]/2) * (1/L1+1/L2)) 
 
 Z_Cmax<-0.2*(ref_Cmax/SE_Cmax)-qnorm(0.95)
 Z_AUC0t<-0.2*(ref_AUC0t/SE_AUC0t)-qnorm(0.95)
@@ -724,15 +724,15 @@ cat("--------------------------------------------------------------------------\
 cat("\n")
  outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
                       Test_Mean=c(round(mean(outputCmax$Test),3),round(mean(outputAUC0t$Test),3),round(mean(outputAUC0INF$Test),3),
-                                  round(mean(outputLnCmax$Test),3),round(mean(outputLnAUC0t$Test),3),round(mean(outputLnAUC0INF$Test),3)), 
+                                  round(mean(outputlnCmax$Test),3),round(mean(outputlnAUC0t$Test),3),round(mean(outputlnAUC0INF$Test),3)), 
                       Test_SD=c(round(sd(outputCmax$Test),3),round(sd(outputAUC0t$Test),3),round(sd(outputAUC0INF$Test),3),
-                                round(sd(outputLnCmax$Test),3),round(sd(outputLnAUC0t$Test),3),round(sd(outputLnAUC0INF$Test),3)),
+                                round(sd(outputlnCmax$Test),3),round(sd(outputlnAUC0t$Test),3),round(sd(outputlnAUC0INF$Test),3)),
                       Ref_Mean=c(round(mean(outputCmax$Ref),3),round(mean(outputAUC0t$Ref),3),round(mean(outputAUC0INF$Ref),3),
-                                 round(mean(outputLnCmax$Ref),3),round(mean(outputLnAUC0t$Ref),3),round(mean(outputLnAUC0INF$Ref),3)),
+                                 round(mean(outputlnCmax$Ref),3),round(mean(outputlnAUC0t$Ref),3),round(mean(outputlnAUC0INF$Ref),3)),
                       Ref_SD=c(round(sd(outputCmax$Ref),3),round(sd(outputAUC0t$Ref),3),round(sd(outputAUC0INF$Ref),3),
-                               round(sd(outputLnCmax$Ref),3),round(sd(outputLnAUC0t$Ref),3),round(sd(outputLnAUC0INF$Ref),3)),
+                               round(sd(outputlnCmax$Ref),3),round(sd(outputlnAUC0t$Ref),3),round(sd(outputlnAUC0INF$Ref),3)),
                       Ratio=c(round(mean(outputCmax$Ratio),3),round(mean(outputAUC0t$Ratio),3),round(mean(outputAUC0INF$Ratio),3),
-                              round(mean(outputLnCmax$Ratio),3),round(mean(outputLnAUC0t$Ratio),3),round(mean(outputLnAUC0INF$Ratio),3)))
+                              round(mean(outputlnCmax$Ratio),3),round(mean(outputlnAUC0t$Ratio),3),round(mean(outputlnAUC0INF$Ratio),3)))
 
 show(outputS1)
 cat("\n")
@@ -742,9 +742,9 @@ cat("--------------------------------------------------------------------------\
 cat("\n")
 outputS2<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
                       F_value=c(round(anova(Cmax)[4,4],3), round(anova(AUC0t)[4,4],3), round(anova(AUC0INF)[4,4],3),
-                                round(anova(LnCmax)[4,4],3),round(anova(LnAUC0t)[4,4],3),round(anova(LnAUC0INF)[4,4],3)), 
+                                round(anova(lnCmax)[4,4],3),round(anova(lnAUC0t)[4,4],3),round(anova(lnAUC0INF)[4,4],3)), 
                       P_value=c(round(anova(Cmax)[4,5],3),round(anova(AUC0t)[4,5],3), round(anova(AUC0INF)[4,5],3),
-                          round(anova(LnCmax)[4,5],3),round(anova(LnAUC0t)[4,5],3),round(anova(LnAUC0INF)[4,5],3)),  
+                          round(anova(lnCmax)[4,5],3),round(anova(lnAUC0t)[4,5],3),round(anova(lnAUC0INF)[4,5],3)),  
                       CI90_lower= c("-","-","-",round(lowerCmax,3),round(lowerAUC0t,3),round(LowerAUC0INF,3)), 
                       CI90_upper= c("-","-","-",round(upperCmax,3),round(UpperAUC0t,3),round(UpperAUC0INF,3)),  
                       Power=c("-","-","-",formatC(PowerCmaxT,format="f",digits=3),formatC(PowerTAUC0t,format="f",digits=3),formatC(PowerTAUC0INF,format="f",digits=3))) 

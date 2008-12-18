@@ -337,7 +337,7 @@ sumindexT<-data.frame(subj=subj,drug=c(2),seq=seqT,prd=prdT,Cmax=CmaxTest,AUC0t=
 Total<-rbind(sumindexR,sumindexT)
 TotalData<-data.frame (subj=as.factor(Total$subj), drug=as.factor(Total$drug),seq=as.factor(Total$seq),
                    prd=as.factor(Total$prd),Cmax=Total$Cmax, AUC0t=Total$AUC0t, AUC0INF=Total$AUC0INF,
-                   LnCmax=log(Total$Cmax),LnAUC0t=log(Total$AUC0t),LnAUC0INF=log(Total$AUC0INF))
+                   lnCmax=log(Total$Cmax),lnAUC0t=log(Total$AUC0t),lnAUC0INF=log(Total$AUC0INF))
 show(TotalData)
 
 ##export with txt file
