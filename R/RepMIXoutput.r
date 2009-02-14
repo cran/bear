@@ -1,0 +1,22 @@
+RepMIXoutput<-function(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF)
+{
+filepath<-getwd()
+cat("\n")
+cat("****************************************************************************\n")
+cat(" Files have been output to the directory of                                 \n")
+cat(" ",filepath,".                                                              \n")
+cat("----------------------------------------------------------------------------\n")
+cat(" lme_stat.txt                                                               \n")
+cat("    --> lme: Cmax, AUC0t, AUC0inf, ln(Cmax), ln(AUC0t), ln(AUC0inf)           \n")
+cat("    --> 90%CI: ln(Cmax), ln(AUC0t), and ln(AUC0inf)                          \n")
+cat("****************************************************************************\n")
+cat("\n")
+
+zz <- file("lme_stat.txt", open="wt")
+sink(zz)
+description_version()
+cat("\n")
+RepMIX(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF)
+cat("\n")
+sink()
+}

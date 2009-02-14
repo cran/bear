@@ -5,7 +5,7 @@
 \title{TTT and ANOVA}
 
 \description{
-he TTT method is based on the Bateman function.  The Bateman function
+The TTT method is based on the Bateman function.  The Bateman function
 has two outstanding points.  First, the maximum of the curve (Cmax at
 Tmax) and secondly, the inflection point of the curve (Cinpt at Tinpt).
 The inflection point of the curve describes the point where the algebraic

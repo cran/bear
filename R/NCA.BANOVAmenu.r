@@ -7,7 +7,7 @@ cat("\n")
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << NCA--> Statistical analysis>> ")
+  pick <- menu(file.menu, title = " << NCA--> Statistical analysis for 2x2x2 Crossover Study>> ")
     if (pick == 1){
       cat("\n")
         NCA.BANOVAdata()

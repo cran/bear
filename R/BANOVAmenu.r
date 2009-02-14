@@ -20,7 +20,7 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-       go()
+       statmenu()
          }
    else {
     if (pick == 4){

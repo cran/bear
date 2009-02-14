@@ -1,21 +1,26 @@
 #NCA-->GLM
-NCA.BANOVAdata<-function()
+NCA.BANOVAdata<-function(replicated=FALSE)
 {
 cat("\n")
 file.menu <- c("Input/edit data from keyboard",
                "Import data file with .csv format",
                "Load data File with .RData format",
-               "Back to NCA --> Statistical analysis (ANOVA(lm), 90%CI...)",
+               "Back to NCA --> Statistical analysis",
                "Quit")
 cat("\n")
 
-pick <- menu(file.menu, title = " << NCA >> ")
+pick <- menu(file.menu, title = " << NCA--> Statistical analysis >> ")
 if (pick == 1){
 cat("\n")
      
-     description_NCAinput()
-
-     TotalSingledata<-data.frame (subj=c(0), seq=c(0),prd=c(0),time=c(0), conc=c(0) )
+     if(replicated){
+       description_RepNCAinput()
+       TotalSingledata<-data.frame (subj=c(0),seq=c(0),prd=c(0),drug=c(0),time=c(0), conc=c(0))
+       }
+       else{
+        description_NCAinput()
+        TotalSingledata<-data.frame (subj=c(0), seq=c(0),prd=c(0),time=c(0), conc=c(0) )
+        }
      TotalSingledata<-edit(TotalSingledata)
      TotalSingledata<- na.omit(TotalSingledata)
      show(TotalSingledata)
@@ -60,16 +65,26 @@ cat("\n")
         else{
            save(TotalSingledata,file=TotalSinglename)
           }
-
-        return(NCA.BANOVAanalyze(TotalSingledata))
+        if (replicated){
+              return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+           else{
+              return(NCA.BANOVAanalyze(TotalSingledata))
+             }  
       }
     
 
 else {
   if (pick == 2){
       cat("\n")                                          
-      description_NCAcsv()
-         return(NCA.BANOVAcsv())
+      if (replicated){
+        description_RepNCAcsv
+        return(RepNCA.MIXcsv())
+         }
+        else{
+        description_NCAcsv()
+        return(NCA.BANOVAcsv())
+        }   
       }
 
 else {
@@ -81,19 +96,34 @@ else {
      load(TotalSinglename)
      TotalSingledata<-edit(TotalSingledata)
      TotalSingledata<- na.omit(TotalSingledata)
-     colnames(TotalSingledata)<-list("subj", "seq", "prd", "time", "conc")
+     if (replicated){
+              colnames(TotalSingledata)<-list("subj", "seq", "prd", "drug","time", "conc")
+            }
+           else{
+              colnames(TotalSingledata)<-list("subj", "seq", "prd", "time", "conc")
+            }
      cat("\n\n")
      show(TotalSingledata)
      save(TotalSingledata,file=TotalSinglename)
      cat("\n\n")
-        return(NCA.BANOVAanalyze(TotalSingledata))
+        if (replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+           else{
+              return(NCA.BANOVAanalyze(TotalSingledata))
+             }
       }
 
   else {
   if (pick == 4){
      cat("\n\n")
-     NCA.BANOVAmenu()
-                }
+      if (replicated){
+              RepNCA.MIXmenu()
+             }
+           else{
+              NCA.BANOVAmenu()
+             }
+          }
   else {
   if (pick == 5){
       cat("\nThank you for using bear!  Bye now. \n\n")

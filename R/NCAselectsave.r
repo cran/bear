@@ -1,5 +1,5 @@
 NCAselectsave<-function(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis
-                        ,rdata.split,tdata.split,BANOVA=FALSE)
+                        ,rdata.split,tdata.split,BANOVA=FALSE, replicated=FALSE, MIX=FALSE)
 {
 comdata<-rbind(ref_data,test_data)
 cat("****************************************************************************\n")
@@ -13,13 +13,24 @@ show(comdata)
             cat("\n")
               if (ans == "n" | ans == "N"){
                return(
-                 if(BANOVA){ 
+                 if(replicated){
+                   if(MIX){
+                    RepNCA.MIX(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                   }
+                   else{
+                    RepNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                   }
+                 }
+                 else{
+                    if(BANOVA){
                      NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-                      }
-                      else{
-                     NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-                      } )
-                     } 
+                    }
+                    else{
+                    NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                    }
+                 }
+                ) 
+               } 
               else {
                cat("\nEnter the file name (without file extention):\n")
                comdataname <-readline()
@@ -59,11 +70,22 @@ show(comdata)
                 else{
                  save(comdata,file=comdataname)
                   }
-            if(BANOVA){ 
-             NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-             } 
-             else{
-              NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+             if(replicated){
+                   if(MIX){
+                    RepNCA.MIX(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                   }
+                   else{
+                    RepNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                   }
+                 }
+                 else{
+                    if(BANOVA){
+                     NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                    }
+                    else{
+                    NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                    }
+                 }
             }
-       }
  }
+ 

@@ -1,4 +1,4 @@
-description_drugcode<-function(){
+description_drugcode<-function(replicated=FALSE){
 cat("\n")
 cat("****************************************************************************\n")
 cat("*<<Conc. - Time Plots >>                                                    \n")
@@ -30,12 +30,16 @@ cat("---------------------------------------------------------------------------
 cat(" Drug:                                                                      \n")
 cat("     1: Ref.                                                                \n")
 cat("     2: Test                                                                \n")
+ if (replicated){
+ }
+   else{
 cat(" Sequence:                                                                  \n")
 cat("     1: Ref. --> Test                                                       \n")
 cat("     2: Test --> Ref.                                                       \n")
 cat(" Period:                                                                    \n")
 cat("     1: 1st-treatment period                                                \n")
-cat("     2: 2nd-treatment period                                                \n")
+cat("     2: 2nd-treatment period                                                \n") 
+ }
 cat("****************************************************************************\n")
 cat("\n\n")
 }

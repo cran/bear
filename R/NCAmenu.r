@@ -1,4 +1,4 @@
-# List of Noncompartment Analysis (NCA)"
+# List of Noncompartment Analysis (NCA) for 2x2 crossover 
 NCAmenu<-function()
 {
 cat("\n")
@@ -7,7 +7,7 @@ cat("\n")
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << Noncompartmental analysis (NCA)>> ")
+  pick <- menu(file.menu, title = " << NCA for 2x2x2 Crossover Study>> ")
     if (pick == 1){
       cat("\n")
         NCAdata()
@@ -20,7 +20,7 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-       go() 
+       Multiplemenu() 
        }
     else {
     if (pick == 4){

@@ -1,5 +1,5 @@
 #choose separator and decimal type
-BANOVAcsv<-function()
+BANOVAcsv<-function(replicated=FALSE)
 {
 cat("\n")
 file.menu <- c("separator = comma (,) &  decimal = point (.)",
@@ -11,7 +11,7 @@ file.menu <- c("separator = comma (,) &  decimal = point (.)",
                "separator = {tab} &  decimal = point (.)",
                "separator = colon (:) &  decimal = comma (,)",
                "separator = colon (:) &  decimal = point (.)",
-               "Back to Statistical analysis (ANOVA(lm), 90%CI...) menu")
+               "Back to Statistical analysis menu")
 cat("\n")
 pick <- menu(file.menu, title = " << Separator and decimal formats >> ")
 if (pick == 1){
@@ -25,7 +25,15 @@ if (pick == 1){
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-            return(BANOVAanalyze(TotalData))
+            
+        if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
      }
 
  else {
@@ -40,8 +48,15 @@ if (pick == 1){
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-            return(BANOVAanalyze(TotalData))
+        if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
           }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
+       }
  else {
   if (pick == 3){
   cat("\n\n")
@@ -54,7 +69,14 @@ if (pick == 1){
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-            return(BANOVAanalyze(TotalData))
+             if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
           }
 else {
   if (pick == 4){
@@ -68,7 +90,14 @@ else {
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-            return(BANOVAanalyze(TotalData))
+             if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
           }
 else {
   if (pick == 5){
@@ -82,7 +111,14 @@ else {
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-             return(BANOVAanalyze(TotalData))
+              if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
           }          
 else {
   if (pick == 6){
@@ -96,7 +132,14 @@ else {
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-            return(BANOVAanalyze(TotalData))
+             if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
           }     
 else {
   if (pick == 7){
@@ -110,7 +153,14 @@ else {
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-                    return(BANOVAanalyze(TotalData))
+                    if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
           }    
 else {
   if (pick == 8){
@@ -124,7 +174,14 @@ else {
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-            return(BANOVAanalyze(TotalData))
+           if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
           }    
 else {
   if (pick == 9){
@@ -138,12 +195,19 @@ else {
         TotalData<-na.omit(TotalData)
         cat("\n\n")
         show(TotalData)
-            return(BANOVAanalyze(TotalData))
+             if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
           }               
  else {
   if (pick == 10){
-      return (BANOVAmenu())
-                }
+       Multiplestatmenu
+           }
           }
          }
         }

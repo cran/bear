@@ -4,6 +4,7 @@ BANOVAplot<-function(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF
                      IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
                      IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22)
 {
+
 #par(mfrow=c(2,2))
 ##lnCmax
 qqnorm(IntraInterlnCmax00$Stud_Intra,
@@ -187,4 +188,14 @@ thigmophobe.labels(IntraInterlnAUC0INFseq22$Exp,IntraInterlnAUC0INFseq22$Stud_In
 temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
                text.width = strwidth("1,000,000000"),
                pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
+
+##plot boxplot
+op <- par(mfrow=c(1,3))
+boxplot(IntraInterlnCmax00$Stud_Intra,col="lightgray", main="lnCmax (intrasubj)", ylab="studentized residuals",las=1)
+boxplot(IntraInterlnAUC0t00$Stud_Intra,col="lightgray", main="lnAUC0t (intrasubj)", ylab="studentized residuals",las=1)
+boxplot(IntraInterlnAUC0INF00$Stud_Intra,col="lightgray", main="lnAUC0INF (intrasubj)", ylab="studentized residuals",las=1)
+
+boxplot(IntraInterlnCmax00$Stud_Inter,col="lightgray", main="lnCmax (intersubj)", ylab="studentized residuals",las=1)
+boxplot(IntraInterlnAUC0t00$Stud_Inter,col="lightgray", main="lnAUC0t (intersubj)", ylab="studentized residuals",las=1)
+boxplot(IntraInterlnAUC0INF00$Stud_Inter,col="lightgray", main="lnAUC0INF (intersubj)", ylab="studentized residuals",las=1)
 }

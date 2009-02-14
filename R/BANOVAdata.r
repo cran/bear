@@ -1,11 +1,12 @@
 #input subject, time, test and ref concentration
-BANOVAdata<-function(TotalData)
+BANOVAdata<-function(TotalData,
+                     replicated=FALSE)
 {
 cat("\n")
 file.menu <- c("Input/edit data from keyboard",
                "Import data file with .csv format",
                "Load data File with .RData format",
-               "Back to Statistical analysis (ANOVA(lm), 90%CI...)",
+               "Back to Statistical analysis",
                "Quit")
 cat("\n")
 
@@ -82,8 +83,14 @@ cat("\n")
            save(TotalData,file=Totalname)
           }
 
+        if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu()
+         }
+        else{
         BANOVAanalyze(TotalData)
         BANOVAmenu() 
+        }
       }
 
 else {
@@ -109,8 +116,12 @@ cat(" column#8: ln(Cmax)                                                        
 cat(" column#9: ln(AUC0t)                                                               \n")
 cat(" column#10: ln(AUC0INF)                                                            \n")
 cat("***********************************************************************************\n")
+        if(replicated){
+         RepMIXcsv()
+         }
+        else{
         BANOVAcsv()
-        BANOVAmenu() 
+        }
       }
 
 else {
@@ -126,14 +137,20 @@ else {
      show(TotalData)
      save(TotalData,file=Totalname)
      cat("\n\n")
-        BANOVAanalyze(TotalData)
-        BANOVAmenu() 
+         if(replicated){
+         RepMIXanalyze(TotalData)
+         RepMIXmenu() 
+          }
+         else{
+         BANOVAanalyze(TotalData)
+         BANOVAmenu()
+        }
       }
 
   else {
   if (pick == 4){
      cat("\n\n")
-     BANOVAmenu()
+    Multiplestatmenu()
                 }
   else {
   if (pick == 5){

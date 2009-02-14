@@ -6,13 +6,13 @@ if (noquote(unlist(format(.Platform)))[1] == "unix") {
         windows <<- function(record) {
         }
      }  
-    
+
       
 cat("\n")
   file.menu <- c("Sample size estimation for ABE ",
                  "Noncompartmental analysis (NCA)",
-                 "Statistical analysis (ANOVA(lm), 90%CI...)",
-                 "NCA --> Statistical analysis (ANOVA(lm), 90%CI...)",
+                 "Statistical analysis",
+                 "NCA --> Statistical analysis",
                  "Quit")
    cat("\n")
   pick <- menu(file.menu, title = " << Top menu >> ")
@@ -23,16 +23,16 @@ cat("\n")
     else {
     if (pick == 2){
         cat("\n")
-        NCAmenu()
+        Multiplemenu()
        }
     else {
     if (pick == 3){
         cat("\n")
-        BANOVAmenu()
+        statmenu()
          }
    else {
     if (pick == 4){
-        NCA.BANOVAmenu()
+        Multiplestatmenu()
          }
     else {
     if (pick == 5){

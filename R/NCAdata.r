@@ -1,5 +1,5 @@
 #input subject, time, test and ref concentration
-NCAdata<-function()
+NCAdata<-function(replicated=FALSE)
 {
 cat("\n")
 file.menu <- c("Input/edit data from keyboard",
@@ -12,9 +12,15 @@ cat("\n")
 pick <- menu(file.menu, title = " << NCA >> ")
 if (pick == 1){
     cat("\n")
-    description_NCAinput()
-
-     TotalSingledata<-data.frame (subj=c(0), seq=c(0),prd=c(0),time=c(0), conc=c(0))
+    
+       if(replicated){
+       description_RepNCAinput()
+       TotalSingledata<-data.frame (subj=c(0),seq=c(0),prd=c(0),drug=c(0),time=c(0), conc=c(0))
+       }
+       else{
+       description_NCAinput()
+       TotalSingledata<-data.frame (subj=c(0), seq=c(0),prd=c(0),time=c(0), conc=c(0))
+       }
      TotalSingledata<-edit(TotalSingledata)
      TotalSingledata<- na.omit(TotalSingledata)
      show(TotalSingledata)
@@ -59,16 +65,26 @@ if (pick == 1){
         else{
            save(TotalSingledata,file=TotalSinglename)
           }
-        return(NCAanalyze(TotalSingledata))      
+            if (replicated){
+              return(RepNCAanalyze(TotalSingledata))
+             }
+           else{
+              return(NCAanalyze(TotalSingledata))
+             }  
       }    
     
 
 else {
   if (pick == 2){
        cat("\n")                                          
-       description_NCAcsv()
-          return(NCAcsv())
-   
+        if (replicated){
+        description_RepNCAcsv
+        return(RepNCAcsv())
+        }
+        else{
+        description_NCAcsv()
+        return(NCAcsv())
+        }
       }
 
 else {
@@ -80,19 +96,35 @@ else {
          load(TotalSinglename)
          TotalSingledata<-edit(TotalSingledata)
          TotalSingledata<- na.omit(TotalSingledata)
-         colnames(TotalSingledata)<-list("subj", "seq", "prd", "time", "conc")
+           if (replicated){
+              colnames(TotalSingledata)<-list("subj", "seq", "prd", "drug","time", "conc")
+            }
+           else{
+              colnames(TotalSingledata)<-list("subj", "seq", "prd", "time", "conc")
+            }
          cat("\n\n")
          show(TotalSingledata)
          save(TotalSingledata,file=TotalSinglename)
          cat("\n\n")
-           return(NCAanalyze(TotalSingledata))
+           if (replicated){
+             return(RepNCAanalyze(TotalSingledata))
+             }
+           else{
+              return(NCAanalyze(TotalSingledata))
+             }
+           
       }
 
   else {
   if (pick == 4){
      cat("\n\n")
-     NCAmenu()
-                }
+           if (replicated){
+              Repmenu()
+             }
+           else{
+               NCAmenu()
+             }
+      }
   else {
   if (pick == 5){
      cat("\nThank you for using bear!  Bye now. \n\n")

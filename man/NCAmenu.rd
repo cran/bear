@@ -2,7 +2,7 @@
 
 \alias{NCAmenu}
 
-\title{List of NCA Menu}
+\title{List of NCA 2x2x2 Menu}
 
 \description{
   You can use the functions as follows:

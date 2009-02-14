@@ -5,7 +5,7 @@
 \title{ANOVA function}
 
 \description{
- This function includes the results and outputs from ANOVA.
+ Data for ANOVA
 }
 \references{
  Guidance for Industry. Statistical approaches to establishing Bioequivalence. 

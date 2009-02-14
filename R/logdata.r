@@ -1,8 +1,42 @@
 # Sample size estimation for log transformation data
-logdata <-function()
+logdata <-function(Demo=FALSE)
 {
 cat("\n")
+
 description_size()
+
+if(Demo){
+cat("\n")
+cat("Enter Theta (%) (e.g. 95):\n")
+Theta <- 95 
+ratio<-Theta/100 
+cat(" 95\n")
+
+cat("\n") 
+cat("Enter CV (%) (e.g. 20):\n")
+CV1 <- 20 
+CV<-CV1/100
+cat(" 20\n")
+ 
+cat("\n")
+cat("Enter power (%) (e.g. 80 or 90):\n")
+epower <- 80 
+target<-epower/100
+cat(" 80\n")
+
+cat("\n")
+cat("Enter lower acceptance limit (%)(e.g. 80):\n")
+LL<-80 
+theta1 <- LL/100       # theta1: lower acceptance limit
+cat(" 80\n")
+
+cat("\n")
+cat("Enter Upper acceptance limit (%)(e.g. 125):\n")
+theta2 <- 1/theta1
+cat(" 125\n")
+}
+
+else{
 cat("Enter Theta (%)(or press Enter to use default value: 95 )\n") 
 #Theta <- scan(nlines=1,quiet=TRUE)
 Theta <-readline()
@@ -33,10 +67,8 @@ cat("Enter lower acceptance limit (%)(or press Enter to use default value: 80 )\
 Lm<-readline()
 if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
 theta1 <- Lm/100      # theta1: lower acceptance limit
-
+}
 cat("\n")
-cat("Upper acceptance limit",theta2*100, "(%)\n")
-cat("Lower acceptance limit",theta1*100, "(%)\n")
 #######################################################################
 # Sample size calculation for a standard RT/TR                        #
 # 2x2x2 cross-over design (multiplicative model)                      #
@@ -76,23 +108,25 @@ for (i in CV)            # CV loop
   if(i==CV[1]){
     title=paste(
       paste("--------------------------------------------------------------------------\n",
-            "                           <<Sample Szie Estimation>>                     \n",
-            "                                                                          \n",
-            " Sample size estimation for a standard RT/TR 2x2x2 cross-over design      \n", 
-            "(multiplicative model).\n",
-            " Expected ratio T/R =",
-               format(round(ratio*100,2),nsmall=2,width=4),"%.\n\n"),
-      paste(paste(format(round(target*100,2),nsmall=2,width=17),
-        "%",sep="",collapse=""),"\n"),
-      paste(" CV",
-        paste(c(rep("    sample.size (power.)",
-        length(target))),collapse=""),"\n"),
-      paste("------",
-        paste(c(rep(paste(rep("-",25),collapse=""),
-        length(target))),collapse=""),"\n") )
+            "                           <<Sample Size Estimation>>                     \n",
+            "                                                                          \n",   
+            " Upper acceptance limit =",theta2*100,"(%)\n", 
+            " Lower acceptance limit =",theta1*100,"(%)\n",
+            " Expected ratio T/R =", 
+               format(round(ratio*100,2),nsmall=2,width=3),"(%)\n",
+            " Target power =",
+               format(round(target*100,2),nsmall=2,width=3),"(%)\n",
+            " Intra-subject CV =",
+               format(i*100,nsmall=1,width=3),"(%)\n\n "),   
+      #paste(paste(format(round(target*100,2),nsmall=2,width=17),
+      #  "%",sep="",collapse=""),"\n"),
+      paste("study","    2x2x2","       2x2x3","      2x2x4","\n"),
+      paste(" design"," crossover","  replicated","  replicated","\n"), 
+      paste("-------","-----------","------------","------------","\n") )
     cat(title)
     }
-  cat(paste(format(i*100,nsmall=1,width=4),"% ",sep=""))
+   cat(paste("    N")) #1 
+  #cat(paste(format(i*100,nsmall=1,width=4),"% ",sep=""))
   sigmaW    <- sqrt(log(1+i^2))
   s         <- sqrt(2)*sigmaW
   for (j in target)      # power loop
@@ -112,15 +146,32 @@ for (i in CV)            # CV loop
       n     <- n+2       # increment for even sample size
       }
     if(n <= limit){
-      cat(paste(format(n,width=5)," (",
-        format(round(ppct,5),nsmall=3,width=8),"%) ",
-        sep=""))
+      cat(paste("    ",format(n,width=5)))#2 
+        pow<-format(round(ppct,5),nsmall=3,width=8) 
+        #sep=""))
+        n1<-(ceiling(n*3/4))
+        y1=n1[!(n1 %% 2 == 0)]
+         if(identical(y1, numeric(0))){
+           z1<-n1   #3
+           }else{
+            z1<-n1+1  #3
+            }
+        cat(paste("         ",z1))
+        n2<-(ceiling(n/2))
+        y2=n2[!(n2 %% 2 == 0)]
+         if(identical(y2, numeric(0))){
+          z2<-n2    #4 
+           }else{
+          z2<-n2+1    #4 
+            }   
+        cat(paste("          ",z2))
         cat("\n")
       } else
-      cat(paste(">",format(limit,width=4)," (",
-        format(round(ppct,5),nsmall=3,width=8),"%) ",
-        sep=""))
+      cat(paste(" >",format(limit,width=4)))
+        pow<-format(round(ppct,5),nsmall=3,width=8)
+        
       cat("\n")
+      cat("   Estimated power=",pow ,"(%)\n") 
       cat("--------------------------------------------------------------------------\n")   
      }
    cat("\n")

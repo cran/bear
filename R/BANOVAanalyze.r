@@ -1,6 +1,7 @@
 #Generalized Linear Models (GLM)
 BANOVAanalyze<-function(TotalData, separateWindows=TRUE)
 {
+ 
 description_BANOVA()
 TotalData<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
                    prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF, 
@@ -13,6 +14,7 @@ TestData<-Fdata[[2]]
 SeqLeg<-split(RefData, list(RefData$seq))
 L1<-length(SeqLeg[[1]]$seq)
 L2<-length(SeqLeg[[2]]$seq)
+
 Todata<-split(TotalData, list(TotalData$prd,TotalData$seq))
 
 ##MSinter and MSintra  for lnCmax
@@ -177,7 +179,7 @@ BANOVA(RefData, TestData, TotalData, L1, L2,
        lnCmax_MSinter, lnCmax_MSintra, lnCmax_SSinter, lnCmax_SSintra,
        lnAUC0t_MSinter, lnAUC0t_MSintra, lnAUC0t_SSinter, lnAUC0t_SSintra,
        lnAUC0INF_MSinter, lnAUC0INF_MSintra, lnAUC0INF_SSinter, lnAUC0INF_SSintra,                
-       IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnAUC0INF00)
+       IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnAUC0INF00 )
 BANOVAoutput(RefData, TestData, TotalData,  L1, L2,
        lnCmax_MSinter, lnCmax_MSintra, lnCmax_SSinter, lnCmax_SSintra,
        lnAUC0t_MSinter, lnAUC0t_MSintra, lnAUC0t_SSinter, lnAUC0t_SSintra,
@@ -186,9 +188,12 @@ BANOVAoutput(RefData, TestData, TotalData,  L1, L2,
        IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
        IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22)
 ##show in console
-windows(record = TRUE )
+graphics.off()
+windows(record = TRUE)
+.SavedPlots<-NULL
 BANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00, 
            IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
            IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
            IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22)
+
 }

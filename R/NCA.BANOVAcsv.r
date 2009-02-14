@@ -1,5 +1,5 @@
 #choose separator and decimal type
-NCA.BANOVAcsv<-function()
+NCA.BANOVAcsv<-function(replicated=FALSE)
 {
 cat("\n")
 file.menu <- c("separator = comma (,) &  decimal = point (.)",
@@ -11,7 +11,7 @@ file.menu <- c("separator = comma (,) &  decimal = point (.)",
                "separator = {tab} &  decimal = point (.)",
                "separator = colon (:) &  decimal = comma (,)",
                "separator = colon (:) &  decimal = point (.)",
-               "Back to NCA --> Statistical analysis (ANOVA(lm), 90%CI...) menu")
+               "Back to NCA --> Statistical analysis menu")
 cat("\n")
 pick <- menu(file.menu, title = " << Separator and decimal formats >> ")
 if (pick == 1){
@@ -19,13 +19,24 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+       
+          if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }    
      }
 
  else {
@@ -34,13 +45,23 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+           if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }       
      }
  else {
   if (pick == 3){
@@ -48,13 +69,23 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }       
      }
  else {
   if (pick == 4){
@@ -62,13 +93,23 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }       
      } 
  else {
   if (pick == 5){
@@ -76,13 +117,23 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }       
      }
  else {
   if (pick == 6){
@@ -90,13 +141,23 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }        
      }
  else {
   if (pick == 7){
@@ -104,13 +165,23 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }        
      } 
  else {
   if (pick == 8){
@@ -118,13 +189,23 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }        
      } 
  else {
   if (pick == 9){
@@ -132,18 +213,34 @@ if (pick == 1){
         description_import()
         TotalSingledata.file <-readline()
         TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        cnames<-c("subj", "seq","prd", "time", "conc")
+        if(replicated){
+              cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+             }
+            else{
+              cnames<-c("subj", "seq","prd", "time", "conc")
+            }    
         TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            return(NCA.BANOVAanalyze(TotalSingledata))    
+            if(replicated){
+             return(RepNCA.MIXanalyze(TotalSingledata))
+             }
+            else{
+             return(NCA.BANOVAanalyze(TotalSingledata))
+            }    
      }                     
  else {
   if (pick == 10){
-      return (NCA.BANOVAmenu())
-                }
+      if(replicated){
+             return(RepNCA.MIXmenu())
+             }
+            else{
+             return (NCA.BANOVAmenu())
+                  }    
+     
+            }
           }
          }
         }
