@@ -1,6 +1,7 @@
 #input subject, time, test and ref concentration
 BANOVAdata<-function(TotalData,
-                     replicated=FALSE)
+                     replicated=FALSE,
+                     parallel=FALSE)
 {
 cat("\n")
 file.menu <- c("Input/edit data from keyboard",
@@ -9,9 +10,41 @@ file.menu <- c("Input/edit data from keyboard",
                "Back to Statistical analysis",
                "Quit")
 cat("\n")
-
-pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (ANOVA(lm), 90%CI...)>> ")
+if(parallel){
+ pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (lme, 90%CI...)>> ")
+}
+ else{
+ if(replicated ){
+ pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (lme, 90%CI...)>> ")
+ } 
+ else{ 
+ pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (ANOVA(lm), 90%CI...)>> ")
+ }
+} 
 if (pick == 1){
+ if(parallel){
+cat("\n")
+cat("*****************************************************************************\n")
+cat("About the data file...                                                       \n")
+cat("-----------------------------------------------------------------------------\n")
+cat("   -> subject no.(subj)                                                      \n")
+cat("   -> drug                                                                   \n")
+cat("       1:Ref.                                                                \n")
+cat("       2:Test                                                                \n")
+cat("   -> Cmax                                                                   \n")
+cat("   -> AUC0t: the area under the predicted plasma concentration time curve for\n")
+cat("         test data. (time = 0 to time of the last measureable Cp)            \n")
+cat("   -> AUC0INF: area under the predicted plasma concentration time curve for  \n")
+cat("         test data. (time = 0 to infinity)                                   \n")
+cat("   -> ln(Cmax): Log-transformed Cmax                                         \n")
+cat("   -> ln(AUC0t): Log-transformed AUC0t                                       \n")
+cat("   -> ln(AUC0INF): Log-transformed AUC0INF                                   \n")
+cat("*****************************************************************************\n")
+cat("\n")
+TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
+                   lnCmax=c(0),lnAUC0t=c(0),lnAUC0INF=c(0))
+ }
+ else{ 
 cat("\n")
 cat("*****************************************************************************\n")
 cat("About the data file...                                                       \n")
@@ -36,8 +69,9 @@ cat("   -> ln(AUC0t): Log-transformed AUC0t                                     
 cat("   -> ln(AUC0INF): Log-transformed AUC0INF                                   \n")
 cat("*****************************************************************************\n")
 cat("\n")
-     TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
+TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
                    lnCmax=c(0),lnAUC0t=c(0),lnAUC0INF=c(0))
+} 
      TotalData<-edit(TotalData)
      TotalData<- na.omit(TotalData)
      show(TotalData)
@@ -82,7 +116,11 @@ cat("\n")
         else{
            save(TotalData,file=Totalname)
           }
-
+       if(parallel){
+       ParaMIXanalyze(TotalData)
+       ParaMIXmenu() 
+       }
+       else{ 
         if(replicated){
          RepMIXanalyze(TotalData)
          RepMIXmenu()
@@ -92,10 +130,29 @@ cat("\n")
         BANOVAmenu() 
         }
       }
-
+    } 
 else {
+ 
   if (pick == 2){
 cat("\n\n")
+if(parallel){
+cat("***********************************************************************************\n")
+cat(" row#1:subj, drug, Cmax, AUC0t, AUC0INF, ln(Cmax), ln(AUC0t), ln(AUC0INF)          \n")
+cat("-----------------------------------------------------------------------------------\n")
+cat(" column#1: subject no.(subj)                                                       \n")
+cat(" column#2: drug                                                                    \n")
+cat("            ->1: Ref.                                                              \n")
+cat("            ->2: Test                                                              \n")
+cat(" column#3: Cmax                                                                    \n")
+cat(" column#4: AUC0t                                                                   \n")
+cat(" column#5: AUC0INF                                                                 \n")
+cat(" column#6: ln(Cmax)                                                                \n")
+cat(" column#7: ln(AUC0t)                                                               \n")
+cat(" column#8: ln(AUC0INF)                                                            \n")
+cat("***********************************************************************************\n") 
+ParaMIXcsv()
+ }
+ else{  
 cat("***********************************************************************************\n")
 cat(" row#1:subj, drug, seq, prd, Cmax, AUC0t, AUC0INF, ln(Cmax), ln(AUC0t), ln(AUC0INF)\n")
 cat("-----------------------------------------------------------------------------------\n")
@@ -123,7 +180,7 @@ cat("***************************************************************************
         BANOVAcsv()
         }
       }
-
+ } 
 else {
   if (pick == 3){
      description_load() 
@@ -132,11 +189,21 @@ else {
      load(Totalname)
      TotalData<-edit(TotalData)
      TotalData<- na.omit(TotalData)
+     if(parallel){
+     colnames(TotalData)<-list("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF") 
+      }
+     else{ 
      colnames(TotalData)<-list("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+     } 
      cat("\n\n")
      show(TotalData)
      save(TotalData,file=Totalname)
      cat("\n\n")
+      if(parallel){
+      ParaMIXanalyze(TotalData)
+      ParaMIXmenu() 
+      }
+      else{  
          if(replicated){
          RepMIXanalyze(TotalData)
          RepMIXmenu() 
@@ -146,6 +213,7 @@ else {
          BANOVAmenu()
         }
       }
+     } 
 
   else {
   if (pick == 4){

@@ -2,7 +2,7 @@
 
 \alias{RepARS.MIX}
 
-\title{Adjusted R squared (ARS) method and lme}
+\title{Adjusted R squared (ARS) method and lme for replicated study}
 
 \description{
 Adjusted R squared (ARS) method:

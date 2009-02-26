@@ -1,5 +1,5 @@
 #input subject, time, test and ref concentration
-NCAdata<-function(replicated=FALSE)
+NCAdata<-function(replicated=FALSE, parallel=FALSE)
 {
 cat("\n")
 file.menu <- c("Input/edit data from keyboard",
@@ -12,7 +12,11 @@ cat("\n")
 pick <- menu(file.menu, title = " << NCA >> ")
 if (pick == 1){
     cat("\n")
-    
+     if(parallel){
+     description_ParaNCAinput()
+     TotalSingledata<-data.frame (subj=c(0), drug=c(0),time=c(0), conc=c(0))
+     }
+     else{
        if(replicated){
        description_RepNCAinput()
        TotalSingledata<-data.frame (subj=c(0),seq=c(0),prd=c(0),drug=c(0),time=c(0), conc=c(0))
@@ -21,6 +25,7 @@ if (pick == 1){
        description_NCAinput()
        TotalSingledata<-data.frame (subj=c(0), seq=c(0),prd=c(0),time=c(0), conc=c(0))
        }
+     }
      TotalSingledata<-edit(TotalSingledata)
      TotalSingledata<- na.omit(TotalSingledata)
      show(TotalSingledata)
@@ -65,18 +70,28 @@ if (pick == 1){
         else{
            save(TotalSingledata,file=TotalSinglename)
           }
+           if(parallel){
+            return(ParaNCAanalyze(TotalSingledata))
+           }
+           else{ 
             if (replicated){
               return(RepNCAanalyze(TotalSingledata))
              }
            else{
               return(NCAanalyze(TotalSingledata))
              }  
+         }
       }    
     
 
 else {
   if (pick == 2){
        cat("\n")                                          
+      if(parallel){
+      description_ParaNCAcsv
+      return(ParaNCAcsv())
+      }
+      else{
         if (replicated){
         description_RepNCAcsv
         return(RepNCAcsv())
@@ -86,7 +101,7 @@ else {
         return(NCAcsv())
         }
       }
-
+    }
 else {
   if (pick == 3){
       cat("\n")
@@ -96,34 +111,48 @@ else {
          load(TotalSinglename)
          TotalSingledata<-edit(TotalSingledata)
          TotalSingledata<- na.omit(TotalSingledata)
+         if(parallel){
+         colnames(TotalSingledata)<-list("subj", "drug","time", "conc")
+         }
+         else{
            if (replicated){
               colnames(TotalSingledata)<-list("subj", "seq", "prd", "drug","time", "conc")
             }
            else{
               colnames(TotalSingledata)<-list("subj", "seq", "prd", "time", "conc")
             }
+          }
          cat("\n\n")
          show(TotalSingledata)
          save(TotalSingledata,file=TotalSinglename)
          cat("\n\n")
+         if(parallel){
+          return(ParaNCAanalyze(TotalSingledata))
+         }
+          else{ 
            if (replicated){
              return(RepNCAanalyze(TotalSingledata))
              }
            else{
               return(NCAanalyze(TotalSingledata))
              }
-           
+          } 
       }
 
   else {
   if (pick == 4){
      cat("\n\n")
+         if(parallel){
+          Paramenu()
+          }
+         else{
            if (replicated){
               Repmenu()
              }
            else{
                NCAmenu()
              }
+          }
       }
   else {
   if (pick == 5){

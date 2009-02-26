@@ -2,7 +2,7 @@
 
 \alias{description_size}
 
-\title{Description for sample size input}
+\title{Description for sample size input for crossover and replicated study}
 
 \description{
 

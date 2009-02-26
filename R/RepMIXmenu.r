@@ -1,5 +1,5 @@
 # Replicated study lme menu
-RepMIXmenu<-function(TotalData)
+RepMIXmenu<-function(TotalData, parallel=FALSE)
 {
 cat("\n")
   file.menu <- c("Statistical analysis (lme, 90%CI...)",
@@ -10,12 +10,22 @@ cat("\n")
   pick <- menu(file.menu, title = " << Statistical analysis (lme, 90%CI...) menu >> ")
     if (pick == 1){
       cat("\n")
-        RepMIXdata(TotalData)
+        if(parallel){
+         ParaMIXdata(TotalData)
+        }
+        else{ 
+         RepMIXdata(TotalData)
+          } 
         }
     else {
     if (pick == 2){
         cat("\n")
+        if(parallel){
+        ParademoMIX()
+        }
+        else{ 
         RepdemoMIX()
+        } 
        }
     else {
     if (pick == 3){

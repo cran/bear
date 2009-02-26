@@ -2,7 +2,7 @@
 
 \alias{RepNCA.MIXdata}
 
-\title{Input/Edit data  for NCA and lme function}
+\title{Input/Edit data  for NCA and lme function for replicated study}
 
 \description{
 Input/Edit Data

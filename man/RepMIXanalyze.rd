@@ -2,10 +2,10 @@
 
 \alias{RepMIXanalyze}
 
-\title{lme function}
+\title{Split data to perform lme function for replicated study}
 
 \description{
- Data for lme
+ Split data for lme function
 }
 \references{
  Guidance for Industry. Statistical approaches to establishing Bioequivalence.

@@ -5,7 +5,7 @@
 \title{Demo for sample size estimation}
 
 \description{
-  Demo file for sample size estimation (raw data)function
+  Demo file for sample size estimation (crossover and replicated study)function
 }
 
 \keyword{misc}

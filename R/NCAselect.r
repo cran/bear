@@ -1,5 +1,5 @@
 NCAselect<-function(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis,
-                    Demo=FALSE, BANOVA=FALSE, replicated=FALSE, MIX=FALSE)
+                    Demo=FALSE, BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE)
 {
 cat("\n\n")
     cat("****************************************************************************\n")
@@ -14,20 +14,23 @@ cat("\n\n")
       #split dataframe into sub-dataframe by subject for reference data
       if(replicated){
        R.split<-split(SingleRdata1, list(SingleRdata1$code))
+        subj<-0
+        prd<-0
+        seq<-0
+        for (j in 1:(length(R.split))){
+         subj[j]<-R.split[[j]][["subj"]][1]
+         prd[j]<-R.split[[j]][["prd"]][1]
+         seq[j]<-R.split[[j]][["seq"]][1]
+         }
        }
        else{
        R.split<-split(SingleRdata1, list(SingleRdata1$subj))
-       }
-      
-
-       subj<-0
-       prd<-0
-       seq<-0
-       for (j in 1:(length(R.split))){
+        subj<-0
+        for (j in 1:(length(R.split))){
         subj[j]<-R.split[[j]][["subj"]][1]
-        prd[j]<-R.split[[j]][["prd"]][1]
-        seq[j]<-R.split[[j]][["seq"]][1]
+         }
        }
+       
 
       windows(record = TRUE )
       par(mfrow=c(2,2))
@@ -55,7 +58,7 @@ cat("\n\n")
 
           r_melt<-melt(co_data1)
           Y.split<-split(r_melt,list(r_melt$L1))
-
+      
 if(replicated){          
  xy1<-NULL
  s1<-NULL
@@ -86,7 +89,7 @@ y3<-melt(d3)
 y4<-melt(d4)
 y5<-melt(d5)
 y6<-melt(d6)
-ref_data<-data.frame(subj=y0$value,time=y1$value,conc=log10(y2$value), seq=y3$value,
+ref_data<-data.frame(subj=y0$value,time=y1$value,conc=log10(y2$value),conc_data=y2$value,seq=y3$value,
                      prd=y4$value,drug=y5$value, code=y6$value)
 rdata<-data.frame(subj=y0$value,time=y1$value,conc=y2$value, seq=y3$value,
                      prd=y4$value,drug=y5$value, code=y6$value)
@@ -110,8 +113,9 @@ rdata.split<-split(rdata,list(rdata$code))
    y0<-melt(s1)
    y1<-melt(d1)
    y2<-melt(d2)
-   ref_data<-data.frame(subj=y0$L1,time=y1$value,conc=log10(y2$value), drug=c(1))
-   rdata<-data.frame(subj=y0$L1,time=y1$value,conc=y2$value)
+   
+   ref_data<-data.frame(subj=y0$value,time=y1$value,conc=log10(y2$value), conc_data=y2$value, drug=c(1))   #increase column:lnConc=log10(y2$value), conc=y2$value
+   rdata<-data.frame(subj=y0$value,time=y1$value,conc=y2$value)
    rdata.split<-split(rdata,list(rdata$subj))
    }
       ######Test data
@@ -127,20 +131,23 @@ rdata.split<-split(rdata,list(rdata$code))
         #split dataframe into sub-dataframe by subject for test data
          if(replicated){
           T.split<-split(SingleTdata1, list(SingleTdata1$code))
+          subj1<-0
+          prd1<-0
+          seq1<-0
+          for (j in 1:(length(T.split))){
+           subj1[j]<-T.split[[j]][["subj"]][1]
+           prd1[j]<-T.split[[j]][["prd"]][1]
+           seq1[j]<-T.split[[j]][["seq"]][1]
+          }
          }
          else{
           T.split<-split(SingleTdata1, list(SingleTdata1$subj))
+          subj1<-0
+          for (j in 1:(length(T.split))){
+           subj1[j]<-T.split[[j]][["subj"]][1]
+          }
          }
-        
-
-         subj1<-0
-         prd1<-0
-         seq1<-0
-         for (j in 1:(length(T.split))){
-          subj1[j]<-T.split[[j]][["subj"]][1]
-          prd1[j]<-T.split[[j]][["prd"]][1]
-          seq1[j]<-T.split[[j]][["seq"]][1]
-         }
+         
             #calculate kel for test data
              co_data2<-NULL
 
@@ -199,7 +206,7 @@ yy3<-melt(dd3)
 yy4<-melt(dd4)
 yy5<-melt(dd5)
 yy6<-melt(dd6)
-test_data<-data.frame(subj=yy0$value,time=yy1$value,conc=log10(yy2$value), seq=yy3$value,
+test_data<-data.frame(subj=yy0$value,time=yy1$value,conc=log10(yy2$value),conc_data=yy2$value, seq=yy3$value,
                      prd=yy4$value,drug=yy5$value, code=yy6$value)
 tdata<-data.frame(subj=yy0$value,time=yy1$value,conc=yy2$value, seq=yy3$value,
                      prd=yy4$value,drug=yy5$value, code=yy6$value)
@@ -227,8 +234,8 @@ tdata.split<-split(tdata,list(tdata$code))
                       yy2<-melt(dd2)
 
 #fitting data with linear regression model
-test_data<-data.frame(subj=yy0$L1,time=yy1$value,conc=log10(yy2$value), drug=c(2))
-tdata<-data.frame(subj=yy0$L1,time=yy1$value,conc=yy2$value)
+test_data<-data.frame(subj=yy0$value,time=yy1$value, conc=log10(yy2$value),conc_data=yy2$value,drug=c(2))
+tdata<-data.frame(subj=yy0$value,time=yy1$value,conc=yy2$value)
 tdata.split<-split(tdata,list(tdata$subj))
  }
 if(replicated){
@@ -255,6 +262,29 @@ if(replicated){
     }
 
 else{
+ if(parallel){
+  if (Demo){
+    if(MIX){
+     #Demo=TRUE, BANOVA=TRUE
+     ParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+    } 
+     else{
+     #Demo=TRUE, BANOVA=FALSE
+     ParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+        }
+     }   
+   else {
+     if(MIX){
+     ##Demo=FALSE, BANOVA=TRUE
+     ParaNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+     }
+      else{
+     #Demo=FALSE, BANOVA=FALSE
+       ParaNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+      }
+    }
+   }  
+ else{
  if (Demo){
     if(BANOVA){
      #Demo=TRUE, BANOVA=TRUE
@@ -276,4 +306,5 @@ else{
       }
     }
    } 
+  }
 }

@@ -2,7 +2,7 @@
 
 \alias{RepMIX}
 
-\title{Statistical analysis (lme, 90CI...)}
+\title{Statistical analysis (lme, 90CI...) for replicated study}
 
 \description{
 With a two-treatment, more than two period, two-sequence randomized

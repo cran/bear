@@ -1,4 +1,4 @@
-#description for lme
+#description for lme (replicated study)
 description_RepMIX<-function(){
 cat("****************************************************************************\n")
 cat("          Statistical analysis (lme, 90%CI...) - replicate BE study         \n")

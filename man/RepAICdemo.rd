@@ -2,7 +2,7 @@
 
 \alias{RepAICdemo}
 
-\title{Akaike information criterion (AIC) method for demo function}
+\title{Akaike information criterion (AIC) method for demo function for replicated study}
 
 \description{
 This method selects data points to estimate lambda(z) based on the minimun

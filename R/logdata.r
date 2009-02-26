@@ -13,7 +13,8 @@ ratio<-Theta/100
 cat(" 95\n")
 
 cat("\n") 
-cat("Enter CV (%) (e.g. 20):\n")
+cat("Enter intra-subj (crossover) or inter-subj (paralell) CV (%)\n")
+cat("(or press Enter to use default value: 20 )?\n")
 CV1 <- 20 
 CV<-CV1/100
 cat(" 20\n")
@@ -29,11 +30,7 @@ cat("Enter lower acceptance limit (%)(e.g. 80):\n")
 LL<-80 
 theta1 <- LL/100       # theta1: lower acceptance limit
 cat(" 80\n")
-
-cat("\n")
-cat("Enter Upper acceptance limit (%)(e.g. 125):\n")
 theta2 <- 1/theta1
-cat(" 125\n")
 }
 
 else{
@@ -44,7 +41,8 @@ if (substr(Theta, 1, 1) == "" || Theta<=0)  Theta<-95  else Theta<-as.numeric(Th
 ratio<-Theta/100 
 
 cat("\n") 
-cat("Enter CV (%)(or press Enter to use default value: 20 )\n")
+cat("Enter intra-subj (crossover) or inter-subj (paralell) CV (%)\n")
+cat("(or press Enter to use default value: 20 )?\n")
 CV1 <- readline()
 if (substr(CV1, 1, 1) == "" || CV1<=0)  CV1<-20  else CV1<-as.numeric(CV1) 
 CV<-CV1/100
@@ -56,17 +54,11 @@ if (substr(epower, 1, 1) == "" || epower<=0)  epower<-80  else epower<-as.numeri
 target<-epower/100
 
 cat("\n")
-cat("Enter upper acceptance limit (%)(or press Enter to use default value: 125 )\n")
-Um<-readline()
-if (substr(Um, 1, 1) == ""|| Um<=0)  Um<-125  else Um<-as.numeric(Um)
-theta2 <- Um/100      # theta2: upper acceptance limit
-
-
-cat("\n")
 cat("Enter lower acceptance limit (%)(or press Enter to use default value: 80 )\n")
 Lm<-readline()
 if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
 theta1 <- Lm/100      # theta1: lower acceptance limit
+theta2 <- 1/theta1
 }
 cat("\n")
 #######################################################################
@@ -105,27 +97,57 @@ limit       <- 1000000       # upper sample size limit for search
 # ----------------------------------------------
 for (i in CV)            # CV loop
   {
-  if(i==CV[1]){
-    title=paste(
+   if(i==CV[1]){
+   title=paste(
       paste("--------------------------------------------------------------------------\n",
             "                           <<Sample Size Estimation>>                     \n",
             "                                                                          \n",   
-            " Upper acceptance limit =",theta2*100,"(%)\n", 
-            " Lower acceptance limit =",theta1*100,"(%)\n",
-            " Expected ratio T/R =", 
-               format(round(ratio*100,2),nsmall=2,width=3),"(%)\n",
-            " Target power =",
-               format(round(target*100,2),nsmall=2,width=3),"(%)\n",
-            " Intra-subject CV =",
-               format(i*100,nsmall=1,width=3),"(%)\n\n "),   
-      #paste(paste(format(round(target*100,2),nsmall=2,width=17),
-      #  "%",sep="",collapse=""),"\n"),
-      paste("study","    2x2x2","       2x2x3","      2x2x4","\n"),
-      paste(" design"," crossover","  replicated","  replicated","\n"), 
-      paste("-------","-----------","------------","------------","\n") )
+            "  Upper acceptance limit =",theta2*100,"%\n", 
+            "  Lower acceptance limit =",theta1*100,"%\n",
+            "      Expected ratio T/R =", 
+               format(round(ratio*100,2),nsmall=2,width=3),"%\n",
+            "            Target power =",
+               format(round(target*100,2),nsmall=2,width=3),"%\n",
+            " Inter- or Intra-subj CV =",format(i*100,nsmall=1,width=3),"% \n\n "),   
+      paste("study","    2x2x1","      2x2x2","       2x2x3","       2x2x4    ","\n"),
+      paste(" design","  parallel","  crossover","   replicated","  replicated","\n"), 
+      paste("-------","-----------","------------","------------","------------","\n"))  
     cat(title)
-    }
+   } 
+  
    cat(paste("    N")) #1 
+
+ 
+  #for parallel study 
+  sigmaB    <- sqrt(log(1+i^2))
+  s         <- sqrt(2)*sigmaB
+  for (j in target)      # power loop
+    {
+    n       <- 6         # start value of sample size search
+    repeat{
+      df    <- (2*n)-2
+      t1    <- qt(1-a,df)
+      t2    <- -t1
+      nc1   <- (sqrt(n))*((log(ratio)-log(theta1))/s)
+      nc2   <- (sqrt(n))*((log(ratio)-log(theta2))/s)
+      prob1 <- pt(t1,df,nc1)
+      prob2 <- pt(t2,df,nc2)
+      power <- prob2-prob1
+      ppct  <- power*100
+      if(power >= j | n > limit) break
+      n     <- n+1
+      }
+    if(n <= limit){
+      cat(paste("     ",format(2*n,width=5)))#2
+        pow<-format(round(ppct,5),nsmall=3,width=8)
+        #sep=""))
+      } else
+      cat(paste(" >",format(limit,width=4)))
+        pow<-format(round(ppct,5),nsmall=3,width=8)
+     # cat("\n")
+     }
+
+#for crossover and replicated study 
   #cat(paste(format(i*100,nsmall=1,width=4),"% ",sep=""))
   sigmaW    <- sqrt(log(1+i^2))
   s         <- sqrt(2)*sigmaW
@@ -146,8 +168,8 @@ for (i in CV)            # CV loop
       n     <- n+2       # increment for even sample size
       }
     if(n <= limit){
-      cat(paste("    ",format(n,width=5)))#2 
-        pow<-format(round(ppct,5),nsmall=3,width=8) 
+      cat(paste("      ",format(n,width=5)))#2 
+        pow1<-format(round(ppct,5),nsmall=3,width=8) 
         #sep=""))
         n1<-(ceiling(n*3/4))
         y1=n1[!(n1 %% 2 == 0)]
@@ -165,16 +187,34 @@ for (i in CV)            # CV loop
           z2<-n2+1    #4 
             }   
         cat(paste("          ",z2))
-        cat("\n")
+       
       } else
       cat(paste(" >",format(limit,width=4)))
-        pow<-format(round(ppct,5),nsmall=3,width=8)
-        
-      cat("\n")
-      cat("   Estimated power=",pow ,"(%)\n") 
-      cat("--------------------------------------------------------------------------\n")   
-     }
+        pow1<-format(round(ppct,5),nsmall=3,width=8) 
+   
+    }
    cat("\n")
+   cat("\n")
+   cat(" Estimated power =",pow,"% (for parallel study)\n")  
+   cat(" Estimated power =",pow1,"% (for crossover/replicate study)\n") 
+   cat(" where 2x2x2 means 2-treatment, 2-sequence, and 2-period crossover study.\n")
+   cat("-------------------------------------------------------------------------\n")  
+cat("\n")
+cat("**Ref.:\n")
+cat(" 1. Hauschke D, Steinijans VW, Diletti E and Burke M.  Sample size         \n")
+cat("    determination for bioequivalence assessment using a multiplicative model.\n")  
+cat("    Journal of Pharmacokinetics and Biopharmaceutics. 20, 557-561 (1992).  \n")
+cat(" 2. Julious SA. Tutorial in biostatistics: Sample sizes for clinical trials \n")
+cat("    with normal data.  Statistics in Medicine. 23, 1921-1986 (2004).       \n")
+cat(" 3. Hauschke D, Steinijans VW and Pigeot I.  Bioequivalence studies in drug\n") 
+cat("    development methods and applications. John Wiley & Sons, New York      \n")
+cat("    (2007).                                                                \n")
+cat("\n")
+cat(" Note: The algorithms we use here have been validated with Dr. David Dubins' \n")
+cat(" FARTSSIE, which is a very excellant Excel VBA program for many sample size   \n")
+cat(" estimation functions.  Website: http://individual.utoronto.ca/ddubins.    \n")
+cat("\n") 
+ cat("--------------------------------------------------------------------------\n")    
    }
   sizemenu()
 }

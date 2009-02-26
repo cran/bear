@@ -2,7 +2,7 @@
 
 \alias{description_RepMIX}
 
-\title{Description for lme}
+\title{Description for lme for replicated study}
 
 \description{
 With a two-treatment, more than two period, two-sequence randomized

@@ -8,7 +8,8 @@ NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex
                     aic=FALSE,
                     TTTARS=FALSE,
                     TTTAIC=FALSE,
-                    replicated=FALSE)
+                    replicated=FALSE,
+                    parallel=FALSE)
 {
 filepath<-getwd()
 cat("\n")
@@ -156,7 +157,7 @@ cat("---------------------------------------------------\n")
                   CmaxRef[j]<-Cmax_ref
                   AUCINFRef[j]<-aucINF
                   AUCTRef[j]<-auc_ref[length(R.split[[j]][["conc"]])]
-                  TmaxRef[j]<-tmax_ref[,5] 
+                  TmaxRef[j]<-tmax_ref$time 
                   MRTINFRef[j]<-aumcINF/aucINF
                   T12Ref[j]<-log(2)/ke
                   VdFRef[j]<-Dose/(aucINF*ke)
@@ -268,7 +269,7 @@ cat("---------------------------------------------------\n")
                     }        
               cat("        lambda_z =",ke ,"\n")
               cat("            Cmax =",Cmax_ref ,"\n")
-              cat("            Tmax =",tmax_ref[,5] ,"\n")
+              cat("            Tmax =",TmaxRef[j] ,"\n")
               cat("            Cl/F =",Dose/aucINF,"\n")
               cat("            Vd/F =",Dose/(aucINF*ke),"\n")
               cat("         T1/2(z) =",log(2)/ke,"\n")
@@ -361,7 +362,7 @@ ClFTest<-0
                   CmaxTest[j]<-Cmax_test
                   AUCINFTest[j]<-aucINF
                   AUCTTest[j]<-auc_test[length(T.split[[j]][["conc"]])]
-                  TmaxTest[j]<-tmax_test[,5] 
+                  TmaxTest[j]<-tmax_test$time 
                   MRTINFTest[j]<-aumcINF/aucINF
                   T12Test[j]<-log(2)/ke1
                   VdFTest[j]<-Dose/(aucINF*ke1)
@@ -477,7 +478,7 @@ ClFTest<-0
                     }        
               cat("        lambda_z =",ke1 ,"\n")
               cat("            Cmax =",Cmax_test ,"\n")
-              cat("            Tmax =",tmax_test[,5] ,"\n")
+              cat("            Tmax =",TmaxTest[j] ,"\n")
               cat("            Cl/F =",Dose/aucINF,"\n")
               cat("            Vd/F =", Dose/(aucINF*ke1),"\n")
               cat("         T1/2(z) =",log(2)/ke1,"\n")
@@ -914,6 +915,25 @@ lowerAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][8,1])*exp(-qt(0.95,summary(
 }  
 
 else{
+ if(parallel){
+L1<-length(sumindexR$subj)
+L2<-length(sumindexT$subj)  
+
+modCmax<-lme(Cmax ~ drug , random=~1|subj, data=TotalData, method="REML" )
+modAUC0t<-lme(AUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" )
+modAUC0INF<-lme(AUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML" )
+modlnCmax<-lme(lnCmax ~ drug , random=~1|subj, data=TotalData, method="REML" )
+modlnAUC0t<-lme(lnAUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" )
+modlnAUC0INF<-lme(lnAUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML" ) 
+ 
+upperCmax<-100*exp(summary(modlnCmax)[20][[1]][2,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][2,3])*summary(modlnCmax)[20][[1]][2,2])
+lowerCmax<-100*exp(summary(modlnCmax)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnCmax)[20][[1]][2,3])*summary(modlnCmax)[20][[1]][2,2])
+upperAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][2,1])*exp(qt(0.95,summary(modlnAUC0t)[20][[1]][2,3])*summary(modlnAUC0t)[20][[1]][2,2])
+lowerAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnAUC0t)[20][[1]][2,3])*summary(modlnAUC0t)[20][[1]][2,2])
+upperAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][2,1])*exp(qt(0.95,summary(modlnAUC0INF)[20][[1]][2,3])*summary(modlnAUC0INF)[20][[1]][2,2])
+lowerAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnAUC0INF)[20][[1]][2,3])*summary(modlnAUC0INF)[20][[1]][2,2]) 
+ }
+ else{
 #L1(Reference-->Test),L2(Test-->Reference sequence)
 SeqLeg<-split(RefData, list(RefData$seq))
 L1<-length(SeqLeg[[1]]$seq)
@@ -953,6 +973,7 @@ UpperAUC0t<-100*exp((test_AUC0t-ref_AUC0t)+(T*SE_AUC0t))
 LowerAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)-(T*SE_AUC0INF))
 UpperAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)+(T*SE_AUC0INF))
  }
+} 
 #Table 1:Statistical Summaries for Bioequivalence Study 
 zz <- file("Statistical_summaries.txt", open="wt")
 sink(zz)
@@ -960,7 +981,7 @@ description_version()
 cat("\n")
 cat("\n")
 cat("\n")
-cat("         Statistical Summaries for Bioequivalence Study (N=",L1+L2,")\n")
+cat("Statistical Summaries for Pivotal Parameters of Bioequivalence Study (N=",L1+L2,")\n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
  outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
@@ -977,20 +998,20 @@ cat("\n")
 show(outputS1)
 cat("\n")
 cat("\n")
-cat("                           Statistical Analysis                           \n")
-cat("--------------------------------------------------------------------------\n")
+cat("Statistical Summaries for Pivotal Parameters of Bioequivalence Study (N=",L1+L2,") (cont'd)\n")
+cat("-------------------------------------------------------------------------------------\n")
 cat("\n")
 if(replicated){
 RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
 RlowerAUC0t<-formatC(lowerAUC0t,format="f",digits=3)
 RlowerAUC0INF<-formatC(lowerAUC0INF,format="f",digits=3)
 
-if(prdcount==3){
+ if(prdcount==3){
 SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][5,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][5,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][5,1]),format="f",digits=3)
  }
- if (prdcount==4){
+  if (prdcount==4){
 SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][6,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][6,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][6,1]),format="f",digits=3)
@@ -1000,7 +1021,7 @@ SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][7,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][7,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][7,1]),format="f",digits=3)
   }
- if (prdcount==6){
+  if (prdcount==6){
 SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][8,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][8,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][8,1]),format="f",digits=3)
@@ -1024,6 +1045,33 @@ cat("CI90: 90% confidence interval \n")
 cat("--------------------------------------------------------------------------\n")
 }
 else{
+  if(parallel){
+  RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
+  RlowerAUC0t<-formatC(lowerAUC0t,format="f",digits=3)
+  RlowerAUC0INF<-formatC(lowerAUC0INF,format="f",digits=3)
+  
+  RupperCmax<-formatC(upperCmax,format="f",digits=3)
+  RupperAUC0t<-formatC(upperAUC0t,format="f",digits=3)
+  RupperAUC0INF<-formatC(upperAUC0INF,format="f",digits=3)
+  
+  SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][2,1]),format="f",digits=3)
+  SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][2,1]),format="f",digits=3)
+  SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][2,1]),format="f",digits=3)
+  
+  outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
+                     CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
+                     Point_estimated=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
+                     CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
+                      
+
+
+show(outputS2)
+cat("\n")
+cat("-------------------------------------------------------------------------\n")
+cat("CI90: 90% confidence interval \n")
+cat("--------------------------------------------------------------------------\n")
+  }
+  else{
 outputS2<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
                       F_value=c(formatC(anova(Cmax)[4,4],format="f",digits=3), formatC(anova(AUC0t)[4,4],format="f",digits=3), formatC(anova(AUC0INF)[4,4],format="f",digits=3),
                                 formatC(anova(lnCmax)[4,4],format="f",digits=3),formatC(anova(lnAUC0t)[4,4],format="f",digits=3),formatC(anova(lnAUC0INF)[4,4],format="f",digits=3)), 
@@ -1038,21 +1086,25 @@ outputS2<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0
 show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
-cat("F value and P value were obtained from ANOVA.\n")
+cat("Both F values and P values were obtained from ANOVA,respectively.\n")
 cat("CI90: 90% confidence interval \n")
+cat("Please note: no posterior power calculated. Ref.: Hoenig JM and Heisey DM. The abuse\n")
+cat("of power: the pervasive fallacy of power calculations for data analysis. The American\n")
+cat("Statistician 55/1, 19-24 (2001). Also the discussions at Bebac Forum --> \n")
+cat("http://forum.bebac.at for more info.\n")
 cat("--------------------------------------------------------------------------\n")
-#cat("Power: required to detect at least 20% of differences\n")
-
+#cat("Power: required to detect at least (1-Power) of differences (%).\n")
+  }
 }
 cat("\n")
 cat("\n")
 cat("\n")
 cat("\n")
 #Table 2:Summaries for Pharmacokinetic Parameters 
-cat("Summaries for Pharmacokinetic Analysis (NCA)\n")
+cat("Summaries for Misc. Pharmacokinetic Parameters (N=",L1+L2,")\n")
 cat("\n")
 cat("\n")
-cat("                      Test           Reference        \n")
+cat("                      Test                Reference        \n")
 cat("------------------------------------------------------\n")
 cat("\n")
 outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUCratio" ),
@@ -1074,10 +1126,11 @@ outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","M
                                  formatC(((sd(outputVdF$Ref)/mean(outputVdF$Ref))*100),format="f",digits=3),formatC(((sd(outputMRT0INF$Ref)/mean(outputMRT0INF$Ref))*100),format="f",digits=3),
                                  formatC(((sd(outputAUC0t_AUC0INF$Ref)/mean(outputAUC0t_AUC0INF$Ref))*100),format="f",digits=3)))          
                         
+colnames(outputTest)<- c("Parameters"," Mean"," SD"," CV","    Mean"," SD"," CV")
 show(outputTest)
 cat("\n")
 cat("-----------------------------------------------------\n")
-cat("AUC ratio: (AUC0-t/AUC0-inf)*100 \n")
+cat("AUCratio: (AUC0-t/AUC0-inf)*100 \n")
 cat("-----------------------------------------------------\n")
 sink()
 }

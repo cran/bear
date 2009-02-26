@@ -3,7 +3,7 @@ sizemenu<-function()
 {
 cat("\n")
   file.menu <- c("Sample size estimation",
-                 "Run demo:- sample size estimation",
+                 "Run demo",
                  "Back to top menu",
                  "Quit")
    cat("\n")
@@ -20,14 +20,14 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-       go() 
+       go()  
          }
-   else {
+    else {
     if (pick == 4){
         cat("\n")
         cat("\nThank you for using bear!  Bye now. \n\n")
          }
        }
      }
-  }
-}
+   }
+ }  

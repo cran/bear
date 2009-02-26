@@ -2,7 +2,7 @@
 
 \alias{RepMIXdata}
 
-\title{Input/Edit data  for lme function}
+\title{Input/Edit data  for lme function for replicated study}
 
 \description{
   ->subject no.(subj)

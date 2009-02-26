@@ -2,7 +2,7 @@
 
 \alias{RepNCA.MIX}
 
-\title{NCA and lme}
+\title{NCA and lme for replicated study}
 
 \description{
 Noncompartmental analysis (NCA) approach is used to compute AUCs and

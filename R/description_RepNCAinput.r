@@ -1,3 +1,3 @@
 description_RepNCAinput<-function(){
-description_NCAinput(replicated=TRUE)
+description_NCAinput(replicated=TRUE, parallel=FALSE)
 }

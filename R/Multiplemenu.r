@@ -4,6 +4,7 @@ Multiplemenu<-function()
 cat("\n")
   file.menu <- c("NCA for 2x2x2 crossover study",
                  "NCA for replicated study",
+                 "NCA for parallel study", 
                  "Back to the previous step",
                  "Quit")
  cat("\n")
@@ -20,12 +21,18 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-       go()
-       }
+       Paramenu()
+       }   
     else {
     if (pick == 4){
         cat("\n")
+       go()
+       }
+    else {
+    if (pick == 5){
+        cat("\n")
       cat("\nThank you for using bear!  Bye now. \n")}
+         } 
        }
       }
     }

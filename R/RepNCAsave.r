@@ -1,4 +1,4 @@
 
 RepNCAsave<-function(TotalData){
-NCAsave(TotalData, replicated=TRUE)
+NCAsave(TotalData, replicated=TRUE, parallel=FALSE)
 }

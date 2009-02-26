@@ -9,6 +9,7 @@ with(entertitle(), {
 description_drug()
 
 predata<-split(TotalSingledata,  list(TotalSingledata$prd,TotalSingledata$subj))
+
 code<-NULL
 presubj<-NULL
 preseq<-NULL
@@ -19,9 +20,10 @@ preconc<-NULL
 precode<-NULL
 for (j in 1:length(predata)){
    j=j
-   code[j]<-j
+   code[[j]]<-j
  LL<-cbind(subj=predata[[j]]$subj,seq=predata[[j]]$seq,prd=predata[[j]]$prd,drug=predata[[j]]$drug,
            time=predata[[j]]$time,conc=predata[[j]]$conc,code=code[j])
+
  presubj[[j]]<-c(LL[,1])
  preseq[[j]]<-c(LL[,2])
  preprd[[j]]<-c(LL[,3])
@@ -29,11 +31,12 @@ for (j in 1:length(predata)){
  pretime[[j]]<-c(LL[,5])
  preconc[[j]]<-c(LL[,6])
  precode[[j]]<-c(LL[,7])
+ 
  }
 setdata<-data.frame(subj=melt(presubj)$value, seq=melt(preseq)$value,prd=melt(preprd)$value,
                     drug=melt(predrug)$value, time=melt(pretime)$value, conc=melt(preconc)$value,
                     code=melt(precode)$value)
-                    
+show(setdata)                    
 Singledata<-split(setdata, list(setdata$drug))
 
 Refdata<-data.frame(subj=Singledata[[1]]$subj, seq= Singledata[[1]]$seq, prd=Singledata[[1]]$prd,
@@ -88,7 +91,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
      load(comdataname)
      comdata<-edit(comdata)
      comdata<- na.omit(comdata)
-     colnames(comdata)<-list("subj", "time", "conc","seq", "prd", "drug","code")
+     colnames(comdata)<-list("subj", "time", "conc","conc_data","seq", "prd", "drug","code")
      cat("\n\n")
      description_drug()
      show(comdata)
@@ -96,9 +99,9 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
      cat("\n\n")
 
       Tcomdata<-split(comdata, list(comdata$drug))
-      ref_data<-data.frame(subj=Tcomdata[[1]]$subj,time=Tcomdata[[1]]$time,conc=Tcomdata[[1]]$conc,
+      ref_data<-data.frame(subj=Tcomdata[[1]]$subj,time=Tcomdata[[1]]$time,conc=Tcomdata[[1]]$conc, conc_data=Tcomdata[[1]]$conc_data,
                            seq=Tcomdata[[1]]$seq,prd=Tcomdata[[1]]$prd,drug=Tcomdata[[1]]$drug,code=Tcomdata[[1]]$code)
-      test_data<-data.frame(subj=Tcomdata[[2]]$subj,time=Tcomdata[[2]]$time,conc=Tcomdata[[2]]$conc,
+      test_data<-data.frame(subj=Tcomdata[[2]]$subj,time=Tcomdata[[2]]$time,conc=Tcomdata[[2]]$conc, conc_data=Tcomdata[[2]]$conc_data,
                             seq=Tcomdata[[2]]$seq,prd=Tcomdata[[2]]$prd,drug=Tcomdata[[2]]$drug,code=Tcomdata[[2]]$code)
 
        rdata.split<-split(ref_data,list(ref_data$code))

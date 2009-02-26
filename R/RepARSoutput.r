@@ -1,5 +1,5 @@
-#output for ARS
+#output for ARS (replicated)
 RepARSoutput<-function(sumindexR, sumindexT,R.split,T.split,keindex_ref,keindex_test,Dose,TotalData){
 NCAoutput(sumindexR, sumindexT,R.split,T.split,keindex_ref,keindex_test,Dose,TotalData,
-          NCA=FALSE,ARS=TRUE,TTT=FALSE,aic=FALSE,TTTARS=FALSE,TTTAIC=FALSE, replicated=TRUE)
+          NCA=FALSE,ARS=TRUE,TTT=FALSE,aic=FALSE,TTTARS=FALSE,TTTAIC=FALSE, replicated=TRUE, parallel=FALSE)
 }

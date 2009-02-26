@@ -1,9 +1,17 @@
-description_NCAinput<-function(replicated=FALSE){
+description_NCAinput<-function(replicated=FALSE, parallel=FALSE){
 cat("****************************************************************************\n")
 cat("Input/Edit Data                                                             \n")
 cat("----------------------------------------------------------------------------\n")
 cat("   -> subject no.(subj)                                                     \n")
-cat("   -> sequence (seq)                                                        \n")
+if(parallel){
+cat("   -> treatment (drug)                                                      \n")
+cat("          1: Ref.                                                           \n")
+cat("          2: Test                                                           \n")
+cat("   -> sampling time                                                         \n")
+cat("   -> drug plasma/serum/blood concentration (conc)                          \n")
+}
+else{
+cat("   -> sequence (seq)                                                        \n") 
   if (replicated){
 cat("           ex. 4 periods                                                    \n")
 cat("            1:Ref.-> Test -> Ref.-> Test                                     \n")
@@ -26,7 +34,7 @@ cat("          4: 4th-treatment period                                          
   else{
 cat("          1: 1st-treatment period                                           \n")
 cat("          2: 2nd-treatment period                                           \n")
-}
+ }
   if (replicated){
 cat("   -> treatment (drug)                                                      \n")
 cat("          1: Ref.                                                           \n")
@@ -38,6 +46,7 @@ cat("   -> drug plasma/serum/blood concentration (conc)                         
 cat("   -> sampling time                                                         \n")
 cat("   -> drug plasma/serum/blood concentration (conc)                          \n") 
  }
+}
 cat("****************************************************************************\n")
 cat("\n")
 }

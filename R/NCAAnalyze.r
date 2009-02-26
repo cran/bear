@@ -1,6 +1,7 @@
 #Input assay data Menu for Data Analysis for Single dose
 options(warn=-1)
-NCAanalyze<-function(TotalSingledata, Dose, xaxis,yaxis, separateWindows=TRUE)
+NCAanalyze<-function(TotalSingledata, Dose, xaxis,yaxis, separateWindows=TRUE,
+                     parallel=FALSE, MIX=FALSE)
 {
 description_NCA()
 
@@ -8,10 +9,17 @@ with(entertitle(), {
 
 description_drug()
 
+if(parallel){
+Singledata<-split(TotalSingledata, list(TotalSingledata$drug))
+Ref<-Singledata[[1]]
+Refdata<-data.frame(subj=Ref$subj,drug=Ref$drug,time=Ref$time, conc=Ref$conc)
+ }
+else{
 Singledata<-split(TotalSingledata, list(TotalSingledata$seq, TotalSingledata$prd))
 Ref<-rbind(Singledata[[1]],Singledata[[4]])
 Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), 
                     time=Ref$time, conc=Ref$conc)
+}
 SingleRdata<-Refdata[ do.call(order, Refdata) ,]
 show(SingleRdata)
 SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
@@ -19,9 +27,15 @@ SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
 SingleRdata1 <- na.omit(SingleRdata1)
 ##SingleRdata1-->for select 3 points
 cat("\n\n")
+if(parallel){
+Test<-rbind(Singledata[[2]])
+Testdata<-data.frame(subj=Test$subj, drug=Test$drug, time=Test$time, conc=Test$conc)
+ }
+else{
 Test<-rbind(Singledata[[2]],Singledata[[3]])
 Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), 
                      time=Test$time, conc=Test$conc)
+}
 SingleTdata<-Testdata[ do.call(order, Testdata) ,]
 show(SingleTdata)
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
@@ -44,9 +58,19 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    pick <- menu(file.menu, title = "<< Lambda_z options >>")
 
    if (pick ==1){  
+     if(parallel){
+      if(MIX){
+      ParaNCAselect.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
+      bye()
+      }
+      else{
+       ParaNCAselect(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis) 
+       }
+     }
+     else{
      NCAselect(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis) 
+     }
    } 
-
  else {
   if (pick == 2){
      description_load()
@@ -55,7 +79,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
      load(comdataname)
      comdata<-edit(comdata)
      comdata<- na.omit(comdata)
-     colnames(comdata)<-list("subj","time","conc","drug")
+     colnames(comdata)<-list("subj","time","conc","conc_data","drug")
      cat("\n\n")
      description_drug()
      show(comdata)
@@ -63,46 +87,107 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
      cat("\n\n")
        
       Tcomdata<-split(comdata, list(comdata$drug))     
-      ref_data<-data.frame(subj=Tcomdata[[1]]$subj,time=Tcomdata[[1]]$time,conc=Tcomdata[[1]]$conc) 
-      test_data<-data.frame(subj=Tcomdata[[2]]$subj,time=Tcomdata[[2]]$time,conc=Tcomdata[[2]]$conc)
+      ref_data<-data.frame(subj=Tcomdata[[1]]$subj,time=Tcomdata[[1]]$time,conc=Tcomdata[[1]]$conc,conc_data=Tcomdata[[1]]$conc_data) 
+      test_data<-data.frame(subj=Tcomdata[[2]]$subj,time=Tcomdata[[2]]$time,conc=Tcomdata[[2]]$conc,conc_data=Tcomdata[[2]]$conc_data)
    
        rdata.split<-split(ref_data,list(ref_data$subj))
        tdata.split<-split(test_data,list(test_data$subj))
    
-        NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
+     if(parallel){
+      if(MIX){
+      ParaNCA.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
+      bye()
+      }
+      else{
+      ParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
+       }
+     }
+     else{
+      NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
+    }
    } 
  else {
   if (pick == 3){ 
+    if(parallel){
+     if(MIX){
+     ParaARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)  
+       bye()
+      }
+      else{
+     ParaARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
+       }
+     }
+     else{
      ARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
        }   
-  
+    }
   else {
   if (pick == 4){ 
+     if(parallel){
+      if(MIX){
+      ParaAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
+       bye()
+      }
+      else{
+       ParaAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
+       }
+     }
+     else{
      aic(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
        }           
-  
+     }
   else {
   if (pick == 5){ 
+     if(parallel){
+       if(MIX){
+     ParaTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)  
+       bye()
+      }
+      else{
+      ParaTTT(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
+       }
+     }
+     else{
      TTT(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)    
       }
-      
+     } 
   else {
   if (pick == 6){ 
+     if(parallel){
+       if(MIX){
+       ParaTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
+       bye()
+      }
+      else{
+       ParaTTTARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
+        }
+     }
+     else{
      TTTARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)    
      }
-      
+    }  
   else {
   if (pick == 7){ 
+     if(parallel){
+       if(MIX){
+      ParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)  
+       bye()
+      }
+      else{
+        ParaTTTAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
+       }
+     }
+     else{
      TTTAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)    
-         }  
-   
+          }  
+         }
         }
        }
       } 
      }
     }
    } 
- })
+  } )
 } 
       
  

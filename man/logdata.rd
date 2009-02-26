@@ -2,7 +2,7 @@
 
 \alias{logdata}
 
-\title{Sample size estimation for log transformation data}
+\title{Sample size estimation for log transformation data for crossover and replicated study}
 
 \description{
   This function will help you to choose appropriate sample size.

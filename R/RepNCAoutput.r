@@ -8,5 +8,6 @@ NCAoutput(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex_test, Dos
                     aic=FALSE,
                     TTTARS=FALSE,
                     TTTAIC=FALSE,
-                    replicated=TRUE)
+                    replicated=TRUE,
+                    parallel=FALSE)
   }

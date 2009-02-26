@@ -1,5 +1,5 @@
 # List of Noncompartment Analysis (NCA) for 2x2 crossover 
-NCAmenu<-function()
+NCAmenu<-function(replicated=FALSE, parallel=FALSE)
 {
 cat("\n")
   file.menu <- c("Run NCA",
@@ -7,15 +7,45 @@ cat("\n")
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << NCA for 2x2x2 Crossover Study>> ")
+if(parallel){
+       pick <- menu(file.menu, title = " << NCA for Parallel Study>> ")
+   }
+else{
+   if(replicated ){
+       pick <- menu(file.menu, title = " << NCA for Replicated Crossover Study>> ")
+    } 
+    else{ 
+       pick <- menu(file.menu, title = " << NCA for 2x2x2 Crossover Study>> ")
+    }
+} 
     if (pick == 1){
       cat("\n")
-        NCAdata()
-        }
+       if(parallel){
+       ParaNCAdata()
+       }
+       else{
+        if(replicated ){
+          RepNCAdata()
+          } 
+         else{ 
+          NCAdata()
+          }
+         } 
+       }
     else {
     if (pick == 2){
         cat("\n")
-       demomenu() 
+       if(parallel){
+       Parademomenu()
+       }
+       else{
+        if(replicated ){
+          Repdemomenu()
+          } 
+         else{ 
+         demomenu() 
+          }
+         } 
        }
     else {
     if (pick == 3){

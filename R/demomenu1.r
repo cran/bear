@@ -1,5 +1,5 @@
 ##demo for NCA
-demomenu1<-function(replicated=FALSE)
+demomenu1<-function(replicated=FALSE, parallel=FALSE)
 {
 cat("\n")
   file.menu <- c("NCA (the exact 3 data points) --> Statistical analysis",
@@ -16,7 +16,7 @@ cat("\n")
     data(Replicateddata)
 
     with(entertitle.demo(), {
-     description_drug()  
+     description_RepNCAinput()  
      predata<-split(Replicateddata,  list(Replicateddata$prd,Replicateddata$subj))
      code<-NULL
      presubj<-NULL
@@ -53,7 +53,7 @@ Refdata<-data.frame(subj=Singledata[[1]]$subj, seq= Singledata[[1]]$seq, prd=Sin
                     drug=Singledata[[1]]$drug, time=Singledata[[1]]$time, conc=Singledata[[1]]$conc,
                     code=Singledata[[1]]$code)
 SingleRdata<-Refdata[ do.call(order, Refdata) ,]
-show(SingleRdata)
+
 SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
 SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
 SingleRdata1 <- na.omit(SingleRdata1)
@@ -63,7 +63,7 @@ Testdata<-data.frame(subj=Singledata[[2]]$subj, seq=Singledata[[2]]$seq, prd=Sin
                      drug=Singledata[[2]]$drug, time=Singledata[[2]]$time, conc=Singledata[[2]]$conc,
                      code=Singledata[[2]]$code)
 SingleTdata<-Testdata[ do.call(order, Testdata) ,]
-show(SingleTdata)
+
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
 SingleTdata1 <- na.omit(SingleTdata1)
@@ -71,42 +71,54 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
       
    if (pick == 1){
       cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
         RepNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
         RepNCA.MIXmenu()
         }
     else {
     if (pick == 2){
         cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
         RepARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
        }
     else {
     if (pick == 3){
         cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
         RepAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       RepNCA.MIXmenu()
+        RepNCA.MIXmenu()
        }
     else {
     if (pick == 4){
         cat("\n")
-       RepTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       RepNCA.MIXmenu()
+        show(SingleRdata)
+        show(SingleTdata)
+        RepTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        RepNCA.MIXmenu()
        }
     else {
     if (pick == 5){
         cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
         RepTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-         RepNCA.MIXmenu()
+        RepNCA.MIXmenu()
          }
    else {
     if (pick == 6){
         cat("\n")
-       RepTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        show(SingleRdata)
+        show(SingleTdata)
+        RepTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
         }
    else {
     if (pick == 7){
-         RepNCA.MIXmenu()
+        RepNCA.MIXmenu()
          }       
    else {
     if (pick == 8){
@@ -123,6 +135,96 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
   })        
  }  
  else{
+    if(parallel){
+   data(Paralleldata)
+
+     with(entertitle.demo(), {
+     description_ParaNCAinput()  
+      Singledata<-split(Paralleldata, list(Paralleldata$drug))
+      Ref<-Singledata[[1]]
+      Refdata<-data.frame(subj=Ref$subj,drug=Ref$drug,time=Ref$time, conc=Ref$conc)
+      SingleRdata<-Refdata[ do.call(order, Refdata) ,]
+      
+      SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
+      SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
+      SingleRdata1 <- na.omit(SingleRdata1)
+        cat("\n\n")
+      Test<-rbind(Singledata[[2]])
+      Testdata<-data.frame(subj=Test$subj, drug=Test$drug, time=Test$time, conc=Test$conc)
+      SingleTdata<-Testdata[ do.call(order, Testdata) ,]
+      
+      SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
+      SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
+      SingleTdata1 <- na.omit(SingleTdata1)
+      Totalplot<- rbind(SingleRdata,SingleTdata)
+      
+    if (pick == 1){
+      cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+        ParaNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
+        ParaNCA.MIXmenu()
+        }
+    else {
+    if (pick == 2){
+      cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+       ParaARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
+       }
+    else {
+    if (pick == 3){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+       ParaAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
+       }
+    else {
+    if (pick == 4){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata) 
+       ParaTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
+       }
+    else {
+    if (pick == 5){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+       ParaTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
+       }
+   else {
+    if (pick == 6){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+       ParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
+       }
+   else {
+    if (pick == 7){
+        cat("\n")
+        ParaNCA.MIXmenu()
+       }       
+   else {
+    if (pick == 8){
+       cat("\n")
+       cat("\nThank you for using bear!  Bye now. \n")
+              }      
+             }
+           }
+        }
+      }
+     }
+    }
+   }
+  })    
+ }
+    else{
     description_NCAinput()
     data(TotalSingledata)
     cat("\n\n")
@@ -135,7 +237,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
       Ref<-rbind(Singledata[[1]],Singledata[[4]])
       Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), time=Ref$time, conc=Ref$conc)
       SingleRdata<-Refdata[ do.call(order, Refdata) ,]
-      show(SingleRdata)
+      
       SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
       SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
       SingleRdata1 <- na.omit(SingleRdata1)
@@ -143,14 +245,15 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
       Test<-rbind(Singledata[[2]],Singledata[[3]])
       Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), time=Test$time, conc=Test$conc)
       SingleTdata<-Testdata[ do.call(order, Testdata) ,]
-      show(SingleTdata)
+      
       SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
       SingleTdata1 <- na.omit(SingleTdata1)
       Totalplot<- rbind(SingleRdata,SingleTdata)
     if (pick == 1){
       cat("\n")
-        
+         show(SingleRdata)
+        show(SingleTdata)
         NCAselectdemo.BANOVA(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
         NCA.BANOVAmenu()
         }
@@ -158,7 +261,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
     else {
     if (pick == 2){
         cat("\n")
-        
+          show(SingleRdata)
+        show(SingleTdata)
         ARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         NCA.BANOVAmenu()
        }
@@ -166,28 +270,32 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
     else {
     if (pick == 3){
         cat("\n")
-       
+        show(SingleRdata)
+        show(SingleTdata)
        AIC_BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
        NCA.BANOVAmenu()
        }
     else {
     if (pick == 4){
         cat("\n")
-       
+        show(SingleRdata)
+        show(SingleTdata)
        TTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
        NCA.BANOVAmenu()
        }
     else {
     if (pick == 5){
         cat("\n")
-       
+        show(SingleRdata)
+        show(SingleTdata)
        TTTARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
        NCA.BANOVAmenu()
          }
    else {
     if (pick == 6){
         cat("\n")
-       
+        show(SingleRdata)
+        show(SingleTdata)
        TTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
        NCA.BANOVAmenu()
         }
@@ -204,10 +312,11 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
              }
            }
         }
+       }
       }
      }
     }
-   }
-  })
+   })
+  }
  }
 } 

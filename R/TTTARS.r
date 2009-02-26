@@ -1,7 +1,7 @@
 ###Aceto revised NCA codes for lambda_z (WinNolin)
 options(warn=-1)
 TTTARS<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1,
-              separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE,replicated=FALSE,MIX=FALSE)
+              separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE,replicated=FALSE,MIX=FALSE, parallel=FALSE)
 {
 description_TTTARS()
 #split dataframe into sub-dataframe by subject for reference data
@@ -89,7 +89,7 @@ description_TTTARS()
                   CmaxRef[j]<-Cmax_ref
                   AUCINFRef[j]<-aucINF
                   AUCTRef[j]<-auc_ref[length(R.split[[j]][["conc"]])]
-                  TmaxRef[j]<-R.split[[j]][xr,5]
+                  TmaxRef[j]<-R.split[[j]]$time[xr] #R.split[[j]][xr,5]->R.split[[j]]$time[xr]
                   MRTINFRef[j]<-aumcINF/aucINF
                   T12Ref[j]<-log(2)/ke[j]
                   VdFRef[j]<-Dose/(aucINF*ke[j])
@@ -123,7 +123,7 @@ description_TTTARS()
               cat("Adj. R sq. (ARS) =",AR_sq[j] ,"\n")
               cat("        lambda_z =",ke[j] ,"\n")
               cat("            Cmax =",Cmax_ref ,"\n")
-              cat("            Tmax =",R.split[[j]][xr,5] ,"\n")
+              cat("            Tmax =",TmaxRef[j] ,"\n")
               cat("            Cl/F =",Dose/aucINF,"\n")
               cat("            Vd/F =",Dose/(aucINF*ke[j]),"\n")
               cat("         T1/2(z) =",log(2)/ke[j],"\n")
@@ -225,7 +225,7 @@ if(replicated){
                   CmaxTest[j]<-Cmax_test
                   AUCINFTest[j]<-aucINF
                   AUCTTest[j]<-auc_test[length(T.split[[j]][["conc"]])]
-                  TmaxTest[j]<-T.split[[j]][xt,5]
+                  TmaxTest[j]<-T.split[[j]]$time[xt] #T.split[[j]][xt,5] -->T.split[[j]]$time[xt]
                   MRTINFTest[j]<-aumcINF/aucINF
                   T12Test[j]<-log(2)/ke1[j]
                   VdFTest[j]<-Dose/(aucINF*ke1[j])
@@ -259,7 +259,7 @@ if(replicated){
               cat("Adj. R sq. (ARS) =",AR_sq1[j] ,"\n")
               cat("        lambda_z =",ke1[j] ,"\n")
               cat("            Cmax =",Cmax_test ,"\n")
-              cat("            Tmax =",T.split[[j]][xt,5] ,"\n")
+              cat("            Tmax =",TmaxTest[j] ,"\n")
               cat("            Cl/F =",Dose/aucINF,"\n")
               cat("            Vd/F =",Dose/(aucINF*ke1[j]),"\n")
               cat("         T1/2(z) =",log(2)/ke1[j],"\n")
@@ -289,13 +289,30 @@ keindex_test<-data.frame(subj=subj1,time=ke1_melt$value,R_squared=R1_melt$value,
 }
 cat("-----------------------------------------\n")
 cat("Individual PK parameters for Ref. product\n")
+cat("\n")
 show(keindex_ref)
 cat("-----------------------------------------\n")
 cat("Individual PK parameters for Test product\n")
+cat("\n")
 show(keindex_test)
 cat("-----------------------------------------\n")
 
-
+subjR<-0
+ for (j in 1:(length(R.split))){
+     subjR[j]<-R.split[[j]][["subj"]][1]
+     }
+subjT<-0
+ for (j in 1:(length(T.split))){
+     subjT[j]<-T.split[[j]][["subj"]][1]
+     }
+if(parallel){
+description_Repdrugcode()
+sumindexR<-data.frame(subj=subjR,drug=c(1),Cmax=CmaxRef,AUC0t=AUCTRef,AUC0INF=AUCINFRef,
+                      Tmax=TmaxRef, MRTINF=MRTINFRef, T12=T12Ref, VdF=VdFRef, Kel=KelRef, ClF=ClFRef)
+sumindexT<-data.frame(subj=subjT,drug=c(2),Cmax=CmaxTest,AUC0t=AUCTTest,AUC0INF=AUCINFTest,
+                     Tmax=TmaxTest,MRTINF=MRTINFTest, T12=T12Test, VdF=VdFTest, Kel=KelTest, ClF=ClFTest) 
+}
+ else{
  seqR<-0
  for (j in 1:(length(R.split))){
      seqR[j]<-R.split[[j]][["seq"]][1]
@@ -312,6 +329,7 @@ cat("-----------------------------------------\n")
  for (j in 1:(length(T.split))){
      prdT[j]<-T.split[[j]][["prd"]][1]
      }
+
 if(replicated){
  drugR<-0
  for (j in 1:(length(R.split))){
@@ -321,14 +339,7 @@ if(replicated){
  for (j in 1:(length(T.split))){
      drugT[j]<-T.split[[j]][["drug"]][1]
      } 
-subjR<-0
- for (j in 1:(length(R.split))){
-     subjR[j]<-R.split[[j]][["subj"]][1]
-     }
-subjT<-0
- for (j in 1:(length(T.split))){
-     subjT[j]<-T.split[[j]][["subj"]][1]
-     }
+
 description_Repdrugcode()
 sumindexR<-data.frame(subj=subjR,drug=drugR,seq=seqR,prd=prdR,Cmax=CmaxRef,AUC0t=AUCTRef,AUC0INF=AUCINFRef,
                       Tmax=TmaxRef, MRTINF=MRTINFRef, T12=T12Ref, VdF=VdFRef, Kel=KelRef, ClF=ClFRef)
@@ -336,29 +347,46 @@ sumindexT<-data.frame(subj=subjT,drug=drugT,seq=seqT,prd=prdT,Cmax=CmaxTest,AUC0
                      Tmax=TmaxTest,MRTINF=MRTINFTest, T12=T12Test, VdF=VdFTest, Kel=KelTest, ClF=ClFTest) 
    }
 else{
+
 description_drugcode()
 sumindexR<-data.frame(subj=subj,drug=c(1),seq=seqR,prd=prdR,Cmax=CmaxRef,AUC0t=AUCTRef,AUC0INF=AUCINFRef,
                       Tmax=TmaxRef, MRTINF=MRTINFRef, T12=T12Ref, VdF=VdFRef, Kel=KelRef, ClF=ClFRef)
 sumindexT<-data.frame(subj=subj,drug=c(2),seq=seqT,prd=prdT,Cmax=CmaxTest,AUC0t=AUCTTest,AUC0INF=AUCINFTest,
                      Tmax=TmaxTest,MRTINF=MRTINFTest, T12=T12Test, VdF=VdFTest, Kel=KelTest, ClF=ClFTest)
  }
+}
 #########
 Total<-rbind(sumindexR,sumindexT)
+if(parallel){
+TotalData<-data.frame (subj=as.factor(Total$subj), drug=as.factor(Total$drug),Cmax=Total$Cmax, AUC0t=Total$AUC0t, AUC0INF=Total$AUC0INF,
+                      lnCmax=log(Total$Cmax),lnAUC0t=log(Total$AUC0t),lnAUC0INF=log(Total$AUC0INF))
+}
+else{
 TotalData<-data.frame (subj=as.factor(Total$subj), drug=as.factor(Total$drug),seq=as.factor(Total$seq),
                    prd=as.factor(Total$prd),Cmax=Total$Cmax, AUC0t=Total$AUC0t, AUC0INF=Total$AUC0INF,
                    lnCmax=log(Total$Cmax),lnAUC0t=log(Total$AUC0t),lnAUC0INF=log(Total$AUC0INF))
+}
 show(TotalData)
 
 #Plot Cp vs Time
  #creat 3(row)*2(column) multiple figure array
  #Plot LogCp vs Time
    #creat 3(row)*2(column) multiple figure array
+Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
+s.split<-split(Totalplot,list(Totalplot$subj))
+if(parallel){
+ Totalplot$conc[Totalplot$conc == 0] <- NA
+ Totalplot <- na.omit(Totalplot)
+ Totalplot.split<-split(Totalplot, list(Totalplot$subj))
+ 
+ Totalplotpara<-split( Totalplot, list(Totalplot$drug))
+ paraR.split<-split( Totalplotpara[[1]], list(Totalplotpara[[1]]$subj))
+ paraT.split<-split( Totalplotpara[[2]], list(Totalplotpara[[2]]$subj))  
+  }
+ else{
  if(replicated){
      prdcount<-length(levels(TotalData$prd))
-     Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
-     s.split<-split(Totalplot,list(Totalplot$subj))
      #f <- factor(Totalplot$drug)
-     
      LR<-data.frame(subj=Totalplot$subj,  seq=Totalplot$seq, prd=Totalplot$prd, drug=Totalplot$drug,
                     time=Totalplot$time,  conc=Totalplot$conc, code=Totalplot$code)
      LR$conc[LR$conc == 0] <- NA
@@ -366,145 +394,86 @@ show(TotalData)
      Ls.split<-split(LR, list(LR$subj))
         }
   else{
-LR<-data.frame(subj=SingleRdata$subj, time=SingleRdata$time,  conc=SingleRdata$conc)
-LR$conc[LR$conc == 0] <- NA
-LR <- na.omit(LR)
-LR.split<-split(LR, list(LR$subj))
+     LR<-data.frame(subj=SingleRdata$subj, time=SingleRdata$time,  conc=SingleRdata$conc)
+     LR$conc[LR$conc == 0] <- NA
+     LR <- na.omit(LR)
+     LR.split<-split(LR, list(LR$subj))
 
-LT<-data.frame(subj=SingleTdata$subj, time=SingleTdata$time,  conc=SingleTdata$conc)
-LT$conc[LT$conc == 0] <- NA
-LT <- na.omit(LT)
-LT.split<-split(LT, list(LT$subj))
- }
-windows(record = TRUE )
- if(replicated){
- for(i in seq_along(s.split)){
- main<-paste(c("Subject#", s.split[[i]]$subj[1]),collapse=" ")
-     lineplot.CI(s.split[[i]]$time, s.split[[i]]$conc, group = s.split[[i]]$code, cex = 1,
-                 xlab=xaxis, ylab=yaxis,cex.lab = 1, x.leg = 100000, bty="l",main=main,
-                 font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")
-    # points(s.split[[i]]$time, s.split[[i]]$conc ,pch = c(1,19))[as.numeric(f)]    
-   axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-               105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-   axis(1,at=0:100,tcl=-.2, labels=FALSE)
-   axis(2,yaxp=c(0, 10000, 100),las=1,tcl=-.2, labels=FALSE)
-
-prdcount(i,s.split, prdcount)    
+     LT<-data.frame(subj=SingleTdata$subj, time=SingleTdata$time,  conc=SingleTdata$conc)
+     LT$conc[LT$conc == 0] <- NA
+     LT <- na.omit(LT)
+     LT.split<-split(LT, list(LT$subj))
    }
- for(i in seq_along(Ls.split)){
- main<-paste(c("Subject#", Ls.split[[i]]$subj[1]),collapse=" ")
-      lineplot.CI(Ls.split[[i]]$time, Ls.split[[i]]$conc, log="y", group = Ls.split[[i]]$code, cex = 1,
-                  xlab = "Time", ylab = "Conc. (in log scale)",cex.lab = 1, x.leg = 100000, bty="l",main=main,
-                  font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")
-      # points(Ls.split[[i]]$time,  Ls.split[[i]]$conc ,pch = c(1,19))[as.numeric(f)] 
-   axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-   axis(1,at=0:100,tcl=-.2, labels=FALSE)
-
-prdcount(i,s.split, prdcount)   
+}   
+windows(record = TRUE )
+if(replicated){
+    plotsingle.Rep(Ls.split, s.split,xaxis,yaxis,i, prdcount ) 
+   }
+else{ 
+ if(parallel){
+    plotsingle.para(R.split, T.split, paraR.split,paraT.split,xaxis,yaxis )
   }
- }
-else{   
- for(i in seq_along(LT.split)){
-     xx1<-LR.split[[i]]$time
-     yy1<-LR.split[[i]]$conc
-
-     xx2<-LT.split[[i]]$time
-     yy2<-LT.split[[i]]$conc
-
-        main<-paste(c("Subj. #", LT.split[[i]]$subj[1]),collapse=" ")
-        plot(0, 0, log="y",xlim=range(xx1), ylim=range(yy1,yy2), ylab="Conc. (in log scale)", xlab="Time",
-         main=main, cex.lab = 1.5, font.lab=2,cex.axis=1,cex.main=1,las=1,pch=19,xaxt="n")
-
-        points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-        points(xx2,yy2,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-
-        lines(xx1,yy1, lty=20)
-        lines(xx2,yy2, lwd=1)
-
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
-        temp <- legend("topright", legend = c("Test", "Ref."),
-               text.width = strwidth("1,000,000"),
-               lty = 1:2, xjust = 1, yjust = 1)
+  else{ 
+    plotsingle(LR.split,LT.split,R.split,T.split,xaxis,yaxis )
   }
-for(i in seq_along(T.split)){
-       xx1<-R.split[[i]]$time
-       yy1<-R.split[[i]]$conc
-
-       xx2<-T.split[[i]]$time
-       yy2<-T.split[[i]]$conc
-
-         main<-paste(c("Subj. #", T.split[[i]]$subj[1]),collapse=" ")
-         plot(0, 0, xlim=range(xx1), ylim=range(yy1,yy2), xlab=xaxis, ylab=yaxis,,
-         main=main, cex.lab = 1.5, font.lab=2,cex.axis=1,cex.main=1,las=1,pch=1,xaxt="n")
-
-         points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-         points(xx2,yy2,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-
-         lines(xx1,yy1, lty=20)
-         lines(xx2,yy2, lwd=1)
-
-         axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
-         axis(1,at=0:100,tcl=-.2, labels=FALSE)
-         axis(2,yaxp=c(0, 4000, 40),las=1,tcl=-.2, labels=FALSE)
-         temp <- legend("topright", legend = c("Test", "Ref."),
-               text.width = strwidth("1,000,000"),
-               lty = 1:2, xjust = 1, yjust = 1)
-
-  }
-}
+}  
 ##export with txt file
 if(replicated){
 RepTTTARSoutput(sumindexR, sumindexT,R.split,T.split,keindex_ref,keindex_test,Dose,TotalData)
 RepNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
  if (Demo){
-         if(MIX){
-         #Demo=TRUE, BANOVA=TRUE
-         dev.off()
-         RepMIXanalyze(TotalData)
-         }
-         else{
-         #Demo=TRUE, BANOVA=FALSE
+        #Demo=TRUE, MIX=FALSE
          Repmenu()
-          } 
         }
        else {
          if(MIX){
-         ##Demo=FALSE, BANOVA=TRUE
-         dev.off()
+         ##Demo=FALSE, MIX=TRUE
          RepMIXanalyze(TotalData)
          }
           else{
-         #Demo=FALSE, BANOVA=FALSE
+         #Demo=FALSE, MIX=FALSE
          RepNCAsave(TotalData)
            }
          }     
  }
 else{
-TTTARSoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData )
-NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
-
-if (Demo){
-     if(BANOVA){
-     #Demo=TRUE, BANOVA=TRUE
+   if(parallel){
+      ParaTTTARSoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData )
+      ParaNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis) 
+      if (Demo){
+         #Demo=TRUE, MIX=FALSE
+         Paramenu()
+        }
+       else {
+         if(MIX){
+         ##Demo=FALSE, MIX=TRUE
       
-      BANOVAanalyze(TotalData)
+         ParaMIXanalyze(TotalData)
+         }
+          else{
+         #Demo=FALSE, MIX=FALSE
+         ParaNCAsave(TotalData)
+           }
+         }     
       }
-      else{
-      #Demo=TRUE, BANOVA=FALSE
-      NCAmenu()
-     }
-   }
- else {
-      if(BANOVA){
-     ##Demo=FALSE, BANOVA=TRUE
-     
-     BANOVAanalyze(TotalData)
-     }
-      else{
-     #Demo=FALSE, BANOVA=FALSE
-     NCAsave(TotalData)
+    else{
+      TTTARSoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData )
+      NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
+
+      if (Demo){
+        #Demo=TRUE, BANOVA=FALSE
+        NCAmenu()
+          }
+       else {
+         if(BANOVA){
+         ##Demo=FALSE, BANOVA=TRUE
+         dev.off()
+         BANOVAanalyze(TotalData)
+         }
+        else{
+         #Demo=FALSE, BANOVA=FALSE
+         NCAsave(TotalData)
+       }
      }
    }
  }

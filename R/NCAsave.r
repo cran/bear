@@ -1,5 +1,5 @@
 ##save the NCA results 
-NCAsave<-function(TotalData, replicated=FALSE){
+NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE){
 
   cat("\n\n")
      cat("\nEnter the file name (without file extention):\n")
@@ -40,12 +40,17 @@ NCAsave<-function(TotalData, replicated=FALSE){
                 else{
                  save(TotalData,file=Totalname)
                   }
-               if(replicated){
-              RepMIXmenu(TotalData)
-               }
-              else{
-              BANOVAmenu(TotalData)
+           if(parallel){
+              ParaMIXmenu(TotalData)
               }
+           else{
+               if(replicated){
+                 RepMIXmenu(TotalData)
+                 }
+                else{
+                 BANOVAmenu(TotalData)
+                 }
+            }
 }
 
  
