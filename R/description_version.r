@@ -1,5 +1,5 @@
 description_version<-function(){
-cat("~~~  This report is generated using bear v2.3.0 for R. ~~~\n")
+cat("~~~  This report is generated using bear v2.3.1 for R. ~~~\n")
 cat("Authors: Hsin-ya Lee, Yung-jin Lee\n")
 cat("College of Pharmacy, Kaohsiung Medical University\n")
 cat("Kaohsiung, Taiwan 80708\n")

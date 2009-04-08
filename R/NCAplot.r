@@ -78,10 +78,8 @@ for(i in seq_along(R.split)){
                  font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")  
         lines(xx1,yy1, lty=2)
         points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
-        axis(2,yaxp=c(0, 10000, 100),las=1,tcl=-.2, labels=FALSE)
+         xtick(xx1) #tick for x-axis
+         ytick(yy1) #tick for y-axis
         temp <- legend("topright", legend = c("Ref."),
                text.width = strwidth("1,000,000"),
                lty = 2, xjust = 1, yjust = 1)
@@ -96,10 +94,8 @@ for(i in seq_along(T.split)){
                  font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")  
         lines(xx1,yy1, lty=1)
         points(xx1,yy1,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
-        axis(2,yaxp=c(0, 10000, 100),las=1,tcl=-.2, labels=FALSE)
+         xtick(xx1) #tick for x-axis
+         ytick(yy1) #tick for y-axis
         temp <- legend("topright", legend = c("Test"),
                text.width = strwidth("1,000,000"),
                lty = 1, xjust = 1, yjust = 1)
@@ -107,6 +103,8 @@ for(i in seq_along(T.split)){
 }
 else{
 for(i in seq_along(s.split)){
+     xx1<-s.split[[i]]$time
+     yy1<-s.split[[i]]$conc     
     main<-paste(c("Subject#", s.split[[i]]$subj[1]),collapse=" ")
     if(replicated){
      lineplot.CI(s.split[[i]]$time, s.split[[i]]$conc, group = s.split[[i]]$code, cex = 1,
@@ -119,10 +117,8 @@ for(i in seq_along(s.split)){
             font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n"
              )
  }            
-   axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-               105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-   axis(1,at=0:100,tcl=-.2, labels=FALSE)
-   axis(2,yaxp=c(0, 10000, 100),las=1,tcl=-.2, labels=FALSE)
+  xtick(xx1) #tick for x-axis
+  ytick(yy1) #tick for y-axis
 if(replicated){
   prdcount(i,s.split, prdcount)
  }
@@ -146,10 +142,7 @@ if(parallel){
 
         points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
         lines(xx1,yy1, lty=2)
-        
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
+         xtick(xx1) #tick for x-axis
         
         temp <- legend("topright", legend = c("Ref."),
                text.width = strwidth("1,000,000"),
@@ -165,10 +158,7 @@ for(i in seq_along(paraT.split)){
                   font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")
         points(xx1,yy1,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
         lines(xx1,yy1, lty=1)
-        
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
+         xtick(xx1) #tick for x-axis
         
         temp <- legend("topright", legend = c("Test"),
                text.width = strwidth("1,000,000"),
@@ -177,6 +167,8 @@ for(i in seq_along(paraT.split)){
 }
 else{
  for(i in seq_along(Ls.split)){
+  xx1<-Ls.split[[i]]$time
+  yy1<-Ls.split[[i]]$conc   
   main<-paste(c("Subject#", Ls.split[[i]]$subj[1]),collapse=" ")
    if(replicated){
       lineplot.CI(Ls.split[[i]]$time, Ls.split[[i]]$conc, log="y", group = Ls.split[[i]]$code, cex = 1,
@@ -189,10 +181,8 @@ else{
           font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n"
              )
       } 
-   axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-   axis(1,at=0:100,tcl=-.2, labels=FALSE)
-   
+      xtick(xx1) #tick for x-axis
+
     if(replicated){
       prdcount(i,s.split, prdcount)
      }
@@ -205,41 +195,45 @@ else{
 }
 #3. ###############################show all subjects in one plot at the same time for test
 if(replicated){
+xx1<-SingleTdata$time
+yy1<-SingleTdata$conc  
 lineplot.CI(SingleTdata$time, SingleTdata$conc, group = SingleTdata$code, type="l",
            xlab=xaxis, ylab=yaxis,ylim=c(0,max(Totalplot$conc)),cex.lab = 1,x.leg =1000000, bty="l", lty=1,las=1,
             font.lab=2,cex.axis=1,cex.main=1,x.cont=TRUE,xaxt="n" 
              )
 }
 else{
+xx1<-SingleTdata$time
+yy1<-SingleTdata$conc  
 lineplot.CI(SingleTdata$time, SingleTdata$conc, group = SingleTdata$subj, type="l",
            xlab=xaxis, ylab=yaxis,ylim=c(0,max(Totalplot$conc)),cex.lab = 1,x.leg =1000000, bty="l", lty=1,las=1,
             font.lab=2,cex.axis=1,cex.main=1,x.cont=TRUE,xaxt="n" 
              )
     }         
-            axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-                       105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-            axis(1,at=0:100,tcl=-.2, labels=FALSE)
-            axis(2,yaxp=c(0, 4000, 40),las=1,tcl=-.2, labels=FALSE)
+            xtick(xx1) #tick for x-axis
+            ytick(yy1) #tick for y-axis
             mtext("Test",side=3,cex=2,las=0)  #要放在plot之後
  
 
 #4. ###############################show all subjects in one plot at the same time for ref
 if(replicated){
+xx1<-SingleRdata$time
+yy1<-SingleRdata$conc  
 lineplot.CI(SingleRdata$time, SingleRdata$conc, group = SingleRdata$code, type="l",
             xlab=xaxis, ylab=yaxis,ylim=c(0,max(Totalplot$conc)),cex.lab = 1,x.leg =100000, bty="l",lty=1,las=1,
             font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n" 
              )
 }
 else{
+xx1<-SingleRdata$time
+yy1<-SingleRdata$conc  
 lineplot.CI(SingleRdata$time, SingleRdata$conc, group = SingleRdata$subj, type="l",
             xlab=xaxis, ylab=yaxis,ylim=c(0,max(Totalplot$conc)),cex.lab = 1,x.leg =100000, bty="l",lty=1,las=1,
             font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n" 
              )
 }             
-            axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-                        105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-            axis(1,at=0:100,tcl=-.2, labels=FALSE)
-            axis(2,yaxp=c(0, 4000, 40),las=1,tcl=-.2, labels=FALSE)
+             xtick(xx1) #tick for x-axis
+             ytick(yy1) #tick for y-axis
             mtext("Ref.",side=3,cex=2,las=0)  #要放在plot之後
 
 
@@ -256,14 +250,14 @@ else{
    main<-paste(c("Observed mean drug plasma concentration, N=",L),collapse=" ")
    }
  }
+xx1<-Totalplot$time
+yy1<-Totalplot$conc  
 lineplot.CI(Totalplot$time, Totalplot$conc, group = Totalplot$drug, cex = 1, main=main,
             xlab=xaxis, ylab=yaxis,cex.lab = 1,x.leg =100000, bty="l", las=1,
             font.lab=2,cex.axis=1,cex.main=1,x.cont=TRUE,xaxt="n" ,err.lty=1,err.width=0.05
              )
-            axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-                       105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-            axis(1,at=0:100,tcl=-.2, labels=FALSE)
-            axis(2,yaxp=c(0, 10000, 100),las=1,tcl=-.2, labels=FALSE)
+            xtick(xx1) #tick for x-axis
+            ytick(yy1) #tick for y-axis
 temp <- legend("topright",legend = c("Test", "Ref."),
                text.width = strwidth("1,000,000"),
                lty = 1:2, xjust = 1, yjust = 1)

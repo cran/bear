@@ -5,7 +5,7 @@ description_plot<-function()
 par(mar=c(0,0,0,0)) 
 plot(0, xlim=c(0, 210), ylim=c(0, 297), col="white")
 text(100, 250,
-"~~~  This report is generated using bear v2.3.0 for R. ~~~",cex = .8)
+"~~~  This report is generated using bear v2.3.1 for R. ~~~",cex = .8)
 text(100, 240,
 "Authors: Hsin-ya Lee, Yung-jin Lee",cex = .8)
 text(100, 230,

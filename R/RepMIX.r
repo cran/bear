@@ -8,17 +8,17 @@ cat("*** This is a 2-treatment parallel design. \n")
  }
 else{ 
 prdcount<-length(levels(TotalData$prd)) #count periods
-cat("*** This is a 2-treatment, 2-sequence, ",prdcount,"periods replicated design. \n") 
+cat("*** This is a 2-treatment, 2-sequence, and ",prdcount,"-period replicated design. \n") 
 } 
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
 
 if(parallel){
-cat("  Statistical analysis (lme, 90%CI...) - parallel BE study               \n")
+cat("  Statistical analysis (lme) - parallel BE study               \n")
 modCmax<-lme(Cmax ~  drug , random=~1|subj,  data=TotalData, method="REML" ) 
  }
 else{ 
-cat("  Statistical analysis (lme, 90%CI...) - replicate BE study               \n")
+cat("  Statistical analysis (lme) - replicate BE study               \n")
 modCmax<-lme(Cmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
@@ -35,11 +35,11 @@ cat("\n")
 cat("\n")
 
 if(parallel){
-cat("  Statistical analysis (lme, 90%CI...) - parallel BE study               \n")
+cat("  Statistical analysis (lme) - parallel BE study               \n")
 modAUC0t<-lme(AUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" ) 
  }
 else{ 
-cat("  Statistical analysis (lme, 90%CI...) - replicate BE study               \n")
+cat("  Statistical analysis (lme) - replicate BE study               \n")
 modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
@@ -56,11 +56,11 @@ cat("\n")
 cat("\n")
 
 if(parallel){
-cat("  Statistical analysis (lme, 90%CI...) - parallel BE study               \n")
+cat("  Statistical analysis (lme) - parallel BE study               \n")
 modAUC0INF<-lme(AUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML" )
  }
 else{ 
-cat("  Statistical analysis (lme, 90%CI...) - replicate BE study               \n")
+cat("  Statistical analysis (lme) - replicate BE study               \n")
 modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
@@ -77,11 +77,11 @@ cat("\n")
 cat("\n")
 
 if(parallel){
-cat("  Statistical analysis (lme, 90%CI...) - parallel BE study               \n")
+cat("  Statistical analysis (lme) - parallel BE study               \n")
 modlnCmax<-lme(lnCmax ~ drug , random=~1|subj, data=TotalData, method="REML" )
  }
 else{ 
-cat("  Statistical analysis (lme, 90%CI...) - replicate BE study               \n")
+cat("  Statistical analysis (lme) - replicate BE study               \n")
 modlnCmax<-lme(lnCmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
@@ -98,11 +98,11 @@ cat("\n")
 cat("\n")
 
 if(parallel){
-cat("  Statistical analysis (lme, 90%CI...) - parallel BE study               \n")
+cat("  Statistical analysis (lme) - parallel BE study               \n")
 modlnAUC0t<-lme(lnAUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" )
  }
 else{ 
-cat("  Statistical analysis (lme, 90%CI...) - replicate BE study               \n")
+cat("  Statistical analysis (lme) - replicate BE study               \n")
 modlnAUC0t<-lme(lnAUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
@@ -119,11 +119,11 @@ cat("\n")
 cat("\n")
 
 if(parallel){
-cat("  Statistical analysis (lme, 90%CI...) - parallel BE study               \n")
+cat("  Statistical analysis (lme) - parallel BE study               \n")
  modlnAUC0INF<-lme(lnAUC0INF ~drug , random=~1|subj, data=TotalData, method="REML" )
  }
 else{ 
-cat("  Statistical analysis (lme, 90%CI...) - replicate BE study               \n")
+cat("  Statistical analysis (lme) - replicate BE study               \n")
 modlnAUC0INF<-lme(lnAUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
@@ -251,10 +251,10 @@ NP_lnAUC0INF<-log(lnAUC0INF_theta2)/SE_lnAUC0INF
 EP_lnAUC0INF<- pt((abs(TAH_lnAUC0INF)-NP_lnAUC0INF),L1+L2-2) - pt((-abs(TAH_lnAUC0INF)-NP_lnAUC0INF),L1+L2-2)  
 
 if(parallel){
-cat("  BE Summary Report  - parallel BE study                         \n")
+cat("  Pivotal  Parameters of BE Study - Summary Report  - parallel BE study                         \n")
  }
 else{ 
-cat("  BE Summary Report  - replicate BE study                         \n")
+cat("  Pivotal  Parameters of BE Study - Summary Report  - replicate BE study                         \n")
 } 
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnCmax                                               \n")
@@ -290,7 +290,7 @@ TOST_lnCmax<-data.frame(TOST=c("T_lower", "T_upper"),
 colnames(TOST_lnCmax)<- c("TOST","  T value","  P value")
 show(TOST_lnCmax) 
 cat("\n")
-if(PTL_lnCmax > 0.05 || PTU_lnCmax > 0.05){
+if(PTL_lnCmax >= 0.05 || PTU_lnCmax >= 0.05){
 description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -301,7 +301,7 @@ cat("------------------------ Anderson-Hauck Test ------------------------------
 cat("\n")
 cat("          P value =",formatC(EP_lnCmax,format="f",digits=6),"\n") 
 cat("\n")
-if(EP_lnCmax > 0.05){
+if(EP_lnCmax >= 0.05){
 description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -312,7 +312,7 @@ cat("Ref.:\n")
 cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-       \n")
 cat("   Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
 cat("2. Schuirmann DJ. On hypothesis testing to determine if the mean of a  \n")
-cat("   normal distribution is continued in a known interval.Biometrics, 37, \n")
+cat("   normal distribution is continued in a known interval. Biometrics, 37, \n")
 cat("   617(1981).                                                           \n")
 cat("3. Schuirmann DJ. A comparison of the two one-sided tests procedure and the \n")
 cat("   power approach for assessing the equivalence of average bioavailability.\n")
@@ -325,10 +325,10 @@ cat("\n")
 cat("\n")
 
 if(parallel){
-cat("  BE Summary Report  - parallel BE study                         \n")
+cat("  Pivotal  Parameters of BE Study - Summary Report  - parallel BE study                         \n")
  }
 else{ 
-cat("  BE Summary Report  - replicate BE study                         \n")
+cat("  Pivotal  Parameters of BE Study - Summary Report  - replicate BE study                         \n")
 } 
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnAUC0t                                               \n")
@@ -364,7 +364,7 @@ TOST_lnAUC0t<-data.frame(TOST=c("T_lower", "T_upper"),
 colnames(TOST_lnAUC0t)<- c("TOST","  T value","  P value")
 show(TOST_lnAUC0t) 
 cat("\n")
-if(PTL_lnAUC0t > 0.05 || PTU_lnAUC0t > 0.05){
+if(PTL_lnAUC0t >= 0.05 || PTU_lnAUC0t >= 0.05){
 description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -375,7 +375,7 @@ cat("------------------------ Anderson-Hauck Test ------------------------------
 cat("\n")
 cat("          P value =",formatC(EP_lnAUC0t,digits=6),"\n") 
 cat("\n")
-if(EP_lnAUC0t > 0.05){
+if(EP_lnAUC0t >= 0.05){
 description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -386,10 +386,10 @@ cat("\n")
 cat("\n")
 
 if(parallel){
-cat("  BE Summary Report  - parallel BE study                         \n")
+cat("  Pivotal  Parameters of BE Study - Summary Report  - parallel BE study                         \n")
  }
 else{ 
-cat("  BE Summary Report  - replicate BE study                         \n")
+cat("  Pivotal  Parameters of BE Study - Summary Report  - replicate BE study                         \n")
 } 
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnAUC0INF                                             \n")
@@ -425,7 +425,7 @@ TOST_lnAUC0INF<-data.frame(TOST=c("T_lower", "T_upper"),
 colnames(TOST_lnAUC0INF)<- c("TOST","  T value","  P value")
 show(TOST_lnAUC0INF) 
 cat("\n")
-if(PTL_lnAUC0INF > 0.05 || PTU_lnAUC0INF > 0.05){
+if(PTL_lnAUC0INF >= 0.05 || PTU_lnAUC0INF >= 0.05){
 description_TOST_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -436,7 +436,7 @@ cat("------------------------ Anderson-Hauck Test ------------------------------
 cat("\n")
 cat("          P value =",formatC(EP_lnAUC0INF,format="f",digits=6),"\n") 
 cat("\n")
-if(EP_lnAUC0INF > 0.05){
+if(EP_lnAUC0INF >= 0.05){
 description_TOST_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{

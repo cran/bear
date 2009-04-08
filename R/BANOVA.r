@@ -10,7 +10,7 @@ BANOVA<-function(RefData, TestData,TotalData, L1, L2,
 #theta1:  lower acceptance limit
 #theta1:  lower acceptance limit
 #represent GLM
-cat("  Statistical analysis (ANOVA(lm), 90%CI...)                  \n")
+cat("  Statistical analysis (ANOVA(lm))                  \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: Cmax                                                 \n")
 cat("\n")
@@ -29,7 +29,7 @@ cat("\n")
 cat("\n")
 
 #GLM_AUC0t.txt
-cat("  Statistical analysis (ANOVA(lm), 90%CI...)                   \n")
+cat("  Statistical analysis (ANOVA(lm))                   \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: AUC0t                                                \n")
 cat("\n")
@@ -48,7 +48,7 @@ cat("\n")
 cat("\n")
 
 #GLM_AUC0INF.txt
-cat("  Statistical analysis (ANOVA(lm), 90%CI...)                   \n")
+cat("  Statistical analysis (ANOVA(lm), 90%CI, Outlier Detection, and etc.)    \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: AUC0INF                                             \n")
 cat("\n")
@@ -66,7 +66,7 @@ cat("\n")
 cat("\n")
 
 #GLM_lnCmax.txt
-cat("  Statistical analysis (ANOVA(lm), 90%CI...)                   \n")
+cat("  Statistical analysis (ANOVA(lm))    \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnCmax                                               \n")
 cat("\n")
@@ -88,7 +88,7 @@ cat("\n")
 cat("\n")
 
 #GLM_lnAUC0t.txt
-cat("  Statistical analysis (ANOVA(lm), 90%CI...)                   \n")
+cat("  Statistical analysis (ANOVA(lm), 90%CI, Outlier Detection, and etc.)    \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnAUC0t                                               \n")
 cat("\n")
@@ -110,7 +110,7 @@ cat("\n")
 cat("\n")
 
 #GLM_AUC0INF.txt
-cat("  Statistical analysis (ANOVA(lm), 90%CI...)                   \n")
+cat("  Statistical analysis (ANOVA(lm))    \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnAUC0INF                                             \n")
 cat("\n")
@@ -149,12 +149,16 @@ SE_Cmax<-sqrt((anova(lnCmax)[5,3]/2) * (1/L1+1/L2))
 SE_AUC0t<-sqrt((anova(lnAUC0t)[5,3]/2) * (1/L1+1/L2))
 SE_AUC0INF<-sqrt((anova(lnAUC0INF)[5,3]/2) * (1/L1+1/L2))
 
-lowerCmax<-100*exp((test_Cmax-ref_Cmax)-(T*SE_Cmax))
-upperCmax<-100*exp((test_Cmax-ref_Cmax)+(T*SE_Cmax))
-lowerAUC0t<-100*exp((test_AUC0t-ref_AUC0t)-(T*SE_AUC0t))
-UpperAUC0t<-100*exp((test_AUC0t-ref_AUC0t)+(T*SE_AUC0t))
-LowerAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)-(T*SE_AUC0INF))
-UpperAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)+(T*SE_AUC0INF))
+est_lnCmax<-lnCmax$coef[[4]] 
+est_lnAUC0t<-lnAUC0t$coef[[4]] 
+est_lnAUC0INF<-lnAUC0INF$coef[[4]] 
+
+lowerCmax<-100*exp(est_lnCmax-(T*SE_Cmax))
+upperCmax<-100*exp(est_lnCmax+(T*SE_Cmax))
+lowerAUC0t<-100*exp(est_lnAUC0t-(T*SE_AUC0t))
+UpperAUC0t<-100*exp(est_lnAUC0t+(T*SE_AUC0t))
+LowerAUC0INF<-100*exp(est_lnAUC0INF-(T*SE_AUC0INF))
+UpperAUC0INF<-100*exp(est_lnAUC0INF+(T*SE_AUC0INF))
 
 ###two-one side and Anderson and Hauck's test
 #lnCmax
@@ -256,29 +260,28 @@ lnCmax_rrt<-lnCmax_Srt/sqrt(lnCmax_Srr*lnCmax_Stt)
 lnCmax_Fpm<-((L1+L2-2)*(lnCmax_Frt-1)^2 )/(4*(lnCmax_Frt)*(1-(lnCmax_rrt)^2))
 lnCmax_PFpm<-1-pf(lnCmax_Fpm, 1, L1+L2-2)
            
-                     
 #Report for lnCmax, lnAUC0t and lnAUC0inf
 cat("\n")
 cat("\n")
-cat("  BE Summary Report                            \n")
+cat("  Pivotal Parameters of BE Study - Summary Report                            \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnCmax                                               \n")
 cat("--------------------------------------------------------------------------\n")
-cat("        n1(R=>T) =",L1 , "\n")
-cat("        n2(T=>R) =",L2 , "\n")
-cat("        N(n1+n2) =",L1+L2 , "\n")
-cat("  Lower criteria =",formatC(lnCmax_theta1*100,format="f",digits=0), "%\n")
-cat("  Upper criteria =",formatC(lnCmax_theta2*100,format="f",digits=0), "%\n")
-cat("        MEAN-ref =",ref_Cmax, "\n")
-cat("       MEAN-test =",test_Cmax, "\n")
-cat("             MSE =",anova(lnCmax)[5,3], "\n")
-cat("              SE =",SE_Cmax, "\n")
-cat("Diff. (test-ref) =",test_Cmax-ref_Cmax, "\n")
+cat("        n1(R -> T) =",L1 , "\n")
+cat("        n2(T -> R) =",L2 , "\n")
+cat("          N(n1+n2) =",L1+L2 , "\n")
+cat("    Lower criteria =",formatC(lnCmax_theta1*100,format="f",digits=0), "%\n")
+cat("    Upper criteria =",formatC(lnCmax_theta2*100,format="f",digits=0), "%\n")
+cat("          MEAN-ref =",ref_Cmax, "\n")
+cat("         MEAN-test =",test_Cmax, "\n")
+cat("               MSE =",anova(lnCmax)[5,3], "\n")
+cat("                SE =",SE_Cmax, "\n")
+cat("Estimate(test-ref) =",est_lnCmax, "\n")
 cat("\n")
 cat("**************** Classical (Shortest) 90% C.I. for lnCmax ****************\n")
 cat("\n")
 output<-data.frame(CI90_lower=c(formatC(lowerCmax,format="f",digits=3)),
-                   Point_estimated=c(formatC(100*exp(test_Cmax-ref_Cmax),format="f",digits=3)),
+                   Point_estimated=c(formatC(100*exp(est_lnCmax),format="f",digits=3)),
                    CI90_upper=c( formatC(upperCmax,format="f",digits=3)))
 show(output)    
 cat("\n")
@@ -290,7 +293,7 @@ TOST_lnCmax<-data.frame(TOST=c("T_lower", "T_upper"),
 colnames(TOST_lnCmax)<- c("TOST","  T value","  P value")
 show(TOST_lnCmax) 
 cat("\n")
-if(PTL_lnCmax > 0.05 || PTU_lnCmax > 0.05){
+if(PTL_lnCmax >= 0.05 || PTU_lnCmax >= 0.05){
 description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -301,7 +304,7 @@ cat("------------------------ Anderson-Hauck Test ------------------------------
 cat("\n")
 cat("          P value =",formatC(EP_lnCmax,format="f",digits=6),"\n") 
 cat("\n")
-if(EP_lnCmax > 0.05){
+if(EP_lnCmax >= 0.05){
 description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -312,7 +315,7 @@ cat("Ref.:\n")
 cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-       \n")
 cat("   Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
 cat("2. Schuirmann DJ. On hypothesis testing to determine if the mean of a  \n")
-cat("   normal distribution is continued in a known interval.Biometrics, 37, \n")
+cat("   normal distribution is continued in a known interval. Biometrics, 37, \n")
 cat("   617(1981).                                                           \n")
 cat("3. Schuirmann DJ. A comparison of the two one-sided tests procedure and the \n")
 cat("   power approach for assessing the equivalence of average bioavailability.\n")
@@ -401,25 +404,25 @@ lnAUC0t_rrt<-lnAUC0t_Srt/sqrt(lnAUC0t_Srr*lnAUC0t_Stt)
 lnAUC0t_Fpm<-((L1+L2-2)*(lnAUC0t_Frt-1)^2 )/(4*(lnAUC0t_Frt)*(1-(lnAUC0t_rrt)^2))
 lnAUC0t_PFpm<-1-pf(lnAUC0t_Fpm, 1, L1+L2-2)
 
-cat("  BE Summary Report                            \n")
+cat("  Pivotal Parameters of BE Study - Summary Report                            \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnAUC0t                                               \n")
 cat("--------------------------------------------------------------------------\n")
-cat("        n1(R=>T) =",L1 , "\n")
-cat("        n2(T=>R) =",L2 , "\n")
-cat("        N(n1+n2) =",L1+L2 , "\n")
-cat("  Lower criteria =",formatC(lnAUC0t_theta1*100,format="f",digits=0), "%\n")
-cat("  Upper criteria =",formatC(lnAUC0t_theta2*100,format="f",digits=0), "%\n")
-cat("        MEAN-ref =",ref_AUC0t, "\n")
-cat("       MEAN-test =",test_AUC0t, "\n")
-cat("             MSE =",anova(lnAUC0t)[5,3], "\n")
-cat("              SE =",SE_AUC0t, "\n")
-cat("Diff. (test-ref) =",test_AUC0t-ref_AUC0t, "\n")
+cat("        n1(R -> T) =",L1 , "\n")
+cat("        n2(T -> R) =",L2 , "\n")
+cat("          N(n1+n2) =",L1+L2 , "\n")
+cat("    Lower criteria =",formatC(lnAUC0t_theta1*100,format="f",digits=0), "%\n")
+cat("    Upper criteria =",formatC(lnAUC0t_theta2*100,format="f",digits=0), "%\n")
+cat("          MEAN-ref =",ref_AUC0t, "\n")
+cat("         MEAN-test =",test_AUC0t, "\n")
+cat("               MSE =",anova(lnAUC0t)[5,3], "\n")
+cat("                SE =",SE_AUC0t, "\n")
+cat("Estimate(test-ref) =",est_lnAUC0t, "\n")
 cat("\n")
 cat("**************** Classical (Shortest) 90% C.I. for lnAUC0t ****************\n")
 cat("\n")
 output<-data.frame(CI90_lower=c( formatC(lowerAUC0t,format="f",digits=3)),
-                   Point_estimated=c( formatC(100*exp(test_AUC0t-ref_AUC0t),format="f",digits=3)),
+                   Point_estimated=c( formatC(100*exp(est_lnAUC0t),format="f",digits=3)),
                    CI90_upper=c( formatC(UpperAUC0t,format="f",digits=3)))
 show(output)
 cat("\n")
@@ -431,7 +434,7 @@ TOST_lnAUC0t<-data.frame(TOST=c("T_lower", "T_upper"),
 colnames(TOST_lnAUC0t)<- c("TOST","  T value","  P value")
 show(TOST_lnAUC0t) 
 cat("\n")
-if(PTL_lnAUC0t > 0.05 || PTU_lnAUC0t > 0.05){
+if(PTL_lnAUC0t >= 0.05 || PTU_lnAUC0t >= 0.05){
 description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -441,7 +444,7 @@ cat("------------------------ Anderson-Hauck Test ------------------------------
 cat("\n")
 cat("          P value =",formatC(EP_lnAUC0t,format="f",digits=6),"\n") 
 cat("\n")
-if(EP_lnAUC0t > 0.05){
+if(EP_lnAUC0t >= 0.05){
 description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -529,25 +532,25 @@ lnAUC0INF_rrt<-lnAUC0INF_Srt/sqrt(lnAUC0INF_Srr*lnAUC0INF_Stt)
 lnAUC0INF_Fpm<-((L1+L2-2)*(lnAUC0INF_Frt-1)^2 )/(4*(lnAUC0INF_Frt)*(1-(lnAUC0INF_rrt)^2))
 lnAUC0INF_PFpm<-1-pf(lnAUC0INF_Fpm, 1, L1+L2-2)
 
-cat("  BE Summary Report                            \n")
+cat("  Pivotal Parameters of BE Study - Summary Report                            \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: lnAUC0INF                                             \n")
 cat("--------------------------------------------------------------------------\n")
-cat("        n1(R=>T) =",L1 , "\n")
-cat("        n2(T=>R) =",L2 , "\n")
-cat("        N(n1+n2) =",L1+L2 , "\n")
-cat("  Lower criteria =",formatC(lnAUC0INF_theta1*100,format="f",digits=0), "%\n")
-cat("  Upper criteria =",formatC(lnAUC0INF_theta2*100,format="f",digits=0), "%\n")
-cat("        MEAN-ref =",ref_AUC0INF, "\n")
-cat("       MEAN-test =",test_AUC0INF, "\n")
-cat("             MSE =",anova(lnAUC0INF)[5,3], "\n")
-cat("              SE =",SE_AUC0INF, "\n")
-cat("Diff. (test-ref) =",test_AUC0INF - ref_AUC0INF, "\n")
+cat("        n1(R -> T) =",L1 , "\n")
+cat("        n2(T -> R) =",L2 , "\n")
+cat("          N(n1+n2) =",L1+L2 , "\n")
+cat("    Lower criteria =",formatC(lnAUC0INF_theta1*100,format="f",digits=0), "%\n")
+cat("    Upper criteria =",formatC(lnAUC0INF_theta2*100,format="f",digits=0), "%\n")
+cat("          MEAN-ref =",ref_AUC0INF, "\n")
+cat("         MEAN-test =",test_AUC0INF, "\n")
+cat("               MSE =",anova(lnAUC0INF)[5,3], "\n")
+cat("                SE =",SE_AUC0INF, "\n")
+cat("Estimate(test-ref) =",est_lnAUC0INF, "\n")
 cat("\n")
 cat("**************** Classical (Shortest) 90% C.I. for lnAUC0INF **************\n")
 cat("\n")
 output<-data.frame(CI90_lower=c( formatC(LowerAUC0INF,format="f",digits=3)),
-                   Point_estimated=c( formatC(100*exp(test_AUC0INF - ref_AUC0INF),format="f",digits=3)),
+                   Point_estimated=c( formatC(100*exp(est_lnAUC0INF),format="f",digits=3)),
                    CI90_upper=c( formatC(UpperAUC0INF,format="f",digits=3)))
 show(output)
 cat("\n")
@@ -559,7 +562,7 @@ TOST_lnAUC0INF<-data.frame(TOST=c("T_lower", "T_upper"),
 colnames(TOST_lnAUC0INF)<- c("TOST","  T value","  P value")
 show(TOST_lnAUC0INF) 
 cat("\n")
-if(PTL_lnAUC0INF > 0.05 || PTU_lnAUC0INF > 0.05){
+if(PTL_lnAUC0INF >= 0.05 || PTU_lnAUC0INF >= 0.05){
 description_TOST_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -569,7 +572,7 @@ cat("------------------------ Anderson-Hauck Test ------------------------------
 cat("\n")
 cat("          P value =",formatC(EP_lnAUC0INF,format="f",digits=6),"\n") 
 cat("\n")
-if(EP_lnAUC0INF > 0.05){
+if(EP_lnAUC0INF >= 0.05){
 description_TOST_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
 else{
@@ -830,7 +833,7 @@ cat("Thus, if the intra-subject variabilities between formulations are different
 cat("equivalence in average bioavailabilities between formulations does not    \n")
 cat("imply that the two formulations are therapeutically equivalent and        \n")
 cat("interchangeable.                                                          \n")
-cat("  We use use both parametric (Pitman-Morgan's adjusted F test and Pearson \n")
+cat("  We use both parametric (Pitman-Morgan's adjusted F test and Pearson \n")
 cat("correlation coefficient) and nonparametric test (Spearman's rank correlation\n")
 cat("coefficient) for testing equality of intra-subject variabilities between \n") 
 cat("formulations.  If a P value is less than 0.05, we may reject the null     \n")
@@ -875,13 +878,13 @@ cat("      variability\n")
 cat("CI95: 95% confidence interval \n")
 cat("-------------------------------------------------\n")
 cat("**Interpretation:\n")
-cat("1. Proior information of inter- and intra- subject variabilities can be used   \n")
-cat("   for smaple size determination.                                            \n")
+cat("1. Prior information of inter- and intra- subject variabilities can be used   \n")
+cat("   for sample size determination.                                            \n")
 cat("2. Intraclass correlation shows the precision of intra-subject variability.\n")
 cat("   A negative estimate indicates that inter- and intra- variability on the   \n")
 cat("   subjects are negatively correlated.                                       \n")
 cat("3. Searle(1971) provided a formula for calculation of the probability for  \n")
-cat("   obtaining a negative estimate of inter-subject variability. In addtion,   \n")
+cat("   obtaining a negative estimate of inter-subject variability. In addition,   \n")
 cat("   a negative estimate may indicate that the general model is incorrect or   \n")
 cat("   sample size is too small.  Thus, prob provides the probability for      \n")
 cat("   obtaining a negative estimate.  If P value is less than 0.05, the chance  \n")                                

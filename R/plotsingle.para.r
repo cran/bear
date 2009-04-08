@@ -12,11 +12,7 @@ plotsingle.para<-function(R.split, T.split, paraR.split,paraT.split,xaxis,yaxis 
 
         points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
         lines(xx1,yy1, lty=2)
-        
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
-        
+        xtick(xx1) #tick for x-axis
         temp <- legend("topright", legend = c("Ref."),
                text.width = strwidth("1,000,000"),
                lty = 2, xjust = 1, yjust = 1)
@@ -31,11 +27,7 @@ for(i in seq_along(paraT.split)){
                   font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")
         points(xx1,yy1,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
         lines(xx1,yy1, lty=1)
-        
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
-        
+        xtick(xx1) #tick for x-axis
         temp <- legend("topright", legend = c("Test"),
                text.width = strwidth("1,000,000"),
                lty = 1, xjust = 1, yjust = 1)
@@ -51,10 +43,8 @@ for(i in seq_along(R.split)){
                  font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")  
         points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
         lines(xx1,yy1, lty=2)
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
-        axis(2,yaxp=c(0, 10000, 100),las=1,tcl=-.2, labels=FALSE)
+         xtick(xx1) #tick for x-axis
+         ytick(yy1) #tick for y-axis
         temp <- legend("topright", legend = c("Ref."),
                text.width = strwidth("1,000,000"),
                lty = 2, xjust = 1, yjust = 1)
@@ -68,10 +58,8 @@ for(i in seq_along(T.split)){
                  font.lab=2,cex.axis=1,cex.main=1,las=1,x.cont=TRUE,xaxt="n")  
         lines(xx1,yy1, lty=1)
         points(xx1,yy1,pch=1,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)
-        axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,
-              105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200),las=0)
-        axis(1,at=0:100,tcl=-.2, labels=FALSE)
-        axis(2,yaxp=c(0, 10000, 100),las=1,tcl=-.2, labels=FALSE)
+         xtick(xx1) #tick for x-axis
+         ytick(yy1) #tick for y-axis
         temp <- legend("topright", legend = c("Test"),
                text.width = strwidth("1,000,000"),
                lty = 1, xjust = 1, yjust = 1)

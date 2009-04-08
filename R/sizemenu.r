@@ -2,8 +2,10 @@
 sizemenu<-function()
 {
 cat("\n")
-  file.menu <- c("Sample size estimation",
-                 "Run demo",
+  file.menu <- c("Cross-over study: Sample size estimation",
+                 "Cross-over study: Run demo",
+                 "Parallel study: Sample size estimation",
+                 "Parallel study: Run demo",
                  "Back to top menu",
                  "Quit")
    cat("\n")
@@ -20,14 +22,26 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-       go()  
+        Paradata() 
          }
     else {
     if (pick == 4){
         cat("\n")
+       demopara() 
+         }
+    else {
+    if (pick == 5){
+        cat("\n")
+       go() 
+         }          
+    else {
+    if (pick == 6){
+        cat("\n")
         cat("\nThank you for using bear!  Bye now. \n\n")
+           }
          }
        }
      }
    }
+  }
  }  
