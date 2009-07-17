@@ -1,13 +1,20 @@
-NCAselect<-function(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis,
-                    Demo=FALSE, BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE)
+NCAselect<-function(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0,
+                    Demo=FALSE, BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n\n")
     cat("****************************************************************************\n")
     cat(" Data for the Ref. Products:                                                \n")
     cat("----------------------------------------------------------------------------\n")
+    if(multiple){
+    cat(" 1. Cmax_ss, Tmax_ss, AUC(tau)ss, ln(Cmax_ss), ln(AUC(tau)ss), T1/2(z),  \n")
+    cat("    Vd/F, MRT, lambda, Cl/F, Cav and Fluctuation  were calculated.\n")
+    cat(" 2.  AUC(tau)ss was calculated using the linear trapezoidal method.       \n")
+    }
+    else{
     cat(" 1. AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf), lambda_z, Cl/F, Vd, MRT,  \n")
-    cat("    and half-life (T1/2(z)) were calculated.                                \n")
+    cat("    and half-life (T1/2(z))                                \n")
     cat(" 2. AUC(0-t) was calculated using the linear trapezoidal method.            \n")
+    }
     cat("                                                                            \n")
     cat("****************************************************************************\n")
     cat("\n\n")
@@ -25,14 +32,30 @@ cat("\n\n")
        }
        else{
        R.split<-split(SingleRdata1, list(SingleRdata1$subj))
+       
         subj<-0
         for (j in 1:(length(R.split))){
         subj[j]<-R.split[[j]][["subj"]][1]
          }
        }
-       
-
-      windows(record = TRUE )
+ windows(record = TRUE )
+if(multiple){
+ par(mfrow=c(1,2))
+       #calculate kel for reference data
+       co_data1<-NULL
+       for(i in seq_along(R.split)){
+         xx1<-R.split[[i]]$time-TlastD
+         yy1<-R.split[[i]]$conc
+           main<-paste(c("Select the exact 3 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
+         plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 2*xx1), ylim=range(1, 4*max(yy1)), xlab="Time", ylab= "Conc. (in log scale)", 
+         main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19)
+         lines(xx1,yy1, lty=20)
+         axis(1, pos=1)
+         axis(2, pos=0,las=1)     
+         co_data1[[i]]<-identify(xx1, yy1, n=3)
+           }
+         }
+else{ 
       par(mfrow=c(2,2))
        #calculate kel for reference data
        co_data1<-NULL
@@ -44,18 +67,16 @@ cat("\n\n")
                          ", Seq_",R.split[[i]]$seq[1],
                          ", Prd_",R.split[[i]]$prd[1]),collapse=" ")
           }
-            else{
-             main<-paste(c("Select the exact 3 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
+          else{
+           main<-paste(c("Select the exact 3 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
            }
-         
          plot(xx1,yy1,log="y", xlim=range(xx1), ylim=range(yy1),xlab="Time", ylab= "Conc. (in log scale)", main=main,
          cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n")
          lines(xx1,yy1, lty=20)
-         axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)   
-         axis(1,at=0:100,tcl=-.2, labels=FALSE)
-         co_data1[[i]]<-identify(R.split[[i]]$time,  R.split[[i]]$conc, n=3)
-         }
-
+         axis(1,tcl=-.2,labels=TRUE)
+         co_data1[[i]]<-identify(xx1, yy1, n=3)
+           }
+         }    
           r_melt<-melt(co_data1)
           Y.split<-split(r_melt,list(r_melt$L1))
       
@@ -118,13 +139,21 @@ rdata.split<-split(rdata,list(rdata$code))
    rdata<-data.frame(subj=y0$value,time=y1$value,conc=y2$value)
    rdata.split<-split(rdata,list(rdata$subj))
    }
+     
       ######Test data
       cat("****************************************************************************\n")
       cat(" Data for the Test Products:                                                \n")
       cat("----------------------------------------------------------------------------\n")
+      if(multiple){
+      cat(" 1. Cmax_ss, Tmax_ss, AUC(tau)ss, ln(Cmax_ss), ln(AUC(tau)ss), T1/2(z),  \n")
+      cat("    Vd/F, MRT, lambda, Cl/F, Cav and Fluctuation  were calculated.\n")
+      cat(" 2.  AUC(tau)ss was calculated using the linear trapezoidal method.       \n")
+        }
+      else{
       cat(" 1. AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf), lambda_z, Cl/F, Vd, MRT,  \n")
-      cat("    and half-life (T1/2(z)) were calculated.                                \n")
+      cat("    and half-life (T1/2(z))                                \n")
       cat(" 2. AUC(0-t) was calculated using the linear trapezoidal method.            \n")
+       }
       cat("                                                                            \n")
       cat("****************************************************************************\n")
       cat("\n\n")
@@ -150,7 +179,22 @@ rdata.split<-split(rdata,list(rdata$code))
          
             #calculate kel for test data
              co_data2<-NULL
-
+if(multiple){
+      par(mfrow=c(1,2))
+            for(i in seq_along(T.split)){
+              xx2<-T.split[[i]]$time-TlastD
+              yy2<-T.split[[i]]$conc
+                  main<-paste(c("Select the exact 3 data points. Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
+                     
+              plot(xx2,yy2, log="y", axes=FALSE,xlim=range(xx2+(xx2/2), 2*xx2), ylim=range(1, 4*max(yy2)), xlab="Time", ylab= "Conc. (in log scale)", 
+              main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19)
+              lines(xx2,yy2, lty=20)
+              axis(1, pos=1)
+              axis(2, pos=0,las=1)     
+              co_data2[[i]]<-identify(xx2,yy2, n=3)
+              }
+}
+else{
             par(mfrow=c(2,2))
             for(i in seq_along(T.split)){
               xx2<-T.split[[i]]$time
@@ -167,11 +211,10 @@ rdata.split<-split(rdata,list(rdata$code))
               plot(xx2,yy2, log="y",xlim=range(xx2), ylim=range(yy2),xlab="Time", ylab= "Conc. (in log scale)", main=main ,
               cex.lab = 1.2,cex.main = 1,pch=1,lab=c(20,20,30), xaxt="n")
               lines(xx2,yy2,lwd=1)
-              axis(1,at=c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100),las=0)
-              axis(1,at=0:100,tcl=-.2, labels=FALSE)
-              co_data2[[i]]<-identify(T.split[[i]]$time,T.split[[i]]$conc, n=3)
+              axis(1,tcl=-.2,labels=TRUE)
+              co_data2[[i]]<-identify(xx2,yy2, n=3)
               }
-
+}
               t_melt<-melt(co_data2)
               YY.split<-split(t_melt,list(t_melt$L1))
               
@@ -260,32 +303,86 @@ if(replicated){
          }
       }
     }
-
 else{
  if(parallel){
+    if(multiple){
+      if (Demo){
+        if(MIX){
+        #Demo=TRUE, BANOVA=TRUE
+        MultipleParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+        Tau, TlastD,SingleRdata0,SingleTdata0)
+         } 
+        else{
+        #Demo=TRUE, BANOVA=FALSE
+        MultipleParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+        Tau, TlastD,SingleRdata0,SingleTdata0)
+         }
+       }   
+      else {
+       if(MIX){
+       ##Demo=FALSE, BANOVA=TRUE
+       MultipleParaNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+       Tau, TlastD,SingleRdata0,SingleTdata0)
+       }
+       else{
+       #Demo=FALSE, BANOVA=FALSE
+       MultipleParaNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+       Tau, TlastD,SingleRdata0,SingleTdata0)
+        }
+       }
+    }
+    else{
+     if (Demo){
+        if(MIX){
+        #Demo=TRUE, BANOVA=TRUE
+         ParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+         } 
+         else{
+        #Demo=TRUE, BANOVA=FALSE
+        ParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+        }
+       }   
+     else {
+        if(MIX){
+        ##Demo=FALSE, BANOVA=TRUE
+        ParaNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+        }
+        else{
+        #Demo=FALSE, BANOVA=FALSE
+        ParaNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+        }
+      }
+     }
+   }   
+else{
+ if(multiple){
   if (Demo){
-    if(MIX){
+    if(BANOVA){
      #Demo=TRUE, BANOVA=TRUE
-     ParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+     MultipleNCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+     Tau, TlastD,SingleRdata0,SingleTdata0)
     } 
      else{
      #Demo=TRUE, BANOVA=FALSE
-     ParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+     MultipleNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+     Tau, TlastD,SingleRdata0,SingleTdata0)
         }
      }   
-   else {
-     if(MIX){
+  else {
+     if(BANOVA){
      ##Demo=FALSE, BANOVA=TRUE
-     ParaNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+     MultipleNCAselectsave.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+     Tau, TlastD,SingleRdata0,SingleTdata0)
      }
       else{
      #Demo=FALSE, BANOVA=FALSE
-       ParaNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+       MultipleNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+       Tau, TlastD,SingleRdata0,SingleTdata0)
+        }
       }
-    }
-   }  
+     }
  else{
- if (Demo){
+  if (Demo){
     if(BANOVA){
      #Demo=TRUE, BANOVA=TRUE
      NCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
@@ -303,8 +400,9 @@ else{
       else{
      #Demo=FALSE, BANOVA=FALSE
        NCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+        }
       }
-    }
+     }
    } 
   }
 }

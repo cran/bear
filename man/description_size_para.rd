@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_size_para}
 
 \alias{description_size_para}

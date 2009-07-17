@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_RepNCAcsv}
 
 \alias{description_RepNCAcsv}

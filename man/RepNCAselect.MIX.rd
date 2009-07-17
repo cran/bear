@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{RepNCAselect.MIX}
 
 \alias{RepNCAselect.MIX}

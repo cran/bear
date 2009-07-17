@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ParaNCA.MIX}
 
 \alias{ParaNCA.MIX}

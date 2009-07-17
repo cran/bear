@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ARSoutput}
 
 \alias{ARSoutput}
@@ -14,6 +16,8 @@ We provides several txt outputs.
          mean conc. plots.
 
 3. Statistical summaries.txt
+
+From: NCAoutput
 }
 
 \keyword{misc}

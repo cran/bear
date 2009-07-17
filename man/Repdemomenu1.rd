@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{Repdemomenu1}
 
 \alias{Repdemomenu1}

@@ -1,5 +1,5 @@
 ##demo for NCA
-demomenu1<-function(replicated=FALSE, parallel=FALSE)
+demomenu1<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
   file.menu <- c("NCA (the exact 3 data points) --> Statistical analysis",
@@ -12,7 +12,7 @@ cat("\n")
                  "Quit")
  cat("\n")
   pick <- menu(file.menu, title = " << NCA --> Statistical analysis>> ")
-     if(replicated){
+  if(replicated){
     data(Replicateddata)
 
     with(entertitle.demo(), {
@@ -136,8 +136,100 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
  }  
  else{
     if(parallel){
-   data(Paralleldata)
+     if(multiple){
+      data(MultipleParadata)
+      with(Multiplentertitle.demo(), {
+      description_ParaNCAinput()  
+      Singledata<-split(MultipleParadata, list(MultipleParadata$drug))
+      Ref<-Singledata[[1]]
+      Refdata<-data.frame(subj=Ref$subj,drug=Ref$drug,time=Ref$time, conc=Ref$conc)
+      
+       SingleRdata0<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
+       SingleRdata1 <- na.omit(SingleRdata1)
+      
+      Test<-rbind(Singledata[[2]])
+      Testdata<-data.frame(subj=Test$subj, drug=Test$drug, time=Test$time, conc=Test$conc)
+      
+       SingleTdata0<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
+       SingleTdata1 <- na.omit(SingleTdata1)
 
+      SingleRdata<-subset(SingleRdata0, time >=TlastD)
+      SingleTdata<-subset(SingleTdata0, time >=TlastD)
+      
+      Totalplot<- rbind(SingleRdata,SingleTdata)
+      
+    if (pick == 1){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+        MultipleParaNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+        MultipleParaNCA.MIXmenu()
+        }
+    else {
+    if (pick == 2){
+      show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
+       }
+    else {
+    if (pick == 3){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
+       }
+    else {
+    if (pick == 4){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
+       }
+    else {
+    if (pick == 5){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
+       }
+   else {
+    if (pick == 6){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
+       }
+   else {
+    if (pick == 7){
+        cat("\n")
+         MultipleParaNCA.MIXmenu()
+       }       
+   else {
+    if (pick == 8){
+       cat("\n")
+       cat("\nThank you for using bear!  Bye now. \n")
+              }      
+             }
+           }
+        }
+      }
+     }
+    }
+   }
+  })         
+ }
+    else{
+     data(Paralleldata)
      with(entertitle.demo(), {
      description_ParaNCAinput()  
       Singledata<-split(Paralleldata, list(Paralleldata$drug))
@@ -224,11 +316,104 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    }
   })    
  }
-    else{
+} 
+ else{
+     if(multiple){
+     data(Multipledata)
+     with(Multiplentertitle.demo(), {
+     description_NCAinput()  
+      TotalSingledata<-Multipledata
+      Singledata<-split(TotalSingledata, list(TotalSingledata$seq, TotalSingledata$prd))
+      Ref<-rbind(Singledata[[1]],Singledata[[4]])
+      Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), 
+                    time=Ref$time, conc=Ref$conc)
+       SingleRdata0<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
+       SingleRdata1 <- na.omit(SingleRdata1)
+        cat("\n\n")
+      Test<-rbind(Singledata[[2]],Singledata[[3]])
+      Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), 
+                     time=Test$time, conc=Test$conc)
+       SingleTdata0<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
+       SingleTdata1 <- na.omit(SingleTdata1)
+      
+     SingleRdata<-subset(SingleRdata0, time >=TlastD)
+     SingleTdata<-subset(SingleTdata0, time >=TlastD)
+     Totalplot<- rbind(SingleRdata0,SingleTdata0)
+      
+    if (pick == 1){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")                 
+         MultipleNCAselectdemo.BANOVA(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+         MultipleNCA.BANOVAmenu()
+        }
+    else {
+    if (pick == 2){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
+       }
+    else {
+    if (pick == 3){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+        MultipleAIC_BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
+       }
+    else {
+    if (pick == 4){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+        MultipleTTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
+       }
+    else {
+    if (pick == 5){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleTTTARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
+       }
+   else {
+    if (pick == 6){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleTTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       MultipleNCA.BANOVAmenu()
+       }
+   else {
+    if (pick == 7){
+        cat("\n")
+        MultipleNCA.BANOVAmenu()
+       }       
+   else {
+    if (pick == 8){
+       cat("\n")
+       cat("\nThank you for using bear!  Bye now. \n")
+              }      
+             }
+           }
+        }
+       }
+      }
+     }
+    }
+   }) 
+ }
+   else{
     description_NCAinput()
     data(TotalSingledata)
     cat("\n\n")
-
      ##NCAanalyze or NCAGLManalyze
      with(entertitle.demo(), {
      description_drug()
@@ -317,6 +502,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
      }
     }
    })
+   }
   }
  }
 } 

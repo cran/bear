@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{Paramenu}
 
 \alias{Paramenu}
@@ -7,7 +9,7 @@
 \description{
   You can use the functions as follows:
    1.run NCA
-   2.Demo for NCAe
+   2.Demo for NCA
 }
 
 \keyword{misc}

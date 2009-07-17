@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_TTT}
 
 \alias{description_TTT}

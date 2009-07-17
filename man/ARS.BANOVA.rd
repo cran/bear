@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ARS.BANOVA}
 
 \alias{ARS.BANOVA}
@@ -21,6 +23,6 @@ sequence, subjects nested in sequences, period and treatment. ANOVA will
 be applied to obtain estimates for the adjusted differences between
 treatment means and the standard error associated with these differences.
 Log-transformed BA measures will also be analyzed.
-}
 
+}
 \keyword{misc}

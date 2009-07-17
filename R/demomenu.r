@@ -1,6 +1,5 @@
 ##demo for NCA
-library(reshape)
-demomenu<-function(replicated=FALSE, parallel=FALSE)
+demomenu<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
   file.menu <- c("lambda_z est. from the exact 3 data points",
@@ -15,7 +14,7 @@ cat("\n")
   pick <- menu(file.menu, title = " << Noncompartmental analysis (NCA)>> ")
     description_NCAinput()
     
-    if(replicated){
+ if(replicated){
     data(Replicateddata)
 
     with(entertitle.demo(), {
@@ -29,24 +28,23 @@ cat("\n")
      pretime<-NULL
      preconc<-NULL
      precode<-NULL
-   for (j in 1:length(predata)){
-    j=j
-    code[j]<-j
+      for (j in 1:length(predata)){
+      j=j
+      code[j]<-j
  
-    LL<-cbind(subj=predata[[j]]$subj,seq=predata[[j]]$seq,prd=predata[[j]]$prd,drug=predata[[j]]$drug,
+      LL<-cbind(subj=predata[[j]]$subj,seq=predata[[j]]$seq,prd=predata[[j]]$prd,drug=predata[[j]]$drug,
            time=predata[[j]]$time,conc=predata[[j]]$conc,code=code[j])
      
-     presubj[[j]]<-c(LL[,1])
-     preseq[[j]]<-c(LL[,2])
-     preprd[[j]]<-c(LL[,3])
-     predrug[[j]]<-c(LL[,4])
-     pretime[[j]]<-c(LL[,5])
-     preconc[[j]]<-c(LL[,6])
-     precode[[j]]<-c(LL[,7])
-      
+       presubj[[j]]<-c(LL[,1])
+       preseq[[j]]<-c(LL[,2])
+       preprd[[j]]<-c(LL[,3])
+       predrug[[j]]<-c(LL[,4])
+       pretime[[j]]<-c(LL[,5])
+       preconc[[j]]<-c(LL[,6])
+       precode[[j]]<-c(LL[,7]) 
      }
  
-setdata<-data.frame(subj=melt(presubj)$value, seq=melt(preseq)$value,prd=melt(preprd)$value,
+      setdata<-data.frame(subj=melt(presubj)$value, seq=melt(preseq)$value,prd=melt(preprd)$value,
                     drug=melt(predrug)$value, time=melt(pretime)$value, conc=melt(preconc)$value,
                     code=melt(precode)$value)
                    
@@ -131,10 +129,96 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    }
   })        
  }  
-   else{
-     if(parallel){
-     data(Paralleldata)
+ else{
+ if(parallel){
+     if(multiple){
+     data(MultipleParadata)
+     with(Multiplentertitle.demo(), {
+     description_ParaNCAinput()  
+      Singledata<-split(MultipleParadata, list(MultipleParadata$drug))
+      Ref<-Singledata[[1]]
+      Refdata<-data.frame(subj=Ref$subj,drug=Ref$drug,time=Ref$time, conc=Ref$conc)
+      
+       SingleRdata0<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
+       SingleRdata1 <- na.omit(SingleRdata1)
+      
+      Test<-rbind(Singledata[[2]])
+      Testdata<-data.frame(subj=Test$subj, drug=Test$drug, time=Test$time, conc=Test$conc)
+      
+       SingleTdata0<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
+       SingleTdata1 <- na.omit(SingleTdata1)
 
+      SingleRdata<-subset(SingleRdata0, time >=TlastD)
+      SingleTdata<-subset(SingleTdata0, time >=TlastD)
+      
+      Totalplot<- rbind(SingleRdata,SingleTdata)
+      
+    if (pick == 1){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+        MultipleParaNCAselectdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+        }
+    else {
+    if (pick == 2){
+      show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       }
+    else {
+    if (pick == 3){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       }
+    else {
+    if (pick == 4){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaTTTdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       }
+    else {
+    if (pick == 5){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaTTTARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       }
+   else {
+    if (pick == 6){
+        show(SingleRdata)
+        show(SingleTdata)
+        cat("\n")
+       MultipleParaTTTAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       }
+   else {
+    if (pick == 7){
+        cat("\n")
+        MultipleParamenu()
+       }       
+   else {
+    if (pick == 8){
+       cat("\n")
+       cat("\nThank you for using bear!  Bye now. \n")
+              }      
+             }
+           }
+        }
+      }
+     }
+    }
+   }
+  })     
+ }
+     else{
+     data(Paralleldata)
      with(entertitle.demo(), {
      description_ParaNCAinput()  
       Singledata<-split(Paralleldata, list(Paralleldata$drug))
@@ -213,11 +297,98 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
      }
     }
    }
-  })    
-     
+  })     
+ }
+} 
+else{
+  if(multiple){
+     data(Multipledata)
+     with(Multiplentertitle.demo(), {
+     description_NCAinput()  
+      TotalSingledata<-Multipledata
+      Singledata<-split(TotalSingledata, list(TotalSingledata$seq, TotalSingledata$prd))
+      Ref<-rbind(Singledata[[1]],Singledata[[4]])
+      Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), 
+                    time=Ref$time, conc=Ref$conc)
+       SingleRdata0<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
+       SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
+       SingleRdata1 <- na.omit(SingleRdata1)
+        cat("\n\n")
+      Test<-rbind(Singledata[[2]],Singledata[[3]])
+      Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), 
+                     time=Test$time, conc=Test$conc)
+       SingleTdata0<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
+       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
+       SingleTdata1 <- na.omit(SingleTdata1)
+      
+     SingleRdata<-subset(SingleRdata0, time >=TlastD)
+     SingleTdata<-subset(SingleTdata0, time >=TlastD)
+     Totalplot<- rbind(SingleRdata0,SingleTdata0)
+      
+    if (pick == 1){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+        MultipleNCAselectdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        }
+    else {
+    if (pick == 2){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       }
+    else {
+    if (pick == 3){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       }
+    else {
+    if (pick == 4){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleTTTdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       }
+    else {
+    if (pick == 5){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleTTTARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       }
+   else {
+    if (pick == 6){
+        show(SingleRdata0)
+        show(SingleTdata0)
+        cat("\n")
+       MultipleTTTAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       }
+   else {
+    if (pick == 7){
+        cat("\n")
+        MultipleNCAmenu()
+       }       
+   else {
+    if (pick == 8){
+       cat("\n")
+       cat("\nThank you for using bear!  Bye now. \n")
+              }      
+             }
+           }
+        }
+       }
+      }
      }
-     else{
-    data(TotalSingledata)
+    }
+   })
+  }
+  else{   
+     data(TotalSingledata)
 
      with(entertitle.demo(), {
      description_NCAinput()  
@@ -293,11 +464,12 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
              }
            }
         }
+       }
       }
      }
     }
+   })    
    }
-  })    
   }
  }
 } 

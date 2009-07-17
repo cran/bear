@@ -1,5 +1,5 @@
-NCAselectsave<-function(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis
-                        ,rdata.split,tdata.split,BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE)
+NCAselectsave<-function(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+                        Tau, TlastD,SingleRdata0,SingleTdata0, BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)
 {
 comdata<-rbind(ref_data,test_data)
 cat("****************************************************************************\n")
@@ -23,19 +23,39 @@ show(comdata)
                  }
                  else{
                     if(BANOVA){
-                     NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                       if(multiple){
+                        MultipleNCA.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                       }
+                       else{
+                        NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                      }
                     }
                     else{
                      if(parallel){
-                       if(MIX){
-                       ParaNCA.MIX(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                       if(multiple){
+                         if(MIX){
+                         MultipleParaNCA.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                        }
+                         else{
+                          MultipleParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                        }
                        }
                        else{
-                       ParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                        if(MIX){
+                        ParaNCA.MIX(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                         }
+                         else{
+                        ParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                         }
                         }
                       }
                      else{
-                     NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                       if(multiple){
+                       MultipleNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                       }
+                        else{
+                        NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                        }
                       }
                     }
                  }
@@ -90,19 +110,39 @@ show(comdata)
                  }
                  else{
                     if(BANOVA){
-                     NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                     if(multiple){
+                        MultipleNCA.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                       }
+                       else{
+                        NCA.BANOVA(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                      }
                     }
                     else{
                      if(parallel){
-                      if(MIX){
-                       ParaNCA.MIX(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
-                      }
-                      else{
-                       ParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
-                       }
+                       if(multiple){
+                        if(MIX){
+                         MultipleParaNCA.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                        }
+                         else{
+                         MultipleParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                          } 
+                        }
+                       else{
+                         if(MIX){
+                          ParaNCA.MIX(Totalplot,Dose,ref_data, test_data,SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
+                          }
+                          else{
+                          ParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
+                         }
+                        }
                      }
                      else{
-                    NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                       if(multiple){
+                        MultipleNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,Tau, TlastD,SingleRdata0,SingleTdata0)
+                        }
+                        else{
+                        NCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+                        }
                      }
                     }
                  }

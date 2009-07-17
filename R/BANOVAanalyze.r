@@ -1,36 +1,59 @@
 #Generalized Linear Models (GLM)
-BANOVAanalyze<-function(TotalData, separateWindows=TRUE)
+BANOVAanalyze<-function(TotalData, multiple=FALSE, separateWindows=TRUE)
 {
  
 description_BANOVA()
-TotalData<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
+if(multiple){
+  TotalData<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
+                   prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax_ss, AUC0t=TotalData$AUCtau_ss, 
+                   lnCmax=TotalData$lnCmax_ss,lnAUC0t=TotalData$lnAUCtau_ss) 
+   
+  cat("\n")
+  cat("Enter lower acceptance limit (%) for lnCmax_ss\n")
+  cat("(or press Enter to use default value: 80 )\n")
+   Lm<-readline()
+   if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+   lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
+   lnCmax_theta2 <- 1/lnCmax_theta1
+
+  cat("\n")
+  cat("Enter lower acceptance limit (%) for lnAUC(tau)ss\n")
+  cat("(or press Enter to use default value: 80 )\n")
+    Lm<-readline()
+    if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+    lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
+    lnAUC0t_theta2 <- 1/lnAUC0t_theta1
+ }
+else{
+   TotalData<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
                    prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF, 
                    lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t,lnAUC0INF=TotalData$lnAUC0INF) 
 
-cat("\n")
-cat("Enter lower acceptance limit (%) for lnCmax\n")
-cat("(or press Enter to use default value: 80 )\n")
-Lm<-readline()
-if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
-lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
-lnCmax_theta2 <- 1/lnCmax_theta1
+  cat("\n")
+  cat("Enter lower acceptance limit (%) for lnCmax\n")
+  cat("(or press Enter to use default value: 80 )\n")
+  Lm<-readline()
+  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+  lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
+  lnCmax_theta2 <- 1/lnCmax_theta1
 
-cat("\n")
-cat("Enter lower acceptance limit (%) for lnAUC0t\n")
-cat("(or press Enter to use default value: 80 )\n")
-Lm<-readline()
-if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
-lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
-lnAUC0t_theta2 <- 1/lnAUC0t_theta1
+  cat("\n")
+  cat("Enter lower acceptance limit (%) for lnAUC0t\n")
+  cat("(or press Enter to use default value: 80 )\n")
+  Lm<-readline()
+  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+  lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
+  lnAUC0t_theta2 <- 1/lnAUC0t_theta1
 
-cat("\n")
-cat("Enter lower acceptance limit (%) for lnAUC0INF\n")
-cat("(or press Enter to use default value: 80 )\n")
-Lm<-readline()
-if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
-lnAUC0INF_theta1 <- Lm/100      # theta1: lower acceptance limit
-lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
-
+  cat("\n")
+  cat("Enter lower acceptance limit (%) for lnAUC0INF\n")
+  cat("(or press Enter to use default value: 80 )\n")
+  Lm<-readline()
+  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+  lnAUC0INF_theta1 <- Lm/100      # theta1: lower acceptance limit
+  lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
+ }
+ 
 Fdata<-split(TotalData, list(TotalData$drug))
 RefData<-Fdata[[1]]
 TestData<-Fdata[[2]]
@@ -147,7 +170,28 @@ IntraInterlnAUC0tseq22<-data.frame(subj=Todata[[3]]$subj, Obs=Todata[[3]]$lnAUC0
 IntraInterlnAUC0t11<-rbind(IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22)
 IntraInterlnAUC0t00<-IntraInterlnAUC0t11[do.call(order, IntraInterlnAUC0t11),]
 
+if(multiple){
+MultipleBANOVA(RefData, TestData, TotalData, L1, L2,
+       lnCmax_MSinter, lnCmax_MSintra, lnCmax_SSinter, lnCmax_SSintra,
+       lnAUC0t_MSinter, lnAUC0t_MSintra, lnAUC0t_SSinter, lnAUC0t_SSintra,            
+       IntraInterlnCmax00,IntraInterlnAUC0t00,
+       lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+MultipleBANOVAoutput(RefData, TestData, TotalData,  L1, L2,
+       lnCmax_MSinter, lnCmax_MSintra, lnCmax_SSinter, lnCmax_SSintra,
+       lnAUC0t_MSinter, lnAUC0t_MSintra, lnAUC0t_SSinter, lnAUC0t_SSintra,         
+       IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
+       IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
+       lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+##show in console
+graphics.off()
+windows(record = TRUE)
+.SavedPlots<-NULL
+MultipleBANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,
+                   IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
+                   IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22, TotalData)
 
+}
+else{
 ##MSinter and MSintra
 lnAUC0INF_MSinter<-(summary(aov(lnAUC0INF ~ prd*drug + Error(subj) , data=TotalData)))[[1]][[1]][2,3]
 lnAUC0INF_MSintra<-(summary(aov(lnAUC0INF ~ prd*drug + Error(subj) , data=TotalData)))[[2]][[1]][3,3]
@@ -198,7 +242,7 @@ IntraInterlnAUC0INFseq22<-data.frame(subj=Todata[[3]]$subj, Obs=Todata[[3]]$lnAU
 
 IntraInterlnAUC0INF11<-rbind(IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22)
 IntraInterlnAUC0INF00<-IntraInterlnAUC0INF11[ do.call(order, IntraInterlnAUC0INF11) ,]
-
+ 
 BANOVA(RefData, TestData, TotalData, L1, L2,
        lnCmax_MSinter, lnCmax_MSintra, lnCmax_SSinter, lnCmax_SSintra,
        lnAUC0t_MSinter, lnAUC0t_MSintra, lnAUC0t_SSinter, lnAUC0t_SSintra,
@@ -220,6 +264,6 @@ windows(record = TRUE)
 BANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00, 
            IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
            IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
-           IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22)
-
+           IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22, TotalData)
+  }
 }

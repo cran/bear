@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_TOST1_lnAUC0t}
 
 \alias{description_TOST1_lnAUC0t}

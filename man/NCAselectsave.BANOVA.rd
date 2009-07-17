@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{NCAselectsave.BANOVA}
 
 \alias{NCAselectsave.BANOVA}

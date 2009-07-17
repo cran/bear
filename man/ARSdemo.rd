@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ARSdemo}
 
 \alias{ARSdemo}
@@ -12,6 +14,6 @@ the slope of that tail portion of the concentration-time curve.  And then
 the last 4 data points, the last 5 data points, on and on until it excludes   
 the data points of Cmax. Thus, this method may exclude the data point of      
 (Tmax, Cmax). WNL v6. has the similar algoirthms like this.                   
-}
 
+}
 \keyword{misc}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_AIC}
 
 \alias{description_AIC}

@@ -1,5 +1,5 @@
 #input subject, time, test and ref concentration
-NCAdata<-function(replicated=FALSE, parallel=FALSE)
+NCAdata<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
 file.menu <- c("Input/edit data from keyboard",
@@ -71,14 +71,24 @@ if (pick == 1){
            save(TotalSingledata,file=TotalSinglename)
           }
            if(parallel){
-            return(ParaNCAanalyze(TotalSingledata))
+             if(multiple){
+              return(MultipleParaNCAanalyze(TotalSingledata))
+               }
+              else{
+               return(ParaNCAanalyze(TotalSingledata))
+               }
            }
            else{ 
             if (replicated){
               return(RepNCAanalyze(TotalSingledata))
              }
            else{
-              return(NCAanalyze(TotalSingledata))
+              if(multiple){
+                 return(MultipleNCAanalyze(TotalSingledata))
+                  }
+               else{ 
+                 return(NCAanalyze(TotalSingledata))
+                 } 
              }  
          }
       }    
@@ -88,8 +98,13 @@ else {
   if (pick == 2){
        cat("\n")                                          
       if(parallel){
-      description_ParaNCAcsv
-      return(ParaNCAcsv())
+      description_ParaNCAcsv()
+        if(multiple){
+        return(MultipleParaNCAcsv())
+        }
+        else{
+         return(ParaNCAcsv())
+        }
       }
       else{
         if (replicated){
@@ -98,7 +113,12 @@ else {
         }
         else{
         description_NCAcsv()
-        return(NCAcsv())
+         if(multiple){
+                 return(MultipleNCAcsv())
+                  }
+               else{ 
+                  return(NCAcsv())
+                 } 
         }
       }
     }
@@ -127,14 +147,24 @@ else {
          save(TotalSingledata,file=TotalSinglename)
          cat("\n\n")
          if(parallel){
-          return(ParaNCAanalyze(TotalSingledata))
+           if(multiple){
+              return(MultipleParaNCAanalyze(TotalSingledata))
+               }
+              else{
+               return(ParaNCAanalyze(TotalSingledata))
+               }
          }
           else{ 
            if (replicated){
              return(RepNCAanalyze(TotalSingledata))
              }
-           else{
-              return(NCAanalyze(TotalSingledata))
+            else{
+                if(multiple){
+                return(MultipleNCAanalyze(TotalSingledata))
+                }
+                else{ 
+                return(NCAanalyze(TotalSingledata))
+               } 
              }
           } 
       }
@@ -143,17 +173,27 @@ else {
   if (pick == 4){
      cat("\n\n")
          if(parallel){
-          Paramenu()
+            if(multiple){
+            MultipleParamenu() 
+              }
+             else{ 
+            Paramenu()
+            } 
           }
          else{
            if (replicated){
               Repmenu()
              }
            else{
+               if(multiple){
+               MultipleNCAmenu()
+               }
+               else{ 
                NCAmenu()
              }
           }
       }
+    } 
   else {
   if (pick == 5){
      cat("\nThank you for using bear!  Bye now. \n\n")

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_NCA}
 
 \alias{description_NCA}

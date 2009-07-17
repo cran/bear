@@ -1,5 +1,5 @@
 ##save the NCA results 
-NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE){
+NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
 
   cat("\n\n")
      cat("\nEnter the file name (without file extention):\n")
@@ -41,14 +41,24 @@ NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE){
                  save(TotalData,file=Totalname)
                   }
            if(parallel){
-              ParaMIXmenu(TotalData)
+              if(multiple){
+              MultipleParaMIXmenu(TotalData)
               }
-           else{
+              else{
+              ParaMIXmenu(TotalData)
+                }
+              }
+             else{
                if(replicated){
                  RepMIXmenu(TotalData)
                  }
                 else{
-                 BANOVAmenu(TotalData)
+                  if(multiple){
+                    MultipleBANOVAmenu(TotalData)
+                    }
+                    else{
+                    BANOVAmenu(TotalData)
+                    }
                  }
             }
 }

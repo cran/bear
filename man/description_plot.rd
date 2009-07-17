@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_plot}
 
 \alias{description_plot}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_RepNCAinput}
 
 \alias{description_RepNCAinput}

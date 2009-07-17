@@ -1,0 +1,6 @@
+#output for TTTAIC for multiple dose
+MultipleTTTAICoutput<-function(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData, Tau, TlastD,
+                              rdata.split,tdata.split){
+NCAoutput(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex_test, Dose, TotalData,
+                    rdata.split,tdata.split, Tau, TlastD,NCA=FALSE,ARS=FALSE,TTT=FALSE,aic=FALSE,TTTARS=FALSE,TTTAIC=TRUE,replicated=FALSE, multiple=TRUE)
+}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{demomenu1}
 
 \alias{demomenu1}

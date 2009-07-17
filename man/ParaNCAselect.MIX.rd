@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ParaNCAselect.MIX}
 
 \alias{ParaNCAselect.MIX}

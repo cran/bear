@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{RepNCAdemo.MIX}
 
 \alias{RepNCAdemo.MIX}

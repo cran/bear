@@ -1,4 +1,4 @@
-#demo file for demoNCA, demoNCAGLM, demoNCATTT, , demoNCATTTGLM, demoNCAWNL,, demoNCAWNLGLM 
+#demo file for demoNCA, demoNCAGLM, demoNCATTT, demoNCATTTGLM, demoNCAWNL, demoNCAWNLGLM 
 TotalSingledata<-data.frame(subj=c(1,1,1,1,1,1,1,1,1,1,1,1,
                                    1,1,1,1,1,1,1,1,1,1,1,1,
                                    2,2,2,2,2,2,2,2,2,2,2,

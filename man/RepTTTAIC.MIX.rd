@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{RepTTTAIC.MIX}
 
 \alias{RepTTTAIC.MIX}

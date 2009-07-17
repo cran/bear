@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_RepMIX}
 
 \alias{description_RepMIX}

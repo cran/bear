@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{AIC_BANOVA}
 
 \alias{AIC_BANOVA}

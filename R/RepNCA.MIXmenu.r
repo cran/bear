@@ -1,5 +1,5 @@
 # List
-RepNCA.MIXmenu<-function(parallel=FALSE)
+RepNCA.MIXmenu<-function(parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
   file.menu <- c("NCA --> Statistical analysis (lme, 90%CI...)",
@@ -16,7 +16,12 @@ cat("\n")
     if (pick == 1){
       cat("\n")
           if(parallel){
-        ParaNCA.MIXdata()  
+            if(multiple){
+            MultipleParaNCA.MIXdata()  
+            }
+            else{
+            ParaNCA.MIXdata()  
+            }
           }
           else{
         RepNCA.MIXdata()
@@ -26,7 +31,12 @@ cat("\n")
     if (pick == 2){
         cat("\n")
          if(parallel){
-       Parademomenu1()   
+           if(multiple){
+            MultipleParademomenu1()
+            }
+            else{       
+            Parademomenu1()   
+            }
           }
           else{
        Repdemomenu1()
@@ -35,7 +45,12 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-       Multiplestatmenu()
+        if(multiple){
+         Multiplestat1menu()
+        }
+         else{
+         Multiplestatmenu()
+          }
          }
    else {
     if (pick == 4){

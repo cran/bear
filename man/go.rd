@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{go}
 
 \alias{go}
@@ -6,10 +8,8 @@
 
 \description{
   You can use the functions as follows:
-   1.Sample size estimation for average BE
-   2.Noncompartment Analysis (NCA)
-   3.Generalized Linear Models (GLM)
-   4.NCA->GLM
+   1.Single dose study
+   2.Multiple dose study
 
 }
 

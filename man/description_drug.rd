@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_drug}
 
 \alias{description_drug}

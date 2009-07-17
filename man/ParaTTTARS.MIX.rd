@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ParaTTTARS.MIX}
 
 \alias{ParaTTTARS.MIX}

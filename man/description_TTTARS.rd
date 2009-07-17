@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_TTTARS}
 
 \alias{description_TTTARS}

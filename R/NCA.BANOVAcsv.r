@@ -1,5 +1,5 @@
 #choose separator and decimal type
-NCA.BANOVAcsv<-function(replicated=FALSE, parallel=FALSE)
+NCA.BANOVAcsv<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
 file.menu <- c("separator = comma (,) &  decimal = point (.)",
@@ -36,18 +36,27 @@ if (pick == 1){
         cat("\n\n")
         show(TotalSingledata)
         if(parallel){
+            if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
      }
-
+   }
  else {
   if (pick == 2){
   cat("\n\n")
@@ -71,17 +80,27 @@ if (pick == 1){
         cat("\n\n")
         show(TotalSingledata)
            if(parallel){
+             if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
      }
+   }  
  else {
   if (pick == 3){
   cat("\n\n")
@@ -105,17 +124,27 @@ if (pick == 1){
         cat("\n\n")
         show(TotalSingledata)
             if(parallel){
+             if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
      }
+   }  
  else {
   if (pick == 4){
   cat("\n\n")
@@ -138,18 +167,28 @@ if (pick == 1){
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-            if(parallel){
+         if(parallel){
+            if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
      } 
+  }   
  else {
   if (pick == 5){
   cat("\n\n")
@@ -173,17 +212,27 @@ if (pick == 1){
         cat("\n\n")
         show(TotalSingledata)
            if(parallel){
+             if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
      }
+  }   
  else {
   if (pick == 6){
   cat("\n\n")
@@ -207,17 +256,27 @@ if (pick == 1){
         cat("\n\n")
         show(TotalSingledata)
             if(parallel){
+             if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
      }
+ }    
  else {
   if (pick == 7){
   cat("\n\n")
@@ -241,17 +300,27 @@ if (pick == 1){
         cat("\n\n")
         show(TotalSingledata)
             if(parallel){
+            if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
-     } 
+     }
+  }    
  else {
   if (pick == 8){
   cat("\n\n")
@@ -275,17 +344,27 @@ if (pick == 1){
         cat("\n\n")
         show(TotalSingledata)
             if(parallel){
+             if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
      } 
+  }   
  else {
   if (pick == 9){
   cat("\n\n")
@@ -308,31 +387,51 @@ if (pick == 1){
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
         show(TotalSingledata)
-           if(parallel){
+        if(parallel){
+             if(multiple){
+            return(MultipleParaNCA.MIXanalyze(TotalSingledata))
+            }
+            else{
             return(ParaNCA.MIXanalyze(TotalSingledata))
+             }
            }
         else{ 
          if(replicated){
               return(RepNCA.MIXanalyze(TotalSingledata))
              }
            else{
+              if(multiple){
+              return(MultipleNCA.BANOVAanalyze(TotalSingledata))
+              }
+              else{
               return(NCA.BANOVAanalyze(TotalSingledata))
              }  
          }
-     }                     
+     } 
+   }                      
  else {
   if (pick == 10){
           if(parallel){
+            if(multiple){
+            MultipleParaNCA.MIXmenu()
+            }
+            else{
             ParaNCA.MIXmenu()
+             }
            }
-           else{  
-             if (replicated){
-                RepNCA.MIXmenu()
-                }
-             else{
-              NCA.BANOVAmenu()
-                }
+          else{  
+          if (replicated){
+              RepNCA.MIXmenu()
+             }
+          else{
+          if(multiple){
+              return(MultipleNCA.BANOVAmenu())
+              }
+              else{
+              return( NCA.BANOVAmenu())
                }
+              }
+             }
             }
           }
          }

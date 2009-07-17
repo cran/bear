@@ -1,5 +1,5 @@
 # List of Noncompartment Analysis (NCA) for 2x2 crossover 
-NCAmenu<-function(replicated=FALSE, parallel=FALSE)
+NCAmenu<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
   file.menu <- c("Run NCA",
@@ -20,38 +20,62 @@ else{
 } 
     if (pick == 1){
       cat("\n")
-       if(parallel){
-       ParaNCAdata()
-       }
+      if(multiple){
+         if(parallel){
+         MultipleParaNCAdata()
+         }
        else{
-        if(replicated ){
+          MultipleNCAdata()
+          }
+         } 
+      else{
+        if(parallel){
+         ParaNCAdata()
+         }
+         else{
+          if(replicated ){
           RepNCAdata()
           } 
-         else{ 
+          else{ 
           NCAdata()
           }
          } 
-       }
+        }
+       } 
     else {
     if (pick == 2){
         cat("\n")
-       if(parallel){
-       Parademomenu()
+      if(multiple){
+        if(parallel){
+       MultipleParademomenu()
        }
        else{
-        if(replicated ){
-          Repdemomenu()
-          } 
-         else{ 
-         demomenu() 
+         Multipledemomenu() 
           }
          } 
-       }
+       else{
+         if(parallel){
+          Parademomenu()
+          }
+          else{
+           if(replicated ){
+            Repdemomenu()
+             } 
+            else{ 
+            demomenu()}
+          } 
+         }
+        } 
     else {
     if (pick == 3){
         cat("\n")
+       if(multiple){
+       Multiple1menu() 
+       }
+       else{
        Multiplemenu() 
        }
+      } 
     else {
     if (pick == 4){
         cat("\n")

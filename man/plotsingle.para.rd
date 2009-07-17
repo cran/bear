@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{plotsingle.para}
 
 \alias{plotsingle.para}

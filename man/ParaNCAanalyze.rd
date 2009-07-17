@@ -1,8 +1,10 @@
+\encoding{UTF-8}
+
 \name{ParaNCAanalyze}
 
 \alias{ParaNCAanalyze}
 
-\title{NCA analyze function for replicated study}
+\title{NCA analyze function for parallel study}
 
 \description{
 We provide noncompartmental analysis (NCA) approach to compute AUCs and terminal

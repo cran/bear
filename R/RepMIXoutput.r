@@ -1,6 +1,6 @@
 RepMIXoutput<-function(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF
                        ,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2
-                       ,parallel=FALSE)
+                       ,parallel=FALSE, multiple=FALSE)
 {
 filepath<-getwd()
 cat("\n")
@@ -9,20 +9,38 @@ cat(" Files have been output to the directory of                                
 cat(" ",filepath,".                                                              \n")
 cat("----------------------------------------------------------------------------\n")
 cat(" lme_stat.txt                                                               \n")
-cat("    --> lme: Cmax, AUC0t, AUC0inf, ln(Cmax), ln(AUC0t), ln(AUC0inf)           \n")
+if(multiple){
+cat("    -->lme: Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss                \n")
+cat("    -->90%CI: lnCmax_ss, lnAUC(tau)ss                                     \n")
+}
+else{
+cat("    --> lme: Cmax, AUC0t, AUC0inf, ln(Cmax), ln(AUC0t), ln(AUC0inf)          \n")
 cat("    --> 90%CI: ln(Cmax), ln(AUC0t), and ln(AUC0inf)                          \n")
+}
 cat("****************************************************************************\n")
 cat("\n")
 values <- lapply(TotalData, unique)
 level <-sapply(values, length)
 
 if(parallel){
-TotalData1<-data.frame(subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),
+
+  if(multiple){
+  TotalData1<-data.frame (subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t,
+                         lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t)
+ 
+  rdrug<-as.data.frame(sapply(TotalData1, tapply, TotalData1$drug, mean))
+  drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t,lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t)       
+  colnames(TotalData1)<- c("subj","drug","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+  colnames(drug_mean)<- c("DRUG","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+  }
+  else{
+  TotalData1<-data.frame(subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),
                       Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF,
                       lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t,lnAUC0INF=TotalData$lnAUC0INF)
-rdrug<-as.data.frame(sapply(TotalData1, tapply, TotalData1$drug, mean))
-drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF, 
+  rdrug<-as.data.frame(sapply(TotalData1, tapply, TotalData1$drug, mean))
+  drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF, 
                       lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t,lnAUC0INF=rdrug$lnAUC0INF)                
+  }
 }
 else {
 TotalData1<-data.frame (subj=TotalData$subj, drug=as.numeric(TotalData$drug),seq=as.numeric(TotalData$seq),
@@ -51,7 +69,7 @@ description_version()
 cat("\n")
 cat("  Data Summary of BA measurement                  \n")
 cat("--------------------------------------------------------------------------\n")
-show(TotalData)
+show(TotalData1)
 cat("\n")
 cat("\n")
 cat("\n")
@@ -75,8 +93,13 @@ show(drug_mean)
 cat("\n")
 cat("\n")
 cat("\n")                     
- ParaMIX(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
+   if(multiple){
+   MultipleParaMIX(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,test_lnCmax,test_lnAUC0t,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+   }
+   else{
+   ParaMIX(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
          lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
+   }
  }
 else{ 
 cat("  SUBJECT     ",level[[1]],"        ",subj_mean$SUBJECT,"\n")

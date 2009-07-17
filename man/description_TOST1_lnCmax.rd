@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_TOST1_lnCmax}
 
 \alias{description_TOST1_lnCmax}

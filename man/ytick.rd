@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ytick}
 
 \alias{ytick}
@@ -9,3 +11,4 @@ Tick for plots.
 }
 
 \keyword{misc}
+

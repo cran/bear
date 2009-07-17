@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_load}
 
 \alias{description_load}

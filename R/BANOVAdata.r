@@ -1,7 +1,8 @@
 #input subject, time, test and ref concentration
 BANOVAdata<-function(TotalData,
                      replicated=FALSE,
-                     parallel=FALSE)
+                     parallel=FALSE,
+                     multiple=FALSE)
 {
 cat("\n")
 file.menu <- c("Input/edit data from keyboard",
@@ -31,46 +32,72 @@ cat("   -> subject no.(subj)                                                    
 cat("   -> drug                                                                   \n")
 cat("       1:Ref.                                                                \n")
 cat("       2:Test                                                                \n")
-cat("   -> Cmax                                                                   \n")
-cat("   -> AUC0t: the area under the predicted plasma concentration time curve for\n")
-cat("         test data. (time = 0 to time of the last measureable Cp)            \n")
-cat("   -> AUC0INF: area under the predicted plasma concentration time curve for  \n")
-cat("         test data. (time = 0 to infinity)                                   \n")
-cat("   -> ln(Cmax): Log-transformed Cmax                                         \n")
-cat("   -> ln(AUC0t): Log-transformed AUC0t                                       \n")
-cat("   -> ln(AUC0INF): Log-transformed AUC0INF                                   \n")
-cat("*****************************************************************************\n")
+ if(multiple){
+     cat("   -> Cmax_ss: Cmax at steady-state                                          \n")
+     cat("   -> AUC(tau)ss: the area under the predicted plasma concentration time   \n")
+     cat("         curve during a dosing interval (tau) at steady-state                \n")
+     cat("   -> lnCmax_ss: Log-transformed Cmax_ss                                   \n")
+     cat("   -> lnAUC(tau)ss: Log-transformed AUC(tau)ss                         \n")
+     cat("*****************************************************************************\n")
+     cat("\n")
+      TotalData<-data.frame (subj=c(0), drug=c(0),Cmax_ss=c(0), AUCtau_ss=c(0), 
+                   lnCmax_ss=c(0),lnAUCtau_ss=c(0))
+    }
+   else{
+     cat("   -> Cmax                                                                   \n")
+     cat("   -> AUC0t: the area under the predicted plasma concentration time curve.  \n")
+     cat("            (time = 0 to time of the last measureable Cp)                    \n")
+     cat("   -> AUC0INF: area under the predicted plasma concentration time curve.     \n")
+     cat("            (time = 0 to infinity)                                           \n")
+     cat("   -> ln(Cmax): Log-transformed Cmax                                         \n")
+     cat("   -> ln(AUC0t): Log-transformed AUC0t                                       \n")
+     cat("   -> ln(AUC0INF): Log-transformed AUC0INF                                   \n")
+     cat("*****************************************************************************\n")
 cat("\n")
 TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
                    lnCmax=c(0),lnAUC0t=c(0),lnAUC0INF=c(0))
+   }
  }
  else{ 
-cat("\n")
-cat("*****************************************************************************\n")
-cat("About the data file...                                                       \n")
-cat("-----------------------------------------------------------------------------\n")
-cat("   -> subject no.(subj)                                                      \n")
-cat("   -> drug                                                                   \n")
-cat("       1:Ref.                                                                \n")
-cat("       2:Test                                                                \n")
-cat("   -> sequence (seq)                                                         \n")
-cat("       Sequence = 1:Ref.-->Test                                              \n")
-cat("       Sequence = 2:Test-->Ref.                                              \n")
-cat("   -> period (prd)                                                           \n")
-cat("       Period 1: the 1st-treatment period                                    \n")
-cat("       Period 2: the 2nd-treatment period                                    \n")
-cat("   -> Cmax                                                                   \n")
-cat("   -> AUC0t: the area under the predicted plasma concentration time curve for\n")
-cat("         test data. (time = 0 to time of the last measureable Cp)            \n")
-cat("   -> AUC0INF: area under the predicted plasma concentration time curve for  \n")
-cat("         test data. (time = 0 to infinity)                                   \n")
-cat("   -> ln(Cmax): Log-transformed Cmax                                         \n")
-cat("   -> ln(AUC0t): Log-transformed AUC0t                                       \n")
-cat("   -> ln(AUC0INF): Log-transformed AUC0INF                                   \n")
-cat("*****************************************************************************\n")
-cat("\n")
-TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
+    cat("\n")
+     cat("*****************************************************************************\n")
+     cat("About the data file...                                                       \n")
+     cat("-----------------------------------------------------------------------------\n")
+     cat("   -> subject no.(subj)                                                      \n")
+     cat("   -> drug                                                                   \n")
+     cat("       1:Ref.                                                                \n")
+     cat("       2:Test                                                                \n")
+     cat("   -> sequence (seq)                                                         \n")
+     cat("       Sequence = 1:Ref.-->Test                                              \n")
+     cat("       Sequence = 2:Test-->Ref.                                              \n")
+     cat("   -> period (prd)                                                           \n")
+     cat("       Period 1: the 1st-treatment period                                    \n")
+     cat("       Period 2: the 2nd-treatment period                                    \n")
+   if(multiple){
+     cat("   -> Cmax_ss: Cmax at steady-state                                          \n")
+     cat("   -> AUC(tau)ss: the area under the predicted plasma concentration time   \n")
+     cat("         curve during a dosing interval (tau) at steady-state                \n")
+     cat("   -> lnCmax_ss: Log-transformed Cmax_ss                                   \n")
+     cat("   -> lnAUC(tau)ss: Log-transformed AUC(tau)ss                         \n")
+     cat("*****************************************************************************\n")
+     cat("\n")
+      TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax_ss=c(0), AUCtau_ss=c(0), 
+                   lnCmax_ss=c(0),lnAUCtau_ss=c(0))
+    }
+   else{
+     cat("   -> Cmax                                                                   \n")
+     cat("   -> AUC0t: the area under the predicted plasma concentration time curve for\n")
+     cat("         test data. (time = 0 to time of the last measureable Cp)            \n")
+     cat("   -> AUC0INF: area under the predicted plasma concentration time curve for  \n")
+     cat("         test data. (time = 0 to infinity)                                   \n")
+     cat("   -> ln(Cmax): Log-transformed Cmax                                         \n")
+     cat("   -> ln(AUC0t): Log-transformed AUC0t                                       \n")
+     cat("   -> ln(AUC0INF): Log-transformed AUC0INF                                   \n")
+     cat("*****************************************************************************\n")
+     cat("\n")
+      TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
                    lnCmax=c(0),lnAUC0t=c(0),lnAUC0INF=c(0))
+    }
 } 
      TotalData<-edit(TotalData)
      TotalData<- na.omit(TotalData)
@@ -117,8 +144,14 @@ TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax=c(0), AUC0t=
            save(TotalData,file=Totalname)
           }
        if(parallel){
-       ParaMIXanalyze(TotalData)
-       ParaMIXmenu() 
+         if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+         }
+         else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
        }
        else{ 
         if(replicated){
@@ -126,16 +159,37 @@ TotalData<-data.frame (subj=c(0), drug=c(0),seq=c(0), prd=c(0),Cmax=c(0), AUC0t=
          RepMIXmenu()
          }
         else{
-        BANOVAanalyze(TotalData)
-        BANOVAmenu() 
+           if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
       }
     } 
 else {
- 
   if (pick == 2){
 cat("\n\n")
 if(parallel){
+ if(multiple){
+   cat("***********************************************************************************\n")
+   cat(" row#1:subj, drug, Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss                    \n")
+   cat("-----------------------------------------------------------------------------------\n")
+   cat(" column#1: subject no.(subj)                                                       \n")
+   cat(" column#2: drug                                                                    \n")
+   cat("            ->1: Ref.                                                              \n")
+   cat("            ->2: Test                                                              \n")
+   cat(" column#3: Cmax_ss                                                                 \n")
+   cat(" column#4: AUC(tau)ss                                                              \n")
+   cat(" column#5: lnCmax_ss                                                               \n")
+   cat(" column#6: lnAUC(tau)ss                                                            \n")
+   cat("***********************************************************************************\n")
+MultipleParaMIXcsv()
+ }
+ else{
 cat("***********************************************************************************\n")
 cat(" row#1:subj, drug, Cmax, AUC0t, AUC0INF, ln(Cmax), ln(AUC0t), ln(AUC0INF)          \n")
 cat("-----------------------------------------------------------------------------------\n")
@@ -151,33 +205,61 @@ cat(" column#7: ln(AUC0t)                                                       
 cat(" column#8: ln(AUC0INF)                                                            \n")
 cat("***********************************************************************************\n") 
 ParaMIXcsv()
+   }
  }
  else{  
-cat("***********************************************************************************\n")
-cat(" row#1:subj, drug, seq, prd, Cmax, AUC0t, AUC0INF, ln(Cmax), ln(AUC0t), ln(AUC0INF)\n")
-cat("-----------------------------------------------------------------------------------\n")
-cat(" column#1: subject no.(subj)                                                       \n")
-cat(" column#2: drug                                                                    \n")
-cat("            ->1: Ref.                                                              \n")
-cat("            ->2: Test                                                              \n")
-cat(" column#3: sequence (seq)                                                          \n")
-cat("            ->Sequence 1: Ref.-->Test                                              \n")
-cat("            ->Sequence 2: Test-->Ref.                                              \n")
-cat(" column#4: period (prd)                                                            \n")
-cat("            ->Period 1: 1st-treatment period                                       \n")
-cat("            ->Period 2: 2nd-treatment period                                       \n")
-cat(" column#5: Cmax                                                                    \n")
-cat(" column#6: AUC0t                                                                   \n")
-cat(" column#7: AUC0INF                                                                 \n")
-cat(" column#8: ln(Cmax)                                                                \n")
-cat(" column#9: ln(AUC0t)                                                               \n")
-cat(" column#10: ln(AUC0INF)                                                            \n")
-cat("***********************************************************************************\n")
+   if(multiple){
+   cat("***********************************************************************************\n")
+   cat(" row#1:subj, drug, seq, prd, Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss          \n")
+   cat("-----------------------------------------------------------------------------------\n")
+   cat(" column#1: subject no.(subj)                                                       \n")
+   cat(" column#2: drug                                                                    \n")
+   cat("            ->1: Ref.                                                              \n")
+   cat("            ->2: Test                                                              \n")
+   cat(" column#3: sequence (seq)                                                          \n")
+   cat("            ->Sequence 1: Ref.-->Test                                              \n")
+   cat("            ->Sequence 2: Test-->Ref.                                              \n")
+   cat(" column#4: period (prd)                                                            \n")
+   cat("            ->Period 1: 1st-treatment period                                       \n")
+   cat("            ->Period 2: 2nd-treatment period                                       \n")
+   cat(" column#5: Cmax_ss                                                                 \n")
+   cat(" column#6: AUC(tau)ss                                                              \n")
+   cat(" column#7: lnCmax_ss                                                               \n")
+   cat(" column#8: lnAUC(tau)ss                                                            \n")
+   cat("***********************************************************************************\n")
+   }
+   else{
+   cat("***********************************************************************************\n")
+   cat(" row#1:subj, drug, seq, prd, Cmax, AUC0t, AUC0INF, ln(Cmax), ln(AUC0t), ln(AUC0INF)\n")
+   cat("-----------------------------------------------------------------------------------\n")
+   cat(" column#1: subject no.(subj)                                                       \n")
+   cat(" column#2: drug                                                                    \n")
+   cat("            ->1: Ref.                                                              \n")
+   cat("            ->2: Test                                                              \n")
+   cat(" column#3: sequence (seq)                                                          \n")
+   cat("            ->Sequence 1: Ref.-->Test                                              \n")
+   cat("            ->Sequence 2: Test-->Ref.                                              \n")
+   cat(" column#4: period (prd)                                                            \n")
+   cat("            ->Period 1: 1st-treatment period                                       \n")
+   cat("            ->Period 2: 2nd-treatment period                                       \n")
+   cat(" column#5: Cmax                                                                    \n")
+   cat(" column#6: AUC0t                                                                   \n")
+   cat(" column#7: AUC0INF                                                                 \n")
+   cat(" column#8: ln(Cmax)                                                                \n")
+   cat(" column#9: ln(AUC0t)                                                               \n")
+   cat(" column#10: ln(AUC0INF)                                                            \n")
+   cat("***********************************************************************************\n")
+     }
         if(replicated){
          RepMIXcsv()
          }
         else{
-        BANOVAcsv()
+           if(multiple){
+           MultipleBANOVAcsv()
+           }
+           else{
+           BANOVAcsv()
+           }
         }
       }
  } 
@@ -190,18 +272,35 @@ else {
      TotalData<-edit(TotalData)
      TotalData<- na.omit(TotalData)
      if(parallel){
-     colnames(TotalData)<-list("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF") 
+       if(multiple){
+       colnames(TotalData)<-list("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+       show(TotalData)
+       }
+       else{
+       colnames(TotalData)<-list("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF") 
+        }
       }
      else{ 
-     colnames(TotalData)<-list("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+       if(multiple){
+        colnames(TotalData)<-list("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+       }
+       else{
+       colnames(TotalData)<-list("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+       }
      } 
      cat("\n\n")
      show(TotalData)
      save(TotalData,file=Totalname)
      cat("\n\n")
-      if(parallel){
-      ParaMIXanalyze(TotalData)
-      ParaMIXmenu() 
+     if(parallel){
+      if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+         }
+         else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
       }
       else{  
          if(replicated){
@@ -209,8 +308,14 @@ else {
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+         if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
       }
      } 
@@ -218,8 +323,13 @@ else {
   else {
   if (pick == 4){
      cat("\n\n")
-    Multiplestatmenu()
-                }
+     if(multiple){
+     Multiplestat1menu()
+     }
+     else{
+      Multiplestatmenu()
+      }   
+     }
   else {
   if (pick == 5){
       cat("\n")

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{description_TTTAIC}
 
 \alias{description_TTTAIC}

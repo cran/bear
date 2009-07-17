@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{TTTARS.BANOVA}
 
 \alias{TTTARS.BANOVA}

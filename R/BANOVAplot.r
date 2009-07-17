@@ -2,21 +2,38 @@ library(plotrix)
 BANOVAplot<-function(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00,
                      IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
                      IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
-                     IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22)
+                     IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22, TotalData, multiple=FALSE)
 {
 
 #par(mfrow=c(2,2))
 ##lnCmax
-par(mai=c(1.3,2,1.3,1.8)) 
+par(mai=c(1.3,2,1.3,1.8))
+if(multiple){
+a <- "Normal Probability Plot of lnCmax_ss (intrasubj)"
+b <- "Normal Probability Plot of lnCmax_ss (intersubj)"
+c <- "lnCmax_ss (expected value)"
+a1 <- "Normal Probability Plot of lnAUC(tau)ss (intrasubj)"
+b1 <- "Normal Probability Plot of lnAUC(tau)ss (intersubj)"
+c1 <- "lnAUC(tau)ss (expected value)"
+ }
+else{
+a <- "Normal Probability Plot of lnCmax (intrasubj)"
+b <- "Normal Probability Plot of lnCmax (intersubj)"
+c<-  "lnCmax (expected value)" 
+a1 <- "Normal Probability Plot of lnAUC0t (intrasubj)"
+b1 <- "Normal Probability Plot of lnAUC0t (intersubj)"
+c1<-  "lnAUC0t (expected value)" 
+}
+
 qqnorm(IntraInterlnCmax00$Stud_Intra,
-main = "Normal Probability Plot of lnCmax (intrasubj)",
+main = a,
 xlab = "Normal scores", ylab = "Studentized intra-subject residuals",las=1)
 qqline(IntraInterlnCmax00$Stud_Intra)
 abline(h=0, col = "gray60")
 abline(v=0, col = "gray60")
 
 qqnorm(IntraInterlnCmax00$Stud_Inter,
-main = "Normal Probability Plot of lnCmax (intersubj)",
+main = b,
 xlab = "Normal scores", ylab = "Studentized inter-subject residuals",las=1)
 qqline(IntraInterlnCmax00$Stud_Inter)
 abline(h=0, col = "gray60")
@@ -32,7 +49,7 @@ abline(v=0, col = "gray60")
 x <- IntraInterlnCmax00[,3]
 y <- IntraInterlnCmax00[,5]
 
-plot(x, y,asp=NA,col="lightgray", xlab="lnCmax (expected value)", ylab="studentized residuals", 
+plot(x, y,asp=NA,col="lightgray", xlab=c, ylab="studentized residuals", 
      main="intra-subject residuals",las=1,xlim=c(min(x),max(x)),
      ylim=c(min(y)-3,max(y)+3))
 abline(h=0, col = "gray60")
@@ -54,7 +71,7 @@ temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
 x <- IntraInterlnCmax00[,3]
 y <- IntraInterlnCmax00[,7]
 
-plot(x, y,asp=NA,col="lightgray", xlab="lnCmax (expected value)", ylab="studentized residuals", 
+plot(x, y,asp=NA,col="lightgray", xlab=c, ylab="studentized residuals", 
      main="inter-subject residuals",las=1,xlim=c(min(x),max(x)),
      ylim=c(min(y)-3,max(y)+3))
 abline(h=0, col = "gray60")
@@ -74,14 +91,14 @@ temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
 
 #lnAUC0t
 qqnorm(IntraInterlnAUC0t00$Stud_Intra,
-main = "Normal Probability Plot of lnAUC0t (intrasubj)",
+main = a1,
 xlab = "Normal scores", ylab = "Studentized intra-subject residuals",las=1)
 qqline(IntraInterlnAUC0t00$Stud_Intra)
 abline(h=0, col = "gray60")
 abline(v=0, col = "gray60")
 
 qqnorm(IntraInterlnAUC0t00$Stud_Inter,
-main = "Normal Probability Plot of lnAUC0t (intersubj)",
+main = b1,
 xlab = "Normal scores", ylab = "Studentized inter-subject residuals",las=1)
 qqline(IntraInterlnAUC0t00$Stud_Inter)
 abline(h=0, col = "gray60")
@@ -93,7 +110,7 @@ abline(v=0, col = "gray60")
 x <- IntraInterlnAUC0t00[,3]
 y <- IntraInterlnAUC0t00[,5]
 
-plot(x, y,asp=NA,col="lightgray", xlab="lnAUC0t (expected value)", ylab="studentized residuals",
+plot(x, y,asp=NA,col="lightgray", xlab=c1, ylab="studentized residuals",
      main="intra-subject residuals",las=1,xlim=c(min(x),max(x)),
      ylim=c(min(y)-3,max(y)+3))
 abline(h=0, col = "gray60")
@@ -115,7 +132,7 @@ temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
 x <- IntraInterlnAUC0t00[,3]
 y <- IntraInterlnAUC0t00[,7]
 
-plot(x, y,asp=NA,col="lightgray", xlab="lnAUC0t (expected value)", ylab="studentized residuals",
+plot(x, y,asp=NA,col="lightgray", xlab=c1, ylab="studentized residuals",
      main="inter-subject residuals",las=1,xlim=c(min(x),max(x)),
      ylim=c(min(y)-3,max(y)+3))
 abline(h=0, col = "gray60")
@@ -132,7 +149,9 @@ thigmophobe.labels(IntraInterlnAUC0tseq22$Exp,IntraInterlnAUC0tseq22$Stud_Inter,
 temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
                text.width = strwidth("1,000,000000"),
                pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
-               
+if(multiple){
+}
+else{               
 #lnAUC0inf
 qqnorm(IntraInterlnAUC0INF00$Stud_Intra,
 main = "Normal Probability Plot of lnAUC0INF (intrasubj)",
@@ -193,12 +212,24 @@ thigmophobe.labels(IntraInterlnAUC0INFseq22$Exp,IntraInterlnAUC0INFseq22$Stud_In
 temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
                text.width = strwidth("1,000,000000"),
                pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
-
+}
 ##plot boxplot
 par(mai=c(1,0.8,1,0.5)) 
+if(multiple){
+op <- par(mfrow=c(1,2))
+d <- "lnCmax_ss (intrasubj)"
+e <- "lnCmax_ss (intersubj)"
+d1<- "lnAUC(tau)ss (intrasubj)"
+e1<- "lnAUC(tau)ss (intersubj)"
+}
+else{
 op <- par(mfrow=c(1,3))
-
-lnCmaxintra<-boxplot(IntraInterlnCmax00$Stud_Intra,col="lightgray", main="lnCmax (intrasubj)", ylab="studentized residuals",las=1)
+d  <- "lnCmax (intrasubj)"
+e  <- "lnCmax (intersubj)"
+d1 <- "lnAUC0t (intrasubj)"
+e1<-  "lnAUC0t (intersubj)"
+}
+lnCmaxintra<-boxplot(IntraInterlnCmax00$Stud_Intra,col="lightgray", main=d, ylab="studentized residuals",las=1)
   if (length(lnCmaxintra$out) > 0){ 
   z<-NULL 
    for(i in seq_along(lnCmaxintra$out)){
@@ -207,7 +238,7 @@ lnCmaxintra<-boxplot(IntraInterlnCmax00$Stud_Intra,col="lightgray", main="lnCmax
    text(lnCmaxintra$group, lnCmaxintra$out, IntraInterlnCmax00$subj[z],pos = 2 ) 
    } 
 
-lnAUC0tintra<-boxplot(IntraInterlnAUC0t00$Stud_Intra,col="lightgray", main="lnAUC0t (intrasubj)", ylab="studentized residuals",las=1)
+lnAUC0tintra<-boxplot(IntraInterlnAUC0t00$Stud_Intra,col="lightgray", main=d1, ylab="studentized residuals",las=1)
 if (length(lnAUC0tintra$out) > 0){  
   z<-NULL 
    for(i in seq_along(lnAUC0tintra$out)){
@@ -215,7 +246,9 @@ if (length(lnAUC0tintra$out) > 0){
        } 
    text(lnAUC0tintra$group, lnAUC0tintra$out,IntraInterlnAUC0t00$subj[z],pos = 2 ) 
    } 
-
+if(multiple){
+}
+else{
 lnAUC0INFintra<-boxplot(IntraInterlnAUC0INF00$Stud_Intra,col="lightgray", main="lnAUC0INF (intrasubj)", ylab="studentized residuals",las=1)
 if (length(lnAUC0INFintra$out) > 0){  
   z<-NULL 
@@ -224,8 +257,8 @@ if (length(lnAUC0INFintra$out) > 0){
        } 
    text(lnAUC0INFintra$group, lnAUC0INFintra$out,IntraInterlnAUC0INF00$subj[z],pos = 2 ) 
    } 
-   
-lnCmaxinter<-boxplot(IntraInterlnCmax00$Stud_Inter,col="lightgray", main="lnCmax (intersubj)", ylab="studentized residuals",las=1)
+}   
+lnCmaxinter<-boxplot(IntraInterlnCmax00$Stud_Inter,col="lightgray", main=e, ylab="studentized residuals",las=1)
 if (length(lnCmaxinter$out) > 0){  
   z<-NULL 
    for(i in seq_along(lnCmaxinter$out)){
@@ -234,7 +267,7 @@ if (length(lnCmaxinter$out) > 0){
    text(lnCmaxinter$group, lnCmaxinter$out,IntraInterlnCmax00$subj[z],pos = 2 ) 
    } 
    
-lnAUC0tinter<-boxplot(IntraInterlnAUC0t00$Stud_Inter,col="lightgray", main="lnAUC0t (intersubj)", ylab="studentized residuals",las=1)
+lnAUC0tinter<-boxplot(IntraInterlnAUC0t00$Stud_Inter,col="lightgray", main=e1, ylab="studentized residuals",las=1)
 if (length(lnAUC0tinter$out) > 0){  
   z<-NULL 
    for(i in seq_along(lnAUC0tinter$out)){
@@ -242,7 +275,9 @@ if (length(lnAUC0tinter$out) > 0){
        } 
    text(lnAUC0tinter$group, lnAUC0tinter$out,IntraInterlnAUC0t00$subj[z],pos = 2 ) 
    } 
-   
+if(multiple){
+}
+else{   
 lnAUC0INFinter<-boxplot(IntraInterlnAUC0INF00$Stud_Inter,col="lightgray", main="lnAUC0INF (intersubj)", ylab="studentized residuals",las=1)
 if (length(lnAUC0INFinter$out) > 0){  
   z<-NULL 
@@ -251,5 +286,47 @@ if (length(lnAUC0INFinter$out) > 0){
        } 
    text(lnAUC0INFinter$group, lnAUC0INFinter$out,IntraInterlnAUC0INF00$subj[z],pos = 2 ) 
    } 
+  }
+##cook's distance
+ lnCmax<- lm(lnCmax ~ seq + subj:seq + prd + drug , data=TotalData)
+ lnAUC0t<- lm(lnAUC0t ~ seq + subj:seq + prd + drug , data=TotalData)
 
+if(multiple){ 
+ ##cook's distance 
+  op <- par(mfrow=c(1,1))
+  cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax_ss=cooks.distance(lnCmax),lnAUCtau_ss=cooks.distance(lnAUC0t)) 
+  cooks<-split(cook, cook$drug)[[1]]
+  cooks<-cooks[ do.call(order, cooks) ,]
+  ticks <-c(levels(cooks$subj))
+  n <- length(cooks$subj)
+  ##lnCmax_ss
+  plot(cooks$lnCmax_ss, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnCmax_ss",font.lab=2)
+  axis(1, at=c(1:n), labels = ticks)    
+  points(cooks$subj,cooks$lnCmax_ss) 
+   ##lnAUCtau_ss
+  plot(cooks$lnAUCtau_ss, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC(tau)",font.lab=2)
+  axis(1, at=c(1:n), labels = ticks)    
+  points(cooks$subj,cooks$lnAUCtau_ss) 
+   }
+   else{
+    op <- par(mfrow=c(1,1))
+    lnAUC0INF<- lm(lnAUC0INF ~ seq + subj:seq + prd + drug , data=TotalData)
+    cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax=cooks.distance(lnCmax),lnAUC0t=cooks.distance(lnAUC0t),lnAUC0INF= cooks.distance(lnAUC0INF) ) 
+    cooks<-split(cook, cook$drug)[[1]]
+     cooks<-cooks[ do.call(order, cooks) ,]
+     ticks <-c(levels(cooks$subj))
+     n <- length(cooks$subj) 
+     ##lnCmax
+     plot(cooks$lnCmax, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnCmax",font.lab=2)
+     axis(1, at=c(1:n), labels = ticks)    
+     points(cooks$subj,cooks$lnCmax) 
+     ##lnAUC0t
+     plot(cooks$lnAUC0t, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC0t",font.lab=2)
+     axis(1, at=c(1:n), labels = ticks)    
+     points(cooks$subj,cooks$lnAUC0t) 
+      ##lnAUC0INF
+     plot(cooks$lnAUC0INF, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC0INF",font.lab=2)
+     axis(1, at=c(1:n), labels = ticks)    
+     points(cooks$subj,cooks$lnAUC0INF) 
+   }
 }

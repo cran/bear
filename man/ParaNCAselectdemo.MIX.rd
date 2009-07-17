@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ParaNCAselectdemo.MIX}
 
 \alias{ParaNCAselectdemo.MIX}

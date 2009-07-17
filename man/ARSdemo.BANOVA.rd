@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ARSdemo.BANOVA}
 
 \alias{ARSdemo.BANOVA}

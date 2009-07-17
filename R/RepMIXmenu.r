@@ -1,5 +1,5 @@
 # Replicated study lme menu
-RepMIXmenu<-function(TotalData, parallel=FALSE)
+RepMIXmenu<-function(TotalData, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
   file.menu <- c("Statistical analysis (lme, 90%CI...)",
@@ -11,7 +11,12 @@ cat("\n")
     if (pick == 1){
       cat("\n")
         if(parallel){
+          if(multiple){
+         MultipleParaMIXdata(TotalData)
+          }
+          else{
          ParaMIXdata(TotalData)
+          }
         }
         else{ 
          RepMIXdata(TotalData)
@@ -21,7 +26,12 @@ cat("\n")
     if (pick == 2){
         cat("\n")
         if(parallel){
-        ParademoMIX()
+           if(multiple){
+        MultipleParademoMIX()
+          }
+          else{
+         ParademoMIX()
+          }
         }
         else{ 
         RepdemoMIX()
@@ -30,8 +40,13 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
+       if(multiple){
+       stat1menu()
+       }
+       else{
        statmenu()
          }
+       }
    else {
     if (pick == 4){
         cat("\nThank you for using bear!  Bye now. \n\n")

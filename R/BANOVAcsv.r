@@ -1,5 +1,5 @@
 #choose separator and decimal type
-BANOVAcsv<-function(replicated=FALSE, parallel=FALSE)
+BANOVAcsv<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
 file.menu <- c("separator = comma (,) &  decimal = point (.)",
@@ -20,10 +20,20 @@ if (pick == 1){
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
          } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
         TotalData<-edit(TotalData)
@@ -32,8 +42,14 @@ if (pick == 1){
         show(TotalData)
             
         if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+         if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+         }
+         else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
         }
         else{ 
         if(replicated){
@@ -41,8 +57,14 @@ if (pick == 1){
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+         if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
      }
   } 
@@ -53,10 +75,20 @@ if (pick == 1){
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
         TotalData<-edit(TotalData)
@@ -64,8 +96,14 @@ if (pick == 1){
         cat("\n\n")
         show(TotalData)
         if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+         if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+          }
+         else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
         }
         else{ 
         if(replicated){
@@ -73,8 +111,14 @@ if (pick == 1){
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+         if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
        }
      }  
@@ -85,10 +129,20 @@ if (pick == 1){
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
         TotalData<-edit(TotalData)
@@ -96,8 +150,14 @@ if (pick == 1){
         cat("\n\n")
         show(TotalData)
         if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+         if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+         }
+         else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         } 
         }
         else{ 
              if(replicated){
@@ -105,8 +165,14 @@ if (pick == 1){
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+         if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
        }
      }  
@@ -117,10 +183,20 @@ else {
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
         TotalData<-edit(TotalData)
@@ -128,8 +204,14 @@ else {
         cat("\n\n")
         show(TotalData)
          if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+          if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+          }
+          else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         } 
         }
         else{ 
              if(replicated){
@@ -137,8 +219,14 @@ else {
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+         if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
        }
     }   
@@ -149,10 +237,20 @@ else {
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
         TotalData<-edit(TotalData)
@@ -160,8 +258,14 @@ else {
         cat("\n\n")
         show(TotalData)
         if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+         if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+         }
+         else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
         }
         else{ 
               if(replicated){
@@ -169,8 +273,14 @@ else {
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+          if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
       }
     }            
@@ -181,10 +291,20 @@ else {
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=",")
         TotalData<-edit(TotalData)
@@ -192,8 +312,14 @@ else {
         cat("\n\n")
         show(TotalData)
          if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+          if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+          }
+         else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
         }
         else{ 
              if(replicated){
@@ -201,8 +327,14 @@ else {
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+          if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
       }
     }       
@@ -213,10 +345,20 @@ else {
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
         TotalData<-edit(TotalData)
@@ -224,8 +366,14 @@ else {
         cat("\n\n")
         show(TotalData)
          if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+          if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+          }
+          else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
         }
         else{ 
           if(replicated){
@@ -233,8 +381,14 @@ else {
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+          if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
        }
     }       
@@ -245,10 +399,20 @@ else {
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+         if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
         TotalData<-edit(TotalData)
@@ -256,8 +420,14 @@ else {
         cat("\n\n")
         show(TotalData)
          if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+          if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+          }
+          else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
         }
         else{ 
            if(replicated){
@@ -265,8 +435,14 @@ else {
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+          if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
       }
      }     
@@ -277,10 +453,20 @@ else {
         TotalData.file <-readline()
         TotalData.file<-paste(TotalData.file,".csv",sep="")
         if(parallel){
-        cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          if(multiple){
+          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+          }
+          else{
+          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+          }
         } 
         else{ 
-        cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        if(multiple){
+             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+           }
+           else{
+            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+           }
         } 
         TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
         TotalData<-edit(TotalData)
@@ -288,8 +474,14 @@ else {
         cat("\n\n")
         show(TotalData)
          if(parallel){
-        ParaMIXanalyze(TotalData)
-        ParaMIXmenu() 
+          if(multiple){
+          MultipleParaMIXanalyze(TotalData)
+          MultipleParaMIXmenu() 
+          }
+          else{
+          ParaMIXanalyze(TotalData)
+          ParaMIXmenu() 
+         }
         }
         else{ 
              if(replicated){
@@ -297,14 +489,25 @@ else {
          RepMIXmenu() 
           }
          else{
-         BANOVAanalyze(TotalData)
-         BANOVAmenu()
+          if(multiple){
+           MultipleBANOVAanalyze(TotalData)
+           MultipleBANOVAmenu() 
+           }
+           else{
+           BANOVAanalyze(TotalData)
+           BANOVAmenu() 
+           }
         }
        }
       }                
  else {
   if (pick == 10){
-       Multiplestatmenu
+      if(multiple){
+        Multiplestat1menu()
+             }
+       else{
+         Multiplestatmenu()
+            }   
            }
           }
          }

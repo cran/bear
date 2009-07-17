@@ -1,5 +1,5 @@
 # List of Generalized Linear Models (GLM)
-NCA.BANOVAmenu<-function()
+NCA.BANOVAmenu<-function(multiple=FALSE)
 {
 cat("\n")
   file.menu <- c("NCA --> Statistical analysis (ANOVA(lm), 90%CI...)",
@@ -8,6 +8,30 @@ cat("\n")
                  "Quit")
  cat("\n")
   pick <- menu(file.menu, title = " << NCA--> Statistical analysis for 2x2x2 Crossover Study>> ")
+  if(multiple){
+   if (pick == 1){
+      cat("\n")
+        MultipleNCA.BANOVAdata()
+        }
+    else {
+    if (pick == 2){
+        cat("\n")
+        Multipledemomenu1()
+       }
+    else {
+    if (pick == 3){
+        cat("\n")
+        Multiplestat1menu()
+         }
+   else {
+    if (pick == 4){
+        cat("\nThank you for using bear!  Bye now. \n\n")
+              }
+           }
+       }
+    }
+  } 
+  else{ 
     if (pick == 1){
       cat("\n")
         NCA.BANOVAdata()
@@ -20,7 +44,7 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
-       go()
+        Multiplestatmenu()
          }
    else {
     if (pick == 4){
@@ -29,5 +53,6 @@ cat("\n")
            }
        }
     }
-}
+  }
+} 
   
