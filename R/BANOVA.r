@@ -8,7 +8,7 @@ BANOVA<-function(RefData, TestData,TotalData, L1, L2,
        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2, multiple=FALSE)
 {
 #theta1:  lower acceptance limit
-#theta1:  lower acceptance limit
+#theta2:  higher acceptance limit
 #represent GLM
 if(multiple){
 cat("*** This is a 2-treatment, 2-sequence, and 2-period crossover multiple dose design. \n")
@@ -28,10 +28,14 @@ cat("  Dependent Variable: Cmax_ss                                              
 cat("\n")
 cat("Type I SS\n")
 Cmax_ss<- lm(Cmax_ss ~ seq + subj:seq + prd + drug , data=Data)
-show(anova(Cmax_ss))
+BearAnova=anova(Cmax_ss)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(Cmax_ss, test="F"))
+Cmax_ss_drop1 <- drop1(Cmax_ss, test="F")
+row.names(Cmax_ss_drop1)[4]="subj(seq)"
+show(Cmax_ss_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(Cmax_ss ~ prd*drug + Error(subj) , data=Data)))
@@ -41,11 +45,15 @@ else{
 cat("  Dependent Variable: Cmax                                                 \n")
 cat("\n")
 cat("Type I SS\n")
-Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug , data=TotalData)
-show(anova(Cmax))
+Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug, data=TotalData)
+BearAnova=anova(Cmax)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(Cmax, test="F"))
+Cmax_drop1 <- drop1(Cmax, test="F")
+row.names(Cmax_drop1)[4]="subj(seq)"
+show(Cmax_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(Cmax ~ prd*drug + Error(subj) , data=TotalData)))
@@ -63,10 +71,14 @@ cat("  Dependent Variable: AUC(tau)ss                                        \n"
 cat("\n")
 cat("Type I SS\n")
 AUCtau_ss<- lm(AUCtau_ss ~ seq + subj:seq+ prd + drug , data=Data)
-show(anova(AUCtau_ss))
+BearAnova=anova(AUCtau_ss)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(AUCtau_ss, test="F"))
+AUCtau_ss_drop1 <- drop1(AUCtau_ss, test="F")
+row.names(AUCtau_ss_drop1)[4]="subj(seq)"
+show(AUCtau_ss_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(AUCtau_ss ~ prd*drug + Error(subj) , data=Data)))
@@ -77,10 +89,14 @@ cat("  Dependent Variable: AUC0t                                                
 cat("\n")
 cat("Type I SS\n")
 AUC0t<- lm(AUC0t ~ seq + subj:seq+ prd + drug , data=TotalData)
-show(anova(AUC0t))
+BearAnova=anova(AUC0t)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(AUC0t, test="F"))
+AUC0t_drop1 <- drop1(AUC0t, test="F")
+row.names(AUC0t_drop1)[4]="subj(seq)"
+show(AUC0t_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(AUC0t ~ prd*drug + Error(subj) , data=TotalData)))
@@ -99,10 +115,14 @@ cat("  Dependent Variable: AUC0INF                                             \
 cat("\n")
 cat("Type I SS\n")
 AUC0INF<- lm(AUC0INF ~ seq + subj:seq + prd + drug , data=TotalData)
-show(anova(AUC0INF))
+BearAnova=anova(AUC0INF)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(AUC0INF, test="F"))
+AUC0INF_drop1 <- drop1(AUC0INF, test="F")
+row.names(AUC0INF_drop1)[4]="subj(seq)"
+show(AUC0INF_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(AUC0INF ~ prd*drug + Error(subj) , data=TotalData)))
@@ -118,10 +138,14 @@ cat("  Dependent Variable: lnCmax_ss                                           \
 cat("\n")
 cat("Type I SS\n")
 lnCmax_ss<- lm(lnCmax_ss ~ seq + subj:seq + prd + drug , data=Data)
-show(anova(lnCmax_ss))
+BearAnova=anova(lnCmax_ss)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(lnCmax_ss, test="F"))
+lnCmax_ss_drop1 <- drop1(lnCmax_ss, test="F")
+row.names(lnCmax_ss_drop1)[4]="subj(seq)"
+show(lnCmax_ss_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(lnCmax_ss ~ prd*drug + Error(subj) , data=Data)))
@@ -132,10 +156,14 @@ cat("  Dependent Variable: lnCmax                                              \
 cat("\n")
 cat("Type I SS\n")
 lnCmax<- lm(lnCmax ~ seq + subj:seq + prd + drug , data=TotalData)
-show(anova(lnCmax))
+BearAnova=anova(lnCmax)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(lnCmax, test="F"))
+lnCmax_drop1 <- drop1(lnCmax, test="F")
+row.names(lnCmax_drop1)[4]="subj(seq)"
+show(lnCmax_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(lnCmax ~ prd*drug + Error(subj) , data=TotalData)))
@@ -156,10 +184,14 @@ cat("  Dependent Variable: lnAUC(tau)ss                                      \n"
 cat("\n")
 cat("Type I SS\n")
 lnAUCtau_ss<- lm(lnAUCtau_ss ~ seq + subj:seq + prd + drug , data=Data)
-show(anova(lnAUCtau_ss))
+BearAnova=anova(lnAUCtau_ss)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(lnAUCtau_ss, test="F"))
+lnAUCtau_ss_drop1 <- drop1(lnAUCtau_ss, test="F")
+row.names(lnAUCtau_ss_drop1)[4]="subj(seq)"
+show(lnAUCtau_ss_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(lnAUCtau_ss ~ prd*drug + Error(subj) , data=Data)))
@@ -170,10 +202,14 @@ cat("  Dependent Variable: lnAUC0t                                             \
 cat("\n")
 cat("Type I SS\n")
 lnAUC0t<- lm(lnAUC0t ~ seq + subj:seq + prd + drug , data=TotalData)
-show(anova(lnAUC0t))
+BearAnova=anova(lnAUC0t)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(lnAUC0t, test="F"))
+lnAUC0t_drop1 <- drop1(lnAUC0t, test="F")
+row.names(lnAUC0t_drop1)[4]="subj(seq)"
+show(lnAUC0t_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(lnAUC0t ~ prd*drug + Error(subj) , data=TotalData)))
@@ -196,10 +232,14 @@ cat("  Dependent Variable: lnAUC0INF                                            
 cat("\n")
 cat("Type I SS\n")
 lnAUC0INF<- lm(lnAUC0INF ~ seq + subj:seq + prd + drug , data=TotalData)
-show(anova(lnAUC0INF))
+BearAnova=anova(lnAUC0INF)
+row.names(BearAnova)[4]="subj(seq)"
+show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-show(drop1(lnAUC0INF, test="F"))
+lnAUC0INF_drop1 <- drop1(lnAUC0INF, test="F")
+row.names(lnAUC0INF_drop1)[4]="subj(seq)"
+show(lnAUC0INF_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(lnAUC0INF ~ prd*drug + Error(subj) , data=TotalData)))

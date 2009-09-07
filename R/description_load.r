@@ -4,5 +4,5 @@ description_load<-function(){
     cat("R will load data from the directory of \n")
     cat("",filepath,".\n")
     cat("\n")
-    cat("\nEnter the file name (without file extention):\n")
+    cat("\nEnter the file name (** Please NO file extention! **):\n")
 }

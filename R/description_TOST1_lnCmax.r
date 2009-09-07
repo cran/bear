@@ -18,6 +18,6 @@ cat("Ho: Theta =< ",theta1," or  Theta >= ",formatC(theta2,format="f",digits=2),
 cat("Ha: ",theta1," < Theta < ",formatC(theta2,format="f",digits=2),"\n")
 cat("Theta = Mean_test/Mean_ref  \n")
 cat("Because all P values are less than 0.05, we will reject the null hypothesis (Ho). \n")
-cat("BE acceptance range is set at",formatC(theta1*100,format="f",digits=0),"% - ",formatC(theta2*100,format="f",digits=0),"% .\n")
+cat("BE acceptance range is set at",formatC(theta1*100,format="f",digits=2),"% - ",formatC(theta2*100,format="f",digits=2),"% .\n")
 cat("\n")
 }

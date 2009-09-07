@@ -170,7 +170,7 @@ cat("\n")
 sink()
 
 options(warn=-1)
-pdf("ODplots.pdf")
+pdf("ODplots.pdf", paper = "a4", bg = "white")
 description_plot()
 if(multiple){
 MultipleBANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,

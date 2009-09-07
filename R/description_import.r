@@ -4,5 +4,5 @@ description_import<-function(){
    cat("R will import your data file from the directory of \n")
    cat("",filepath,".\n")
    cat("\n")
-   cat("\nEnter the file name (without file extention):\n")
+   cat("\nEnter the file name (** Please NO file extention! **):\n")
 }

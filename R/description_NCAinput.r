@@ -1,10 +1,10 @@
 description_NCAinput<-function(replicated=FALSE, parallel=FALSE){
 cat("****************************************************************************\n")
-cat("Input/Edit Data                                                             \n")
+cat("Input Data Foramt                                                      \n")
 cat("----------------------------------------------------------------------------\n")
 cat("   -> subject no.(subj)                                                     \n")
 if(parallel){
-cat("   -> treatment (drug)                                                      \n")
+cat("   -> treatment (trt or drug)                                               \n")
 cat("          1: Ref.                                                           \n")
 cat("          2: Test                                                           \n")
 cat("   -> sampling time                                                         \n")
@@ -17,8 +17,8 @@ cat("           ex. 4 periods                                                   
 cat("            1:Ref.-> Test -> Ref.-> Test                                     \n")
 cat("            2:Test-> Ref. -> Test-> Ref.                                     \n")
 cat("        or ex. 3 periods                                                    \n")
-cat("            1:Ref. -> Test -> Test                                            \n")
-cat("            2:Test -> Ref. -> Ref.                                            \n")
+cat("            1:Ref. -> Test -> Rest                                            \n")
+cat("            2:Test -> Ref. -> Tef.                                            \n")
 }
   else{
 cat("          1:Ref. -> Test                                                     \n")
@@ -36,15 +36,15 @@ cat("          1: 1st-treatment period                                          
 cat("          2: 2nd-treatment period                                           \n")
  }
   if (replicated){
-cat("   -> treatment (drug)                                                      \n")
+cat("   -> treatment (trt or drug)                                               \n")
 cat("          1: Ref.                                                           \n")
 cat("          2: Test                                                           \n")
 cat("   -> sampling time                                                         \n")
-cat("   -> drug plasma/serum/blood concentration (conc)                          \n")
+cat("   -> drug plasma/serum/blood concentration (Conc.)                         \n")
 }
   else{
 cat("   -> sampling time                                                         \n")
-cat("   -> drug plasma/serum/blood concentration (conc)                          \n") 
+cat("   -> drug plasma/serum/blood concentration (Conc.)                         \n") 
  }
 }
 cat("****************************************************************************\n")

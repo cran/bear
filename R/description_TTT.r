@@ -1,6 +1,6 @@
 description_TTT<-function(){
 cat("******************************************************************************\n")
-cat("                      Two Times Tmax (TTT) method                             \n")
+cat("                      Two-Times-Tmax (TTT) method                             \n")
 cat("------------------------------------------------------------------------------\n")
 cat(" The TTT method is based on the Bateman function.  The Bateman function       \n")
 cat(" has two outstanding points.  First, the maximum of the curve (Cmax at        \n")
@@ -8,7 +8,7 @@ cat(" Tmax) and secondly, the inflection point of the curve (Cinpt at Tinpt).   
 cat(" The inflection point of the curve describes the point where the algebraic    \n")
 cat(" sign of the curvature changes. Tinpt is equal to two times Tmax.  Thus,      \n")
 cat(" The twofold of the observed Tmax value can be used as a threshold of time    \n")
-cat(" points to be included in the calculation of lambda(z).                       \n")
+cat(" points to be included in the calculation of lambda_z.                       \n")
 cat(" Ref.:Scheerans C, Derendorf H and C Kloft. Proposal for a Standardised       \n")
 cat("      Identification of the Mono-Exponential Terminal Phase for Orally        \n")
 cat("      Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).            \n")

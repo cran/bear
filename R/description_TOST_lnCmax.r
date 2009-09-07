@@ -20,6 +20,6 @@ cat("Ha: ",theta1," < Theta < ",formatC(theta2,format="f",digits=2),"\n")
 cat("Theta = Mean_test/Mean_ref  \n")
 cat("Because at least one of P values is greater than 0.05, we thus can not reject  \n")
 cat("the null hypothesis (Ho). \n")
-cat("BE acceptance range is set at",formatC(theta1*100,format="f",digits=0),"% - ",formatC(theta2*100,format="f",digits=0),"% .\n")
+cat("BE acceptance range is set at",formatC(theta1*100,format="f",digits=2),"% - ",formatC(theta2*100,format="f",digits=2),"% .\n")
 cat("\n")
 }

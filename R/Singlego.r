@@ -49,7 +49,8 @@ if(multiple){
          }
   else {
     if (pick == 6){
-        cat("\nThank you for using bear!  Bye now. \n\n")}
+        cat("\nThank you for using bear!  Bye now. \n\n")
+        graphics.off()}
          }     
        }
       }

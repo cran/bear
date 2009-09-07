@@ -71,7 +71,7 @@ Totalplot <- na.omit(Totalplot)
      Ls.split<-split(LR, list(LR$subj))
      }
  
-pdf("NCAplots.pdf")
+pdf("NCAplots.pdf", paper = "a4", bg = "white")
 
 #0.
 description_plot()
