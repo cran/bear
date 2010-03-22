@@ -61,15 +61,15 @@ if (substr(CV1, 1, 1) == "" || CV1<=0)  CV1<-20  else CV1<-as.numeric(CV1)
 CV<-CV1/100
 
 cat("\n")
-cat("Enter power (%)(or press Enter to use default value: 80 ): ")
+cat("Enter power (%)(or press Enter to use default value: 80.0 ): ")
 epower <- readline()
-if (substr(epower, 1, 1) == "" || epower<=0)  epower<-80  else epower<-as.numeric(epower)
+if (substr(epower, 1, 1) == "" || epower<=0)  epower<-80.0  else epower<-as.numeric(epower)
 target<-epower/100
 
 cat("\n")
-cat("Enter lower acceptance limit (%)(or press Enter to use default value: 80 ): ")
+cat("Enter lower acceptance limit (%)(or press Enter to use default value: 80.000 ): ")
 Lm<-readline()
-if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
 theta1 <- Lm/100      # theta1: lower acceptance limit
 theta2 <- 1/theta1
 }

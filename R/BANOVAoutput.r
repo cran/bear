@@ -13,7 +13,7 @@ BANOVAoutput<-function(RefData, TestData,TotalData, L1, L2,
 filepath<-getwd()
 cat("\n")
 cat("****************************************************************************\n")
-cat(" Files have been output to the directory of                                 \n")
+cat(" The following output files can be found at the directory of                \n")
 cat(" ",filepath,".                                                              \n")
 cat("----------------------------------------------------------------------------\n")
 cat(" ANOVA_stat.txt                                                             \n")

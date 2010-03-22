@@ -5,7 +5,7 @@ RepMIXoutput<-function(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,tes
 filepath<-getwd()
 cat("\n")
 cat("****************************************************************************\n")
-cat(" Files have been output to the directory of                                 \n")
+cat(" The following output files can be found at the directory of                \n")
 cat(" ",filepath,".                                                              \n")
 cat("----------------------------------------------------------------------------\n")
 cat(" lme_stat.txt                                                               \n")

@@ -16,7 +16,7 @@ cat("    (or replicate crossover) study.                                        
 }
 cat(" 4. Lower acceptance limit represents the lower BE criteria to be accepted; \n")
 cat("    the upper acceptance limit is equal to 1/(lower acceptance limit).     \n")
-cat("    Usually the lower limit can be 80% or, 70% in some rare cases.         \n")
+cat("    Usually the lower limit can be 80.000% or, 70.000% in some cases.      \n")
 cat("****************************************************************************\n")
 cat("\n")
 }

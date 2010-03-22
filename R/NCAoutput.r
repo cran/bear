@@ -15,7 +15,7 @@ NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex
 filepath<-getwd()
 cat("\n")
 cat("****************************************************************************\n")
-cat(" Note: Files have been output to the directory of                           \n")
+cat(" Note: The following output files have been created at the directory of     \n")
 cat(" ",filepath,".                                                              \n")
 cat("----------------------------------------------------------------------------\n")
  if(multiple){
@@ -725,12 +725,14 @@ if(multiple){
 cat("             Cmin_ss                     \n") 
 cat("-----------------------------------\n")
   if(parallel){
-  outputCmin<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cmin,format="f",digits=3)),subj=sumindexR$subj,
-                        Ref=as.numeric(formatC(sumindexR$Cmin,format="f",digits=3))) 
-  colnames(outputCmin)<- c("subj","Test","subj","Ref") 
-  outputCminMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputCmin$Test),format="f",digits=3),formatC(sd(outputCmin$Test),format="f",digits=3),formatC((sd(outputCmin$Test)/mean(outputCmin$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputCmin$Ref),format="f",digits=3),formatC(sd(outputCmin$Ref),format="f",digits=3),formatC((sd(outputCmin$Ref)/mean(outputCmin$Ref))*100,format="f",digits=3)))
+    outputCminT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cmin,format="f",digits=3))) 
+    colnames(outputCminT)<- c("subj","Test") 
+    outputCminMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+       Test=c(formatC(mean(outputCminT$Test),format="f",digits=3),formatC(sd(outputCminT$Test),format="f",digits=3),formatC((sd(outputCminT$Test)/mean(outputCminT$Test))*100,format="f",digits=3)))
+    outputCminR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$Cmin,format="f",digits=3))) 
+    colnames(outputCminR)<- c("subj","Ref") 
+    outputCminMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+       Ref=c(formatC(mean(outputCminR$Ref),format="f",digits=3),formatC(sd(outputCminR$Ref),format="f",digits=3),formatC((sd(outputCminR$Ref)/mean(outputCminR$Ref))*100,format="f",digits=3)))
   }
   else{
   outputCmin<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$Cmin,format="f",digits=3)),
@@ -740,9 +742,18 @@ cat("-----------------------------------\n")
                              Ref=c(formatC(mean(outputCmin$Ref),format="f",digits=3),formatC(sd(outputCmin$Ref),format="f",digits=3),formatC((sd(outputCmin$Ref)/mean(outputCmin$Ref))*100,format="f",digits=3)),
                              Ratio=c(formatC(mean(outputCmin$Ratio),format="f",digits=3),formatC(sd(outputCmin$Ratio),format="f",digits=3),formatC((sd(outputCmin$Ratio)/mean(outputCmin$Ratio))*100,format="f",digits=3)))
   }
-  show(outputCmin)
+  if(parallel){
+    cat("---------------Test--------------\n")
+    show(outputCminT)
+    show(outputCminMeanT)
+    cat("---------------------------------\n")
+    cat("---------------Ref.--------------\n")
+    show(outputCminR)
+    show(outputCminMeanR)}
+  else{
+    show(outputCmin)
+    show(outputCminMean)}
   cat("\n")
-  show(outputCminMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -766,12 +777,17 @@ if(replicated){
   }
    else{
    if(parallel){
-    outputCmax<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cmax,format="f",digits=3)), subj=sumindexR$subj,
-                          Ref=as.numeric(formatC(sumindexR$Cmax,format="f",digits=3))) 
-    colnames(outputCmax)<- c("subj","Test","subj","Ref") 
-    outputCmaxMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputCmax$Test),format="f",digits=3),formatC(sd(outputCmax$Test),format="f",digits=3),formatC((sd(outputCmax$Test)/mean(outputCmax$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputCmax$Ref),format="f",digits=3),formatC(sd(outputCmax$Ref),format="f",digits=3),formatC((sd(outputCmax$Ref)/mean(outputCmax$Ref))*100,format="f",digits=3)))
+#    outputCmax<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cmax,format="f",digits=3)), subj=sumindexR$subj,
+#                          Ref=as.numeric(formatC(sumindexR$Cmax,format="f",digits=3)))
+#
+    outputCmaxT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cmax,format="f",digits=3))) 
+    colnames(outputCmaxT)<- c("subj","Test")
+    outputCmaxTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(formatC(mean(outputCmaxT$Test),format="f",digits=3),formatC(sd(outputCmaxT$Test),format="f",digits=3),formatC((sd(outputCmaxT$Test)/mean(outputCmaxT$Test))*100,format="f",digits=3)))   
+    outputCmaxR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$Cmax,format="f",digits=3)))
+    colnames(outputCmaxR)<- c("subj","Ref") 
+    outputCmaxRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Ref=c(formatC(mean(outputCmaxR$Ref),format="f",digits=3),formatC(sd(outputCmaxR$Ref),format="f",digits=3),formatC((sd(outputCmaxR$Ref)/mean(outputCmaxR$Ref))*100,format="f",digits=3)))
    }
    else{
   outputCmax<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$Cmax,format="f",digits=3)),
@@ -782,9 +798,19 @@ if(replicated){
                              Ratio=c(formatC(mean(outputCmax$Ratio),format="f",digits=3),formatC(sd(outputCmax$Ratio),format="f",digits=3),formatC((sd(outputCmax$Ratio)/mean(outputCmax$Ratio))*100,format="f",digits=3)))  
     }
   }
-  show(outputCmax)
+  if(parallel){
+   cat("---------------Test--------------\n")
+   show(outputCmaxT)
+   show(outputCmaxTMean)
+   cat("---------------------------------\n")
+   cat("---------------Ref.--------------\n")
+   show(outputCmaxR)
+   show(outputCmaxRMean)}
+  else{
+   show(outputCmax)
+   show(outputCmaxMean)}
   cat("\n")
-  show(outputCmaxMean)
+  
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -808,12 +834,14 @@ cat("-----------------------------------\n")
   }
    else{
    if(parallel){
-  outputTmax<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Tmax,format="f",digits=3)),
-                         subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$Tmax,format="f",digits=3))) 
-  colnames(outputTmax)<- c("subj","Test","subj","Ref")  
-  outputTmaxMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputTmax$Test),format="f",digits=3),formatC(sd(outputTmax$Test),format="f",digits=3),formatC((sd(outputTmax$Test)/mean(outputTmax$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputTmax$Ref),format="f",digits=3),formatC(sd(outputTmax$Ref),format="f",digits=3),formatC((sd(outputTmax$Ref)/mean(outputTmax$Ref))*100,format="f",digits=3))) 
+    outputTmaxT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Tmax,format="f",digits=3))) 
+    colnames(outputTmaxT)<- c("subj","Test")
+    outputTmaxTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(formatC(mean(outputTmaxT$Test),format="f",digits=3),formatC(sd(outputTmaxT$Test),format="f",digits=3),formatC((sd(outputTmaxT$Test)/mean(outputTmaxT$Test))*100,format="f",digits=3)))
+    outputTmaxR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$Tmax,format="f",digits=3)))
+    colnames(outputTmaxR)<- c("subj","Ref") 
+    outputTmaxRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Ref=c(formatC(mean(outputTmaxR$Ref),format="f",digits=3),formatC(sd(outputTmaxR$Ref),format="f",digits=3),formatC((sd(outputTmaxR$Ref)/mean(outputTmaxR$Ref))*100,format="f",digits=3)))
    }
    else{
   outputTmax<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$Tmax,format="f",digits=3)),
@@ -824,9 +852,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputTmax$Ratio),format="f",digits=3),formatC(sd(outputTmax$Ratio),format="f",digits=3),formatC((sd(outputTmax$Ratio)/mean(outputTmax$Ratio))*100,format="f",digits=3))) 
    }
   }
-  show(outputTmax)
+  if(parallel){
+   cat("---------------Test--------------\n")
+   show(outputTmaxT)
+   show(outputTmaxTMean)
+   cat("---------------------------------\n")
+   cat("---------------Ref.--------------\n")
+   show(outputTmaxR)
+   show(outputTmaxRMean)}
+  else{
+   show(outputTmax)
+   show(outputTmaxMean)}
   cat("\n")
-  show(outputTmaxMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -849,13 +886,15 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputAUC0t$Ratio),format="f",digits=3),formatC(sd(outputAUC0t$Ratio),format="f",digits=3),formatC((sd(outputAUC0t$Ratio)/mean(outputAUC0t$Ratio))*100,format="f",digits=3)))
   }
    else{
-    if(parallel){
-   outputAUC0t<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$AUC0t,format="f",digits=3)),
-                           subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$AUC0t,format="f",digits=3)))   
-   colnames(outputAUC0t)<- c("subj","Test","subj","Ref")   
-   outputAUC0tMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputAUC0t$Test),format="f",digits=3),formatC(sd(outputAUC0t$Test),format="f",digits=3),formatC((sd(outputAUC0t$Test)/mean(outputAUC0t$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputAUC0t$Ref),format="f",digits=3),formatC(sd(outputAUC0t$Ref),format="f",digits=3),formatC((sd(outputAUC0t$Ref)/mean(outputAUC0t$Ref))*100,format="f",digits=3)))
+    if(parallel){    
+    outputAUC0tT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$AUC0t,format="f",digits=3))) 
+    colnames(outputAUC0tT)<- c("subj","Test")
+    outputAUC0tTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+       Test=c(formatC(mean(outputAUC0tT$Test),format="f",digits=3),formatC(sd(outputAUC0tT$Test),format="f",digits=3),formatC((sd(outputAUC0tT$Test)/mean(outputAUC0tT$Test))*100,format="f",digits=3)))
+    outputAUC0tR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$AUC0t,format="f",digits=3)))
+    colnames(outputAUC0tR)<- c("subj","Ref") 
+    outputAUC0tRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+       Ref=c(formatC(mean(outputAUC0tR$Ref),format="f",digits=3),formatC(sd(outputAUC0tR$Ref),format="f",digits=3),formatC((sd(outputAUC0tR$Ref)/mean(outputAUC0tR$Ref))*100,format="f",digits=3)))
     }
     else{
   outputAUC0t<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$AUC0t,format="f",digits=3)),Ref=as.numeric(formatC(sumindexR$AUC0t,format="f",digits=3)),Ratio=as.numeric(formatC(sumindexT$AUC0t/sumindexR$AUC0t,format="f",digits=3))) 
@@ -865,9 +904,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputAUC0t$Ratio),format="f",digits=3),formatC(sd(outputAUC0t$Ratio),format="f",digits=3),formatC((sd(outputAUC0t$Ratio)/mean(outputAUC0t$Ratio))*100,format="f",digits=3)))  
     }
   }
-  show(outputAUC0t)
+  if(parallel){
+    cat("---------------Test--------------\n")
+    show(outputAUC0tT)
+    show(outputAUC0tTMean)
+    cat("---------------------------------\n")
+    cat("---------------Ref.--------------\n")
+    show(outputAUC0tR)
+    show(outputAUC0tRMean)}
+  else{
+    show(outputAUC0t)
+    show(outputAUC0tMean)}
   cat("\n")
-  show(outputAUC0tMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -879,12 +927,14 @@ if(multiple){
 cat("             Cav                       \n")
 cat("-----------------------------------\n")
   if(parallel){
-  outputCav<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cav,format="f",digits=3)),
-                        subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$Cav,format="f",digits=3))) 
-  colnames(outputCav)<- c("subj","Test","subj","Ref")   
-  outputCavMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputCav$Test),format="f",digits=3),formatC(sd(outputCav$Test),format="f",digits=3),formatC((sd(outputCav$Test)/mean(outputCav$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputCav$Ref),format="f",digits=3),formatC(sd(outputCav$Ref),format="f",digits=3),formatC((sd(outputCav$Ref)/mean(outputCav$Ref))*100,format="f",digits=3)))
+    outputCavT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cav,format="f",digits=3))) 
+    colnames(outputCavT)<- c("subj","Test")
+    outputCavTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(formatC(mean(outputCavT$Test),format="f",digits=3),formatC(sd(outputCavT$Test),format="f",digits=3),formatC((sd(outputCavT$Test)/mean(outputCavT$Test))*100,format="f",digits=3)))
+    outputCavR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$Cav,format="f",digits=3)))
+    colnames(outputCavR)<- c("subj","Ref") 
+    outputCavRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Ref=c(formatC(mean(outputCavR$Ref),format="f",digits=3),formatC(sd(outputCavR$Ref),format="f",digits=3),formatC((sd(outputCavR$Ref)/mean(outputCavR$Ref))*100,format="f",digits=3)))
   }
   else{
   outputCav<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$Cav,format="f",digits=3)),
@@ -895,9 +945,18 @@ cat("-----------------------------------\n")
                              Ref=c(formatC(mean(outputCav$Ref),format="f",digits=3),formatC(sd(outputCav$Ref),format="f",digits=3),formatC((sd(outputCav$Ref)/mean(outputCav$Ref))*100,format="f",digits=3)),
                              Ratio=c(formatC(mean(outputCav$Ratio),format="f",digits=3),formatC(sd(outputCav$Ratio),format="f",digits=3),formatC((sd(outputCav$Ratio)/mean(outputCav$Ratio))*100,format="f",digits=3)))
   }
-  show(outputCav)
+  if(parallel){
+   cat("---------------Test--------------\n")
+   show(outputCavT)
+   show(outputCavTMean)
+   cat("---------------------------------\n")
+   cat("---------------Ref.--------------\n")
+   show(outputCavR)
+   show(outputCavRMean)}
+  else{
+   show(outputCav)
+   show(outputCavMean)}
   cat("\n")
-  show(outputCavMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -908,12 +967,14 @@ cat("\n")
 cat("             Fluctuation (%)                 \n")
 cat("-----------------------------------\n")
   if(parallel){
-  outputFluctuation<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Flu,format="f",digits=3)), 
-                                subj=sumindexR$subj ,Ref=as.numeric(formatC(sumindexR$Flu,format="f",digits=3))) 
-  colnames(outputFluctuation)<- c("subj","Test","subj","Ref")  
-  outputFluctuationMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputFluctuation$Test),format="f",digits=3),formatC(sd(outputFluctuation$Test),format="f",digits=3),formatC((sd(outputFluctuation$Test)/mean(outputFluctuation$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputFluctuation$Ref),format="f",digits=3),formatC(sd(outputFluctuation$Ref),format="f",digits=3),formatC((sd(outputFluctuation$Ref)/mean(outputFluctuation$Ref))*100,format="f",digits=3)))
+    outputFluT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Flu,format="f",digits=3))) 
+    colnames(outputFluT)<- c("subj","Test")
+    outputFluTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Test=c(formatC(mean(outputFluT$Test),format="f",digits=3),formatC(sd(outputFluT$Test),format="f",digits=3),formatC((sd(outputFluT$Test)/mean(outputFluT$Test))*100,format="f",digits=3)))
+    outputFluR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$Flu,format="f",digits=3)))
+    colnames(outputFluR)<- c("subj","Ref") 
+    outputFluRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Ref=c(formatC(mean(outputFluR$Ref),format="f",digits=3),formatC(sd(outputFluR$Ref),format="f",digits=3),formatC((sd(outputFluR$Ref)/mean(outputFluR$Ref))*100,format="f",digits=3)))
   }
   else{
   outputFluctuation<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$Flu,format="f",digits=3)) 
@@ -924,9 +985,18 @@ cat("-----------------------------------\n")
                              Ref=c(formatC(mean(outputFluctuation$Ref),format="f",digits=3),formatC(sd(outputFluctuation$Ref),format="f",digits=3),formatC((sd(outputFluctuation$Ref)/mean(outputFluctuation$Ref))*100,format="f",digits=3)),
                              Ratio=c(formatC(mean(outputFluctuation$Ratio),format="f",digits=3),formatC(sd(outputFluctuation$Ratio),format="f",digits=3),formatC((sd(outputFluctuation$Ratio)/mean(outputFluctuation$Ratio))*100,format="f",digits=3)))
   }
-  show(outputFluctuation)
+  if(parallel){
+    cat("---------------Test--------------\n")
+    show(outputFluT)
+    show(outputFluTMean)
+    cat("---------------------------------\n")
+    cat("---------------Ref.--------------\n")
+    show(outputFluR)
+    show(outputFluRMean)}
+  else{
+    show(outputFluctuation)
+    show(outputFluctuationMean)}
   cat("\n")
-  show(outputFluctuationMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -946,12 +1016,14 @@ cat("-----------------------------------\n")
   }
    else{
   if(parallel){
-   outputAUC0INF<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$AUC0INF,format="f",digits=3)),subj=sumindexR$subj,
-                           Ref=as.numeric(formatC(sumindexR$AUC0INF,format="f",digits=3))) 
-    colnames(outputAUC0INF)<- c("subj","Test","subj","Ref")  
-   outputAUC0INFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputAUC0INF$Test),format="f",digits=3),formatC(sd(outputAUC0INF$Test),format="f",digits=3),formatC((sd(outputAUC0INF$Test)/mean(outputAUC0INF$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputAUC0INF$Ref),format="f",digits=3),formatC(sd(outputAUC0INF$Ref),format="f",digits=3),formatC((sd(outputAUC0INF$Ref)/mean(outputAUC0INF$Ref))*100,format="f",digits=3)))
+    outputAUC0INFT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$AUC0INF,format="f",digits=3))) 
+    colnames(outputAUC0INFT)<- c("subj","Test")
+    outputAUC0INFTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Test=c(formatC(mean(outputAUC0INFT$Test),format="f",digits=3),formatC(sd(outputAUC0INFT$Test),format="f",digits=3),formatC((sd(outputAUC0INFT$Test)/mean(outputAUC0INFT$Test))*100,format="f",digits=3)))
+    outputAUC0INFR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$AUC0INF,format="f",digits=3)))
+    colnames(outputAUC0INFR)<- c("subj","Ref") 
+    outputAUC0INFRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Ref=c(formatC(mean(outputAUC0INFR$Ref),format="f",digits=3),formatC(sd(outputAUC0INFR$Ref),format="f",digits=3),formatC((sd(outputAUC0INFR$Ref)/mean(outputAUC0INFR$Ref))*100,format="f",digits=3)))
   }
   else{
   outputAUC0INF<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$AUC0INF,format="f",digits=3)),
@@ -963,9 +1035,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputAUC0INF$Ratio),format="f",digits=3),formatC(sd(outputAUC0INF$Ratio),format="f",digits=3),formatC((sd(outputAUC0INF$Ratio)/mean(outputAUC0INF$Ratio))*100,format="f",digits=3)))  
     }
   }
-  show(outputAUC0INF)
+  if(parallel){
+   cat("---------------Test--------------\n")
+   show(outputAUC0INFT)
+   show(outputAUC0INFTMean)
+   cat("---------------------------------\n")
+   cat("---------------Ref.--------------\n")
+   show(outputAUC0INFR)
+   show(outputAUC0INFRMean)}
+  else{
+   show(outputAUC0INF)
+   show(outputAUC0INFMean)}
   cat("\n")
-  show(outputAUC0INFMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -986,12 +1067,14 @@ cat("-----------------------------------\n")
   }
   else{
    if(parallel){
-  outputAUC0t_AUC0INF<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC((sumindexT$AUC0t/sumindexT$AUC0INF)*100,format="f",digits=3)),subj=sumindexR$subj 
-                                 ,Ref=as.numeric(formatC((sumindexR$AUC0t/sumindexR$AUC0INF)*100,format="f",digits=3)))  
-  colnames(outputAUC0t_AUC0INF)<- c("subj","Test","subj","Ref")   
-   outputAUC0t_AUC0INFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputAUC0t_AUC0INF$Test),format="f",digits=3),formatC(sd(outputAUC0t_AUC0INF$Test),format="f",digits=3),formatC((sd(outputAUC0t_AUC0INF$Test)/mean(outputAUC0t_AUC0INF$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputAUC0t_AUC0INF$Ref),format="f",digits=3),formatC(sd(outputAUC0t_AUC0INF$Ref),format="f",digits=3),formatC((sd(outputAUC0t_AUC0INF$Ref)/mean(outputAUC0t_AUC0INF$Ref))*100,format="f",digits=3)))
+      outputAUC_RatioT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC((sumindexT$AUC0t/sumindexT$AUC0INF)*100,format="f",digits=3)))  
+      colnames(outputAUC_RatioT)<- c("subj","Test")   
+      outputAUC_RatioTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Test=c(formatC(mean(outputAUC_RatioT$Test),format="f",digits=3),formatC(sd(outputAUC_RatioT$Test),format="f",digits=3),formatC((sd(outputAUC_RatioT$Test)/mean(outputAUC_RatioT$Test))*100,format="f",digits=3)))
+      outputAUC_RatioR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC((sumindexR$AUC0t/sumindexR$AUC0INF)*100,format="f",digits=3)))  
+      colnames(outputAUC_RatioR)<- c("subj","Ref")   
+      outputAUC_RatioRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Ref=c(formatC(mean(outputAUC_RatioR$Ref),format="f",digits=3),formatC(sd(outputAUC_RatioR$Ref),format="f",digits=3),formatC((sd(outputAUC_RatioR$Ref)/mean(outputAUC_RatioR$Ref))*100,format="f",digits=3)))
    }
    else{
   outputAUC0t_AUC0INF<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC((sumindexT$AUC0t/sumindexT$AUC0INF)*100,format="f",digits=3)) 
@@ -1003,9 +1086,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputAUC0t_AUC0INF$Ratio),format="f",digits=3),formatC(sd(outputAUC0t_AUC0INF$Ratio),format="f",digits=3),formatC((sd(outputAUC0t_AUC0INF$Ratio)/mean(outputAUC0t_AUC0INF$Ratio))*100,format="f",digits=3)))  
     }
   }
-  show(outputAUC0t_AUC0INF)
+  if(parallel){
+    cat("---------------Test--------------\n")
+    show(outputAUC_RatioT)
+    show(outputAUC_RatioTMean)
+    cat("---------------------------------\n")
+    cat("---------------Ref.--------------\n")
+    show(outputAUC_RatioR)
+    show(outputAUC_RatioRMean)}
+  else{
+    show(outputAUC0t_AUC0INF)
+    show(outputAUC0t_AUC0INFMean)}
   cat("\n")
-  show(outputAUC0t_AUC0INFMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1031,12 +1123,14 @@ cat("-----------------------------------\n")
   }
   else{
    if(parallel){
-  outputlnCmax<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(log(sumindexT$Cmax),format="f",digits=3)),subj=sumindexR$subj,
-                           Ref=as.numeric(formatC(log(sumindexR$Cmax),format="f",digits=3)))  
-  colnames(outputlnCmax)<- c("subj","Test","subj","Ref")   
-  outputlnCmaxMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputlnCmax$Test),format="f",digits=3),formatC(sd(outputlnCmax$Test),format="f",digits=3),formatC((sd(outputlnCmax$Test)/mean(outputlnCmax$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputlnCmax$Ref),format="f",digits=3),formatC(sd(outputlnCmax$Ref),format="f",digits=3),formatC((sd(outputlnCmax$Ref)/mean(outputlnCmax$Ref))*100,format="f",digits=3)))
+      outputlnCmaxT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(log(sumindexT$Cmax),format="f",digits=3)))  
+      colnames(outputlnCmaxT)<- c("subj","Test")   
+      outputlnCmaxTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Test=c(formatC(mean(outputlnCmaxT$Test),format="f",digits=3),formatC(sd(outputlnCmaxT$Test),format="f",digits=3),formatC((sd(outputlnCmaxT$Test)/mean(outputlnCmaxT$Test))*100,format="f",digits=3)))
+      outputlnCmaxR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(log(sumindexR$Cmax),format="f",digits=3)))  
+      colnames(outputlnCmaxR)<- c("subj","Ref")   
+      outputlnCmaxRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Ref=c(formatC(mean(outputlnCmaxR$Ref),format="f",digits=3),formatC(sd(outputlnCmaxR$Ref),format="f",digits=3),formatC((sd(outputlnCmaxR$Ref)/mean(outputlnCmaxR$Ref))*100,format="f",digits=3)))
    }
    else{
   outputlnCmax<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(log(sumindexT$Cmax),format="f",digits=3)),
@@ -1048,9 +1142,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputlnCmax$Ratio),format="f",digits=3),formatC(sd(outputlnCmax$Ratio),format="f",digits=3),formatC((sd(outputlnCmax$Ratio)/mean(outputlnCmax$Ratio))*100,format="f",digits=3)))
     }
   }
-  show(outputlnCmax)
+  if(parallel){
+     cat("---------------Test--------------\n")
+     show(outputlnCmaxT)
+     show(outputlnCmaxTMean)
+     cat("---------------------------------\n")
+     cat("---------------Ref.--------------\n")
+     show(outputlnCmaxR)
+     show(outputlnCmaxRMean)}
+  else{
+     show(outputlnCmax)
+     show(outputlnCmaxMean)}
   cat("\n")
-  show(outputlnCmaxMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1075,12 +1178,14 @@ cat("-----------------------------------\n")
    }
   else{
   if(parallel){
-  outputlnAUC0t<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(log(sumindexT$AUC0t),format="f",digits=3)),
-                            subj=sumindexR$subj,Ref=as.numeric(formatC(log(sumindexR$AUC0t),format="f",digits=3))) 
-  colnames(outputlnAUC0t)<- c("subj","Test","subj","Ref")  
-  outputlnAUC0tMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputlnAUC0t$Test),format="f",digits=3),formatC(sd(outputlnAUC0t$Test),format="f",digits=3),formatC((sd(outputlnAUC0t$Test)/mean(outputlnAUC0t$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputlnAUC0t$Ref),format="f",digits=3),formatC(sd(outputlnAUC0t$Ref),format="f",digits=3),formatC((sd(outputlnAUC0t$Ref)/mean(outputlnAUC0t$Ref))*100,format="f",digits=3)))
+    outputlnAUC0tT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(log(sumindexT$AUC0t),format="f",digits=3))) 
+    colnames(outputlnAUC0tT)<- c("subj","Test")  
+    outputlnAUC0tMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Test=c(formatC(mean(outputlnAUC0tT$Test),format="f",digits=3),formatC(sd(outputlnAUC0tT$Test),format="f",digits=3),formatC((sd(outputlnAUC0tT$Test)/mean(outputlnAUC0tT$Test))*100,format="f",digits=3)))
+    outputlnAUC0tR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(log(sumindexR$AUC0t),format="f",digits=3))) 
+    colnames(outputlnAUC0tR)<- c("subj","Ref")  
+    outputlnAUC0tMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Ref=c(formatC(mean(outputlnAUC0tR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0tR$Ref),format="f",digits=3),formatC((sd(outputlnAUC0tR$Ref)/mean(outputlnAUC0tR$Ref))*100,format="f",digits=3)))
   }
   else{
   outputlnAUC0t<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(log(sumindexT$AUC0t),format="f",digits=3)),
@@ -1092,10 +1197,19 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputlnAUC0t$Ratio),format="f",digits=3),formatC(sd(outputlnAUC0t$Ratio),format="f",digits=3),formatC((sd(outputlnAUC0t$Ratio)/mean(outputlnAUC0t$Ratio))*100,format="f",digits=3)))
     }
   }
-  show(outputlnAUC0t)
+  if(parallel){
+     cat("---------------Test--------------\n")
+     show(outputlnAUC0tT)
+     show(outputlnAUC0tMeanT)
+     cat("---------------------------------\n")
+     cat("---------------Ref.--------------\n")
+     show(outputlnAUC0tR)
+     show(outputlnAUC0tMeanR)}
+  else{
+     show(outputlnAUC0t)
+     show(outputlnAUC0tMean)}
   cat("\n")
   
-  show(outputlnAUC0tMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1118,12 +1232,14 @@ cat("-----------------------------------\n")
    }
   else{
    if(parallel){
-   outputlnAUC0INF<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(log(sumindexT$AUC0INF),format="f",digits=3)),
-                               subj=sumindexR$subj,Ref=as.numeric(formatC(log(sumindexR$AUC0INF),format="f",digits=3))) 
-   colnames(outputlnAUC0INF)<- c("subj","Test","subj","Ref")  
-   outputlnAUC0INFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputlnAUC0INF$Test),format="f",digits=3),formatC(sd(outputlnAUC0INF$Test),format="f",digits=3),formatC((sd(outputlnAUC0INF$Test)/mean(outputlnAUC0INF$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputlnAUC0INF$Ref),format="f",digits=3),formatC(sd(outputlnAUC0INF$Ref),format="f",digits=3),formatC((sd(outputlnAUC0INF$Ref)/mean(outputlnAUC0INF$Ref))*100,format="f",digits=3)))
+      outputlnAUC0INFT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(log(sumindexT$AUC0INF),format="f",digits=3))) 
+      colnames(outputlnAUC0INFT)<- c("subj","Test")  
+      outputlnAUC0INFMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Test=c(formatC(mean(outputlnAUC0INFT$Test),format="f",digits=3),formatC(sd(outputlnAUC0INFT$Test),format="f",digits=3),formatC((sd(outputlnAUC0INFT$Test)/mean(outputlnAUC0INFT$Test))*100,format="f",digits=3)))
+      outputlnAUC0INFR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(log(sumindexR$AUC0INF),format="f",digits=3))) 
+      colnames(outputlnAUC0INFR)<- c("subj","Ref")  
+      outputlnAUC0INFMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Ref=c(formatC(mean(outputlnAUC0INFR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0INFR$Ref),format="f",digits=3),formatC((sd(outputlnAUC0INFR$Ref)/mean(outputlnAUC0INFR$Ref))*100,format="f",digits=3)))
    }
    else{
    outputlnAUC0INF<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(log(sumindexT$AUC0INF),format="f",digits=3)),
@@ -1135,9 +1251,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputlnAUC0INF$Ratio),format="f",digits=3),formatC(sd(outputlnAUC0INF$Ratio),format="f",digits=3),formatC((sd(outputlnAUC0INF$Ratio)/mean(outputlnAUC0INF$Ratio))*100,format="f",digits=3)))
    }
  } 
-  show(outputlnAUC0INF)
+  if(parallel){
+     cat("---------------Test--------------\n")
+     show(outputlnAUC0INFT)
+     show(outputlnAUC0INFMeanT)
+     cat("---------------------------------\n")
+     cat("---------------Ref.--------------\n")
+     show(outputlnAUC0INFR)
+     show(outputlnAUC0INFMeanR)}
+  else{
+     show(outputlnAUC0INF)
+     show(outputlnAUC0INFMean)}
   cat("\n")
-  show(outputlnAUC0INFMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1161,12 +1286,14 @@ cat("-----------------------------------\n")
    }
   else{
    if(parallel){
-   outputMRT0INF<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$MRTINF,format="f",digits=3)),subj=sumindexR$subj,
-                            Ref=as.numeric(formatC(sumindexR$MRTINF,format="f",digits=3)))  
-   colnames(outputMRT0INF)<- c("subj","Test","subj","Ref")  
-   outputMRT0INFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputMRT0INF$Test),format="f",digits=3),formatC(sd(outputMRT0INF$Test),format="f",digits=3),formatC((sd(outputMRT0INF$Test)/mean(outputMRT0INF$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputMRT0INF$Ref),format="f",digits=3),formatC(sd(outputMRT0INF$Ref),format="f",digits=3),formatC((sd(outputMRT0INF$Ref)/mean(outputMRT0INF$Ref))*100,format="f",digits=3)))
+      outputMRT0INFT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$MRTINF,format="f",digits=3)))  
+      colnames(outputMRT0INFT)<- c("subj","Test")  
+      outputMRT0INFMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Test=c(formatC(mean(outputMRT0INFT$Test),format="f",digits=3),formatC(sd(outputMRT0INFT$Test),format="f",digits=3),formatC((sd(outputMRT0INFT$Test)/mean(outputMRT0INFT$Test))*100,format="f",digits=3)))
+      outputMRT0INFR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$MRTINF,format="f",digits=3)))  
+      colnames(outputMRT0INFR)<- c("subj","Ref")  
+      outputMRT0INFMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Ref=c(formatC(mean(outputMRT0INFR$Ref),format="f",digits=3),formatC(sd(outputMRT0INFR$Ref),format="f",digits=3),formatC((sd(outputMRT0INFR$Ref)/mean(outputMRT0INFR$Ref))*100,format="f",digits=3)))
    }
    else{
    outputMRT0INF<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$MRTINF,format="f",digits=3)),
@@ -1178,9 +1305,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputMRT0INF$Ratio),format="f",digits=3),formatC(sd(outputMRT0INF$Ratio),format="f",digits=3),formatC((sd(outputMRT0INF$Ratio)/mean(outputMRT0INF$Ratio))*100,format="f",digits=3)))
    }
   }
-  show(outputMRT0INF)
+  if(parallel){
+    cat("---------------Test--------------\n")
+    show(outputMRT0INFT)
+    show(outputMRT0INFMeanT)
+    cat("---------------------------------\n")
+    cat("---------------Ref.--------------\n")
+    show(outputMRT0INFR)
+    show(outputMRT0INFMeanR)}
+  else{
+    show(outputMRT0INF)
+    show(outputMRT0INFMean)}
   cat("\n")
-  show(outputMRT0INFMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1198,12 +1334,14 @@ cat("-----------------------------------\n")
    }
   else{
   if(parallel){
-  outputT12<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$T12,format="f",digits=3)),
-                        subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$T12,format="f",digits=3)))
-   colnames(outputT12)<- c("subj","Test","subj","Ref")  
-  outputT12Mean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputT12$Test),format="f",digits=3),formatC(sd(outputT12$Test),format="f",digits=3),formatC((sd(outputT12$Test)/mean(outputT12$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputT12$Ref),format="f",digits=3),formatC(sd(outputT12$Ref),format="f",digits=3),formatC((sd(outputT12$Ref)/mean(outputT12$Ref))*100,format="f",digits=3)))
+    outputT12T<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$T12,format="f",digits=3)))
+    colnames(outputT12T)<- c("subj","Test")  
+    outputT12MeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+       Test=c(formatC(mean(outputT12T$Test),format="f",digits=3),formatC(sd(outputT12T$Test),format="f",digits=3),formatC((sd(outputT12T$Test)/mean(outputT12T$Test))*100,format="f",digits=3)))
+    outputT12R<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$T12,format="f",digits=3)))
+    colnames(outputT12R)<- c("subj","Ref")
+    outputT12MeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+       Ref=c(formatC(mean(outputT12R$Ref),format="f",digits=3),formatC(sd(outputT12R$Ref),format="f",digits=3),formatC((sd(outputT12R$Ref)/mean(outputT12R$Ref))*100,format="f",digits=3)))
   }
   else{
   outputT12<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$T12,format="f",digits=3)),
@@ -1215,9 +1353,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputT12$Ratio),format="f",digits=3),formatC(sd(outputT12$Ratio),format="f",digits=3),formatC((sd(outputT12$Ratio)/mean(outputT12$Ratio))*100,format="f",digits=3)))
     }
   }
-  show(outputT12)
+  if(parallel){
+     cat("---------------Test--------------\n")
+     show(outputT12T)
+     show(outputT12MeanT)
+     cat("---------------------------------\n")
+     cat("---------------Ref.--------------\n")
+     show(outputT12R) 
+     show(outputT12MeanR)}
+  else{
+     show(outputT12)
+     show(outputT12Mean)}
   cat("\n")
-  show(outputT12Mean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1235,12 +1382,14 @@ cat("-----------------------------------\n")
    }
   else{
    if(parallel){
-   outputVdF<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$VdF,format="f",digits=3)),
-                        subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$VdF,format="f",digits=3))) 
-   colnames(outputVdF)<- c("subj","Test","subj","Ref")  
-   outputVdFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputVdF$Test),format="f",digits=3),formatC(sd(outputVdF$Test),format="f",digits=3),formatC((sd(outputVdF$Test)/mean(outputVdF$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputVdF$Ref),format="f",digits=3),formatC(sd(outputVdF$Ref),format="f",digits=3),formatC((sd(outputVdF$Ref)/mean(outputVdF$Ref))*100,format="f",digits=3)))  
+     outputVdFT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$VdF,format="f",digits=3))) 
+     colnames(outputVdFT)<- c("subj","Test")  
+     outputVdFMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+        Test=c(formatC(mean(outputVdFT$Test),format="f",digits=3),formatC(sd(outputVdFT$Test),format="f",digits=3),formatC((sd(outputVdFT$Test)/mean(outputVdFT$Test))*100,format="f",digits=3)))
+     outputVdFR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$VdF,format="f",digits=3))) 
+     colnames(outputVdFR)<- c("subj","Ref")
+     outputVdFMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+        Ref=c(formatC(mean(outputVdFR$Ref),format="f",digits=3),formatC(sd(outputVdFR$Ref),format="f",digits=3),formatC((sd(outputVdFR$Ref)/mean(outputVdFR$Ref))*100,format="f",digits=3))) 
    }
    else{
   outputVdF<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$VdF,format="f",digits=3)),
@@ -1253,9 +1402,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputVdF$Ratio),format="f",digits=3),formatC(sd(outputVdF$Ratio),format="f",digits=3),formatC((sd(outputVdF$Ratio)/mean(outputVdF$Ratio))*100,format="f",digits=3)))  
    }
   }
-  show(outputVdF)
+  if(parallel){
+    cat("---------------Test--------------\n")
+    show(outputVdFT)
+    show(outputVdFMeanT)
+    cat("---------------------------------\n")
+    cat("---------------Ref.--------------\n")
+    show(outputVdFR)
+    show(outputVdFMeanR)}
+  else{
+    show(outputVdF)
+    show(outputVdFMean)}
   cat("\n")
-  show(outputVdFMean)
 cat("-----------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1273,11 +1431,14 @@ cat("----------------------------------------\n")
    }
   else{
    if(parallel){
-   outputLambda<-data.frame(subj=sumindexT$subj,Test=sumindexT$Kel,subj=sumindexR$subj,Ref=sumindexR$Kel)
-   colnames(outputLambda)<- c("subj","Test","subj","Ref")   
-   outputLambdaMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(mean(outputLambda$Test),sd(outputLambda$Test),(sd(outputLambda$Test)/mean(outputLambda$Test))*100),
-                             Ref=c(mean(outputLambda$Ref),sd(outputLambda$Ref),(sd(outputLambda$Ref)/mean(outputLambda$Ref))*100))
+      outputLambdaT<-data.frame(subj=sumindexT$subj,Test=sumindexT$Kel)
+      colnames(outputLambdaT)<- c("subj","Test")   
+      outputLambdaMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Test=c(mean(outputLambdaT$Test),sd(outputLambdaT$Test),(sd(outputLambdaT$Test)/mean(outputLambdaT$Test))*100))
+      outputLambdaR<-data.frame(subj=sumindexR$subj,Ref=sumindexR$Kel)
+      colnames(outputLambdaR)<- c("subj","Ref")   
+      outputLambdaMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Ref=c(mean(outputLambdaR$Ref),sd(outputLambdaR$Ref),(sd(outputLambdaR$Ref)/mean(outputLambdaR$Ref))*100))
    }
    else{
   outputLambda<-data.frame(subj=sumindexR$subj,Test=sumindexT$Kel,Ref=sumindexR$Kel,
@@ -1288,9 +1449,18 @@ cat("----------------------------------------\n")
                              Ratio=c(mean(outputLambda$Ratio),sd(outputLambda$Ratio),(sd(outputLambda$Ratio)/mean(outputLambda$Ratio))*100)) 
     }
   }
-  show(outputLambda)
+  if(parallel){
+    cat("---------------Test--------------\n")
+    show(outputLambdaT)
+    show(outputLambdaMeanT)
+    cat("---------------------------------\n")
+    cat("---------------Ref.--------------\n")
+    show(outputLambdaR)
+    show(outputLambdaMeanR)}
+  else{
+    show(outputLambda)
+    show(outputLambdaMean)}
   cat("\n")
-  show(outputLambdaMean)
 cat("----------------------------------------\n")
 cat("\n")
 cat("\n")
@@ -1308,12 +1478,14 @@ cat("-----------------------------------\n")
    }
   else{
    if(parallel){
-  outputClF<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$ClF,format="f",digits=3)),
-                        subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$ClF,format="f",digits=3))) 
-  colnames(outputClF)<- c("subj","Test","subj","Ref")    
-  outputClFMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
-                             Test=c(formatC(mean(outputClF$Test),format="f",digits=3),formatC(sd(outputClF$Test),format="f",digits=3),formatC((sd(outputClF$Test)/mean(outputClF$Test))*100,format="f",digits=3)),
-                             Ref=c(formatC(mean(outputClF$Ref),format="f",digits=3),formatC(sd(outputClF$Ref),format="f",digits=3),formatC((sd(outputClF$Ref)/mean(outputClF$Ref))*100,format="f",digits=3)))
+     outputClFT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$ClF,format="f",digits=3))) 
+     colnames(outputClFT)<- c("subj","Test")    
+     outputClFMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+        Test=c(formatC(mean(outputClFT$Test),format="f",digits=3),formatC(sd(outputClFT$Test),format="f",digits=3),formatC((sd(outputClFT$Test)/mean(outputClFT$Test))*100,format="f",digits=3)))
+     outputClFR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$ClF,format="f",digits=3))) 
+     colnames(outputClFR)<- c("subj","Ref")
+     outputClFMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+        Ref=c(formatC(mean(outputClFR$Ref),format="f",digits=3),formatC(sd(outputClFR$Ref),format="f",digits=3),formatC((sd(outputClFR$Ref)/mean(outputClFR$Ref))*100,format="f",digits=3)))
    }
    else{
    outputClF<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$ClF,format="f",digits=3)),
@@ -1325,9 +1497,18 @@ cat("-----------------------------------\n")
                              Ratio=c(formatC(mean(outputClF$Ratio),format="f",digits=3),formatC(sd(outputClF$Ratio),format="f",digits=3),formatC((sd(outputClF$Ratio)/mean(outputClF$Ratio))*100,format="f",digits=3)))
    }
   }
-  show(outputClF)
+  if(parallel){
+     cat("---------------Test--------------\n")
+     show(outputClFT)
+     show(outputClFMeanT)
+     cat("---------------------------------\n")
+     cat("---------------Ref.--------------\n")
+     show(outputClFR)
+     show(outputClFMeanR)}
+  else{
+     show(outputClF)
+     show(outputClFMean)}
   cat("\n")
-  show(outputClFMean)
 cat("-----------------------------------\n")
 sink()
 
@@ -1533,7 +1714,19 @@ cat("Statistical Summaries for Pivotal Parameters of Bioequivalence Study (N=",L
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
 if(multiple){
- outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),
+  if(parallel){
+  outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),
+                      Test_Mean=c(formatC(mean(outputCmaxT$Test),format="f",digits=3),formatC(mean(outputAUC0tT$Test),format="f",digits=3),
+                                  formatC(mean(outputlnCmaxT$Test),format="f",digits=3),formatC(mean(outputlnAUC0tT$Test),format="f",digits=3)),
+                      Test_SD=c(formatC(sd(outputCmaxT$Test),format="f",digits=3),formatC(sd(outputAUC0tT$Test),format="f",digits=3),
+                                formatC(sd(outputlnCmaxT$Test),format="f",digits=3),formatC(sd(outputlnAUC0tT$Test),format="f",digits=3)),
+                      Ref_Mean=c(formatC(mean(outputCmaxR$Ref),format="f",digits=3),formatC(mean(outputAUC0tR$Ref),format="f",digits=3),
+                                 formatC(mean(outputlnCmaxR$Ref),format="f",digits=3),formatC(mean(outputlnAUC0tR$Ref),format="f",digits=3)),
+                      Ref_SD=c(formatC(sd(outputCmaxR$Ref),format="f",digits=3),formatC(sd(outputAUC0tR$Ref),format="f",digits=3),
+                               formatC(sd(outputlnCmaxR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0tR$Ref),format="f",digits=3))) 
+  }
+  else{
+      outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),
                       Test_Mean=c(formatC(mean(outputCmax$Test),format="f",digits=3),formatC(mean(outputAUC0t$Test),format="f",digits=3),
                                   formatC(mean(outputlnCmax$Test),format="f",digits=3),formatC(mean(outputlnAUC0t$Test),format="f",digits=3)),
                       Test_SD=c(formatC(sd(outputCmax$Test),format="f",digits=3),formatC(sd(outputAUC0t$Test),format="f",digits=3),
@@ -1542,8 +1735,21 @@ if(multiple){
                                  formatC(mean(outputlnCmax$Ref),format="f",digits=3),formatC(mean(outputlnAUC0t$Ref),format="f",digits=3)),
                       Ref_SD=c(formatC(sd(outputCmax$Ref),format="f",digits=3),formatC(sd(outputAUC0t$Ref),format="f",digits=3),
                                formatC(sd(outputlnCmax$Ref),format="f",digits=3),formatC(sd(outputlnAUC0t$Ref),format="f",digits=3))) 
+      }
 }
 else{ 
+ if(parallel){
+ outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
+                      Test_Mean=c(formatC(mean(outputCmaxT$Test),format="f",digits=3),formatC(mean(outputAUC0tT$Test),format="f",digits=3),formatC(mean(outputAUC0INFT$Test),format="f",digits=3),
+                                  formatC(mean(outputlnCmaxT$Test),format="f",digits=3),formatC(mean(outputlnAUC0tT$Test),format="f",digits=3),formatC(mean(outputlnAUC0INFT$Test),format="f",digits=3)), 
+                      Test_SD=c(formatC(sd(outputCmaxT$Test),format="f",digits=3),formatC(sd(outputAUC0tT$Test),format="f",digits=3),formatC(sd(outputAUC0INFT$Test),format="f",digits=3),
+                                formatC(sd(outputlnCmaxT$Test),format="f",digits=3),formatC(sd(outputlnAUC0tT$Test),format="f",digits=3),formatC(sd(outputlnAUC0INFT$Test),format="f",digits=3)),
+                      Ref_Mean=c(formatC(mean(outputCmaxR$Ref),format="f",digits=3),formatC(mean(outputAUC0tR$Ref),format="f",digits=3),formatC(mean(outputAUC0INFR$Ref),format="f",digits=3),
+                                 formatC(mean(outputlnCmaxR$Ref),format="f",digits=3),formatC(mean(outputlnAUC0tR$Ref),format="f",digits=3),formatC(mean(outputlnAUC0INFR$Ref),format="f",digits=3)),
+                      Ref_SD=c(formatC(sd(outputCmaxR$Ref),format="f",digits=3),formatC(sd(outputAUC0tR$Ref),format="f",digits=3),formatC(sd(outputAUC0INFR$Ref),format="f",digits=3),
+                               formatC(sd(outputlnCmaxR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0tR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0INFR$Ref),format="f",digits=3)))
+ }
+ else{
  outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
                       Test_Mean=c(formatC(mean(outputCmax$Test),format="f",digits=3),formatC(mean(outputAUC0t$Test),format="f",digits=3),formatC(mean(outputAUC0INF$Test),format="f",digits=3),
                                   formatC(mean(outputlnCmax$Test),format="f",digits=3),formatC(mean(outputlnAUC0t$Test),format="f",digits=3),formatC(mean(outputlnAUC0INF$Test),format="f",digits=3)), 
@@ -1553,6 +1759,7 @@ else{
                                  formatC(mean(outputlnCmax$Ref),format="f",digits=3),formatC(mean(outputlnAUC0t$Ref),format="f",digits=3),formatC(mean(outputlnAUC0INF$Ref),format="f",digits=3)),
                       Ref_SD=c(formatC(sd(outputCmax$Ref),format="f",digits=3),formatC(sd(outputAUC0t$Ref),format="f",digits=3),formatC(sd(outputAUC0INF$Ref),format="f",digits=3),
                                formatC(sd(outputlnCmax$Ref),format="f",digits=3),formatC(sd(outputlnAUC0t$Ref),format="f",digits=3),formatC(sd(outputlnAUC0INF$Ref),format="f",digits=3))) 
+ }
 }                                                
 
 show(outputS1)
@@ -1692,10 +1899,31 @@ cat("Summaries for Misc. Pharmacokinetic Parameters (N=",L1+L2,")\n")
 cat("\n")
 cat("\n")
 if(multiple){
-cat("                            Test                 Reference    \n")
+cat("                 Test","(n1=",L2,")","    Reference","(n2=",L1,")\n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
-outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F","MRT","Cav","Fluctuation(%)" ),
+ if(parallel){
+     outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F","MRT","Cav","Fluctuation(%)" ),
+                        Mean_T=c(formatC(mean(outputClFT$Test),format="f",digits=3),formatC(mean(outputLambdaT$Test),format="f",digits=3),formatC(mean(outputTmaxT$Test),format="f",digits=3),formatC(mean(outputT12T$Test),format="f",digits=3),
+                                 formatC(mean(outputVdFT$Test),format="f",digits=3),formatC(mean(outputMRT0INFT$Test),format="f",digits=3),formatC(mean(outputCavT$Test),format="f",digits=3), formatC(mean(outputFluT$Test),format="f",digits=3)),
+                        SD_T=c(formatC(sd(outputClFT$Test),format="f",digits=3),formatC(sd(outputLambdaT$Test),format="f",digits=3),formatC(sd(outputTmaxT$Test),format="f",digits=3),formatC(sd(outputT12T$Test),format="f",digits=3),
+                               formatC(sd(outputVdFT$Test),format="f",digits=3),formatC(sd(outputMRT0INFT$Test),format="f",digits=3),formatC(sd(outputCavT$Test),format="f",digits=3),formatC(sd(outputFluT$Test),format="f",digits=3) ),
+                        CV_T=c(formatC(((sd(outputClFT$Test)/mean(outputClFT$Test))*100),format="f",digits=3),formatC(((sd(outputLambdaT$Test)/mean(outputLambdaT$Test))*100),format="f",digits=3),
+                                  formatC(((sd(outputTmaxT$Test)/mean(outputTmaxT$Test))*100),format="f",digits=3),formatC(((sd(outputT12T$Test)/mean(outputT12T$Test))*100),format="f",digits=3),
+                                  formatC(((sd(outputVdFT$Test)/mean(outputVdFT$Test))*100),format="f",digits=3),formatC(((sd(outputMRT0INFT$Test)/mean(outputMRT0INFT$Test))*100),format="f",digits=3),
+                                  formatC(((sd(outputCavT$Test)/mean(outputCavT$Test))*100),format="f",digits=3),formatC(((sd(outputFlucT$Test)/mean(outputFluT$Test))*100),format="f",digits=3)),
+                                 
+                        Mean_R=c(formatC(mean(outputClFR$Ref),format="f",digits=3),formatC(mean(outputLambdaR$Ref),format="f",digits=3),formatC(mean(outputTmaxR$Ref),format="f",digits=3),formatC(mean(outputT12R$Ref),format="f",digits=3),
+                                 formatC(mean(outputVdFR$Ref),format="f",digits=3),formatC(mean(outputMRT0INFR$Ref),format="f",digits=3),formatC(mean(outputCavR$Ref),format="f",digits=3),formatC(mean(outputFluR$Ref),format="f",digits=3)),
+                        SD_R=c(formatC(sd(outputClFR$Ref),format="f",digits=3),formatC(sd(outputLambdaR$Ref),format="f",digits=3),formatC(sd(outputTmaxR$Ref),format="f",digits=3),formatC(sd(outputT12R$Ref),format="f",digits=3), 
+                                 formatC(sd(outputVdFR$Ref),format="f",digits=3),formatC(sd(outputMRT0INFR$Ref),format="f",digits=3),formatC(sd(outputCavR$Ref),format="f",digits=3),formatC(sd(outputFluR$Ref),format="f",digits=3)),
+                        CV_R=c(formatC(((sd(outputClFR$Ref)/mean(outputClFR$Ref))*100),format="f",digits=3),formatC(((sd(outputLambdaR$Ref)/mean(outputLambdaR$Ref))*100),format="f",digits=3), 
+                                 formatC(((sd(outputTmaxR$Ref)/mean(outputTmaxR$Ref))*100),format="f",digits=3),formatC(((sd(outputT12R$Ref)/mean(outputT12R$Ref))*100),format="f",digits=3),
+                                 formatC(((sd(outputVdFR$Ref)/mean(outputVdFR$Ref))*100),format="f",digits=3),formatC(((sd(outputMRT0INFR$Ref)/mean(outputMRT0INFR$Ref))*100),format="f",digits=3),
+                                 formatC(((sd(outputCavR$Ref)/mean(outputCavR$Ref))*100),format="f",digits=3), formatC(((sd(outputFluR$Ref)/mean(outputFluR$Ref))*100),format="f",digits=3)))
+ }
+ else{
+      outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F","MRT","Cav","Fluctuation(%)" ),
                         Mean_T=c(formatC(mean(outputClF$Test),format="f",digits=3),formatC(mean(outputLambda$Test),format="f",digits=3),formatC(mean(outputTmax$Test),format="f",digits=3),formatC(mean(outputT12$Test),format="f",digits=3),
                                  formatC(mean(outputVdF$Test),format="f",digits=3),formatC(mean(outputMRT0INF$Test),format="f",digits=3),formatC(mean(outputCav$Test),format="f",digits=3), formatC(mean(outputFluctuation$Test),format="f",digits=3)),
                         SD_T=c(formatC(sd(outputClF$Test),format="f",digits=3),formatC(sd(outputLambda$Test),format="f",digits=3),formatC(sd(outputTmax$Test),format="f",digits=3),formatC(sd(outputT12$Test),format="f",digits=3),
@@ -1712,17 +1940,39 @@ outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F"
                         CV_R=c(formatC(((sd(outputClF$Ref)/mean(outputClF$Ref))*100),format="f",digits=3),formatC(((sd(outputLambda$Ref)/mean(outputLambda$Ref))*100),format="f",digits=3), 
                                  formatC(((sd(outputTmax$Ref)/mean(outputTmax$Ref))*100),format="f",digits=3),formatC(((sd(outputT12$Ref)/mean(outputT12$Ref))*100),format="f",digits=3),
                                  formatC(((sd(outputVdF$Ref)/mean(outputVdF$Ref))*100),format="f",digits=3),formatC(((sd(outputMRT0INF$Ref)/mean(outputMRT0INF$Ref))*100),format="f",digits=3),
-                                 formatC(((sd(outputCav$Ref)/mean(outputCav$Ref))*100),format="f",digits=3), formatC(((sd(outputFluctuation$Ref)/mean(outputFluctuation$Ref))*100),format="f",digits=3)))          
+                                 formatC(((sd(outputCav$Ref)/mean(outputCav$Ref))*100),format="f",digits=3), formatC(((sd(outputFluctuation$Ref)/mean(outputFluctuation$Ref))*100),format="f",digits=3)))
+      }
 colnames(outputTest)<- c("Parameters"," Mean"," SD"," CV","    Mean"," SD"," CV")
 show(outputTest)
 cat("\n")
 cat("--------------------------------------------------------------------------\n")
 }
 else{
-cat("                      Test                Reference        \n")
+cat("                 Test","(n1=",L2,")","    Reference","(n2=",L1,")\n")
 cat("--------------------------------------------------------------\n")
 cat("\n")
-outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUCratio" ),
+if(parallel){
+outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio" ),
+                        Mean_T=c(formatC(mean(outputClFT$Test),format="f",digits=3),formatC(mean(outputLambdaT$Test),format="f",digits=3),formatC(mean(outputTmaxT$Test),format="f",digits=3),formatC(mean(outputT12T$Test),format="f",digits=3),
+                                    formatC(mean(outputVdFT$Test),format="f",digits=3),formatC(mean(outputMRT0INFT$Test),format="f",digits=3),formatC(mean(outputAUC_RatioT$Test),format="f",digits=3)),
+                        SD_T=c(formatC(sd(outputClFT$Test),format="f",digits=3),formatC(sd(outputLambdaT$Test),format="f",digits=3),formatC(sd(outputTmaxT$Test),format="f",digits=3),formatC(sd(outputT12T$Test),format="f",digits=3),
+                                  formatC(sd(outputVdFT$Test),format="f",digits=3),formatC(sd(outputMRT0INFT$Test),format="f",digits=3),formatC(sd(outputAUC_RatioT$Test),format="f",digits=3) ),
+                        CV_T=c(formatC(((sd(outputClFT$Test)/mean(outputClFT$Test))*100),format="f",digits=3),formatC(((sd(outputLambdaT$Test)/mean(outputLambdaT$Test))*100),format="f",digits=3),
+                                  formatC(((sd(outputTmaxT$Test)/mean(outputTmaxT$Test))*100),format="f",digits=3),formatC(((sd(outputT12T$Test)/mean(outputT12T$Test))*100),format="f",digits=3),
+                                  formatC(((sd(outputVdFT$Test)/mean(outputVdFT$Test))*100),format="f",digits=3),formatC(((sd(outputMRT0INFT$Test)/mean(outputMRT0INFT$Test))*100),format="f",digits=3),
+                                  formatC(((sd(outputAUC_RatioT$Test)/mean(outputAUC_RatioT$Test))*100),format="f",digits=3)),
+                                 
+                        Mean_R=c(formatC(mean(outputClFR$Ref),format="f",digits=3),formatC(mean(outputLambdaR$Ref),format="f",digits=3),formatC(mean(outputTmaxR$Ref),format="f",digits=3),formatC(mean(outputT12R$Ref),format="f",digits=3),
+                                   formatC(mean(outputVdFR$Ref),format="f",digits=3),formatC(mean(outputMRT0INFR$Ref),format="f",digits=3),formatC(mean(outputAUC_RatioR$Ref),format="f",digits=3)),
+                        SD_R=c(formatC(sd(outputClFR$Ref),format="f",digits=3),formatC(sd(outputLambdaR$Ref),format="f",digits=3),formatC(sd(outputTmaxR$Ref),format="f",digits=3),formatC(sd(outputT12R$Ref),format="f",digits=3), 
+                                 formatC(sd(outputVdFR$Ref),format="f",digits=3),formatC(sd(outputMRT0INFR$Ref),format="f",digits=3),formatC(sd(outputAUC_RatioR$Ref),format="f",digits=3)),
+                        CV_R=c(formatC(((sd(outputClFR$Ref)/mean(outputClFR$Ref))*100),format="f",digits=3),formatC(((sd(outputLambdaR$Ref)/mean(outputLambdaR$Ref))*100),format="f",digits=3), 
+                                 formatC(((sd(outputTmaxR$Ref)/mean(outputTmaxR$Ref))*100),format="f",digits=3),formatC(((sd(outputT12R$Ref)/mean(outputT12R$Ref))*100),format="f",digits=3),
+                                 formatC(((sd(outputVdFR$Ref)/mean(outputVdFR$Ref))*100),format="f",digits=3),formatC(((sd(outputMRT0INFR$Ref)/mean(outputMRT0INFR$Ref))*100),format="f",digits=3),
+                                 formatC(((sd(outputAUC_RatioR$Ref)/mean(outputAUC_RatioR$Ref))*100),format="f",digits=3)))
+}
+else{
+outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio" ),
                         Mean_T=c(formatC(mean(outputClF$Test),format="f",digits=3),formatC(mean(outputLambda$Test),format="f",digits=3),formatC(mean(outputTmax$Test),format="f",digits=3),formatC(mean(outputT12$Test),format="f",digits=3),
                                     formatC(mean(outputVdF$Test),format="f",digits=3),formatC(mean(outputMRT0INF$Test),format="f",digits=3),formatC(mean(outputAUC0t_AUC0INF$Test),format="f",digits=3)),
                         SD_T=c(formatC(sd(outputClF$Test),format="f",digits=3),formatC(sd(outputLambda$Test),format="f",digits=3),formatC(sd(outputTmax$Test),format="f",digits=3),formatC(sd(outputT12$Test),format="f",digits=3),
@@ -1739,12 +1989,15 @@ outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","M
                         CV_R=c(formatC(((sd(outputClF$Ref)/mean(outputClF$Ref))*100),format="f",digits=3),formatC(((sd(outputLambda$Ref)/mean(outputLambda$Ref))*100),format="f",digits=3), 
                                  formatC(((sd(outputTmax$Ref)/mean(outputTmax$Ref))*100),format="f",digits=3),formatC(((sd(outputT12$Ref)/mean(outputT12$Ref))*100),format="f",digits=3),
                                  formatC(((sd(outputVdF$Ref)/mean(outputVdF$Ref))*100),format="f",digits=3),formatC(((sd(outputMRT0INF$Ref)/mean(outputMRT0INF$Ref))*100),format="f",digits=3),
-                                 formatC(((sd(outputAUC0t_AUC0INF$Ref)/mean(outputAUC0t_AUC0INF$Ref))*100),format="f",digits=3)))          
+                                 formatC(((sd(outputAUC0t_AUC0INF$Ref)/mean(outputAUC0t_AUC0INF$Ref))*100),format="f",digits=3)))
+}
 colnames(outputTest)<- c("Parameters"," Mean"," SD"," CV","    Mean"," SD"," CV")
 show(outputTest)
 cat("\n")
 cat("--------------------------------------------------------------\n")
-cat("AUCratio: (AUC0-t/AUC0-inf)*100 \n")
+cat("AUC_ratio: (AUC0-t/AUC0-inf)*100 \n")
+cat("   AUC0-t: AUC from time zero to the time of the last measurable\n")
+cat("           drug concentration.\n")
 cat("--------------------------------------------------------------\n")
 }                        
 cat("\n")

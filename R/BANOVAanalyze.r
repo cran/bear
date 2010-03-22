@@ -10,17 +10,17 @@ if(multiple){
    
   cat("\n")
   cat("Enter lower acceptance limit (%) for lnCmax_ss\n")
-  cat("(or press Enter to use default value: 80 )\n")
+  cat("(or press Enter to use default value: 80.000 )\n")
    Lm<-readline()
-   if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+   if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
    lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
    lnCmax_theta2 <- 1/lnCmax_theta1
 
   cat("\n")
   cat("Enter lower acceptance limit (%) for lnAUC(tau)ss\n")
-  cat("(or press Enter to use default value: 80 )\n")
+  cat("(or press Enter to use default value: 80.000 )\n")
     Lm<-readline()
-    if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+    if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
     lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
     lnAUC0t_theta2 <- 1/lnAUC0t_theta1
  }
@@ -31,25 +31,25 @@ else{
 
   cat("\n")
   cat("Enter lower acceptance limit (%) for lnCmax\n")
-  cat("(or press Enter to use default value: 80 )\n")
+  cat("(or press Enter to use default value: 80.000 )\n")
   Lm<-readline()
-  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
   lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
   lnCmax_theta2 <- 1/lnCmax_theta1
 
   cat("\n")
   cat("Enter lower acceptance limit (%) for lnAUC0t\n")
-  cat("(or press Enter to use default value: 80 )\n")
+  cat("(or press Enter to use default value: 80.000 )\n")
   Lm<-readline()
-  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
   lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
   lnAUC0t_theta2 <- 1/lnAUC0t_theta1
 
   cat("\n")
   cat("Enter lower acceptance limit (%) for lnAUC0INF\n")
-  cat("(or press Enter to use default value: 80 )\n")
+  cat("(or press Enter to use default value: 80.000 )\n")
   Lm<-readline()
-  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80  else Lm<-as.numeric(Lm)
+  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
   lnAUC0INF_theta1 <- Lm/100      # theta1: lower acceptance limit
   lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
  }
