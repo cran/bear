@@ -1,5 +1,5 @@
 description_version<-function(){
-cat("~~~  This report was generated using bear v2.4.2 ~~~\n\n")
+cat("~~~  This report was generated using bear v2.4.3 ~~~\n\n")
 reportdate<-as.POSIXct(Sys.time())
 cat("and was created on (local time):- "); show(reportdate); cat("\n")
 cat("bear was developed by Hsin-ya Lee & Yung-jin Lee.\n")

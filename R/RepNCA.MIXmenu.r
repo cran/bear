@@ -2,11 +2,18 @@
 RepNCA.MIXmenu<-function(parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
-  file.menu <- c("NCA --> Statistical analysis (lme, 90%CI...)",
+  if(parallel){
+  file.menu <- c("NCA --> Statistical analysis (lm, 90%CI...)",
                  "Run demo for NCA --> Statistical analysis",
                  "Back to the previous step",
                  "Quit")
- cat("\n")
+ cat("\n")}
+ else{
+ file.menu <- c("NCA --> Statistical analysis (lme, 90%CI...)",
+                 "Run demo for NCA --> Statistical analysis",
+                 "Back to the previous step",
+                 "Quit")
+ cat("\n")}
   if(parallel){
   pick <- menu(file.menu, title = " << NCA--> Statistical analysis for Parallel Study>> ")
    }

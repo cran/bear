@@ -8,7 +8,11 @@ cat("***************************************************************************
 cat(" The following output files can be found at the directory of                \n")
 cat(" ",filepath,".                                                              \n")
 cat("----------------------------------------------------------------------------\n")
-cat(" lme_stat.txt                                                               \n")
+if(! parallel){
+   cat(" lme_stat.txt \n")}
+ else{
+   cat(" lm_stat.txt \n")
+}
 if(multiple){
 cat("    -->lme: Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss                \n")
 cat("    -->90%CI: lnCmax_ss, lnAUC(tau)ss                                     \n")
@@ -63,7 +67,10 @@ drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0IN
                       lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t,lnAUC0INF=rdrug$lnAUC0INF)   
                       
 }
-zz <- file("lme_stat.txt", open="wt")
+if(! parallel){
+   zz <- file("lme_stat.txt", open="wt")}
+ else{
+   zz <- file("lm_stat.txt", open="wt")}
 sink(zz)
 description_version()
 cat("\n")
