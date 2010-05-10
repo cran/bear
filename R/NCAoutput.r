@@ -81,15 +81,12 @@ cat("\n")
                 } 
           if(multiple){
           cat("2. This is a multiple-dose BE study.            \n")
-          cat("----------------------------------------------------------------------------\n") 
+          cat("-----------------------------------------------------\n") 
           }
           else{
           cat("2. This is a single-dose BE study. \n")
-          cat("----------------------------------------------------------------------------\n") 
+          cat("-----------------------------------------------------\n") 
           }
-                
-cat("\n")
-cat("\n")
 cat("\n")
 cat("\n")
 cat("                    Reference                      \n")
@@ -209,7 +206,7 @@ cat("---------------------------------------------------\n")
                    else{
                  cat("<< NCA Outputs:- Subj.#",su," (Ref.)>>\n")
                     }
-                 cat("--------------------------------------------------------------------------\n")
+                 cat("---------------------------------------------------\n")
                  output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3))
                  if(multiple){
                   colnames(output)<-list("subj","time","conc", "AUC(tau)ss","AUMC(tau)ss")
@@ -497,7 +494,7 @@ FluTest<-0
                    else{
                  cat("<< NCA Outputs:- Subj.#",su1," (Test)>>\n")
                     }
-                 cat("--------------------------------------------------------------------------\n")
+                 cat("---------------------------------------------------\n")
                  output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3) )
                   if(multiple){
                   colnames(output)<-list("subj","time","conc", "AUC(tau)ss","AUMC(tau)ss")
@@ -1915,7 +1912,7 @@ if(multiple){
                         CV_T=c(formatC(((sd(outputClFT$Test)/mean(outputClFT$Test))*100),format="f",digits=3),formatC(((sd(outputLambdaT$Test)/mean(outputLambdaT$Test))*100),format="f",digits=3),
                                   formatC(((sd(outputTmaxT$Test)/mean(outputTmaxT$Test))*100),format="f",digits=3),formatC(((sd(outputT12T$Test)/mean(outputT12T$Test))*100),format="f",digits=3),
                                   formatC(((sd(outputVdFT$Test)/mean(outputVdFT$Test))*100),format="f",digits=3),formatC(((sd(outputMRT0INFT$Test)/mean(outputMRT0INFT$Test))*100),format="f",digits=3),
-                                  formatC(((sd(outputCavT$Test)/mean(outputCavT$Test))*100),format="f",digits=3),formatC(((sd(outputFlucT$Test)/mean(outputFluT$Test))*100),format="f",digits=3)),
+                                  formatC(((sd(outputCavT$Test)/mean(outputCavT$Test))*100),format="f",digits=3),formatC(((sd(outputFluT$Test)/mean(outputFluT$Test))*100),format="f",digits=3)),
                                  
                         Mean_R=c(formatC(mean(outputClFR$Ref),format="f",digits=3),formatC(mean(outputLambdaR$Ref),format="f",digits=3),formatC(mean(outputTmaxR$Ref),format="f",digits=3),formatC(mean(outputT12R$Ref),format="f",digits=3),
                                  formatC(mean(outputVdFR$Ref),format="f",digits=3),formatC(mean(outputMRT0INFR$Ref),format="f",digits=3),formatC(mean(outputCavR$Ref),format="f",digits=3),formatC(mean(outputFluR$Ref),format="f",digits=3)),

@@ -8,18 +8,18 @@ cat("***************************************************************************
 cat(" The following output files can be found at the directory of                \n")
 cat(" ",filepath,".                                                              \n")
 cat("----------------------------------------------------------------------------\n")
-if(! parallel){
-   cat(" lme_stat.txt \n")}
+if(parallel){
+   cat(" lm_stat.txt \n")}
  else{
-   cat(" lm_stat.txt \n")
+   cat(" lme_stat.txt \n")
 }
 if(multiple){
-cat("    -->lme: Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss                \n")
+cat("    -->lme/lm: Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss               \n")
 cat("    -->90%CI: lnCmax_ss, lnAUC(tau)ss                                     \n")
 }
 else{
-cat("    --> lme: Cmax, AUC0t, AUC0inf, ln(Cmax), ln(AUC0t), ln(AUC0inf)          \n")
-cat("    --> 90%CI: ln(Cmax), ln(AUC0t), and ln(AUC0inf)                          \n")
+cat("    --> lme/lm: Cmax, AUC0t, AUC0inf, ln(Cmax), ln(AUC0t), ln(AUC0inf)    \n")
+cat("    --> 90%CI: ln(Cmax), ln(AUC0t), and ln(AUC0inf)                       \n")
 }
 cat("****************************************************************************\n")
 cat("\n")
@@ -29,59 +29,51 @@ level <-sapply(values, length)
 if(parallel){
 
   if(multiple){
-  TotalData1<-data.frame (subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t,
-                         lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t)
+  TotalData1<-data.frame (subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t)
  
   rdrug<-as.data.frame(sapply(TotalData1, tapply, TotalData1$drug, mean))
-  drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t,lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t)       
-  colnames(TotalData1)<- c("subj","drug","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
-  colnames(drug_mean)<- c("DRUG","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+  drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t)       
+  colnames(TotalData1)<- c("subj","drug","Cmax_ss","AUCtau_ss")
+  colnames(drug_mean)<- c("drug","Cmax_ss","AUCtau_ss")
   }
   else{
   TotalData1<-data.frame(subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),
-                      Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF,
-                      lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t,lnAUC0INF=TotalData$lnAUC0INF)
+                      Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF)
   rdrug<-as.data.frame(sapply(TotalData1, tapply, TotalData1$drug, mean))
-  drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF, 
-                      lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t,lnAUC0INF=rdrug$lnAUC0INF)                
+  drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF)                
   }
 }
 else {
 TotalData1<-data.frame (subj=TotalData$subj, drug=as.numeric(TotalData$drug),seq=as.numeric(TotalData$seq),
-                      prd=as.numeric(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF, 
-                      lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t,lnAUC0INF=TotalData$lnAUC0INF) 
+                      prd=as.numeric(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF) 
 rsubj<-as.data.frame(sapply(TotalData1, tapply, TotalData1$subj, mean))
 rdrug<-as.data.frame(sapply(TotalData1, tapply, TotalData1$drug, mean))
 rseq<-as.data.frame(sapply(TotalData1, tapply, TotalData1$seq, mean))
 rprd<-as.data.frame(sapply(TotalData1, tapply, TotalData1$prd, mean))
 
-subj_mean11<-data.frame(SUBJECT=as.numeric(levels(values$subj)),SEQUENCE=rsubj$seq,Cmax=rsubj$Cmax, AUC0t=rsubj$AUC0t, AUC0INF=rsubj$AUC0INF, 
-                      lnCmax=rsubj$lnCmax,lnAUC0t=rsubj$lnAUC0t,lnAUC0INF=rsubj$lnAUC0INF)                      
+subj_mean11<-data.frame(SUBJECT=as.numeric(levels(values$subj)),SEQUENCE=rsubj$seq,Cmax=rsubj$Cmax, AUC0t=rsubj$AUC0t, AUC0INF=rsubj$AUC0INF)                      
 subj_mean1<-subj_mean11[ do.call(order, subj_mean11) ,]
 subj_mean<-na.omit(subj_mean1)
-seq_mean<-data.frame(SEQUENCE=rseq$seq,Cmax=rseq$Cmax, AUC0t=rseq$AUC0t, AUC0INF=rseq$AUC0INF, 
-                    lnCmax=rseq$lnCmax,lnAUC0t=rseq$lnAUC0t,lnAUC0INF=rseq$lnAUC0INF)
-prd_mean<-data.frame(PERIOD=rprd$prd,Cmax=rprd$Cmax, AUC0t=rprd$AUC0t, AUC0INF=rprd$AUC0INF, 
-                      lnCmax=rprd$lnCmax,lnAUC0t=rprd$lnAUC0t,lnAUC0INF=rprd$lnAUC0INF)            
-drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF, 
-                      lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t,lnAUC0INF=rdrug$lnAUC0INF)   
+seq_mean<-data.frame(SEQUENCE=rseq$seq,Cmax=rseq$Cmax, AUC0t=rseq$AUC0t, AUC0INF=rseq$AUC0INF)
+prd_mean<-data.frame(PERIOD=rprd$prd,Cmax=rprd$Cmax, AUC0t=rprd$AUC0t, AUC0INF=rprd$AUC0INF)            
+drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF)   
                       
 }
-if(! parallel){
-   zz <- file("lme_stat.txt", open="wt")}
- else{
+if(parallel){
    zz <- file("lm_stat.txt", open="wt")}
+ else{
+   zz <- file("lme_stat.txt", open="wt")}
 sink(zz)
 description_version()
 cat("\n")
-cat("  Data Summary of BA measurement                  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("  List of Input Data from NCA                  \n")
+cat("-----------------------------------------------\n")
 show(TotalData1)
 cat("\n")
 cat("\n")
 cat("\n")
 cat("  Class Level Information                  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("-----------------------------------------------\n")
 cat("  Class       Levels      Values\n")  
 if(parallel){
 cat("  SUBJECT     ",level[[1]],"        ",sort(as.numeric(levels(values$subj))) ,"\n")
@@ -94,7 +86,7 @@ cat("\n")
 cat("\n")
 
 cat(" Means                  \n")
-cat("--------------------------------------------------------------------------\n") 
+cat("--------------------------------------------------\n") 
       
 show(drug_mean)
 cat("\n")
@@ -121,7 +113,7 @@ cat("\n")
 cat("\n")
 
 cat(" Means                  \n")
-cat("--------------------------------------------------------------------------\n") 
+("--------------------------------------------------\n")
 
 show(seq_mean)
 cat("\n")

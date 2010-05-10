@@ -1,5 +1,5 @@
 ##ANOVA
-library(ICSNP) 
+library(ICSNP)
 BANOVA<-function(RefData, TestData,TotalData, L1, L2,
        lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
        lnAUC0t_MSinter,lnAUC0t_MSintra,lnAUC0t_SSinter,lnAUC0t_SSintra,
@@ -13,8 +13,7 @@ BANOVA<-function(RefData, TestData,TotalData, L1, L2,
 if(multiple){
 cat("*** This is a 2-treatment, 2-sequence, and 2-period crossover multiple dose design. \n")
 Data<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
-                   prd=as.factor(TotalData$prd),Cmax_ss=TotalData$Cmax, AUCtau_ss=TotalData$AUC0t, 
-                   lnCmax_ss=TotalData$lnCmax,lnAUCtau_ss=TotalData$lnAUC0t) 
+                   prd=as.factor(TotalData$prd),Cmax_ss=TotalData$Cmax, AUCtau_ss=TotalData$AUC0t) 
 }
 else{
 cat("*** This is a 2-treatment, 2-sequence, and 2-period crossover single dose design. \n")
@@ -22,37 +21,39 @@ cat("*** This is a 2-treatment, 2-sequence, and 2-period crossover single dose d
 cat("\n")
 
 cat("  Statistical analysis (ANOVA(lm))                  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("----------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: Cmax_ss                                                 \n")
+cat("  Dependent Variable: Cmax_ss                       \n")
 cat("\n")
 cat("Type I SS\n")
-Cmax_ss<- lm(Cmax_ss ~ seq + subj:seq + prd + drug , data=Data)
+Cmax_ss<- lm(log(Cmax_ss) ~ seq + subj + prd + drug , data=Data)
 BearAnova=anova(Cmax_ss)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-Cmax_ss_drop1 <- drop1(Cmax_ss, test="F")
-row.names(Cmax_ss_drop1)[4]="subj(seq)"
+Cmax_ss_drop1 <- drop1(Cmax_ss)
 show(Cmax_ss_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(Cmax_ss ~ prd*drug + Error(subj) , data=Data)))
-Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug , data=TotalData)
+###
+### the following is the same as Cmax_ss<- lm(log(Cmax_ss) ~ seq + subj:seq + prd + drug , data=Data)!
+### the reason to do this is that we don't have to re-write more codes (around lines 277- 408) for nultiple-dose study;
+### the data for multiple-dose was ported from TotalData with the same data column; Cmax of single-dose is
+### replaced by Cmax_ss in the case of multiple-dose.
+###
+Cmax<- lm(Cmax ~ seq + subj + prd + drug , data=TotalData)
 }
 else{
-cat("  Dependent Variable: Cmax                                                 \n")
+cat("  Dependent Variable: Cmax                       \n")
 cat("\n")
 cat("Type I SS\n")
-Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug, data=TotalData)
+Cmax<- lm(Cmax ~ seq + subj + prd + drug, data=TotalData)
 BearAnova=anova(Cmax)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 Cmax_drop1 <- drop1(Cmax, test="F")
-row.names(Cmax_drop1)[4]="subj(seq)"
 show(Cmax_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
@@ -60,42 +61,36 @@ print(summary(aov(Cmax ~ prd*drug + Error(subj) , data=TotalData)))
 }
 cat("\n")
 cat("\n")
-cat("\n")
-cat("\n")
 
 #GLM_AUC0t.txt
-cat("  Statistical analysis (ANOVA(lm))                   \n")
-cat("--------------------------------------------------------------------------\n")
+cat("  Statistical analysis (ANOVA(lm))               \n")
+cat("-------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: AUC(tau)ss                                        \n")
+cat("  Dependent Variable: AUC(tau)ss                 \n")
 cat("\n")
 cat("Type I SS\n")
-AUCtau_ss<- lm(AUCtau_ss ~ seq + subj:seq+ prd + drug , data=Data)
+AUCtau_ss<- lm(AUCtau_ss ~ seq + subj+ prd + drug , data=Data)
 BearAnova=anova(AUCtau_ss)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
-AUCtau_ss_drop1 <- drop1(AUCtau_ss, test="F")
-row.names(AUCtau_ss_drop1)[4]="subj(seq)"
+AUCtau_ss_drop1 <- drop1(AUCtau_ss)
 show(AUCtau_ss_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(AUCtau_ss ~ prd*drug + Error(subj) , data=Data)))
-AUC0t<- lm(AUC0t ~ seq + subj:seq+ prd + drug , data=TotalData)
+AUC0t<- lm(AUC0t ~ seq + subj + prd + drug , data=TotalData)
 }
 else{
-cat("  Dependent Variable: AUC0t                                                \n")
+cat("  Dependent Variable: AUC0t                      \n")
 cat("\n")
 cat("Type I SS\n")
-AUC0t<- lm(AUC0t ~ seq + subj:seq+ prd + drug , data=TotalData)
+AUC0t<- lm(AUC0t ~ seq + subj + prd + drug , data=TotalData)
 BearAnova=anova(AUC0t)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 AUC0t_drop1 <- drop1(AUC0t, test="F")
-row.names(AUC0t_drop1)[4]="subj(seq)"
 show(AUC0t_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
@@ -103,122 +98,139 @@ print(summary(aov(AUC0t ~ prd*drug + Error(subj) , data=TotalData)))
 }
 cat("\n")
 cat("\n")
-cat("\n")
-cat("\n")
+
 if(multiple){
 }
 else{
 #GLM_AUC0INF.txt
-cat("  Statistical analysis (ANOVA(lm), 90%CI, Outlier Detection, and etc.)    \n")
-cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: AUC0INF                                             \n")
+cat("  Statistical analysis (ANOVA(lm)and 90%CI)    \n")
+cat("-----------------------------------------------\n")
+cat("  Dependent Variable: AUC0INF                  \n")
 cat("\n")
 cat("Type I SS\n")
-AUC0INF<- lm(AUC0INF ~ seq + subj:seq + prd + drug , data=TotalData)
+AUC0INF<- lm(AUC0INF ~ seq + subj + prd + drug , data=TotalData)
 BearAnova=anova(AUC0INF)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 AUC0INF_drop1 <- drop1(AUC0INF, test="F")
-row.names(AUC0INF_drop1)[4]="subj(seq)"
 show(AUC0INF_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
 print(summary(aov(AUC0INF ~ prd*drug + Error(subj) , data=TotalData)))
 cat("\n")
 cat("\n")
-cat("\n")
 }
-#GLM_lnCmax.txt
+#lnCmax or lnCmax_ss
+
 cat("  Statistical analysis (ANOVA(lm))    \n")
-cat("--------------------------------------------------------------------------\n")
+cat("--------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: lnCmax_ss                                           \n")
+cat("  Dependent Variable: log(Cmax_ss)    \n")
 cat("\n")
 cat("Type I SS\n")
-lnCmax_ss<- lm(lnCmax_ss ~ seq + subj:seq + prd + drug , data=Data)
+lnCmax_ss<- lm(log(Cmax_ss) ~ seq + subj + prd + drug , data=Data)
 BearAnova=anova(lnCmax_ss)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 lnCmax_ss_drop1 <- drop1(lnCmax_ss, test="F")
-row.names(lnCmax_ss_drop1)[4]="subj(seq)"
 show(lnCmax_ss_drop1)
+cat("---\n")
+cat("Note: The Type I SS and Type III SS should be the same in \n")
+cat("      balanced crossover study.\n")
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
-print(summary(aov(lnCmax_ss ~ prd*drug + Error(subj) , data=Data)))
-lnCmax<- lm(lnCmax ~ seq + subj:seq + prd + drug , data=TotalData)
+print(summary(aov(log(Cmax_ss) ~ prd*drug + Error(subj) , data=Data)))
+lnCmax<- lm(log(Cmax) ~ seq + subj + prd + drug , data=TotalData)
 }
 else{
-cat("  Dependent Variable: lnCmax                                              \n")
+cat("  Dependent Variable: log(Cmax)                           \n")
+lnCmax<- lm(log(Cmax)~ seq + subj + prd + drug, data=TotalData)
+### lnCmax<- aov(log(Cmax) ~ seq + subj + prd + drug, data=TotalData)
+### print(summary(lnCmax))
 cat("\n")
-cat("Type I SS\n")
-lnCmax<- lm(lnCmax ~ seq + subj:seq + prd + drug , data=TotalData)
+cat("ANOVA Table incl. Type I SS\n")
 BearAnova=anova(lnCmax)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 lnCmax_drop1 <- drop1(lnCmax, test="F")
-row.names(lnCmax_drop1)[4]="subj(seq)"
+### row.names(lnCmax_drop1)[5]="subj(seq)"
 show(lnCmax_drop1)
 cat("\n")
-cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
-print(summary(aov(lnCmax ~ prd*drug + Error(subj) , data=TotalData)))
-}
+cat("---\n")
+cat("Note: The Type I SS and Type III SS should be the same in \n")
+cat("      balanced crossover study.\n")
 cat("\n")
-cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnCmax)[5,3])-1)),format="f",digits=4),"%\n")
-cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1)),format="f",digits=4),"%\n")
+cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
+print(summary(aov(log(Cmax) ~ prd*drug + Error(subj), data=TotalData)))
+}
+if(multiple){
+cat("\n")
+cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnCmax_ss)[5,3])-1)),format="f",digits=3),"%\n")
+cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnCmax_ss)[4,3]-anova(lnCmax_ss)[5,3])/2)-1)),format="f",digits=3),"%\n")
+cat("    MSResidual =",anova(lnCmax_ss)[5,3],"\n")
+cat("MSSubject(seq) =",anova(lnCmax_ss)[4,3],"\n")
+}
+else{
+cat("\n")
+cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnCmax)[5,3])-1)),format="f",digits=3),"%\n")
+cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1)),format="f",digits=3),"%\n")
 cat("    MSResidual =",anova(lnCmax)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnCmax)[4,3],"\n")
+}
 cat("\n")
 cat("\n")
 
-#GLM_lnAUC0t.txt
+#lnAUC0t or lnAUCtau_ss
+
 cat("  Statistical analysis (ANOVA(lm))    \n")
-cat("--------------------------------------------------------------------------\n")
+cat("--------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: lnAUC(tau)ss                                      \n")
+cat("  Dependent Variable: log(AUCtau_ss) \n")
 cat("\n")
 cat("Type I SS\n")
-lnAUCtau_ss<- lm(lnAUCtau_ss ~ seq + subj:seq + prd + drug , data=Data)
+lnAUCtau_ss<- lm(log(AUCtau_ss) ~ seq + subj + prd + drug , data=Data)
 BearAnova=anova(lnAUCtau_ss)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 lnAUCtau_ss_drop1 <- drop1(lnAUCtau_ss, test="F")
-row.names(lnAUCtau_ss_drop1)[4]="subj(seq)"
 show(lnAUCtau_ss_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
-print(summary(aov(lnAUCtau_ss ~ prd*drug + Error(subj) , data=Data)))
-lnAUC0t<- lm(lnAUC0t ~ seq + subj:seq + prd + drug , data=TotalData)
+print(summary(aov(log(AUCtau_ss) ~ prd*drug + Error(subj) , data=Data)))
+lnAUC0t<- lm(log(AUC0t) ~ seq + subj + prd + drug , data=TotalData)
 }
 else{
-cat("  Dependent Variable: lnAUC0t                                             \n")
+cat("  Dependent Variable: log(AUC0t)     \n")
 cat("\n")
 cat("Type I SS\n")
-lnAUC0t<- lm(lnAUC0t ~ seq + subj:seq + prd + drug , data=TotalData)
+lnAUC0t<- lm(log(AUC0t) ~ seq + subj + prd + drug , data=TotalData)
 BearAnova=anova(lnAUC0t)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 lnAUC0t_drop1 <- drop1(lnAUC0t, test="F")
-row.names(lnAUC0t_drop1)[4]="subj(seq)"
 show(lnAUC0t_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
-print(summary(aov(lnAUC0t ~ prd*drug + Error(subj) , data=TotalData)))
+print(summary(aov(log(AUC0t) ~ prd*drug + Error(subj) , data=TotalData)))
 }
+if(multiple){
+cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =", formatC(100*sqrt(abs(exp(anova(lnAUCtau_ss)[5,3])-1)),format="f",digits=3),"%\n")
+cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnAUCtau_ss)[4,3]-anova(lnAUCtau_ss)[5,3])/2)-1)),format="f",digits=3),"%\n")
+cat("    MSResidual =",anova(lnAUCtau_ss)[5,3],"\n")
+cat("MSSubject(seq) =",anova(lnAUCtau_ss)[4,3],"\n")
+}
+else{
 cat("\n")
-cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =", formatC(100*sqrt(abs(exp(anova(lnAUC0t)[5,3])-1)),format="f",digits=4),"%\n")
-cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnAUC0t)[4,3]-anova(lnAUC0t)[5,3])/2)-1)),format="f",digits=4),"%\n")
+cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =", formatC(100*sqrt(abs(exp(anova(lnAUC0t)[5,3])-1)),format="f",digits=3),"%\n")
+cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnAUC0t)[4,3]-anova(lnAUC0t)[5,3])/2)-1)),format="f",digits=3),"%\n")
 cat("    MSResidual =",anova(lnAUC0t)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0t)[4,3],"\n")
+}
 cat("\n")
 cat("\n")
 
@@ -227,25 +239,23 @@ if(multiple){
 else{
 #GLM_AUC0INF.txt
 cat("  Statistical analysis (ANOVA(lm))    \n")
-cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: lnAUC0INF                                             \n")
+cat("--------------------------------------\n")
+cat("  Dependent Variable: log(AUC0INF)    \n")
 cat("\n")
 cat("Type I SS\n")
-lnAUC0INF<- lm(lnAUC0INF ~ seq + subj:seq + prd + drug , data=TotalData)
+lnAUC0INF<- lm(log(AUC0INF) ~ seq + subj + prd + drug , data=TotalData)
 BearAnova=anova(lnAUC0INF)
-row.names(BearAnova)[4]="subj(seq)"
 show(BearAnova)
 cat("\n")
 cat("Type III SS\n")
 lnAUC0INF_drop1 <- drop1(lnAUC0INF, test="F")
-row.names(lnAUC0INF_drop1)[4]="subj(seq)"
 show(lnAUC0INF_drop1)
 cat("\n")
 cat("Tests of Hypothesis for SUBJECT(SEQUENCE) as an error term\n")
-print(summary(aov(lnAUC0INF ~ prd*drug + Error(subj) , data=TotalData)))
+print(summary(aov(log(AUC0INF) ~ prd*drug + Error(subj) , data=TotalData)))
 cat("\n")
-cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnAUC0INF)[5,3])-1)),format="f",digits=4),"%\n")
-cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnAUC0INF)[4,3]-anova(lnAUC0INF)[5,3])/2)-1)),format="f",digits=4),"%\n")
+cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnAUC0INF)[5,3])-1)),format="f",digits=3),"%\n")
+cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1)) =",formatC(100*sqrt(abs(exp((anova(lnAUC0INF)[4,3]-anova(lnAUC0INF)[5,3])/2)-1)),format="f",digits=3),"%\n")
 cat("    MSResidual =",anova(lnAUC0INF)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0INF)[4,3],"\n")     
 cat("\n")
@@ -275,7 +285,7 @@ lowerAUC0t<-100*exp(est_lnAUC0t-(T*SE_AUC0t))
 UpperAUC0t<-100*exp(est_lnAUC0t+(T*SE_AUC0t))
 
 ###two-one side and Anderson and Hauck's test
-#lnCmax
+#lnCmax or lnCmax_ss
 TL_lnCmax<--((test_Cmax-ref_Cmax)-log(lnCmax_theta1))/SE_Cmax
 TU_lnCmax<-((test_Cmax-ref_Cmax)-log(lnCmax_theta2))/SE_Cmax
 PTL_lnCmax<-pt(TL_lnCmax,L1+L2-2)
@@ -284,7 +294,7 @@ TAH_lnCmax<-(test_Cmax-ref_Cmax)/SE_Cmax
 NP_lnCmax<-log(lnCmax_theta2)/SE_Cmax
 EP_lnCmax<- pt((abs(TAH_lnCmax)-NP_lnCmax),L1+L2-2) - pt((-abs(TAH_lnCmax)-NP_lnCmax),L1+L2-2)
 
-#lnAUC0t
+#lnAUC0t or lnAUCtau_ss
 TL_lnAUC0t<--((test_AUC0t-ref_AUC0t)-log(lnAUC0t_theta1))/SE_AUC0t
 TU_lnAUC0t<-((test_AUC0t-ref_AUC0t)-log(lnAUC0t_theta2))/SE_AUC0t
 PTL_lnAUC0t<-pt(TL_lnAUC0t,L1+L2-2)
@@ -387,20 +397,20 @@ lnCmax_PFpm<-1-pf(lnCmax_Fpm, 1, L1+L2-2)
 #Report for lnCmax, lnAUC0t and lnAUC0inf
 cat("\n")
 cat("\n")
-cat("  Pivotal Parameters of BE Study - Summary Report                            \n")
-cat("--------------------------------------------------------------------------\n")
+cat("  Pivotal Parameters of BE Study - Summary Report \n")
+cat("--------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: lnCmax_ss                                            \n")
+cat("  Dependent Variable: log(Cmax_ss)                \n")
 }
 else{
-cat("  Dependent Variable: lnCmax                                               \n")
+cat("  Dependent Variable: log(Cmax)                   \n")
 }
-cat("--------------------------------------------------------------------------\n")
+cat("--------------------------------------------------\n")
 cat("        n1(R -> T) =",L1 , "\n")
 cat("        n2(T -> R) =",L2 , "\n")
 cat("          N(n1+n2) =",L1+L2 , "\n")
-cat("    Lower criteria =",formatC(lnCmax_theta1*100,format="f",digits=0), "%\n")
-cat("    Upper criteria =",formatC(lnCmax_theta2*100,format="f",digits=0), "%\n")
+cat("    Lower criteria =",formatC(lnCmax_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnCmax_theta2*100,format="f",digits=3), "%\n")
 cat("          MEAN-ref =",ref_Cmax, "\n")
 cat("         MEAN-test =",test_Cmax, "\n")
 cat("               MSE =",anova(lnCmax)[5,3], "\n")
@@ -408,22 +418,26 @@ cat("                SE =",SE_Cmax, "\n")
 cat("Estimate(test-ref) =",est_lnCmax, "\n")
 cat("\n")
 if(multiple){
-cat("************** Classical (Shortest) 90% C.I. for lnCmax_ss ****************\n")
+cat("*** Classical (Shortest) 90% C.I. for lnCmax_ss ***\n")
 }
 else{
-cat("**************** Classical (Shortest) 90% C.I. for lnCmax ****************\n")
+cat("*** Classical (Shortest) 90% C.I. for lnCmax_ss ***\n")
 }
 cat("\n")
-output<-data.frame(CI90_lower=c(formatC(lowerCmax,format="f",digits=3)),
-                   Point_estimated=c(formatC(100*exp(est_lnCmax),format="f",digits=3)),
+output<-data.frame(Point_estimate=c(formatC(100*exp(est_lnCmax),format="f",digits=3)),
+                   CI90_lower=c(formatC(lowerCmax,format="f",digits=3)),
                    CI90_upper=c( formatC(upperCmax,format="f",digits=3)))
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
 show(output)    
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
 TOST_lnCmax<-data.frame(TOST=c("T_lower", "T_upper"),
-                 T_value=c(formatC(TL_lnCmax,format="f",digits=4),formatC(TU_lnCmax,format="f",digits=4)),
-                 P_value=c(formatC(PTL_lnCmax,format="f",digits=4),formatC(PTU_lnCmax,format="f",digits=4))) 
+                 T_value=c(formatC(TL_lnCmax,format="f",digits=3),formatC(TU_lnCmax,format="f",digits=3)),
+                 P_value=c(formatC(PTL_lnCmax,format="f",digits=3),formatC(PTU_lnCmax,format="f",digits=3))) 
 colnames(TOST_lnCmax)<- c("TOST","  T value","  P value")
 show(TOST_lnCmax) 
 cat("\n")
@@ -471,7 +485,7 @@ II_lnCmax<-data.frame(subj=IntraInterlnCmax00$subj,
                       Inter=formatC(IntraInterlnCmax00$Inter,format="f",digits=6),
                       Stud_Inter=formatC(IntraInterlnCmax00$Stud_Inter,format="f",digits=6))   
 show(II_lnCmax)
-cat("------------------------------------------------\n")
+cat("--------------------------------------------------------------------------\n")
 if(multiple){
 cat("Obs: Observed lnCmax_ss\n")
 cat("Exp: Expected lnCmax_ss\n")
@@ -547,17 +561,17 @@ lnAUC0t_PFpm<-1-pf(lnAUC0t_Fpm, 1, L1+L2-2)
 cat("  Pivotal Parameters of BE Study - Summary Report                            \n")
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: lnAUC(tau)ss                                       \n")
+cat("  Dependent Variable: log(AUCtau_ss)                                     \n")
 }
 else{
-cat("  Dependent Variable: lnAUC0t                                              \n")
+cat("  Dependent Variable: log(AUC0t)                                          \n")
 }
 cat("--------------------------------------------------------------------------\n")
 cat("        n1(R -> T) =",L1 , "\n")
 cat("        n2(T -> R) =",L2 , "\n")
 cat("          N(n1+n2) =",L1+L2 , "\n")
-cat("    Lower criteria =",formatC(lnAUC0t_theta1*100,format="f",digits=0), "%\n")
-cat("    Upper criteria =",formatC(lnAUC0t_theta2*100,format="f",digits=0), "%\n")
+cat("    Lower criteria =",formatC(lnAUC0t_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnAUC0t_theta2*100,format="f",digits=3), "%\n")
 cat("          MEAN-ref =",ref_AUC0t, "\n")
 cat("         MEAN-test =",test_AUC0t, "\n")
 cat("               MSE =",anova(lnAUC0t)[5,3], "\n")
@@ -571,16 +585,20 @@ else{
 cat("**************** Classical (Shortest) 90% C.I. for lnAUC0t ****************\n")
 }
 cat("\n")
-output<-data.frame(CI90_lower=c( formatC(lowerAUC0t,format="f",digits=3)),
-                   Point_estimated=c( formatC(100*exp(est_lnAUC0t),format="f",digits=3)),
+output<-data.frame(Point_estimate=c( formatC(100*exp(est_lnAUC0t),format="f",digits=3)),
+                   CI90_lower=c( formatC(lowerAUC0t,format="f",digits=3)),
                    CI90_upper=c( formatC(UpperAUC0t,format="f",digits=3)))
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
 show(output)
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
 TOST_lnAUC0t<-data.frame(TOST=c("T_lower", "T_upper"),
-                 T_value=c(formatC(TL_lnAUC0t,format="f",digits=4),formatC(TU_lnAUC0t,format="f",digits=4)),
-                 P_value=c(formatC(PTL_lnAUC0t,format="f",digits=4),formatC(PTU_lnAUC0t,format="f",digits=4))) 
+                 T_value=c(formatC(TL_lnAUC0t,format="f",digits=3),formatC(TU_lnAUC0t,format="f",digits=3)),
+                 P_value=c(formatC(PTL_lnAUC0t,format="f",digits=3),formatC(PTU_lnAUC0t,format="f",digits=3))) 
 colnames(TOST_lnAUC0t)<- c("TOST","  T value","  P value")
 show(TOST_lnAUC0t) 
 cat("\n")
@@ -613,7 +631,7 @@ II_lnAUC0t<-data.frame(subj=IntraInterlnAUC0t00$subj,
                       Inter=formatC(IntraInterlnAUC0t00$Inter,format="f",digits=6),
                       Stud_Inter=formatC(IntraInterlnAUC0t00$Stud_Inter,format="f",digits=6))   
 show(II_lnAUC0t)
-cat("------------------------------------------------\n")
+cat("--------------------------------------------------------------------------\n")
 if(multiple){
 cat("Obs: Observed lnAUC(tau)ss\n")
 cat("Exp: Expected lnAUC(tau)ss\n")
@@ -690,15 +708,15 @@ lnAUC0INF_rrt<-lnAUC0INF_Srt/sqrt(lnAUC0INF_Srr*lnAUC0INF_Stt)
 lnAUC0INF_Fpm<-((L1+L2-2)*(lnAUC0INF_Frt-1)^2 )/(4*(lnAUC0INF_Frt)*(1-(lnAUC0INF_rrt)^2))
 lnAUC0INF_PFpm<-1-pf(lnAUC0INF_Fpm, 1, L1+L2-2)
 
-cat("  Pivotal Parameters of BE Study - Summary Report                            \n")
+cat("  Pivotal Parameters of BE Study - Summary Report                         \n")
 cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: lnAUC0INF                                             \n")
+cat("  Dependent Variable: log(AUC0INF)                                        \n")
 cat("--------------------------------------------------------------------------\n")
 cat("        n1(R -> T) =",L1 , "\n")
 cat("        n2(T -> R) =",L2 , "\n")
 cat("          N(n1+n2) =",L1+L2 , "\n")
-cat("    Lower criteria =",formatC(lnAUC0INF_theta1*100,format="f",digits=0), "%\n")
-cat("    Upper criteria =",formatC(lnAUC0INF_theta2*100,format="f",digits=0), "%\n")
+cat("    Lower criteria =",formatC(lnAUC0INF_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnAUC0INF_theta2*100,format="f",digits=3), "%\n")
 cat("          MEAN-ref =",ref_AUC0INF, "\n")
 cat("         MEAN-test =",test_AUC0INF, "\n")
 cat("               MSE =",anova(lnAUC0INF)[5,3], "\n")
@@ -707,16 +725,20 @@ cat("Estimate(test-ref) =",est_lnAUC0INF, "\n")
 cat("\n")
 cat("**************** Classical (Shortest) 90% C.I. for lnAUC0INF **************\n")
 cat("\n")
-output<-data.frame(CI90_lower=c( formatC(LowerAUC0INF,format="f",digits=3)),
-                   Point_estimated=c( formatC(100*exp(est_lnAUC0INF),format="f",digits=3)),
+output<-data.frame(Point_estimate=c( formatC(100*exp(est_lnAUC0INF),format="f",digits=3)),
+                   CI90_lower=c( formatC(LowerAUC0INF,format="f",digits=3)),
                    CI90_upper=c( formatC(UpperAUC0INF,format="f",digits=3)))
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
 show(output)
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
 TOST_lnAUC0INF<-data.frame(TOST=c("T_lower", "T_upper"),
-                 T_value=c(formatC(TL_lnAUC0INF,format="f",digits=4),formatC(TU_lnAUC0INF,format="f",digits=4)),
-                 P_value=c(formatC(PTL_lnAUC0INF,format="f",digits=4),formatC(PTU_lnAUC0INF,format="f",digits=4))) 
+                 T_value=c(formatC(TL_lnAUC0INF,format="f",digits=3),formatC(TU_lnAUC0INF,format="f",digits=3)),
+                 P_value=c(formatC(PTL_lnAUC0INF,format="f",digits=3),formatC(PTU_lnAUC0INF,format="f",digits=3))) 
 colnames(TOST_lnAUC0INF)<- c("TOST","  T value","  P value")
 show(TOST_lnAUC0INF) 
 cat("\n")
@@ -749,7 +771,7 @@ II_lnAUC0INF<-data.frame(subj=IntraInterlnAUC0INF00$subj,
                       Inter=formatC(IntraInterlnAUC0INF00$Inter,format="f",digits=6),
                       Stud_Inter=formatC(IntraInterlnAUC0INF00$Stud_Inter,format="f",digits=6))   
 show(II_lnAUC0INF)
-cat("------------------------------------------------\n")
+cat("--------------------------------------------------------------------------\n")
 cat("Obs: Observed lnAUC0INF\n")
 cat("Exp: Expected lnAUC0INF\n")
 cat("Intra: Intra-subject residuals\n")
@@ -768,14 +790,14 @@ cat("***************************************************************************
 cat("\n")
 cat("\n")
 cat("Test for Normality Assumption  (Shapiro-Wilk)             \n")
-cat("--------------------------------------------------------------------------\n")
+cat("-----------------------------------------------\n")
 if(multiple){
 outputSW<-data.frame(Parameter=c("lnCmax_ss_Stud_Intra","lnCmax_ss_Stud_Inter",
                               "lnAUC(tau)ss_Stud_Intra","lnAUC(tau)ss_Stud_Inter"),
                      Test=c(formatC(shapiro.test(IntraInterlnCmax00$Stud_Intra)[[1]][[1]],format="f",digits=5),formatC(shapiro.test(IntraInterlnCmax00$Stud_Inter)[[1]][[1]],format="f",digits=5),
                             formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Intra)[[1]][[1]],format="f",digits=5),formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Inter)[[1]][[1]],format="f",digits=5)),
-                     P_value=c(formatC(shapiro.test(IntraInterlnCmax00$Stud_Intra)[[2]],format="f",digits=4),formatC(shapiro.test(IntraInterlnCmax00$Stud_Inter)[[2]],format="f",digits=4),
-                               formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Intra)[[2]],format="f",digits=4),formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Inter)[[2]],format="f",digits=4)))
+                     P_value=c(formatC(shapiro.test(IntraInterlnCmax00$Stud_Intra)[[2]],format="f",digits=3),formatC(shapiro.test(IntraInterlnCmax00$Stud_Inter)[[2]],format="f",digits=3),
+                               formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Intra)[[2]],format="f",digits=3),formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Inter)[[2]],format="f",digits=3)))
 }
 else{
 outputSW<-data.frame(Parameter=c("lnCmax_Stud_Intra","lnCmax_Stud_Inter",
@@ -784,9 +806,9 @@ outputSW<-data.frame(Parameter=c("lnCmax_Stud_Intra","lnCmax_Stud_Inter",
                      Test=c(formatC(shapiro.test(IntraInterlnCmax00$Stud_Intra)[[1]][[1]],format="f",digits=5),formatC(shapiro.test(IntraInterlnCmax00$Stud_Inter)[[1]][[1]],format="f",digits=5),
                             formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Intra)[[1]][[1]],format="f",digits=5),formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Inter)[[1]][[1]],format="f",digits=5),
                             formatC(shapiro.test(IntraInterlnAUC0INF00$Stud_Intra)[[1]][[1]],format="f",digits=5),formatC(shapiro.test(IntraInterlnAUC0INF00$Stud_Inter)[[1]][[1]],format="f",digits=5)),
-                     P_value=c(formatC(shapiro.test(IntraInterlnCmax00$Stud_Intra)[[2]],format="f",digits=4),formatC(shapiro.test(IntraInterlnCmax00$Stud_Inter)[[2]],format="f",digits=4),
-                               formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Intra)[[2]],format="f",digits=4),formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Inter)[[2]],format="f",digits=4),
-                               formatC(shapiro.test(IntraInterlnAUC0INF00$Stud_Intra)[[2]],format="f",digits=4),formatC(shapiro.test(IntraInterlnAUC0INF00$Stud_Inter)[[2]],format="f",digits=4)))
+                     P_value=c(formatC(shapiro.test(IntraInterlnCmax00$Stud_Intra)[[2]],format="f",digits=3),formatC(shapiro.test(IntraInterlnCmax00$Stud_Inter)[[2]],format="f",digits=3),
+                               formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Intra)[[2]],format="f",digits=3),formatC(shapiro.test(IntraInterlnAUC0t00$Stud_Inter)[[2]],format="f",digits=3),
+                               formatC(shapiro.test(IntraInterlnAUC0INF00$Stud_Intra)[[2]],format="f",digits=3),formatC(shapiro.test(IntraInterlnAUC0INF00$Stud_Inter)[[2]],format="f",digits=3)))
 }
 colnames(outputSW)<- c("Parameter","Test","P value")
 show(outputSW)
@@ -808,23 +830,23 @@ cat("\n")
 cat("\n")
 cat("\n")
 
-cat("Test for Normality Assumption  (Pearson)             \n")
-cat("--------------------------------------------------------------------------\n")
+cat("Test for Normality Assumption  (Pearson)     \n")
+cat("---------------------------------------------\n")
 if(multiple){
 outputPearson<-data.frame(Parameter=c("lnCmax_ss","lnAUC(tau)ss"),
                      Test=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("pearson"))[[4]][[1]],format="f",digits=5),
                             formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("pearson"))[[4]][[1]],format="f",digits=5)),
-                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=4),
-                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=4)))
+                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=3),
+                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=3)))
 }
 else{
 outputPearson<-data.frame(Parameter=c("lnCmax","lnAUC0t","lnAUC0INF"),
                      Test=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("pearson"))[[4]][[1]],format="f",digits=5),
                             formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("pearson"))[[4]][[1]],format="f",digits=5),
                             formatC(cor.test(IntraInterlnAUC0INF00$Stud_Intra, IntraInterlnAUC0INF00$Stud_Inter, method=c("pearson"))[[4]][[1]],format="f",digits=5)),
-                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=4),
-                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=4),
-                            formatC(cor.test(IntraInterlnAUC0INF00$Stud_Intra, IntraInterlnAUC0INF00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=4)))
+                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=3),
+                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=3),
+                            formatC(cor.test(IntraInterlnAUC0INF00$Stud_Intra, IntraInterlnAUC0INF00$Stud_Inter, method=c("pearson"))[[3]],format="f",digits=3)))
 }
 colnames(outputPearson)<- c("Parameter","Test","P value")
 show(outputPearson)
@@ -844,30 +866,30 @@ cat("-------------------------------------------------------------------------\n
 cat("\n")
 cat("\n")
 
-cat("Test for Normality Assumption  (Spearman)             \n")
-cat("--------------------------------------------------------------------------\n")
+cat("Test for Normality Assumption  (Spearman)    \n")
+cat("----------------------------------------------\n")
 if(multiple){
 outputSpearman<-data.frame(Parameter=c("lnCmax_ss","lnAUC(tau)ss"),
                      Test=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("spearman"))[[4]][[1]],format="f",digits=5),
                             formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("spearman"))[[4]][[1]],format="f",digits=5)),
-                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=4),
-                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=4)))
+                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=3),
+                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=3)))
 }
 else{
 outputSpearman<-data.frame(Parameter=c("lnCmax","lnAUC0t","lnAUC0INF"),
                      Test=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("spearman"))[[4]][[1]],format="f",digits=5),
                             formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("spearman"))[[4]][[1]],format="f",digits=5),
                             formatC(cor.test(IntraInterlnAUC0INF00$Stud_Intra, IntraInterlnAUC0INF00$Stud_Inter, method=c("spearman"))[[4]][[1]],format="f",digits=5)),
-                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=4),
-                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=4),
-                            formatC(cor.test(IntraInterlnAUC0INF00$Stud_Intra, IntraInterlnAUC0INF00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=4)))
+                     P_value=c(formatC(cor.test(IntraInterlnCmax00$Stud_Intra, IntraInterlnCmax00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=3),
+                            formatC(cor.test(IntraInterlnAUC0t00$Stud_Intra, IntraInterlnAUC0t00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=3),
+                            formatC(cor.test(IntraInterlnAUC0INF00$Stud_Intra, IntraInterlnAUC0INF00$Stud_Inter, method=c("spearman"))[[3]],format="f",digits=3)))
 }
 colnames(outputSpearman)<- c("Parameter","Test","P value")
 show(outputSpearman)
 cat("\n")
 cat("-------------------------------------------------\n")
 cat("Spearman: Spearman's rank correlation coefficient\n")
-cat("-------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 cat("\n")
 cat("\n")
 cat("\n")
@@ -935,7 +957,7 @@ for(i in seq_along(Hotel)){
 # show( subj1)
 subj1<-c(levels(Hotel[[1]]$subj))  #c((Hotel[[1]]$subj))->c(levels(Hotel[[1]]$subj))
 cat("Hotelling T^2 with Chi-square test  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("---------------------------------------------\n")
 HotellingCmax<-data.frame(subj1, formatC(HT_Cmax,format="f",digits=5),    
                           formatC(HT_Cmax_P,format="f",digits=5),
                           formatC(HT_lnCmax,format="f",digits=5),
@@ -1037,7 +1059,7 @@ for(i in seq_along(Hotel)){
 # show( subj1)
 subj1<-c(levels(Hotel[[1]]$subj))  #c((Hotel[[1]]$subj))->c(levels(Hotel[[1]]$subj))
 cat("Hotelling T^2 with Chi-square test  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("---------------------------------------------\n")
 HotellingCmax<-data.frame(subj1, formatC(HT_Cmax,format="f",digits=5),    
                           formatC(HT_Cmax_P,format="f",digits=5),
                           formatC(HT_lnCmax,format="f",digits=5),
@@ -1063,7 +1085,7 @@ colnames(HotellingAUC0INF)<- c("subj","AUC0INF","P value","lnAUC0INF","P value")
 show(HotellingAUC0INF) 
 }
 cat("\n")
-cat("-------------------------------------------------\n")
+cat("---------------------------------------------\n")
 cat("**Interpretation: If subjects have relatively BIG T^2 values which \n")
 cat(" cause P value less than 0.05, these subject may be outlying subjects. \n")
 cat("\n")
@@ -1085,8 +1107,8 @@ if(multiple){
                                        "lnAUC(tau)ss_Pearson","lnAUC(tau)ss_Pitman_Morgan","lnAUC(tau)ss_Spearman"),
                            Test=c(formatC(lnCmax_pearson_V,format="f",digits=5),formatC(lnCmax_Fpm,format="f",digits=5),formatC(lnCmax_spearman_V,format="f",digits=5),
                                   formatC(lnAUC0t_pearson_V,format="f",digits=5),formatC(lnAUC0t_Fpm,format="f",digits=5),formatC(lnAUC0t_spearman_V,format="f",digits=5)),               
-                           P_value=c(formatC(lnCmax_pearson_P,format="f",digits=4),formatC(lnCmax_PFpm,format="f",digits=4),formatC(lnCmax_spearman_P,format="f",digits=4),
-                                     formatC(lnAUC0t_pearson_P,format="f",digits=4),formatC(lnAUC0t_PFpm,format="f",digits=4),formatC(lnAUC0t_spearman_P,format="f",digits=4)))
+                           P_value=c(formatC(lnCmax_pearson_P,format="f",digits=3),formatC(lnCmax_PFpm,format="f",digits=3),formatC(lnCmax_spearman_P,format="f",digits=3),
+                                     formatC(lnAUC0t_pearson_P,format="f",digits=3),formatC(lnAUC0t_PFpm,format="f",digits=3),formatC(lnAUC0t_spearman_P,format="f",digits=3)))
 }                                     
 else{
  outputEquality<-data.frame(Method=c("lnCmax_Pearson","lnCmax_Pitman_Morgan","lnCmax_Spearman",
@@ -1095,14 +1117,14 @@ else{
                            Test=c(formatC(lnCmax_pearson_V,format="f",digits=5),formatC(lnCmax_Fpm,format="f",digits=5),formatC(lnCmax_spearman_V,format="f",digits=5),
                                   formatC(lnAUC0t_pearson_V,format="f",digits=5),formatC(lnAUC0t_Fpm,format="f",digits=5),formatC(lnAUC0t_spearman_V,format="f",digits=5),
                                   formatC(lnAUC0INF_pearson_V,format="f",digits=5),formatC(lnAUC0INF_Fpm,format="f",digits=5),formatC(lnAUC0INF_spearman_V,format="f",digits=5)),            
-                           P_value=c(formatC(lnCmax_pearson_P,format="f",digits=4),formatC(lnCmax_PFpm,format="f",digits=4),formatC(lnCmax_spearman_P,format="f",digits=4),
-                                     formatC(lnAUC0t_pearson_P,format="f",digits=4),formatC(lnAUC0t_PFpm,format="f",digits=4),formatC(lnAUC0t_spearman_P,format="f",digits=4),
-                                     formatC(lnAUC0INF_pearson_P,format="f",digits=4),formatC(lnAUC0INF_PFpm,format="f",digits=4),formatC(lnAUC0INF_spearman_P,format="f",digits=4)))                   
+                           P_value=c(formatC(lnCmax_pearson_P,format="f",digits=3),formatC(lnCmax_PFpm,format="f",digits=3),formatC(lnCmax_spearman_P,format="f",digits=3),
+                                     formatC(lnAUC0t_pearson_P,format="f",digits=3),formatC(lnAUC0t_PFpm,format="f",digits=3),formatC(lnAUC0t_spearman_P,format="f",digits=3),
+                                     formatC(lnAUC0INF_pearson_P,format="f",digits=3),formatC(lnAUC0INF_PFpm,format="f",digits=3),formatC(lnAUC0INF_spearman_P,format="f",digits=3)))                   
 }
 colnames(outputEquality)<- c("Parameter","Test","P value")
 show(outputEquality) 
 cat("\n")
-cat("-------------------------------------------------\n")
+cat("--------------------------------------------------------------------------\n")
 cat("**Interpretation:\n")
 cat("  The standard 2*2*2 crossover design was assumed that intra-subject      \n")
 cat("variabilities for the Test and the Reference formulations are the same.    \n")
@@ -1322,7 +1344,7 @@ cat("\n")
 cat("\n")
 cat("\n")
 cat("Cook's distance  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("----------------------------------------------------\n")
 L<-length(TotalData$subj)
  
 if(multiple){ 
@@ -1331,7 +1353,7 @@ if(multiple){
   cooks<-split(cook, cook$drug)[[1]]
  show(cooks)  
  cat("\n")
- cat("-------------------------------------------------\n")
+ cat("----------------------------------------------------\n")
  D1<-subset(cooks, cooks$lnCmax_ss >(4/(L-4-1)))
  D2<-subset(cooks, cooks$lnCmax_ss > 1)
  D3<-subset(cooks, cooks$lnCmax_ss >(4/L))
@@ -1398,7 +1420,7 @@ cat("**Criterion: D > (4/n) =",(4/L),"\n")
  show(cooks)  
  cat("\n")
  cat("\n")
- cat("-------------------------------------------------\n")
+ cat("----------------------------------------------------\n")
  D1<-subset(cooks, cooks$lnCmax >(4/(L-4-1)))
  D2<-subset(cooks, cooks$lnCmax > 1)
  D3<-subset(cooks, cooks$lnCmax >(4/L))

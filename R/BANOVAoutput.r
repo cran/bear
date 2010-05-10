@@ -55,13 +55,11 @@ level <-sapply(values, length)
 #divide by seq
 if(multiple){
 TotalData1<-data.frame (subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),seq=as.numeric(TotalData$seq),
-                      prd=as.numeric(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t,
-                      lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t)
+                      prd=as.numeric(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t)
 }
 else{
 TotalData1<-data.frame (subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),seq=as.numeric(TotalData$seq),
-                      prd=as.numeric(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF, 
-                      lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t,lnAUC0INF=TotalData$lnAUC0INF)
+                      prd=as.numeric(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF)
 }                    
 rsubj<-as.data.frame(sapply(TotalData1, tapply, TotalData1$subj, mean))
 rdrug<-as.data.frame(sapply(TotalData1, tapply, TotalData1$drug, mean))
@@ -73,13 +71,12 @@ zz <- file("ANOVA_stat.txt", open="wt")
 sink(zz)
 description_version()
 cat("\n")
-cat("  Data Summary of BA measurement                  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("  List of Input Data Obtained from NCA         \n")
+cat("-----------------------------------------------\n")
 if(multiple){
 TotalData2<-data.frame (subj=as.factor(TotalData$subj), drug=as.numeric(TotalData$drug),seq=as.numeric(TotalData$seq),
-                      prd=as.numeric(TotalData$prd),Cmax_ss=TotalData$Cmax, AUCtau_ss=TotalData$AUC0t,
-                      lnCmax_ss=TotalData$lnCmax,lnAUCtau_ss=TotalData$lnAUC0t)
-colnames(TotalData2)<- c("subj","drug","seq","prd","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+                      prd=as.numeric(TotalData$prd),Cmax_ss=TotalData$Cmax, AUCtau_ss=TotalData$AUC0t)
+colnames(TotalData2)<- c("subj","drug","seq","prd","Cmax_ss","AUC(tau)ss")
 show(TotalData2)
 }
 else{
@@ -88,9 +85,8 @@ show(TotalData1)
 
 cat("\n")
 cat("\n")
-cat("\n")
 cat("  Class Level Information                  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------------\n")
 cat("  Class       Levels      Values\n")  
 cat("  SUBJECT     ",level[[1]],"        ",sort(as.numeric(levels(values$subj))) ,"\n")
 cat("  DRUG         ",level[[2]],"        ",sort(as.numeric(levels(values$drug))),"\n")
@@ -104,29 +100,25 @@ cat("\n")
 cat("\n")
 cat("\n")
 cat(" Means                  \n")
-cat("--------------------------------------------------------------------------\n")
+cat("------------------------------------------------\n")
 if(multiple){
-seq_mean<-data.frame(SEQUENCE=rseq$seq,Cmax=rseq$Cmax, AUC0t=rseq$AUC0t, 
-                    lnCmax=rseq$lnCmax,lnAUC0t=rseq$lnAUC0t)
-colnames(seq_mean)<- c("SEQUENCE","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+seq_mean<-data.frame(SEQUENCE=rseq$seq,Cmax=rseq$Cmax, AUC0t=rseq$AUC0t)
+colnames(seq_mean)<- c("SEQUENCE","Cmax_ss","AUCtau_ss" )
 show(seq_mean)
 cat("\n")
 cat("\n")
-subj_mean<-data.frame(SUBJECT=as.numeric(levels(values$subj)),SEQUENCE=rsubj$seq,Cmax=rsubj$Cmax, AUC0t=rsubj$AUC0t,
-                      lnCmax=rsubj$lnCmax,lnAUC0t=rsubj$lnAUC0t)                      
-colnames(subj_mean)<- c("SUBJECT","SEQUENCE","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+subj_mean<-data.frame(SUBJECT=as.numeric(levels(values$subj)),SEQUENCE=rsubj$seq,Cmax=rsubj$Cmax, AUC0t=rsubj$AUC0t)                      
+colnames(subj_mean)<- c("SUBJECT","SEQUENCE","Cmax_ss","AUCtau_ss")
 show(subj_mean)
 cat("\n")
 cat("\n")
-prd_mean<-data.frame(PERIOD=rprd$prd,Cmax=rprd$Cmax, AUC0t=rprd$AUC0t,
-                      lnCmax=rprd$lnCmax,lnAUC0t=rprd$lnAUC0t)                      
-colnames(prd_mean)<- c("PERIOD","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+prd_mean<-data.frame(PERIOD=rprd$prd,Cmax=rprd$Cmax, AUC0t=rprd$AUC0t)                      
+colnames(prd_mean)<- c("PERIOD","Cmax_ss","AUCtau_ss" )
 show(prd_mean)
 cat("\n")
 cat("\n")
-drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, 
-                      lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t)                      
-colnames(drug_mean)<- c("DRUG","Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" )
+drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t)                      
+colnames(drug_mean)<- c("DRUG","Cmax_ss","AUCtau_ss" )
 show(drug_mean)
 cat("\n")
 cat("\n")
@@ -138,23 +130,19 @@ MultipleBANOVA(RefData, TestData, TotalData, L1, L2,
        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
 }
 else{
-seq_mean<-data.frame(SEQUENCE=rseq$seq,Cmax=rseq$Cmax, AUC0t=rseq$AUC0t, AUC0INF=rseq$AUC0INF, 
-                    lnCmax=rseq$lnCmax,lnAUC0t=rseq$lnAUC0t,lnAUC0INF=rseq$lnAUC0INF)
+seq_mean<-data.frame(SEQUENCE=rseq$seq,Cmax=rseq$Cmax, AUC0t=rseq$AUC0t, AUC0INF=rseq$AUC0INF)
 show(seq_mean)
 cat("\n")
 cat("\n")
-subj_mean<-data.frame(SUBJECT=as.numeric(levels(values$subj)),SEQUENCE=rsubj$seq,Cmax=rsubj$Cmax, AUC0t=rsubj$AUC0t, AUC0INF=rsubj$AUC0INF, 
-                      lnCmax=rsubj$lnCmax,lnAUC0t=rsubj$lnAUC0t,lnAUC0INF=rsubj$lnAUC0INF)                      
+subj_mean<-data.frame(SUBJECT=as.numeric(levels(values$subj)),SEQUENCE=rsubj$seq,Cmax=rsubj$Cmax, AUC0t=rsubj$AUC0t, AUC0INF=rsubj$AUC0INF)                      
 show(subj_mean)
 cat("\n")
 cat("\n")
-prd_mean<-data.frame(PERIOD=rprd$prd,Cmax=rprd$Cmax, AUC0t=rprd$AUC0t, AUC0INF=rprd$AUC0INF, 
-                      lnCmax=rprd$lnCmax,lnAUC0t=rprd$lnAUC0t,lnAUC0INF=rprd$lnAUC0INF)                      
+prd_mean<-data.frame(PERIOD=rprd$prd,Cmax=rprd$Cmax, AUC0t=rprd$AUC0t, AUC0INF=rprd$AUC0INF)                      
 show(prd_mean)
 cat("\n")
 cat("\n")
-drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF, 
-                      lnCmax=rdrug$lnCmax,lnAUC0t=rdrug$lnAUC0t,lnAUC0INF=rdrug$lnAUC0INF)                      
+drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0INF=rdrug$AUC0INF)                      
 show(drug_mean)
 cat("\n")
 cat("\n")

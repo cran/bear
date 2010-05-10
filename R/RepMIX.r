@@ -1,5 +1,5 @@
 #replicated study
-RepMIX<-function(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF, 
+RepMIX<-function(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF, 
                  lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
                  parallel=FALSE, multiple=FALSE)
 {
@@ -8,7 +8,7 @@ cat("\n")
 if(parallel){
    if(multiple){
     cat("*** This is a 2-treatment parallel multiple-dosed study. \n")
-   Data<-data.frame(subj=as.factor(TotalData$subj),drug=as.factor(TotalData$drug),Cmax_ss=TotalData$Cmax, 
+    Data<-data.frame(subj=as.factor(TotalData$subj),drug=as.factor(TotalData$drug),Cmax_ss=TotalData$Cmax, 
                     AUCtau_ss=TotalData$AUC0t, lnCmax_ss=TotalData$lnCmax,lnAUCtau_ss=TotalData$lnAUC0t) 
    }
    else{
@@ -79,7 +79,7 @@ modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: AUC(tau)ss                                        \n")
+cat("  Dependent Variable: AUCtau_ss                                        \n")
 cat("\n")
 print(summary(modAUCtau_ss))
 cat("\n")
@@ -139,20 +139,20 @@ cat("\n")
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
   if(multiple){
-   modlnCmax_ss<-lm(lnCmax_ss ~ drug, data=Data)
+   modlnCmax_ss<-lm(log(Cmax_ss) ~ drug, data=Data)
   }
   else{
-    modlnCmax<-lm(lnCmax ~ drug, data=TotalData)
-###    fm1<-lme(lnCmax ~ drug , random=~1|subj, data=TotalData, method="REML")
+    modlnCmax<-lm(log(Cmax) ~ drug, data=TotalData)
+### fm1<-lme(log(Cmax) ~ drug , random=~1|subj, data=TotalData, method="REML") # lme() model!
    }
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnCmax<-lme(lnCmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+modlnCmax<-lme(log(Cmax) ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: lnCmax_ss                                           \n")
+cat("  Dependent Variable: log(Cmax_ss)                                        \n")
 cat("\n")
 print(summary(modlnCmax_ss))
 cat("\n")
@@ -165,7 +165,7 @@ print(anova(modlnCmax_ss, type="marginal"))
 }
 }
 else{
-cat("  Dependent Variable: lnCmax                                              \n")
+cat("  Dependent Variable: log(Cmax)                                           \n")
 cat("\n")
 print(summary(modlnCmax))
 cat("\n")
@@ -177,6 +177,7 @@ cat("Type III Tests of Fixed Effects\n")
 print(anova(modlnCmax, type="marginal"))
 cat("\n")
 cat("\n")
+cat("\n")
 }
 }
 
@@ -184,10 +185,10 @@ cat("\n")
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
   if(multiple){
-     modlnAUCtau_ss<-lm(lnAUCtau_ss ~ drug, data=Data )
+     modlnAUCtau_ss<-lm(log(AUCtau_ss) ~ drug, data=Data )
   }
   else{
-     modlnAUC0t<-lm(lnAUC0t ~ drug, data=TotalData)
+     modlnAUC0t<-lm(log(AUC0t) ~ drug, data=TotalData)
    }
  }
 else{ 
@@ -209,7 +210,7 @@ print(anova(modlnAUCtau_ss, type="marginal"))
 }
 }
 else{
-cat("  Dependent Variable: lnAUC0t                                             \n")       
+cat("  Dependent Variable: log(AUC0t)                                 \n")       
 cat("\n")
 print(summary(modlnAUC0t))
 cat("\n")
@@ -223,22 +224,20 @@ cat("\n")
 cat("\n")
 }
 }
-
-
 ##lnAUC0INF
 if(multiple){
 }
 else{
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
- modlnAUC0INF<-lm(lnAUC0INF ~drug, data=TotalData)
+ modlnAUC0INF<-lm(log(AUC0INF) ~drug, data=TotalData)
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnAUC0INF<-lme(lnAUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+modlnAUC0INF<-lme(log(AUC0INF) ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: lnAUC0INF                                                 \n")
+cat("  Dependent Variable: log(AUC0INF)                                        \n")
 cat("\n")
 print(summary(modlnAUC0INF))
 cat("\n")
@@ -265,25 +264,30 @@ if(parallel){
 ### show(intervals(fm1, which = "fixed", level=0.9))
 ### show(intervals(fm1, level=0.9))
 ### cat("\n")
-upperCmax<-100*exp(summary(modlnCmax)$coefficients[2,1])*exp(qt(0.95,summary(modlnCmax)$df[2])*summary(modlnCmax)$coefficients[2,2]) 
-lowerCmax<-100*exp(summary(modlnCmax)$coefficients[2,1])*exp(-qt(0.95,summary(modlnCmax)$df[2])*summary(modlnCmax)$coefficients[2,2])
-upperAUC0t<-100*exp(summary(modlnAUC0t)$coefficients[2,1])*exp(qt(0.95,summary(modlnAUC0t)$df[2])*summary(modlnAUC0t)$coefficients[2,2])
-lowerAUC0t<-100*exp(summary(modlnAUC0t)$coefficients[2,1])*exp(-qt(0.95,summary(modlnAUC0t)$df[2])*summary(modlnAUC0t)$coefficients[2,2])
-
-SlnCmax<-(summary(modlnCmax)$coefficients[2,1])
-SlnAUC0t<-(summary(modlnAUC0t)$coefficients[2,1])
- 
-SE_lnCmax<-summary(modlnCmax)$coefficients[2,2]
-SE_lnAUC0t<-summary(modlnAUC0t)$coefficients[2,2]
-  
   if(multiple){
+   upperCmax_ss<-100*exp(summary(modlnCmax_ss)$coefficients[2,1])*exp(qt(0.95,summary(modlnCmax_ss)$df[2])*summary(modlnCmax_ss)$coefficients[2,2]) 
+   lowerCmax_ss<-100*exp(summary(modlnCmax_ss)$coefficients[2,1])*exp(-qt(0.95,summary(modlnCmax_ss)$df[2])*summary(modlnCmax_ss)$coefficients[2,2])
+   upperAUCtau_ss<-100*exp(summary(modlnAUCtau_ss)$coefficients[2,1])*exp(qt(0.95,summary(modlnAUCtau_ss)$df[2])*summary(modlnAUCtau_ss)$coefficients[2,2])
+   lowerAUCtau_ss<-100*exp(summary(modlnAUCtau_ss)$coefficients[2,1])*exp(-qt(0.95,summary(modlnAUCtau_ss)$df[2])*summary(modlnAUCtau_ss)$coefficients[2,2])
+   SlnCmax_ss<-(summary(modlnCmax_ss)$coefficients[2,1])
+   SlnAUCtau_ss<-(summary(modlnAUCtau_ss)$coefficients[2,1])
+   SE_lnCmax_ss<-summary(modlnCmax_ss)$coefficients[2,2]
+   SE_lnAUCtau_ss<-summary(modlnAUCtau_ss)$coefficients[2,2]
   }
   else{  
-  upperAUC0INF<-100*exp(summary(modlnAUC0INF)$coefficients[2,1])*exp(qt(0.95,summary(modlnAUC0INF)$df[2])*summary(modlnAUC0INF)$coefficients[2,2])
-  lowerAUC0INF<-100*exp(summary(modlnAUC0INF)$coefficients[2,1])*exp(-qt(0.95,summary(modlnAUC0INF)$df[2])*summary(modlnAUC0INF)$coefficients[2,2])
-  SlnAUC0INF<-(summary(modlnAUC0INF)$coefficients[2,1]) 
-  SE_lnAUC0INF<-summary(modlnAUC0INF)$coefficients[2,2]
-    }
+   upperCmax<-100*exp(summary(modlnCmax)$coefficients[2,1])*exp(qt(0.95,summary(modlnCmax)$df[2])*summary(modlnCmax)$coefficients[2,2]) 
+   lowerCmax<-100*exp(summary(modlnCmax)$coefficients[2,1])*exp(-qt(0.95,summary(modlnCmax)$df[2])*summary(modlnCmax)$coefficients[2,2])
+   upperAUC0t<-100*exp(summary(modlnAUC0t)$coefficients[2,1])*exp(qt(0.95,summary(modlnAUC0t)$df[2])*summary(modlnAUC0t)$coefficients[2,2])
+   lowerAUC0t<-100*exp(summary(modlnAUC0t)$coefficients[2,1])*exp(-qt(0.95,summary(modlnAUC0t)$df[2])*summary(modlnAUC0t)$coefficients[2,2])
+   SlnCmax<-(summary(modlnCmax)$coefficients[2,1])
+   SlnAUC0t<-(summary(modlnAUC0t)$coefficients[2,1])
+   SE_lnCmax<-summary(modlnCmax)$coefficients[2,2]
+   SE_lnAUC0t<-summary(modlnAUC0t)$coefficients[2,2]
+   upperAUC0INF<-100*exp(summary(modlnAUC0INF)$coefficients[2,1])*exp(qt(0.95,summary(modlnAUC0INF)$df[2])*summary(modlnAUC0INF)$coefficients[2,2])
+   lowerAUC0INF<-100*exp(summary(modlnAUC0INF)$coefficients[2,1])*exp(-qt(0.95,summary(modlnAUC0INF)$df[2])*summary(modlnAUC0INF)$coefficients[2,2])
+   SlnAUC0INF<-(summary(modlnAUC0INF)$coefficients[2,1]) 
+   SE_lnAUC0INF<-summary(modlnAUC0INF)$coefficients[2,2]
+   }
   }
  else{ 
  if(prdcount==3){
@@ -352,7 +356,28 @@ SE_lnAUC0INF<-summary(modlnAUC0INF)[20][[1]][8,2]
   }
 }  
 
-####two-one side and Anderson and Hauck's test
+####two-one side (TOST) and Anderson and Hauck's test
+
+if(multiple){
+#lnCmax_ss
+TL_lnCmax_ss<--(SlnCmax_ss-log(lnCmax_theta1))/SE_lnCmax_ss
+TU_lnCmax_ss<-(SlnCmax_ss-log(lnCmax_theta2))/SE_lnCmax_ss
+PTL_lnCmax_ss<-pt(TL_lnCmax_ss,L1+L2-2)
+PTU_lnCmax_ss<-pt(TU_lnCmax_ss,L1+L2-2)
+TAH_lnCmax_ss<-SlnCmax_ss/SE_lnCmax_ss
+NP_lnCmax_ss<-log(lnCmax_theta2)/SE_lnCmax_ss
+EP_lnCmax_ss<- pt((abs(TAH_lnCmax_ss)-NP_lnCmax_ss),L1+L2-2) - pt((-abs(TAH_lnCmax_ss)-NP_lnCmax_ss),L1+L2-2)
+
+#lnAUCtau_ss
+TL_lnAUCtau_ss<--(SlnAUCtau_ss-log(lnAUC0t_theta1))/SE_lnAUCtau_ss
+TU_lnAUCtau_ss<-(SlnAUCtau_ss-log(lnAUC0t_theta2))/SE_lnAUCtau_ss
+PTL_lnAUCtau_ss<-pt(TL_lnAUCtau_ss,L1+L2-2)
+PTU_lnAUCtau_ss<-pt(TU_lnAUCtau_ss,L1+L2-2)
+TAH_lnAUCtau_ss<-SlnAUCtau_ss/SE_lnAUCtau_ss
+NP_lnAUCtau_ss<-log(lnAUC0t_theta2)/SE_lnAUCtau_ss
+EP_lnAUCtau_ss<- pt((abs(TAH_lnAUCtau_ss)-NP_lnAUCtau_ss),L1+L2-2) - pt((-abs(TAH_lnAUCtau_ss)-NP_lnAUCtau_ss),L1+L2-2)
+}
+else{
 #lnCmax
 TL_lnCmax<--(SlnCmax-log(lnCmax_theta1))/SE_lnCmax
 TU_lnCmax<-(SlnCmax-log(lnCmax_theta2))/SE_lnCmax
@@ -371,9 +396,6 @@ TAH_lnAUC0t<-SlnAUC0t/SE_lnAUC0t
 NP_lnAUC0t<-log(lnAUC0t_theta2)/SE_lnAUC0t
 EP_lnAUC0t<- pt((abs(TAH_lnAUC0t)-NP_lnAUC0t),L1+L2-2) - pt((-abs(TAH_lnAUC0t)-NP_lnAUC0t),L1+L2-2)
 
-if(multiple){
-}
-else{
 #lnAUC0INF
 TL_lnAUC0INF<--(SlnAUC0INF-log(lnAUC0INF_theta1))/SE_lnAUC0INF
 TU_lnAUC0INF<-(SlnAUC0INF-log(lnAUC0INF_theta2))/SE_lnAUC0INF
@@ -392,10 +414,10 @@ cat("  Pivotal Parameters of BE Study - Summary Report  - replicate BE study    
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: lnCmax_ss                                            \n")
+cat("  Dependent Variable: log(Cmax_ss)                                        \n")
 }
 else{
-cat("  Dependent Variable: lnCmax                                               \n")
+cat("  Dependent Variable: log(Cmax)                                           \n")
 }
 cat("--------------------------------------------------------------------------\n")
 if(parallel){
@@ -406,28 +428,122 @@ else{
 cat("          n1(seq 1)=",L1 , "\n")
 cat("          n2(seq 2)=",L2 , "\n")
 }
+if(multiple){
 cat("          N(n1+n2) =",L1+L2 , "\n")
-cat("    Lower criteria =",formatC(lnCmax_theta1*100,format="f",digits=0), "%\n")
-cat("    Upper criteria =",formatC(lnCmax_theta2*100,format="f",digits=0), "%\n")
+cat("    Lower criteria =",formatC(lnCmax_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnCmax_theta2*100,format="f",digits=3), "%\n")
+cat("          MEAN-ref =",ref_lnCmax, "\n")
+cat("         MEAN-test =",test_lnCmax, "\n")
+cat("                SE =",SE_lnCmax_ss, "\n")
+cat("Estimate(test-ref) =",SlnCmax_ss, "\n")
+}
+else{
+cat("          N(n1+n2) =",L1+L2 , "\n")
+cat("    Lower criteria =",formatC(lnCmax_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnCmax_theta2*100,format="f",digits=3), "%\n")
 cat("          MEAN-ref =",ref_lnCmax, "\n")
 cat("         MEAN-test =",test_lnCmax, "\n")
 cat("                SE =",SE_lnCmax, "\n")
 cat("Estimate(test-ref) =",SlnCmax, "\n")
+}
 cat("\n")
 if(multiple){
 cat("************** Classical (Shortest) 90% C.I. for lnCmax_ss ****************\n")
+output<-data.frame(Point_estimate=c( formatC(100*exp(SlnCmax_ss),format="f",digits=3)),
+                   CI90_lower=c( formatC(lowerCmax_ss,format="f",digits=3)),
+                   CI90_upper=c( formatC(upperCmax_ss,format="f",digits=3)))
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+show(output)
+if(!parallel){
+cat("\n")
+cat("The estimated intra-subject CV for Cmax_ss:-\n")
+Point_estimate <- as.numeric(100*exp(SlnCmax_ss))
+CI90_lower <- as.numeric(lowerCmax_ss)
+delta_CI <- log(Point_estimate)-log(CI90_lower)
+MSE <- as.numeric(2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2)
+CVintra <- as.numeric(100*sqrt(exp(MSE)-1))
+cat("CV(intra)% = 100*sqrt(exp(MSE)-1))=",formatC(CVintra, format="f", digits=2),"%\n")
+cat("---------------------------------------------------------------------------\n")
+}
+## Welch t-test starts here if parallel
+  if(parallel){
+  result <- t.test(lnCmax_ss ~ drug, paired=FALSE, var.equal = FALSE, 
+                        conf.level = 0.90, data = Data)
+  show(result)
+  cat("T/R [%] with alpha 0.05 (90% CI)", sep=" ", fill=TRUE)
+  tbldiff <- matrix(
+  c(as.numeric(exp(diff(result$estimate))),
+  sort(as.numeric(exp(-result$conf.int)))),
+  byrow = TRUE, nrow = 1)
+  dimnames(tbldiff) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+  show(round(tbldiff*100,3))
+  }
+## end of Welch T test
 }
 else{
 cat("**************** Classical (Shortest) 90% C.I. for lnCmax ****************\n")
-}
+
 cat("\n")
-output<-data.frame(CI90_lower=c( formatC(lowerCmax,format="f",digits=3)),
-                   Point_estimated=c( formatC(100*exp(SlnCmax),format="f",digits=3)),
+output<-data.frame(Point_estimate=c( formatC(100*exp(SlnCmax),format="f",digits=3)),
+                   CI90_lower=c( formatC(lowerCmax,format="f",digits=3)),
                    CI90_upper=c( formatC(upperCmax,format="f",digits=3)))
-show(output)                              
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+show(output)
+if(!parallel){
+cat("\n")
+cat("The estimated intra-subject CV for Cmax:-\n")
+Point_estimate <- as.numeric(100*exp(SlnCmax))
+CI90_lower <- as.numeric(lowerCmax)
+delta_CI <- log(Point_estimate)-log(CI90_lower)
+MSE <- as.numeric(2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2)
+CVintra <- as.numeric(100*sqrt(exp(MSE)-1))
+cat("CV(intra)% = 100*sqrt(exp(MSE)-1))=",formatC(CVintra, format="f", digits=2),"%\n")
+}
+cat("---------------------------------------------------------------------------\n")
+## Welch t-test starts here if parallel
+  if(parallel){
+  result <- t.test(lnCmax ~ drug, paired=FALSE, var.equal = FALSE, 
+                        conf.level = 0.90, data = TotalData)
+  show(result)
+  cat("T/R [%] with alpha 0.05 (90% CI)", sep=" ", fill=TRUE)
+  tbldiff <- matrix(
+  c(as.numeric(exp(diff(result$estimate))),
+  sort(as.numeric(exp(-result$conf.int)))),
+  byrow = TRUE, nrow = 1)
+  dimnames(tbldiff) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+  show(round(tbldiff*100,3))
+  }
+## end of Welch T test
+}
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
+if(multiple){
+TOST_lnCmax_ss<-data.frame(TOST=c("T_lower", "T_upper"),
+                 T_value=c(formatC(TL_lnCmax_ss,format="f",digits=4),formatC(TU_lnCmax_ss,format="f",digits=4)),
+                 P_value=c(formatC(PTL_lnCmax_ss,format="f",digits=4),formatC(PTU_lnCmax_ss,format="f",digits=4))) 
+colnames(TOST_lnCmax_ss)<- c("TOST","  T value","  P value")
+show(TOST_lnCmax_ss)
+if(PTL_lnCmax_ss >= 0.05 || PTU_lnCmax_ss >= 0.05){
+description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
+else{
+description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
+}
+else{                           
 TOST_lnCmax<-data.frame(TOST=c("T_lower", "T_upper"),
                  T_value=c(formatC(TL_lnCmax,format="f",digits=4),formatC(TU_lnCmax,format="f",digits=4)),
                  P_value=c(formatC(PTL_lnCmax,format="f",digits=4),formatC(PTU_lnCmax,format="f",digits=4))) 
@@ -440,9 +556,21 @@ description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta
 else{
 description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
+}
 cat("\n")
 cat("------------------------ Anderson-Hauck Test ------------------------------\n")
 cat("\n")
+if(multiple){
+cat("          P value =",formatC(EP_lnCmax_ss,format="f",digits=6),"\n") 
+cat("\n")
+if(EP_lnCmax_ss >= 0.05){
+description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
+else{
+description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
+}
+else{
 cat("          P value =",formatC(EP_lnCmax,format="f",digits=6),"\n") 
 cat("\n")
 if(EP_lnCmax >= 0.05){
@@ -450,6 +578,7 @@ description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta
 }
 else{
 description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
+}
 }
 cat("---------------------------------------------------------------------------\n")
 cat("Ref.:\n")
@@ -476,10 +605,10 @@ cat("  Pivotal  Parameters of BE Study - Summary Report  - replicate BE study   
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: lnAUC(tau)ss                                       \n")
+cat("  Dependent Variable: log(AUCtau_ss)                                      \n")
 }
 else{
-cat("  Dependent Variable: lnAUC0t                                              \n")
+cat("  Dependent Variable: log(AUC0t)                                          \n")
 }                                         
 cat("--------------------------------------------------------------------------\n")
 if(parallel){
@@ -490,25 +619,127 @@ else{
 cat("          n1(seq 1)=",L1 , "\n")
 cat("          n2(seq 2)=",L2 , "\n")
 }
+if(multiple){
 cat("          N(n1+n2) =",L1+L2 , "\n")
-cat("    Lower criteria =",formatC(lnAUC0t_theta1*100,format="f",digits=0), "%\n")
-cat("    Upper criteria =",formatC(lnAUC0t_theta2*100,format="f",digits=0), "%\n")
+cat("    Lower criteria =",formatC(lnAUC0t_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnAUC0t_theta2*100,format="f",digits=3), "%\n")
+cat("          MEAN-ref =",ref_lnAUC0t, "\n")
+cat("         MEAN-test =",test_lnAUC0t, "\n")
+cat("                SE =",SE_lnAUCtau_ss, "\n")
+cat("Estimate(test-ref) =",SlnAUCtau_ss, "\n")
+}
+else{
+cat("          N(n1+n2) =",L1+L2 , "\n")
+cat("    Lower criteria =",formatC(lnAUC0t_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnAUC0t_theta2*100,format="f",digits=3), "%\n")
 cat("          MEAN-ref =",ref_lnAUC0t, "\n")
 cat("         MEAN-test =",test_lnAUC0t, "\n")
 cat("                SE =",SE_lnAUC0t, "\n")
 cat("Estimate(test-ref) =",SlnAUC0t, "\n")
+}
 cat("\n")
 if(multiple){
 cat("*********** Classical (Shortest) 90% C.I. for lnAUC(tau)ss **************\n")
+cat("\n")
+output<-data.frame(Point_estimate=c( formatC(100*exp(SlnAUCtau_ss),format="f",digits=3)),
+                   CI90_lower=c( formatC(lowerAUCtau_ss,format="f",digits=3)),
+                   CI90_upper=c( formatC(upperAUCtau_ss,format="f",digits=3)))
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+show(output)
+if(!parallel){
+cat("\n")
+cat("The estimated intra-subject CV for AUC(tau)ss:-\n")
+Point_estimate <- as.numeric(100*exp(SlnAUCtau_ss))
+CI90_lower <- as.numeric(lowerAUCtau_ss)
+delta_CI <- log(Point_estimate)-log(CI90_lower)
+MSE <- as.numeric(2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2)
+CVintra <- as.numeric(100*sqrt(exp(MSE)-1))
+cat("CV(intra)% = 100*sqrt(exp(MSE)-1))=",formatC(CVintra, format="f", digits=2),"%\n")
+}
+cat("---------------------------------------------------------------------------\n")
+## Welch t-test starts here if parallel
+  if(parallel){
+  result <- t.test(lnAUCtau_ss ~ drug, paired=FALSE, var.equal = FALSE, 
+                        conf.level = 0.90, data = Data)
+  show(result)
+  cat("T/R [%] with alpha 0.05 (90% CI)", sep=" ", fill=TRUE)
+  tbldiff <- matrix(
+  c(as.numeric(exp(diff(result$estimate))),
+  sort(as.numeric(exp(-result$conf.int)))),
+  byrow = TRUE, nrow = 1)
+  dimnames(tbldiff) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+  show(round(tbldiff*100,3))
+  cat("\n")
+  cat("Above R codes for Welch T test were kindly provided by Helmut Schutz.\n")
+  cat("--------------------------------------------------------------------\n")
+  cat("Ref.: \n")
+  cat("1. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=674\n")
+  cat("2. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=5126\n")
+  cat("3. Wang H and S-C Chow, A practical approach for comparing means of \n")
+  cat("   two groups without equal variance assumption, Statist. Med. 21:  \n")
+  cat("   3137-3151 (2002).\n")
+  cat("--------------------------------------------------------------------\n")
+  }
+cat("\n")
+cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
+cat("\n")
+TOST_lnAUCtau_ss<-data.frame(TOST=c("T_lower", "T_upper"),
+                 T_value=c(formatC(TL_lnAUCtau_ss,format="f",digits=4),formatC(TU_lnAUCtau_ss,format="f",digits=4)),
+                 P_value=c(formatC(PTL_lnAUCtau_ss,format="f",digits=4),formatC(PTU_lnAUCtau_ss,format="f",digits=4))) 
+colnames(TOST_lnAUCtau_ss)<- c("TOST","  T value","  P value")
+show(TOST_lnAUCtau_ss) 
+cat("\n")
+if(PTL_lnAUCtau_ss >= 0.05 || PTU_lnAUCtau_ss >= 0.05){
+description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
+else{
+description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
 }
 else{
 cat("**************** Classical (Shortest) 90% C.I. for lnAUC0t ****************\n")
-}
 cat("\n")
-output<-data.frame(CI90_lower=c( formatC(lowerAUC0t,format="f",digits=3)),
-                   Point_estimated=c( formatC(100*exp(SlnAUC0t),format="f",digits=3)),
+output<-data.frame(Point_estimate=c( formatC(100*exp(SlnAUC0t),format="f",digits=3)),
+                   CI90_lower=c( formatC(lowerAUC0t,format="f",digits=3)),
                    CI90_upper=c( formatC(upperAUC0t,format="f",digits=3)))
-show(output)    
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+show(output)
+if(!parallel){
+cat("\n")
+cat("The estimated intra-subject CV for AUC0t:-\n")
+Point_estimate <- as.numeric(100*exp(SlnAUC0t))
+CI90_lower <- as.numeric(lowerAUC0t)
+delta_CI <- log(Point_estimate)-log(CI90_lower)
+MSE <- as.numeric(2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2)
+CVintra <- as.numeric(100*sqrt(exp(MSE)-1))
+cat("CV(intra)% = 100*sqrt(exp(MSE)-1))=",formatC(CVintra, format="f", digits=2),"%\n")
+}
+cat("---------------------------------------------------------------------------\n")
+## Welch t-test starts here if parallel
+  if(parallel){
+  result <- t.test(lnAUC0t ~ drug, paired=FALSE, var.equal = FALSE, 
+                        conf.level = 0.90, data = TotalData)
+  show(result)
+  cat("T/R [%] with alpha 0.05 (90% CI)", sep=" ", fill=TRUE)
+  tbldiff <- matrix(
+  c(as.numeric(exp(diff(result$estimate))),
+  sort(as.numeric(exp(-result$conf.int)))),
+  byrow = TRUE, nrow = 1)
+  dimnames(tbldiff) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+  show(round(tbldiff*100,3))
+  }
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
@@ -524,9 +755,21 @@ description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_thet
 else{
 description_TOST1_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
+}
 cat("\n")
 cat("------------------------ Anderson-Hauck Test ------------------------------\n")
 cat("\n")
+if(multiple){
+cat("          P value =",formatC(EP_lnAUCtau_ss,digits=6),"\n") 
+cat("\n")
+if(EP_lnAUCtau_ss >= 0.05){
+description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
+else{
+description_TOST1_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
+}
+}
+else{
 cat("          P value =",formatC(EP_lnAUC0t,digits=6),"\n") 
 cat("\n")
 if(EP_lnAUC0t >= 0.05){
@@ -535,10 +778,10 @@ description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_thet
 else{
 description_TOST1_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
+}
 cat("---------------------------------------------------------------------------\n")
 cat("\n")
 cat("\n")
-
 if(multiple){
 }
 else{
@@ -549,7 +792,7 @@ else{
 cat("  Pivotal Parameters of BE Study - Summary Report  - replicate BE study                        \n")
 } 
 cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: lnAUC0INF                                             \n")
+cat("  Dependent Variable: log(AUC0INF)                                        \n")
 cat("--------------------------------------------------------------------------\n")
 if(parallel){
 cat("         n1(drug 1)=",L1 , "\n")
@@ -560,8 +803,8 @@ cat("          n1(seq 1)=",L1 , "\n")
 cat("          n2(seq 2)=",L2 , "\n")
 }
 cat("          N(n1+n2) =",L1+L2 , "\n")
-cat("    Lower criteria =",formatC(lnAUC0INF_theta1*100,format="f",digits=0), "%\n")
-cat("    Upper criteria =",formatC(lnAUC0INF_theta2*100,format="f",digits=0), "%\n")
+cat("    Lower criteria =",formatC(lnAUC0INF_theta1*100,format="f",digits=3), "%\n")
+cat("    Upper criteria =",formatC(lnAUC0INF_theta2*100,format="f",digits=3), "%\n")
 cat("          MEAN-ref =",ref_lnAUC0INF, "\n")
 cat("         MEAN-test =",test_lnAUC0INF, "\n")
 cat("                SE =",SE_lnAUC0INF, "\n")
@@ -569,10 +812,51 @@ cat("Estimate(test-ref) =",SlnAUC0INF, "\n")
 cat("\n")
 cat("**************** Classical (Shortest) 90% C.I. for lnAUC0INF **************\n")
 cat("\n")
-output<-data.frame(CI90_lower=c( formatC(lowerAUC0INF,format="f",digits=3)),
-                   Point_estimated=c( formatC(100*exp(SlnAUC0INF),format="f",digits=3)),
+output<-data.frame(Point_estimate=c( formatC(100*exp(SlnAUC0INF),format="f",digits=3)),
+                   CI90_lower=c( formatC(lowerAUC0INF,format="f",digits=3)),
                    CI90_upper=c( formatC(upperAUC0INF,format="f",digits=3)))
-show(output)   
+dimnames(output) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+show(output)
+if(!parallel){
+cat("\n")
+cat("The estimated intra-subject CV for AUC0INF:-\n")
+Point_estimate <- as.numeric(100*exp(SlnAUC0INF))
+CI90_lower <- as.numeric(lowerAUC0INF)
+delta_CI <- log(Point_estimate)-log(CI90_lower)
+MSE <- as.numeric(2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2)
+CVintra <- as.numeric(100*sqrt(exp(MSE)-1))
+cat("CV(intra)% = 100*sqrt(exp(MSE)-1))=",formatC(CVintra, format="f", digits=2),"%\n")
+}
+cat("---------------------------------------------------------------------------\n")
+## Welch t-test starts here if parallel
+  if(parallel){
+  result <- t.test(lnAUC0INF ~ drug, paired=FALSE, var.equal = FALSE, 
+                        conf.level = 0.90, data = TotalData)
+  show(result)
+  cat("T/R [%] with alpha 0.05 (90% CI)", sep=" ", fill=TRUE)
+  tbldiff <- matrix(
+  c(as.numeric(exp(diff(result$estimate))),
+  sort(as.numeric(exp(-result$conf.int)))),
+  byrow = TRUE, nrow = 1)
+  dimnames(tbldiff) <- list("Ratio",
+                          c("  Point Estimate",
+                            "  CI90 lower",
+                            "  CI90 upper" ))
+  show(round(tbldiff*100,3))
+  cat("\n")
+  cat("Above R codes for Welch T test were kindly provided by Helmut Schutz.\n")
+  cat("--------------------------------------------------------------------\n")
+  cat("Ref.: \n")
+  cat("1. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=674\n")
+  cat("2. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=5126\n")
+  cat("3. Wang H and S-C Chow, A practical approach for comparing means of \n")
+  cat("   two groups without equal variance assumption, Statist. Med. 21:  \n")
+  cat("   3137-3151 (2002).\n")
+  cat("--------------------------------------------------------------------\n")
+  }
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
