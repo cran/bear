@@ -1710,7 +1710,7 @@ description_version()
 cat("\n")
 cat("\n")
 cat("\n")
-cat("Statistical Summaries for Pivotal Parameters of Bioequivalence Study (N=",L1+L2,")\n")
+cat("Statistical Summaries for Pivotal Parameters of Bioequivalence (N=",L1+L2,")\n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
 if(multiple){
@@ -1765,8 +1765,9 @@ else{
 show(outputS1)
 cat("\n")
 cat("\n")
-cat("Statistical Summaries for Pivotal Parameters of Bioequivalence Study (N=",L1+L2,") (cont'd)\n")
-cat("-------------------------------------------------------------------------------------\n")
+cat("Statistical Summaries for Pivotal Parameters of Bioequivalence (N=",L1+L2,")\n")
+cat("(cont'd)\n")
+cat("-------------------------------------------------------------------------\n")
 cat("\n")
 if(replicated){
 RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
@@ -1800,7 +1801,7 @@ RupperAUC0INF<-formatC(upperAUC0INF,format="f",digits=3)
 
 outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
                      CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
-                     Point_estimated=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
+                     Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
                      CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
                       
 
@@ -1809,6 +1810,7 @@ show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
 cat("CI90: 90% confidence interval \n")
+cat("Point_estimate = squared root of (lower CI90 * upper CI90)\n")
 cat("--------------------------------------------------------------------------\n")
 }
 else{
@@ -1825,7 +1827,7 @@ else{
     
   outputS2<-data.frame(Parameters=c("ln(Cmax_ss)","ln(AUC(tau)ss)"),                      
                      CI90_lower=c(RlowerCmax,RlowerAUC0t), 
-                     Point_estimated=c(SlnCmax,SlnAUC0t),
+                     Point_estimate=c(SlnCmax,SlnAUC0t),
                      CI90_upper=c(RupperCmax,RupperAUC0t))  
      }
      else{
@@ -1843,7 +1845,7 @@ else{
   
   outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
                      CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
-                     Point_estimated=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
+                     Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
                      CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
    }                   
 
@@ -1852,7 +1854,8 @@ show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
 cat("CI90: 90% confidence interval \n")
-cat("--------------------------------------------------------------------------\n")
+cat("Point_estimate = squared root of (lower CI90 * upper CI90)\n")
+cat("-------------------------------------------------------------------------\n")
  }
   else{
    if(multiple){
@@ -1862,7 +1865,7 @@ cat("--------------------------------------------------------------------------\
                       P_value=c(formatC(anova(Cmax_ss)[4,5],format="f",digits=3),formatC(anova(AUCtau_ss)[4,5],format="f",digits=3),
                                 formatC(anova(lnCmax_ss)[4,5],format="f",digits=3),formatC(anova(lnAUCtau_ss)[4,5],format="f",digits=3)),
                       CI90_lower= c("-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3)),
-                      Point_estimated=c("-","-",formatC(100*exp(test_lnCmax_ss-ref_lnCmax_ss),format="f",digits=3),formatC(100*exp(test_lnAUCtau_ss-ref_lnAUCtau_ss),format="f",digits=3)),
+                      Point_estimate=c("-","-",formatC(100*exp(test_lnCmax_ss-ref_lnCmax_ss),format="f",digits=3),formatC(100*exp(test_lnAUCtau_ss-ref_lnAUCtau_ss),format="f",digits=3)),
                       CI90_upper= c("-","-",formatC(upperCmax,format="f",digits=3),formatC(UpperAUC0t,format="f",digits=3)))  
 
    }
@@ -1873,7 +1876,7 @@ cat("--------------------------------------------------------------------------\
                       P_value=c(formatC(anova(Cmax)[4,5],format="f",digits=3),formatC(anova(AUC0t)[4,5],format="f",digits=3), formatC(anova(AUC0INF)[4,5],format="f",digits=3),
                           formatC(anova(lnCmax)[4,5],format="f",digits=3),formatC(anova(lnAUC0t)[4,5],format="f",digits=3),formatC(anova(lnAUC0INF)[4,5],format="f",digits=3)),  
                       CI90_lower= c("-","-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3),formatC(LowerAUC0INF,format="f",digits=3)), 
-                      Point_estimated=c("-","-","-",formatC(100*exp(test_Cmax-ref_Cmax),format="f",digits=3),formatC(100*exp(test_AUC0t-ref_AUC0t),format="f",digits=3),formatC(100*exp(test_AUC0INF - ref_AUC0INF),format="f",digits=3)),
+                      Point_estimate=c("-","-","-",formatC(100*exp(test_Cmax-ref_Cmax),format="f",digits=3),formatC(100*exp(test_AUC0t-ref_AUC0t),format="f",digits=3),formatC(100*exp(test_AUC0INF - ref_AUC0INF),format="f",digits=3)),
                       CI90_upper= c("-","-","-",formatC(upperCmax,format="f",digits=3),formatC(UpperAUC0t,format="f",digits=3),formatC(UpperAUC0INF,format="f",digits=3)))  
 
    }
@@ -1882,6 +1885,7 @@ cat("\n")
 cat("-------------------------------------------------------------------------\n")
 cat("Both F values and P values were obtained from ANOVA, respectively.\n")
 cat("CI90: 90% confidence interval \n")
+cat("Point_estimate = squared root of (lower CI90 * upper CI90)\n")
 cat("Please note: no posterior power calculated. Ref.: Hoenig JM and Heisey DM. \n")
 cat("The abuse of power: the pervasive fallacy of power calculations for data \n")
 cat("analysis. The American Statistician 55/1, 19-24 (2001). Also the discussions \n")
@@ -1895,15 +1899,15 @@ cat("\n")
 cat("\n")
 cat("\n")
 #Table 2:Summaries for Pharmacokinetic Parameters 
-cat("Summaries for Misc. Pharmacokinetic Parameters (N=",L1+L2,")\n")
+cat("Summaries for misc. Pharmacokinetic Parameters (N=",L1+L2,")\n")
 cat("\n")
 cat("\n")
 if(multiple){
-cat("                 Test","(n1=",L2,")","    Reference","(n2=",L1,")\n")
-cat("--------------------------------------------------------------------------\n")
-cat("\n")
  if(parallel){
-     outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F","MRT","Cav","Fluctuation(%)" ),
+   cat("                 Test","(n1=",L2,")","    Reference","(n2=",L1,")\n")
+   cat("--------------------------------------------------------------\n")
+   cat("\n")
+   outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F","MRT","Cav","Fluctuation(%)" ),
                         Mean_T=c(formatC(mean(outputClFT$Test),format="f",digits=3),formatC(mean(outputLambdaT$Test),format="f",digits=3),formatC(mean(outputTmaxT$Test),format="f",digits=3),formatC(mean(outputT12T$Test),format="f",digits=3),
                                  formatC(mean(outputVdFT$Test),format="f",digits=3),formatC(mean(outputMRT0INFT$Test),format="f",digits=3),formatC(mean(outputCavT$Test),format="f",digits=3), formatC(mean(outputFluT$Test),format="f",digits=3)),
                         SD_T=c(formatC(sd(outputClFT$Test),format="f",digits=3),formatC(sd(outputLambdaT$Test),format="f",digits=3),formatC(sd(outputTmaxT$Test),format="f",digits=3),formatC(sd(outputT12T$Test),format="f",digits=3),
@@ -1923,6 +1927,9 @@ cat("\n")
                                  formatC(((sd(outputCavR$Ref)/mean(outputCavR$Ref))*100),format="f",digits=3), formatC(((sd(outputFluR$Ref)/mean(outputFluR$Ref))*100),format="f",digits=3)))
  }
  else{
+   cat("                    Test                   Reference\n")
+   cat("--------------------------------------------------------------\n")
+   cat("\n")
       outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F","MRT","Cav","Fluctuation(%)" ),
                         Mean_T=c(formatC(mean(outputClF$Test),format="f",digits=3),formatC(mean(outputLambda$Test),format="f",digits=3),formatC(mean(outputTmax$Test),format="f",digits=3),formatC(mean(outputT12$Test),format="f",digits=3),
                                  formatC(mean(outputVdF$Test),format="f",digits=3),formatC(mean(outputMRT0INF$Test),format="f",digits=3),formatC(mean(outputCav$Test),format="f",digits=3), formatC(mean(outputFluctuation$Test),format="f",digits=3)),
@@ -1941,18 +1948,18 @@ cat("\n")
                                  formatC(((sd(outputTmax$Ref)/mean(outputTmax$Ref))*100),format="f",digits=3),formatC(((sd(outputT12$Ref)/mean(outputT12$Ref))*100),format="f",digits=3),
                                  formatC(((sd(outputVdF$Ref)/mean(outputVdF$Ref))*100),format="f",digits=3),formatC(((sd(outputMRT0INF$Ref)/mean(outputMRT0INF$Ref))*100),format="f",digits=3),
                                  formatC(((sd(outputCav$Ref)/mean(outputCav$Ref))*100),format="f",digits=3), formatC(((sd(outputFluctuation$Ref)/mean(outputFluctuation$Ref))*100),format="f",digits=3)))
-      }
+ }
 colnames(outputTest)<- c("Parameters"," Mean"," SD"," CV","    Mean"," SD"," CV")
 show(outputTest)
 cat("\n")
-cat("--------------------------------------------------------------------------\n")
+    cat("--------------------------------------------------------------\n")
 }
 else{
-cat("                 Test","(n1=",L2,")","    Reference","(n2=",L1,")\n")
-cat("--------------------------------------------------------------\n")
-cat("\n")
 if(parallel){
-outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio" ),
+   cat("                 Test","(n1=",L2,")","    Reference","(n2=",L1,")\n")
+   cat("--------------------------------------------------------------\n")
+   cat("\n")
+   outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio" ),
                         Mean_T=c(formatC(mean(outputClFT$Test),format="f",digits=3),formatC(mean(outputLambdaT$Test),format="f",digits=3),formatC(mean(outputTmaxT$Test),format="f",digits=3),formatC(mean(outputT12T$Test),format="f",digits=3),
                                     formatC(mean(outputVdFT$Test),format="f",digits=3),formatC(mean(outputMRT0INFT$Test),format="f",digits=3),formatC(mean(outputAUC_RatioT$Test),format="f",digits=3)),
                         SD_T=c(formatC(sd(outputClFT$Test),format="f",digits=3),formatC(sd(outputLambdaT$Test),format="f",digits=3),formatC(sd(outputTmaxT$Test),format="f",digits=3),formatC(sd(outputT12T$Test),format="f",digits=3),
@@ -1972,7 +1979,10 @@ outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","M
                                  formatC(((sd(outputAUC_RatioR$Ref)/mean(outputAUC_RatioR$Ref))*100),format="f",digits=3)))
 }
 else{
-outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio" ),
+   cat("                    Test                   Reference\n")
+   cat("--------------------------------------------------------------\n")
+   cat("\n")
+   outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio" ),
                         Mean_T=c(formatC(mean(outputClF$Test),format="f",digits=3),formatC(mean(outputLambda$Test),format="f",digits=3),formatC(mean(outputTmax$Test),format="f",digits=3),formatC(mean(outputT12$Test),format="f",digits=3),
                                     formatC(mean(outputVdF$Test),format="f",digits=3),formatC(mean(outputMRT0INF$Test),format="f",digits=3),formatC(mean(outputAUC0t_AUC0INF$Test),format="f",digits=3)),
                         SD_T=c(formatC(sd(outputClF$Test),format="f",digits=3),formatC(sd(outputLambda$Test),format="f",digits=3),formatC(sd(outputTmax$Test),format="f",digits=3),formatC(sd(outputT12$Test),format="f",digits=3),

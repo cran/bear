@@ -1,5 +1,5 @@
 description_version<-function(){
-cat("~~~  This report was generated using bear v2.4.3 ~~~\n\n")
+cat("~~~  This report was generated using bear v2.4.4 ~~~\n\n")
 reportdate<-as.POSIXct(Sys.time())
 cat("and was created on (local time):- "); show(reportdate); cat("\n")
 cat("bear was developed by Hsin-ya Lee & Yung-jin Lee.\n")
@@ -12,5 +12,5 @@ cat("bear's website: http://pkpd.kmu.edu.tw/bear\n")
 cat("R website: http://www.r-project.org\n")
 cat("Users are strongly recommedned to browse Bebac Forum: R for BE/BA ->\n") 
 cat("http://forum.bebac.at/?category=19 for more details of bear.\n")
-cat("---------------------------------------------------\n")
+cat("-------------------------------------------------------------------------\n")
 }
