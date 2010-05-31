@@ -1796,18 +1796,18 @@ RupperCmax<-formatC(upperCmax,format="f",digits=3)
 RupperAUC0t<-formatC(upperAUC0t,format="f",digits=3)
 RupperAUC0INF<-formatC(upperAUC0INF,format="f",digits=3)
 
-outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
+outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
+                     Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF), 
                      CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
-                     Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
                      CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
                       
 
-
+colnames(outputS2)<- c("Parmeters"," PE (%)"," lower 90%CI"," upper 90%CI")
 show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
-cat("CI90: 90% confidence interval \n")
-cat("Point_estimate = squared root of (lower CI90 * upper CI90)\n")
+cat("90% CI: 90% confidence interval \n")
+cat("PE (%): point estimate; = squared root of (lower 90%CI * upper 90%CI)\n")
 cat("--------------------------------------------------------------------------\n")
 }
 else{
@@ -1822,9 +1822,9 @@ else{
   SlnCmax<-formatC(100*exp(summary(lnCmax_ss)[20][[1]][2,1]),format="f",digits=3)
   SlnAUC0t<-formatC(100*exp(summary(lnAUCtau_ss)[20][[1]][2,1]),format="f",digits=3)
     
-  outputS2<-data.frame(Parameters=c("ln(Cmax_ss)","ln(AUC(tau)ss)"),                      
-                     CI90_lower=c(RlowerCmax,RlowerAUC0t), 
+  outputS2<-data.frame(Parameters=c("ln(Cmax_ss)","ln(AUC(tau)ss)"),
                      Point_estimate=c(SlnCmax,SlnAUC0t),
+                     CI90_lower=c(RlowerCmax,RlowerAUC0t), 
                      CI90_upper=c(RupperCmax,RupperAUC0t))  
      }
      else{
@@ -1840,18 +1840,18 @@ else{
   SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][2,1]),format="f",digits=3)
   SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][2,1]),format="f",digits=3)
   
-  outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
-                     CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
+  outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
                      Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
+                     CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
                      CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
    }                   
 
-
+colnames(outputS2)<- c("Parmeters", " PE (%)"," lower 90%CI"," upper 90%CI")
 show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
-cat("CI90: 90% confidence interval \n")
-cat("Point_estimate = squared root of (lower CI90 * upper CI90)\n")
+cat("90%CI: 90% confidence interval \n")
+cat("PE (%): point estimate; = squared root of (lower 90%CI * upper 90%CI)\n")
 cat("-------------------------------------------------------------------------\n")
  }
   else{
@@ -1861,8 +1861,8 @@ cat("-------------------------------------------------------------------------\n
                                 formatC(anova(lnCmax_ss)[4,4],format="f",digits=3),formatC(anova(lnAUCtau_ss)[4,4],format="f",digits=3)),
                       P_value=c(formatC(anova(Cmax_ss)[4,5],format="f",digits=3),formatC(anova(AUCtau_ss)[4,5],format="f",digits=3),
                                 formatC(anova(lnCmax_ss)[4,5],format="f",digits=3),formatC(anova(lnAUCtau_ss)[4,5],format="f",digits=3)),
-                      CI90_lower= c("-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3)),
                       Point_estimate=c("-","-",formatC(100*exp(test_lnCmax_ss-ref_lnCmax_ss),format="f",digits=3),formatC(100*exp(test_lnAUCtau_ss-ref_lnAUCtau_ss),format="f",digits=3)),
+                      CI90_lower= c("-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3)),
                       CI90_upper= c("-","-",formatC(upperCmax,format="f",digits=3),formatC(UpperAUC0t,format="f",digits=3)))  
 
    }
@@ -1872,17 +1872,18 @@ cat("-------------------------------------------------------------------------\n
                                 formatC(anova(lnCmax)[4,4],format="f",digits=3),formatC(anova(lnAUC0t)[4,4],format="f",digits=3),formatC(anova(lnAUC0INF)[4,4],format="f",digits=3)), 
                       P_value=c(formatC(anova(Cmax)[4,5],format="f",digits=3),formatC(anova(AUC0t)[4,5],format="f",digits=3), formatC(anova(AUC0INF)[4,5],format="f",digits=3),
                           formatC(anova(lnCmax)[4,5],format="f",digits=3),formatC(anova(lnAUC0t)[4,5],format="f",digits=3),formatC(anova(lnAUC0INF)[4,5],format="f",digits=3)),  
-                      CI90_lower= c("-","-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3),formatC(LowerAUC0INF,format="f",digits=3)), 
                       Point_estimate=c("-","-","-",formatC(100*exp(test_Cmax-ref_Cmax),format="f",digits=3),formatC(100*exp(test_AUC0t-ref_AUC0t),format="f",digits=3),formatC(100*exp(test_AUC0INF - ref_AUC0INF),format="f",digits=3)),
+                      CI90_lower= c("-","-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3),formatC(LowerAUC0INF,format="f",digits=3)), 
                       CI90_upper= c("-","-","-",formatC(upperCmax,format="f",digits=3),formatC(UpperAUC0t,format="f",digits=3),formatC(UpperAUC0INF,format="f",digits=3)))  
 
    }
+colnames(outputS2)<- c("Parameters"," F values"," P vales","   PE (%)"," lower 90%CI"," upper 90%CI")
 show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
 cat("Both F values and P values were obtained from ANOVA, respectively.\n")
-cat("CI90: 90% confidence interval \n")
-cat("Point_estimate = squared root of (lower CI90 * upper CI90)\n")
+cat("90%CI: 90% confidence interval \n")
+cat("PE(%): point estimate; = quared root of (lower 90%CI * upper 90%CI)\n")
 cat("Please note: no posterior power calculated. Ref.: Hoenig JM and Heisey DM. \n")
 cat("The abuse of power: the pervasive fallacy of power calculations for data \n")
 cat("analysis. The American Statistician 55/1, 19-24 (2001). Also the discussions \n")
@@ -1979,7 +1980,7 @@ else{
    cat("                    Test                   Reference\n")
    cat("--------------------------------------------------------------\n")
    cat("\n")
-   outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio" ),
+   outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC_ratio (%)" ),
                         Mean_T=c(formatC(mean(outputClF$Test),format="f",digits=3),formatC(mean(outputLambda$Test),format="f",digits=3),formatC(mean(outputTmax$Test),format="f",digits=3),formatC(mean(outputT12$Test),format="f",digits=3),
                                     formatC(mean(outputVdF$Test),format="f",digits=3),formatC(mean(outputMRT0INF$Test),format="f",digits=3),formatC(mean(outputAUC0t_AUC0INF$Test),format="f",digits=3)),
                         SD_T=c(formatC(sd(outputClF$Test),format="f",digits=3),formatC(sd(outputLambda$Test),format="f",digits=3),formatC(sd(outputTmax$Test),format="f",digits=3),formatC(sd(outputT12$Test),format="f",digits=3),
@@ -2002,7 +2003,7 @@ colnames(outputTest)<- c("Parameters"," Mean"," SD"," CV","    Mean"," SD"," CV"
 show(outputTest)
 cat("\n")
 cat("--------------------------------------------------------------\n")
-cat("AUC_ratio: (AUC0-t/AUC0-inf)*100 \n")
+cat("AUC_ratio (%) : (AUC0-t/AUC0-inf)*100 \n")
 cat("   AUC0-t: AUC from time zero to the time of the last measurable\n")
 cat("           drug concentration.\n")
 cat("--------------------------------------------------------------\n")
