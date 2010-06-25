@@ -2,7 +2,7 @@
 demomenu<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
-  file.menu <- c("lambda_z est. from the exact 3 data points",
+  file.menu <- c("lambda_z est. from 2-4 data points",
                  "lambda_z est. with adjusted R sq. (ARS)",
                  "lambda_z est. with Akaike information criterion (AIC)",
                  "lambda_z est. with Two-Times-Tmax method (TTT)",

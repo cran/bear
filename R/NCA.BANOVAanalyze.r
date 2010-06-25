@@ -37,8 +37,8 @@ cat("\n\n")
 Totalplot<- rbind(SingleRdata0,SingleTdata0)
 
    cat("\n")
-   file.menu <- c("Select the exact 3 data points manually",            
-                  "Load previous selection (the exact 3 data points)",  
+   file.menu <- c("Select 2-4 data points manually",            
+                  "Load previous selection (2-4 data points)",  
                   "Use Adjusted R sq. (ARS) method",
                   "Use Akaike information criterion (AIC) method",                     
                   "Use the Two-Times-Tmax(TTT) method",
@@ -134,8 +134,8 @@ SingleTdata1 <- na.omit(SingleTdata1)
 Totalplot<- rbind(SingleRdata,SingleTdata)
 
    cat("\n")
-   file.menu <- c("Select the exact 3 data points manually",
-                  "Load previous selection (the exact 3 data points)",
+   file.menu <- c("Select 2-4 data points manually",
+                  "Load previous selection (2-4 data points)",
                   "Use Adjusted Rsq. (ARS) method",
                   "Use Akaike information criterion (AIC) method",                     
                   "Use the Two-Times-Tmax(TTT) method",

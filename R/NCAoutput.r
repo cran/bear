@@ -44,7 +44,7 @@ sink(zz)
 description_version()
 cat("\n")
          if (NCA){
-              cat("1. Lambda_z is calculated with manual selection of the exact 3 data points.\n") 
+              cat("1. Lambda_z is calculated with manual selection of 2-4 data points.\n") 
                 
                  }
                 else {

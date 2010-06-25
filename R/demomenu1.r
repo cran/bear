@@ -2,7 +2,7 @@
 demomenu1<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
-  file.menu <- c("NCA (the exact 3 data points) --> Statistical analysis",
+  file.menu <- c("NCA (2-4 data points) --> Statistical analysis",
                  "NCA (ARS) --> Statistical analysis",
                  "NCA (AIC) --> Statistical analysis",
                  "NCA (TTT) --> Statistical analysis",

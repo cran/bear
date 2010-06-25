@@ -46,13 +46,13 @@ if(multiple){
        for(i in seq_along(R.split)){
          xx1<-R.split[[i]]$time-TlastD
          yy1<-R.split[[i]]$conc
-           main<-paste(c("Select the exact 3 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
+           main<-paste(c("Select 2-4 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
          plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 2*xx1), ylim=range(1, 4*max(yy1)), xlab="Time", ylab= "Conc. (in log scale)", 
          main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19)
          lines(xx1,yy1, lty=20)
          axis(1, pos=1)
          axis(2, pos=0,las=1)     
-         co_data1[[i]]<-identify(xx1, yy1, n=3)
+         co_data1[[i]]<-identify(xx1, yy1, n=4)
            }
          }
 else{ 
@@ -68,13 +68,13 @@ else{
                          ", Prd_",R.split[[i]]$prd[1]),collapse=" ")
           }
           else{
-           main<-paste(c("Select the exact 3 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
+           main<-paste(c("Select 2-4 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
            }
          plot(xx1,yy1,log="y", xlim=range(xx1), ylim=range(yy1),xlab="Time", ylab= "Conc. (in log scale)", main=main,
          cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n")
          lines(xx1,yy1, lty=20)
          axis(1,tcl=-.2,labels=TRUE)
-         co_data1[[i]]<-identify(xx1, yy1, n=3)
+         co_data1[[i]]<-identify(xx1, yy1, n=4)
            }
          }    
           r_melt<-melt(co_data1)
@@ -184,14 +184,14 @@ if(multiple){
             for(i in seq_along(T.split)){
               xx2<-T.split[[i]]$time-TlastD
               yy2<-T.split[[i]]$conc
-                  main<-paste(c("Select the exact 3 data points. Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
+                  main<-paste(c("Select 2-4 data points. Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
                      
               plot(xx2,yy2, log="y", axes=FALSE,xlim=range(xx2+(xx2/2), 2*xx2), ylim=range(1, 4*max(yy2)), xlab="Time", ylab= "Conc. (in log scale)", 
               main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19)
               lines(xx2,yy2, lty=20)
               axis(1, pos=1)
               axis(2, pos=0,las=1)     
-              co_data2[[i]]<-identify(xx2,yy2, n=3)
+              co_data2[[i]]<-identify(xx2,yy2, n=4)
               }
 }
 else{
@@ -205,14 +205,14 @@ else{
                                 "Prd_",T.split[[i]]$prd[1]),collapse=" ")
                  }
                  else{
-                  main<-paste(c("Select the exact 3 data points. Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
+                  main<-paste(c("Select 2-4 data points. Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
                }
               
               plot(xx2,yy2, log="y",xlim=range(xx2), ylim=range(yy2),xlab="Time", ylab= "Conc. (in log scale)", main=main ,
               cex.lab = 1.2,cex.main = 1,pch=1,lab=c(20,20,30), xaxt="n")
-              lines(xx2,yy2,lwd=1)
+              lines(xx2,yy2,lty=20)
               axis(1,tcl=-.2,labels=TRUE)
-              co_data2[[i]]<-identify(xx2,yy2, n=3)
+              co_data2[[i]]<-identify(xx2,yy2, n=4)
               }
 }
               t_melt<-melt(co_data2)

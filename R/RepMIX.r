@@ -32,7 +32,9 @@ cat("  Statistical analysis (lm) - parallel BE study               \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-  modCmax<-lme(Cmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+  modCmax<-lme(Cmax ~ seq +  prd + drug , random=~drug - 1|subj, 
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
@@ -42,10 +44,10 @@ print(summary(modCmax_ss))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modCmax_ss))
+print(anova(modCmax_ss)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modCmax_ss, type="marginal"))
+print(anova(modCmax_ss, type="marginal")[2:4,])
 }
 }
 else{
@@ -55,10 +57,10 @@ print(summary(modCmax))
 if(! parallel){
   cat("\n")
   cat("Type I Tests of Fixed Effects\n")
-  print(anova(modCmax))
+  print(anova(modCmax)[2:4,])
   cat("\n")
   cat("Type III Tests of Fixed Effects\n")
-  print(anova(modCmax, type="marginal"))
+  print(anova(modCmax, type="marginal")[2:4,])
 }
 }                                            
 cat("\n")
@@ -75,7 +77,9 @@ cat("  Statistical analysis (lm) - parallel BE study               \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~drug - 1|subj, 
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
@@ -85,10 +89,10 @@ print(summary(modAUCtau_ss))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modAUCtau_ss))
+print(anova(modAUCtau_ss)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modAUCtau_ss, type="marginal"))
+print(anova(modAUCtau_ss, type="marginal")[2:4,])
 }
 }
 else{
@@ -98,10 +102,10 @@ print(summary(modAUC0t))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modAUC0t))
+print(anova(modAUC0t)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modAUC0t, type="marginal"))
+print(anova(modAUC0t, type="marginal")[2:4,])
 cat("\n")
 cat("\n")
 }
@@ -117,7 +121,9 @@ cat("  Statistical analysis (lm) - parallel BE study               \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug, random=~drug - 1|subj, 
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: AUC0INF                                                 \n")
@@ -126,10 +132,10 @@ print(summary(modAUC0INF))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modAUC0INF))
+print(anova(modAUC0INF)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modAUC0INF, type="marginal"))
+print(anova(modAUC0INF, type="marginal")[2:4,])
 cat("\n")
 cat("\n")
 }
@@ -139,7 +145,7 @@ cat("\n")
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
   if(multiple){
-   modlnCmax_ss<-lm(log(Cmax_ss) ~ drug, data=Data)
+    modlnCmax_ss<-lm(log(Cmax_ss) ~ drug, data=Data)
   }
   else{
     modlnCmax<-lm(log(Cmax) ~ drug, data=TotalData)
@@ -148,7 +154,9 @@ cat("  Statistical analysis (lm) - parallel BE study               \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnCmax<-lme(log(Cmax) ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+modlnCmax<-lme(log(Cmax) ~ seq +  prd + drug , random=~drug - 1|subj, 
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
@@ -158,10 +166,11 @@ print(summary(modlnCmax_ss))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnCmax_ss))
+print(anova(modlnCmax_ss)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnCmax_ss, type="marginal"))
+print(anova(modlnCmax_ss, type="marginal")[2:4,])
+cat("\n")
 }
 }
 else{
@@ -171,10 +180,10 @@ print(summary(modlnCmax))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnCmax))
+print(anova(modlnCmax)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnCmax, type="marginal"))
+print(anova(modlnCmax, type="marginal")[2:4,])
 cat("\n")
 cat("\n")
 cat("\n")
@@ -193,7 +202,9 @@ cat("  Statistical analysis (lm) - parallel BE study               \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnAUC0t<-lme(lnAUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+modlnAUC0t<-lme(lnAUC0t ~ seq +  prd + drug , random=~drug - 1|subj, 
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
@@ -203,10 +214,10 @@ print(summary(modlnAUCtau_ss))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnAUCtau_ss))
+print(anova(modlnAUCtau_ss)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnAUCtau_ss, type="marginal"))
+print(anova(modlnAUCtau_ss, type="marginal")[2:4,])
 }
 }
 else{
@@ -216,10 +227,10 @@ print(summary(modlnAUC0t))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnAUC0t))
+print(anova(modlnAUC0t)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnAUC0t, type="marginal"))
+print(anova(modlnAUC0t, type="marginal")[2:4,])
 cat("\n")
 cat("\n")
 }
@@ -234,7 +245,9 @@ cat("  Statistical analysis (lm) - parallel BE study               \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnAUC0INF<-lme(log(AUC0INF) ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+modlnAUC0INF<-lme(log(AUC0INF) ~ seq +  prd + drug, random=~drug - 1|subj, 
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML" )
 } 
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: log(AUC0INF)                                        \n")
@@ -243,10 +256,10 @@ print(summary(modlnAUC0INF))
 cat("\n")
 if(! parallel){
 cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnAUC0INF))
+print(anova(modlnAUC0INF)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnAUC0INF, type="marginal"))
+print(anova(modlnAUC0INF, type="marginal")[2:4,])
 cat("\n")
 cat("\n")
 }

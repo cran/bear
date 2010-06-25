@@ -4,7 +4,7 @@ description_plot<-function()
 par(mar=c(0, 0, 0, 0)) 
 plot(0, xlim=c(0, 210), ylim=c(0, 297), col="white")
 text(100, 260,
-"~~~  This report was generated using bear v2.5.2. ~~~",cex = .8)
+"~~~  This report was generated using bear v2.5.3. ~~~",cex = .8)
 text(76,240,"and it was created on (local time): ",cex = .8)
 text(136,240,Sys.time(),cex = .8)
 text(100, 220,
