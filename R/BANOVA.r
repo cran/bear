@@ -1,4 +1,4 @@
-##ANOVA
+##ANOVA (lm)
 library(ICSNP)
 BANOVA<-function(RefData, TestData,TotalData, L1, L2,
        lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
@@ -10,17 +10,40 @@ BANOVA<-function(RefData, TestData,TotalData, L1, L2,
 #theta1:  lower acceptance limit
 #theta2:  higher acceptance limit
 #represent GLM
+##
+oda_output_xfile<- oda_output_xfile
+pivotal_output_xfile<- pivotal_output_xfile
+ODAnalysis<- ODAnalysis
+##
 if(multiple){
-cat("*** This is a 2-treatment, 2-sequence, and 2-period crossover multiple dose design. \n")
+cat("*** A 2-trt, 2-seq, and 2-period Crossover Multiple Dose Design. \n")
 Data<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
-                   prd=as.factor(TotalData$prd),Cmax_ss=TotalData$Cmax, AUCtau_ss=TotalData$AUC0t) 
+                   prd=as.factor(TotalData$prd),Cmax_ss=TotalData$Cmax,AUCtau_ss=TotalData$AUC0t)
+##
+## DataMTL will not be used later. Just create it for dumping pivotal paramaters. -YJ
+##
+DataMTL<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
+                   prd=as.factor(TotalData$prd),Cmax_ss=formatC(TotalData$Cmax,format="f",digits=3),
+                   AUCtau_ss=formatC(TotalData$AUC0t,format="f",digits=3))
+                   
+write.csv(DataMTL,file = pivotal_output_xfile, row.names = FALSE)     ## output a csv file for multiple
+
 }
 else{
-cat("*** This is a 2-treatment, 2-sequence, and 2-period crossover single dose design. \n")
+cat("*** A 2-trt, 2-seq, and 2-period Crossover Single Dose Design. \n")
+##
+## DataSGL will not be used later. Just create it for dumping pivotal paramaters. -YJ
+##
+DataSGL<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
+                   prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=formatC(TotalData$AUC0t,format="f",digits=3),
+                   AUC0INF=formatC(TotalData$AUC0INF,format="f",digits=3))
+                   
+write.csv(DataSGL,file = pivotal_output_xfile, row.names = FALSE)  ## output a csv file for single
+##
 }
-cat("\n")
+cat("\n\n")
 
-cat("   Statistical analysis (ANOVA(lm))                  \n")
+cat("             Statistical analysis (ANOVA(lm))              \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: Cmax_ss                       \n")
@@ -41,11 +64,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(Cmax_ss ~ seq, data=Data)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(Cmax_ss ~ seq, data=Data)))
 ###
 ### the following is the same as Cmax_ss<- lm(log(Cmax_ss) ~ seq + subj:seq + prd + drug , data=Data)!
@@ -74,20 +97,19 @@ cat("-----------------------------------------------------------\n")
 #
 cat("---\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(Cmax ~ seq, data=TotalData)))
 cat("---\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(Cmax ~ seq, data=TotalData)))
 cat("---\n")
 cat("Sum Sq. = Type III SS\n")
 }
 cat("\n")
-cat("\n")
 
 #GLM_AUC0t.txt
-cat("   Statistical analysis (ANOVA(lm))               \n")
+cat("            Statistical analysis (ANOVA(lm))               \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: AUC(tau)ss                 \n")
@@ -108,11 +130,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(AUCtau_ss ~ seq, data=Data)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(AUCtau_ss ~ seq, data=Data)))
 AUC0t<- lm(AUC0t ~ seq + subj:seq + prd + drug , data=TotalData)
 }
@@ -135,11 +157,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(AUC0t ~ seq, data=TotalData)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(AUC0t ~ seq, data=TotalData)))
 }
 cat("\n")
@@ -149,7 +171,7 @@ if(multiple){
 }
 else{
 #GLM_AUC0INF.txt
-cat("   Statistical analysis (ANOVA(lm)and 90%CI)    \n")
+cat("        Statistical analysis (ANOVA(lm)and 90%CI)          \n")
 cat("-----------------------------------------------------------\n")
 cat("   Dependent Variable: AUC0INF                  \n")
 cat("\n")
@@ -169,17 +191,17 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(AUC0INF ~ seq, data=TotalData)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(AUC0INF ~ seq, data=TotalData)))
 cat("\n")
 }
 #lnCmax or lnCmax_ss
-
-cat("   Statistical analysis (ANOVA(lm))    \n")
+cat("\n\n")
+cat("              Statistical analysis (ANOVA(lm))        \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: log(Cmax_ss)    \n")
@@ -200,11 +222,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(log(Cmax_ss) ~ seq, data=Data)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(log(Cmax_ss) ~ seq, data=Data)))
 lnCmax<- lm(log(Cmax) ~ seq + subj:seq + prd + drug , data=TotalData)
 }
@@ -229,11 +251,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(log(Cmax) ~ seq, data=TotalData)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(log(Cmax) ~ seq, data=TotalData)))
 }
 cat("\n")
@@ -252,11 +274,10 @@ cat("    MSResidual =",anova(lnCmax)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnCmax)[4,3],"\n")
 }
 cat("\n")
-cat("\n")
 
 #lnAUC0t or lnAUCtau_ss
 
-cat("   Statistical analysis (ANOVA(lm))    \n")
+cat("              Statistical analysis (ANOVA(lm))    \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: log(AUCtau_ss) \n")
@@ -277,11 +298,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(log(AUCtau_ss) ~ seq, data=Data)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(log(AUCtau_ss) ~ seq, data=Data)))
 lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug , data=TotalData)
 }
@@ -305,11 +326,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(lnAUC0t ~ seq, data=TotalData)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(lnAUC0t ~ seq, data=TotalData)))
 }
 cat("\n")
@@ -328,13 +349,11 @@ cat("    MSResidual =",anova(lnAUC0t)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0t)[4,3],"\n")
 }
 cat("\n")
-cat("\n")
 
 if(multiple){
  }
 else{
-#GLM_AUC0INF.txt
-cat("   Statistical analysis (ANOVA(lm))    \n")
+cat("              Statistical analysis (ANOVA(lm))    \n")
 cat("-----------------------------------------------------------\n")
 cat("   Dependent Variable: log(AUC0INF)    \n")
 cat("\n")
@@ -354,11 +373,11 @@ cat("-----------------------------------------------------------\n")
 #
 cat("\n")
 cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(lnAUC0INF ~ seq, data=TotalData)))
 cat("\n")
 cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n")
+cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(lnAUC0INF ~ seq, data=TotalData)))
 cat("\n")
 cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnAUC0INF)[5,3])-1)),format="f",digits=3),"%\n")
@@ -367,9 +386,8 @@ cat("               =",formatC(100*sqrt(abs(exp((anova(lnAUC0INF)[4,3]-anova(lnA
 cat("    MSResidual =",anova(lnAUC0INF)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0INF)[4,3],"\n")     
 cat("\n")
-cat("\n")
 }
-##########################################################################################
+#####################################################################
 ###shortest confidence interval 
 #L1(Reference-->Test),L2(Test-->Reference sequence)
 Todata<-split(TotalData, list(TotalData$prd,TotalData$seq))
@@ -386,6 +404,18 @@ SE_AUC0t<-sqrt((anova(lnAUC0t)[5,3]/2) * (1/L1+1/L2))
 
 est_lnCmax<-lnCmax$coef[[4]] 
 est_lnAUC0t<-lnAUC0t$coef[[4]] 
+####
+#### with unbalanced dataset (L1=!L2), est_lnCmax will not equal to (test_Cmax-ref_Cmax)!!
+#### They will be equal when in balanced dataset (L1 = L2)
+#### statistical_summaries.txt will be in the file - NCAoutput.r
+####
+#### cat("*** est_lnCamx =", est_lnCmax,"\n\n")
+#### cat("*** test_Cmax-ref_Cmax =",test_Cmax-ref_Cmax,"\n\n")
+
+#### lowerCmax<-100*exp((test_Cmax-ref_Cmax)-(T*SE_Cmax))
+#### upperCmax<-100*exp((test_Cmax-ref_Cmax)+(T*SE_Cmax))
+#### lowerAUC0t<-100*exp((test_AUC0t-ref_AUC0t)-(T*SE_AUC0t))
+#### UpperAUC0t<-100*exp((test_AUC0t-ref_AUC0t)+(T*SE_AUC0t))
 
 lowerCmax<-100*exp(est_lnCmax-(T*SE_Cmax))
 upperCmax<-100*exp(est_lnCmax+(T*SE_Cmax))
@@ -418,8 +448,11 @@ ref_AUC0INF<-mean(RefData$lnAUC0INF)
 test_AUC0INF<-mean(TestData$lnAUC0INF)
 SE_AUC0INF<-sqrt((anova(lnAUC0INF)[5,3]/2) * (1/L1+1/L2))
 est_lnAUC0INF<-lnAUC0INF$coef[[4]] 
+#### read line# 389-395 (above)
 LowerAUC0INF<-100*exp(est_lnAUC0INF-(T*SE_AUC0INF))
-UpperAUC0INF<-100*exp(est_lnAUC0INF+(T*SE_AUC0INF))
+UpperAUC0INF<-100*exp(est_lnAUC0INF+(T*SE_AUC0INF))           
+#### LowerAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)-(T*SE_AUC0INF))
+#### UpperAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)+(T*SE_AUC0INF))
 #lnAUC0INF
 TL_lnAUC0INF<--((test_AUC0INF-ref_AUC0INF)-log(lnAUC0INF_theta1))/SE_AUC0INF
 TU_lnAUC0INF<-((test_AUC0INF-ref_AUC0INF)-log(lnAUC0INF_theta2))/SE_AUC0INF
@@ -427,10 +460,10 @@ PTL_lnAUC0INF<-pt(TL_lnAUC0INF,L1+L2-2)
 PTU_lnAUC0INF<-pt(TU_lnAUC0INF,L1+L2-2)
 TAH_lnAUC0INF<-(test_AUC0INF-ref_AUC0INF)/SE_AUC0INF
 NP_lnAUC0INF<-log(lnAUC0INF_theta2)/SE_AUC0INF
-EP_lnAUC0INF<- pt((abs(TAH_lnAUC0INF)-NP_lnAUC0INF),L1+L2-2) - pt((-abs(TAH_lnAUC0INF)-NP_lnAUC0INF),L1+L2-2)
+EP_lnAUC0INF<- pt((abs(TAH_lnAUC0INF)-NP_lnAUC0INF),L1+L2-2)-pt((-abs(TAH_lnAUC0INF)-NP_lnAUC0INF),L1+L2-2)
 }
 
-##############################################################################
+###################################################
 Prddata<-split(TotalData, list(TotalData$prd))
  
 #chi-square distribution
@@ -503,8 +536,7 @@ lnCmax_Fpm<-((L1+L2-2)*(lnCmax_Frt-1)^2 )/(4*(lnCmax_Frt)*(1-(lnCmax_rrt)^2))
 lnCmax_PFpm<-1-pf(lnCmax_Fpm, 1, L1+L2-2)
            
 #Report for lnCmax, lnAUC0t and lnAUC0inf
-cat("\n")
-cat("\n")
+
 cat("  Pivotal Parameters of BE Study - Summary Report \n")
 cat("--------------------------------------------------\n")
 if(multiple){
@@ -526,10 +558,10 @@ cat("                SE =",SE_Cmax, "\n")
 cat("Estimate(test-ref) =",est_lnCmax, "\n")
 cat("\n")
 if(multiple){
-cat("*** Classical (Shortest) 90% C.I. for lnCmax_ss ***\n")
+cat("*** Classical (Shortest) 90% C.I. for log(Cmax_ss) ***\n")
 }
 else{
-cat("*** Classical (Shortest) 90% C.I. for lnCmax_ss ***\n")
+cat("*** Classical (Shortest) 90% C.I. for log(Cmax) ***\n")
 }
 cat("\n")
 output<-data.frame(Point_estimate=c(formatC(100*exp(est_lnCmax),format="f",digits=3)),
@@ -568,22 +600,20 @@ description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_thet
 }
 cat("---------------------------------------------------------------------------\n")
 cat("Ref.:\n")
-cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-       \n")
-cat("   Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
+cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-           \n")
+cat("   Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n\n")
 cat("2. Schuirmann DJ. On hypothesis testing to determine if the mean of a  \n")
 cat("   normal distribution is continued in a known interval. Biometrics, 37, \n")
-cat("   617(1981).                                                           \n")
+cat("   617(1981).                                                           \n\n")
 cat("3. Schuirmann DJ. A comparison of the two one-sided tests procedure and the \n")
 cat("   power approach for assessing the equivalence of average bioavailability.\n")
-cat("   Journal of Pharmacokinetics and Biopharmaceutics, 15, 657-680 (1987). \n")
+cat("   Journal of Pharmacokinetics and Biopharmaceutics, 15, 657-680 (1987). \n\n")
 cat("4. Anderson S and Hauck WW.  A new procedure for testing equivalence in \n")
 cat("   comparative bioavailability and other clinical trials. Communications \n")
-cat("   in Statistics-Theory and Methods, 12, 2663-2692 (1983).     \n")
+cat("   in Statistics-Theory and Methods, 12, 2663-2692 (1983).                \n")
 cat("--------------------------------------------------------------------------\n")
-cat("\n")   
-cat("\n")                
-cat("\n")
-cat("  Intra-subject and Inter-subject Residuals                  \n")
+cat("\n\n")
+cat("             *** Intra-subject and Inter-subject Residuals ***            \n")
 cat("--------------------------------------------------------------------------\n")
 II_lnCmax<-data.frame(subj=IntraInterlnCmax00$subj,
                       Obs=formatC(IntraInterlnCmax00$Obs,format="f",digits=6), 
@@ -666,7 +696,7 @@ lnAUC0t_rrt<-lnAUC0t_Srt/sqrt(lnAUC0t_Srr*lnAUC0t_Stt)
 lnAUC0t_Fpm<-((L1+L2-2)*(lnAUC0t_Frt-1)^2 )/(4*(lnAUC0t_Frt)*(1-(lnAUC0t_rrt)^2))
 lnAUC0t_PFpm<-1-pf(lnAUC0t_Fpm, 1, L1+L2-2)
 
-cat("  Pivotal Parameters of BE Study - Summary Report                            \n")
+cat("            Pivotal Parameters of BE Study - Summary Report               \n")
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
 cat("  Dependent Variable: log(AUCtau_ss)                                     \n")
@@ -729,7 +759,7 @@ description_TOST1_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_the
 cat("---------------------------------------------------------------------------\n")
 cat("\n")
 cat("\n")
-cat("  Intra-subject and Inter-subject Residuals                  \n")
+cat("             *** Intra-subject and Inter-subject Residuals ***            \n")
 cat("--------------------------------------------------------------------------\n")
 II_lnAUC0t<-data.frame(subj=IntraInterlnAUC0t00$subj,
                       Obs=formatC(IntraInterlnAUC0t00$Obs,format="f",digits=6), 
@@ -816,7 +846,7 @@ lnAUC0INF_rrt<-lnAUC0INF_Srt/sqrt(lnAUC0INF_Srr*lnAUC0INF_Stt)
 lnAUC0INF_Fpm<-((L1+L2-2)*(lnAUC0INF_Frt-1)^2 )/(4*(lnAUC0INF_Frt)*(1-(lnAUC0INF_rrt)^2))
 lnAUC0INF_PFpm<-1-pf(lnAUC0INF_Fpm, 1, L1+L2-2)
 
-cat("  Pivotal Parameters of BE Study - Summary Report                         \n")
+cat("            Pivotal Parameters of BE Study - Summary Report               \n")
 cat("--------------------------------------------------------------------------\n")
 cat("  Dependent Variable: log(AUC0INF)                                        \n")
 cat("--------------------------------------------------------------------------\n")
@@ -869,7 +899,7 @@ description_TOST1_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_t
 cat("---------------------------------------------------------------------------\n")
 cat("\n")
 cat("\n")
-cat("Intra-subject and Inter-subject Residuals                  \n")
+cat("             *** Intra-subject and Inter-subject Residuals ***            \n")
 cat("--------------------------------------------------------------------------\n")
 II_lnAUC0INF<-data.frame(subj=IntraInterlnAUC0INF00$subj,
                       Obs=formatC(IntraInterlnAUC0INF00$Obs,format="f",digits=6), 
@@ -892,12 +922,15 @@ cat("---------------------------------------------------------------------\n")
 cat("\n")
 cat("\n")
 }
+if(ODAnalysis){
+zzoda <- file(oda_output_xfile, open="wt")
+sink(zzoda)
+description_version()
+cat("\n\n")
 cat("****************************************************************************\n")
-cat("Analysis of Outlier Detection\n")
-cat("****************************************************************************\n")
-cat("\n")
-cat("\n")
-cat("Test for Normality Assumption  (Shapiro-Wilk)             \n")
+cat("                    Analysis of Outlier Detection (ODA)\n")
+cat("****************************************************************************\n\n")
+cat(" Test for Normality Assumption (Shapiro-Wilk)             \n")
 cat("-----------------------------------------------\n")
 if(multiple){
 outputSW<-data.frame(Parameter=c("lnCmax_ss_Stud_Intra","lnCmax_ss_Stud_Inter",
@@ -922,23 +955,20 @@ colnames(outputSW)<- c("Parameter","Test","P value")
 show(outputSW)
 cat("\n")
 cat("-------------------------------------------------\n")
-cat("Stud_Intra: studentized intra-subject residuals\n")
-cat("Stud_Inter: studentized inter-subject residuals\n")
+cat(" Stud_Intra: studentized intra-subject residuals\n")
+cat(" Stud_Inter: studentized inter-subject residuals\n")
 cat("-------------------------------------------------\n")
 cat("**Interpretation:\n")
 cat("  The normality of the studentized intra-subject residuals and the \n")
-cat("studentized inter-residuals was examined using the test of Shapiro-Wilk. \n")
-cat("If a P value is more than 0.05, we will fail to reject the normal         \n")
-cat("assumption hypothesis.                                                    \n")
+cat(" studentized inter-residuals was examined using the test of Shapiro-Wilk. \n")
+cat(" If a P value is more than 0.05, we will fail to reject the normal         \n")
+cat(" assumption hypothesis.                                                    \n")
 cat("\n")
 cat("**Ref: Chow SC and Liu JP. Design and Analysis of Bioavailability-      \n")
-cat("Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
+cat(" Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
 cat("---------------------------------------------------------------------\n")
 cat("\n")
-cat("\n")
-cat("\n")
-
-cat("Test for Normality Assumption  (Pearson)     \n")
+cat(" Test for Normality Assumption (Pearson)  \n")
 cat("---------------------------------------------\n")
 if(multiple){
 outputPearson<-data.frame(Parameter=c("lnCmax_ss","lnAUC(tau)ss"),
@@ -960,21 +990,19 @@ colnames(outputPearson)<- c("Parameter","Test","P value")
 show(outputPearson)
 cat("\n")
 cat("-------------------------------------------------\n")
-cat("Pearson: Pearson's correlation coefficient\n")
+cat(" Pearson: Pearson's correlation coefficient\n")
 cat("-------------------------------------------------\n")
 cat("**Interpretation:\n")
-cat("  Either Pearson correlation coefficient or Spearman's rank correlation  \n")
-cat("coefficient is used to examine the assumption of independence between   \n")
-cat("intra- and inter-subject variabilities.  Thus, if a P value is more than \n")
-cat("0.05, there is no evidence to suggest that the assumption is not true.   \n")
+cat(" Either Pearson correlation coefficient or Spearman's rank correlation  \n")
+cat(" coefficient is used to examine the assumption of independence between   \n")
+cat(" intra- and inter-subject variabilities.  Thus, if a P value is more than \n")
+cat(" 0.05, there is no evidence to suggest that the assumption is not true.   \n")
 cat("\n")
 cat("**Ref: Chow SC and Liu JP. Design and Analysis of Bioavailability-          \n")
-cat("Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).     \n")
+cat(" Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).     \n")
 cat("-------------------------------------------------------------------------\n")
 cat("\n")
-cat("\n")
-
-cat("Test for Normality Assumption  (Spearman)    \n")
+cat(" Test for Normality Assumption (Spearman)    \n")
 cat("----------------------------------------------\n")
 if(multiple){
 outputSpearman<-data.frame(Parameter=c("lnCmax_ss","lnAUC(tau)ss"),
@@ -995,11 +1023,9 @@ outputSpearman<-data.frame(Parameter=c("lnCmax","lnAUC0t","lnAUC0INF"),
 colnames(outputSpearman)<- c("Parameter","Test","P value")
 show(outputSpearman)
 cat("\n")
-cat("-------------------------------------------------\n")
-cat("Spearman: Spearman's rank correlation coefficient\n")
-cat("-------------------------------------------------\n")
-cat("\n")
-cat("\n")
+cat("--------------------------------------------------\n")
+cat(" Spearman: Spearman's rank correlation coefficient\n")
+cat("--------------------------------------------------\n")
 cat("\n")
 
 #######################################
@@ -1064,13 +1090,13 @@ for(i in seq_along(Hotel)){
  }
 # show( subj1)
 subj1<-c(levels(Hotel[[1]]$subj))  #c((Hotel[[1]]$subj))->c(levels(Hotel[[1]]$subj))
-cat("Hotelling T^2 with Chi-square test  \n")
+cat(" Hotelling T^2 with Chi-square Test\n")
 cat("---------------------------------------------\n")
 HotellingCmax<-data.frame(subj1, formatC(HT_Cmax,format="f",digits=5),    
                           formatC(HT_Cmax_P,format="f",digits=5),
                           formatC(HT_lnCmax,format="f",digits=5),
                           formatC(HT_lnCmax_P,format="f",digits=5))                                   
-colnames(HotellingCmax)<- c("subj","Cmax_ss","P value","lnCmax_ss","P value")                                  
+colnames(HotellingCmax)<- c("Subj","Cmax_ss","P value","lnCmax_ss","P value")                                  
                            
 show(HotellingCmax) 
 cat("\n")
@@ -1079,7 +1105,7 @@ HotellingAUC0t<-data.frame(subj1, formatC(HT_AUC0t,format="f",digits=5),
                            formatC(HT_AUC0t_P,format="f",digits=5),     
                            formatC(HT_lnAUC0t,format="f",digits=5), 
                            formatC(HT_lnAUC0t_P,format="f",digits=5))
-colnames(HotellingAUC0t)<- c("subj","AUC(tau)ss","P value","lnAUC(tau)ss","P value")        
+colnames(HotellingAUC0t)<- c("Subj","AUC(tau)ss","P value","lnAUC(tau)ss","P value")        
 show(HotellingAUC0t) 
 cat("\n")
 }
@@ -1166,13 +1192,13 @@ for(i in seq_along(Hotel)){
  }
 # show( subj1)
 subj1<-c(levels(Hotel[[1]]$subj))  #c((Hotel[[1]]$subj))->c(levels(Hotel[[1]]$subj))
-cat("Hotelling T^2 with Chi-square test  \n")
+cat(" Hotelling T^2 with Chi-square Test  \n")
 cat("---------------------------------------------\n")
 HotellingCmax<-data.frame(subj1, formatC(HT_Cmax,format="f",digits=5),    
                           formatC(HT_Cmax_P,format="f",digits=5),
                           formatC(HT_lnCmax,format="f",digits=5),
                           formatC(HT_lnCmax_P,format="f",digits=5))                                   
-colnames(HotellingCmax)<- c("subj","Cmax","P value","lnCmax","P value")                                  
+colnames(HotellingCmax)<- c("Subj","Cmax","P value","lnCmax","P value")                                  
                            
 show(HotellingCmax) 
 cat("\n")
@@ -1181,7 +1207,7 @@ HotellingAUC0t<-data.frame(subj1, formatC(HT_AUC0t,format="f",digits=5),
                            formatC(HT_AUC0t_P,format="f",digits=5),     
                            formatC(HT_lnAUC0t,format="f",digits=5), 
                            formatC(HT_lnAUC0t_P,format="f",digits=5))
-colnames(HotellingAUC0t)<- c("subj","AUC0t","P value","lnAUC0t","P value")        
+colnames(HotellingAUC0t)<- c("Subj","AUC0t","P value","lnAUC0t","P value")        
 show(HotellingAUC0t) 
 cat("\n")
 
@@ -1189,26 +1215,24 @@ HotellingAUC0INF<-data.frame(subj1, formatC(HT_AUC0INF,format="f",digits=5),
                               formatC(HT_AUC0INF_P,format="f",digits=5),
                               formatC(HT_lnAUC0INF,format="f",digits=5),
                               formatC(HT_lnAUC0INF_P,format="f",digits=5)) 
-colnames(HotellingAUC0INF)<- c("subj","AUC0INF","P value","lnAUC0INF","P value")   
+colnames(HotellingAUC0INF)<- c("Subj","AUC0INF","P value","lnAUC0INF","P value")   
 show(HotellingAUC0INF) 
 }
 cat("\n")
 cat("---------------------------------------------\n")
 cat("**Interpretation: If subjects have relatively BIG T^2 values which \n")
-cat(" cause P value less than 0.05, these subject may be outlying subjects. \n")
+cat("  cause P value less than 0.05, these subject may be outlying subjects. \n")
 cat("\n")
 cat("Ref.:\n") 
-cat("1. Liu JP and Weng CS. Detection of outlying data in bioavailability-\n")
-cat("   bioequivalence studies. Statistics in Medicine, 10, 1375-1389(1991).\n")
-cat("2. Chow SC and Liu JP. Design and Analysis of Bioavailability-        \n")
-cat("   Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
+cat(" 1. Liu JP and Weng CS. Detection of outlying data in bioavailability-\n")
+cat("    bioequivalence studies. Statistics in Medicine, 10, 1375-1389(1991).\n\n")
+cat(" 2. Chow SC and Liu JP. Design and Analysis of Bioavailability-        \n")
+cat("    Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
 cat("-------------------------------------------------------------------------\n")
 cat("\n") 
-cat("\n")
-cat("\n")
 
 ##summary of point and interval estimation of inter- and intra-subject variability for data
-cat("  Test for Equality of Intra-subject variabilities between formulations   \n")
+cat(" Test for Equality of Intra-subject Variabilities between Formulations   \n")
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
  outputEquality<-data.frame(Method=c("lnCmax_ss_Pearson","lnCmax_ss_Pitman_Morgan","lnCmax_ss_Spearman",
@@ -1233,33 +1257,31 @@ colnames(outputEquality)<- c("Parameter","Test","P value")
 show(outputEquality) 
 cat("\n")
 cat("--------------------------------------------------------------------------\n")
-cat("**Interpretation:\n")
-cat("  The standard 2*2*2 crossover design was assumed that intra-subject      \n")
-cat("variabilities for the Test and the Reference formulations are the same.    \n")
-cat("Thus, if the intra-subject variabilities between formulations are different, \n")
-cat("equivalence in average bioavailabilities between formulations does not    \n")
-cat("imply that the two formulations are therapeutically equivalent and        \n")
-cat("interchangeable.                                                          \n")
-cat("  We use both parametric (Pitman-Morgan's adjusted F test and Pearson \n")
-cat("correlation coefficient) and nonparametric test (Spearman's rank correlation\n")
-cat("coefficient) for testing equality of intra-subject variabilities between \n") 
-cat("formulations.  If a P value is less than 0.05, we may reject the null     \n")
-cat("hypothesis of equality in intra-subject variabilities between formulations.\n")
+cat(" **Interpretation:\n")
+cat("   The standard 2*2*2 crossover design was assumed that intra-subject      \n")
+cat(" variabilities for the Test and the Reference formulations are the same.    \n")
+cat(" Thus, if the intra-subject variabilities between formulations are different, \n")
+cat(" equivalence in average bioavailabilities between formulations does not    \n")
+cat(" imply that the two formulations are therapeutically equivalent and        \n")
+cat(" interchangeable.                                                          \n")
+cat(" We use both parametric (Pitman-Morgan's adjusted F test and Pearson \n")
+cat(" correlation coefficient) and nonparametric test (Spearman's rank correlation\n")
+cat(" coefficient) for testing equality of intra-subject variabilities between \n") 
+cat(" formulations.  If a P value is less than 0.05, we may reject the null     \n")
+cat(" hypothesis of equality in intra-subject variabilities between formulations.\n")
 cat("\n")
 cat("**Ref.:\n")
 cat(" 1. Chow SC and Liu JP. Design and Analysis of Bioavailability-            \n")
 cat("    Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).  \n")
-cat(" 2. Haynes JD. Statistical simulation study of new proposed uniformity     \n")
+cat(" 2. Haynes JD. Statistical simulation study of new proposed uniformity     \n\n")
 cat("    requirements for bioequivalency studies. Journal of Pharmaceutical     \n")
-cat("    Sciences, 70, 673-675 (1981).                                          \n")
+cat("    Sciences, 70, 673-675 (1981).                                          \n\n")
 cat(" 3. McCulloch CE. Tests for equality of variances with paired data.        \n")
 cat("    Communications in Statistics-Theory and Methods, 16, 1377-1391 (1987).  \n")
 cat("--------------------------------------------------------------------------\n")
-cat("\n") 
-cat("\n")
 cat("\n")
 
-cat("Point and Interval Estimation of Inter- and Intra-subject Variability  \n")
+cat(" Point and Interval Estimation of Inter- and Intra-subject Variability  \n")
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
 outputPoint<-data.frame(Parameter=c("lnCmax_ss_intra","lnCmax_ss_inter","lnCmax_ss_intraclass","lnCmax_ss_prob",
@@ -1290,37 +1312,35 @@ outputPoint<-data.frame(Parameter=c("lnCmax_intra","lnCmax_inter","lnCmax_intrac
 show(outputPoint) 
 cat("\n")
 cat("-------------------------------------------------\n")
-cat("intra: intra-subject variability\n")
-cat("inter: inter-subject variability\n")
-cat("intraclass: intraclass correlation\n")
-cat("prob: the probability for obtaining a negative estimate of inter-subject\n") 
-cat("      variability\n")
-cat("CI95: 95% confidence interval \n")
+cat(" intra: intra-subject variability\n")
+cat(" inter: inter-subject variability\n")
+cat(" intraclass: intraclass correlation\n")
+cat(" prob: the probability for obtaining a negative estimate of inter-subject\n") 
+cat("       variability\n")
+cat(" CI95: 95% confidence interval \n")
 cat("-------------------------------------------------\n")
-cat("**Interpretation:\n")
-cat("1. Prior information of inter- and intra- subject variabilities can be used   \n")
-cat("   for sample size determination.                                            \n")
-cat("2. Intraclass correlation shows the precision of intra-subject variability.\n")
-cat("   A negative estimate indicates that inter- and intra- variability on the   \n")
-cat("   subjects are negatively correlated.                                       \n")
-cat("3. Searle(1971) provided a formula for calculation of the probability for  \n")
-cat("   obtaining a negative estimate of inter-subject variability. In addition,   \n")
-cat("   a negative estimate may indicate that the general model is incorrect or   \n")
-cat("   sample size is too small.  Thus, prob provides the probability for      \n")
-cat("   obtaining a negative estimate.  If P value is less than 0.05, the chance  \n")                                
-cat("   of obtaining a negative estimate is negligible.                          \n")
+cat(" **Interpretation:\n")
+cat(" 1. Prior information of inter- and intra-subject variabilities can be used   \n")
+cat("    for sample size determination.                                            \n")
+cat(" 2. Intraclass correlation shows the precision of intrasubject variability.\n")
+cat("    A negative estimate indicates that inter- and intra-variability on the   \n")
+cat("    subjects are negatively correlated.                                       \n")
+cat(" 3. Searle(1971) provided a formula for calculation of the probability for  \n")
+cat("    obtaining a negative estimate of inter-subject variability. In addition,   \n")
+cat("    a negative estimate may indicate that the general model is incorrect or   \n")
+cat("    sample size is too small.  Thus, prob provides the probability for      \n")
+cat("    obtaining a negative estimate.  If P value is less than 0.05, the chance  \n")                                
+cat("    of obtaining a negative estimate is negligible.                          \n")
 cat("\n")
 cat("**Ref.:\n")
 cat(" 1. Chow SC and Liu JP. Design and Analysis of Bioavailability-            \n")
-cat("    Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).  \n")
+cat("    Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).  \n\n")
 cat(" 2. Searle SR. Linear Models. John Wiley & Sons, New York (1971).          \n")
 cat(" 3. Snedecor GW and Cochran WG. Statistical Methods. 7th ed.,  Iowa State  \n")
-cat("    University Press, Ames, IA (1980).                                     \n")
+cat("    University Press, Ames, IA (1980).                                     \n\n")
 cat(" 4. Hocking RP. The Analysis of Linear Models. Brooks/Cole, Monterey, CA   \n")
 cat("    (1985).                                                                \n")
 cat("-------------------------------------------------------------------------\n") 
-cat("\n")
-cat("\n")
 cat("\n")
 ##Quantiles
 lnCmax_1deciles_intra <- quantile(IntraInterlnCmax00$Stud_Intra, probs=1, type=1)
@@ -1398,7 +1418,7 @@ lnAUC0INF_0.05deciles_inter <- quantile(IntraInterlnAUC0INF00$Stud_Inter, probs=
 lnAUC0INF_0.01deciles_inter <- quantile(IntraInterlnAUC0INF00$Stud_Inter, probs=0.01, type=1)
 lnAUC0INF_0deciles_inter <- quantile(IntraInterlnAUC0INF00$Stud_Inter, probs=0, type=1)
 }
-cat("Quantiles for Boxplots (intrasubj)  \n")
+cat(" Quantiles for Boxplots (intrasubj)  \n")
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
 Quantiles_intra<-data.frame(Quantile=c("Max 100%","99%","95%","90%","Q3 75%","Median 50%",
@@ -1423,9 +1443,7 @@ Quantiles_intra<-data.frame(Quantile=c("Max 100%","99%","95%","90%","Q3 75%","Me
 show(Quantiles_intra) 
 cat("-------------------------------------------------------------------------\n")
 cat("\n")
-cat("\n")
-cat("\n")
-cat("Quantiles for Boxplots (intersubj)  \n")
+cat(" Quantiles for Boxplots (intersubj)  \n")
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
 Quantiles_inter<-data.frame(Quantile=c("Max 100%","99%","95%","90%","Q3 75%","Median 50%",
@@ -1449,9 +1467,7 @@ Quantiles_inter<-data.frame(Quantile=c("Max 100%","99%","95%","90%","Q3 75%","Me
 show(Quantiles_inter)
 cat("-------------------------------------------------------------------------\n")
 cat("\n")
-cat("\n")
-cat("\n")
-cat("Cook's distance  \n")
+cat(" Cook's distance  \n")
 cat("----------------------------------------------------\n")
 L<-length(TotalData$subj)
  
@@ -1466,11 +1482,11 @@ if(multiple){
  D2<-subset(cooks, cooks$lnCmax_ss > 1)
  D3<-subset(cooks, cooks$lnCmax_ss >(4/L))
  D1_lnCmax_ss<-data.frame(subj=D1$subj, lnCmax_ss=D1$lnCmax_ss)
- colnames(D1_lnCmax_ss)<- c("subj","  lnCmax_ss") 
+ colnames(D1_lnCmax_ss)<- c("Subj","  lnCmax_ss") 
  D2_lnCmax_ss<-data.frame(subj=D2$subj, lnCmax_ss=D2$lnCmax_ss)
- colnames(D2_lnCmax_ss)<- c("subj","  lnCmax_ss")  
+ colnames(D2_lnCmax_ss)<- c("Subj","  lnCmax_ss")  
  D3_lnCmax_ss<-data.frame(subj=D3$subj, lnCmax_ss=D3$lnCmax_ss) 
- colnames(D3_lnCmax_ss)<- c("subj","  lnCmax_ss") 
+ colnames(D3_lnCmax_ss)<- c("Subj","  lnCmax_ss") 
  
  D4<-subset(cooks, cooks$lnAUCtau_ss >(4/(L-4-1)))
  D5<-subset(cooks, cooks$lnAUCtau_ss > 1)
@@ -1480,13 +1496,13 @@ if(multiple){
  D6_lnAUCtau_ss<-data.frame(subj=D6$subj, lnAUCtau_ss=D6$lnAUCtau_ss) 
 cat("**Criterion: D > 1\n") 
  if(length(D2$subj)== 0){
-   cat("lnCmax_ss: no outlier detected.\n") 
+   cat(" lnCmax_ss: no outlier detected.\n") 
    }else{
    show(D2_lnCmax_ss)
    cat("\n")
    } 
   if(length(D5$subj)== 0){
-   cat("lnAUC(tau)ss: no outlier detected.\n") 
+   cat(" lnAUC(tau)ss: no outlier detected.\n") 
    cat("\n")
    }else{
    show(D5_lnAUCtau_ss)
@@ -1494,13 +1510,13 @@ cat("**Criterion: D > 1\n")
    } 
 cat("**Criterion: D > 4/(n-k-1) =",(4/(L-5)),"\n")
   if(length(D1$subj)== 0){
-   cat("lnCmax_ss: no outlier detected\n") 
+   cat(" lnCmax_ss: no outlier detected\n") 
    }else{
    show(D1_lnCmax_ss)
    cat("\n")
    } 
   if(length(D4$subj)== 0){
-   cat("lnAUC(tau)ss: no outlier detected.\n") 
+   cat(" lnAUC(tau)ss: no outlier detected.\n") 
    cat("\n")
    }else{
    show(D4_lnAUCtau_ss)
@@ -1508,13 +1524,13 @@ cat("**Criterion: D > 4/(n-k-1) =",(4/(L-5)),"\n")
    } 
 cat("**Criterion: D > (4/n) =",(4/L),"\n") 
  if(length(D3$subj)== 0){
-   cat("lnCmax_ss: no outlier detected\n") 
+   cat(" lnCmax_ss: no outlier detected\n") 
    }else{
    show(D3_lnCmax_ss)
    cat("\n")
    } 
   if(length(D6$subj)== 0){
-   cat("lnAUC(tau)ss: no outlier detected.\n") 
+   cat(" lnAUC(tau)ss: no outlier detected.\n") 
    cat("\n")
    }else{
    show(D6_lnAUCtau_ss)
@@ -1552,19 +1568,19 @@ cat("**Criterion: D > (4/n) =",(4/L),"\n")
  
 cat("**Criterion: D > 1\n")
  if(length(D2$subj)== 0){
-   cat("lnCmax: no outlier detected.\n")
+   cat(" lnCmax: no outlier detected.\n")
    }else{
    show(D2_lnCmax)
    cat("\n")
    }
   if(length(D5$subj)== 0){
-   cat("lnAUC0t: no outlier detected.\n")
+   cat(" lnAUC0t: no outlier detected.\n")
    }else{
    show(D5_lnAUC0t)
    cat("\n")
    }
    if(length(D8$subj)== 0){
-   cat("lnAUC0INF: no outlier detected.\n")
+   cat(" lnAUC0INF: no outlier detected.\n")
    cat("\n")
    }else{
    show(D8_lnAUC0INF)
@@ -1572,19 +1588,19 @@ cat("**Criterion: D > 1\n")
    }  
 cat("**Criterion: D > 4/(n-k-1) =",(4/(L-5)),"\n")
   if(length(D1$subj)== 0){
-   cat("lnCmax: no outlier detected.\n")
+   cat(" lnCmax: no outlier detected.\n")
    }else{
    show(D1_lnCmax)
    cat("\n")
    }
   if(length(D4$subj)== 0){
-   cat("lnAUC0t: no outlier detected.\n")
+   cat(" lnAUC0t: no outlier detected.\n")
    }else{
    show(D4_lnAUC0t)
    cat("\n")
    }
   if(length(D7$subj)== 0){
-   cat("lnAUC0INF: no outlier detected.\n")
+   cat(" lnAUC0INF: no outlier detected.\n")
    cat("\n")
    }else{
    show(D7_lnAUC0INF)
@@ -1592,38 +1608,41 @@ cat("**Criterion: D > 4/(n-k-1) =",(4/(L-5)),"\n")
    } 
 cat("**Criterion: D > 4/n =",(4/L),"\n")
  if(length(D3$subj)== 0){
-   cat("lnCmax: no outlier detected.\n")
+   cat(" lnCmax: no outlier detected.\n")
    }else{
    show(D3_lnCmax)
    cat("\n")
    }
   if(length(D6$subj)== 0){
-   cat("lnAUC0t: no outlier detected.\n")
+   cat(" lnAUC0t: no outlier detected.\n")
    cat("\n")
    }else{
    show(D6_lnAUC0t)
    cat("\n")
   }
    if(length(D9$subj)== 0){
-   cat("lnAUC0INF: no outlier detected.\n")
+   cat(" lnAUC0INF: no outlier detected.\n")
    cat("\n")
    }else{
    show(D9_lnAUC0INF)
    cat("\n")
    }  
 }
-cat("-------------------------------------------------\n")
+cat("--------------------------------------------------------------------------\n")
 cat("**Interpretation:\n")
-cat("  Cook's distance is used to detect outliers and is a measure of the \n")
-cat("simultaneous change in the parameter estimates when an observation is \n")
-cat("deleted from analysis. Fox(1991) suggested a cut-off for detecting         \n")
-cat("influential values of D greater than 4/(n-k-1), where n was sample size    \n")
-cat("and k was the number of independents. Others may use D > 1 as the criterion\n")
-cat("for a serious outlier problem, while using D > (4/n) the criterion for a   \n")
-cat("possible outlier problem.                                                  \n")
-cat("\n")
+cat(" Cook's distance is used to detect outliers and is a measure of the \n")
+cat(" simultaneous change in the parameter estimates when an observation is \n")
+cat(" deleted from analysis. Fox(1991) suggested a cut-off for detecting         \n")
+cat(" influential values of D greater than 4/(n-k-1), where n was sample size    \n")
+cat(" and k was the number of independents. Others may use D > 1 as the criterion\n")
+cat(" for a serious outlier problem, while using D > (4/n) the criterion for a   \n")
+cat(" possible outlier problem.                                                \n\n")
 cat("**Ref: Fox J. Regression Diagnostics. Thousand Oak, CA: Sage Publications.\n")
 cat("      (1991).  \n")
 cat("--------------------------------------------------------------------------\n")
+cat("\n")
+sink()
+close(zzoda)
+}
 } 
 

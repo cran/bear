@@ -8,19 +8,27 @@ BANOVAoutput<-function(RefData, TestData,TotalData, L1, L2,
        IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
        IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
        IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22,
-       lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2, multiple=FALSE)
+       lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,
+       lnAUC0INF_theta2, multiple=FALSE)
 {
+
+## to avoid "not visible binding..." error message with codetool
+anova_output_xfile<- anova_output_xfile
+ODplot_output_xfile<- ODplot_output_xfile
+ODAnalysis<-ODAnalysis
+##
+
 filepath<-getwd()
 cat("\n")
 cat("****************************************************************************\n")
 cat(" The following output files can be found at the directory of                \n")
 cat(" ",filepath,".                                                              \n")
 cat("----------------------------------------------------------------------------\n")
-cat(" ANOVA_stat.txt                                                             \n")
+cat(" xxx_anova.txt                                                              \n")
 if(multiple){
 cat("    -->ANOVA: Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss                 \n")
-cat("    -->90%CI: lnCmax_ss, lnAUC(tau)ss                                      \n")
-cat(" ODplots.pdf                                                               \n")
+cat("    -->90%CI: lnCmax_ss, lnAUC(tau)ss                                    \n\n")
+cat(" odplots_xxxx.pdf (if needed)                                              \n")
 cat("    -->Normal Probability Plot of lnCmax_ss, lnAUC(tau)ss(intrasubj)       \n")
 cat("    -->Normal Probability Plot of lnCmax_ss, lnAUC(tau)ss(intersubj)       \n")
 cat("    -->lnCmax_ss expected value vs studentized residuals(intrasubj)        \n") 
@@ -33,8 +41,8 @@ cat("    -->Cook's distance plots: lnCmax_ss, lnAUC(tau)ss                     \
 }
 else{
 cat("    -->ANOVA: Cmax, AUC0t, AUC0inf, ln(Cmax), ln(AUC0t), ln(AUC0inf)        \n")
-cat("    -->90%CI: ln(Cmax), ln(AUC0t), and ln(AUC0inf)                          \n")
-cat(" ODplots.pdf                                                                \n")
+cat("    -->90%CI: ln(Cmax), ln(AUC0t), and ln(AUC0inf)                        \n\n")
+cat(" xxx_odplots.pdf (if any)                                                   \n")
 cat("    -->Normal Probability Plot of ln(Cmax), ln(AUC0t), ln(AUC0inf)(intrasubj)\n")
 cat("    -->Normal Probability Plot of ln(Cmax), ln(AUC0t), ln(AUC0inf)(intersubj)\n")
 cat("    -->lnCmax(expected value) vs studentized residuals(intrasubj)           \n") 
@@ -68,10 +76,9 @@ rseq<-as.data.frame(sapply(TotalData1, tapply, TotalData1$seq, mean))
 rprd<-as.data.frame(sapply(TotalData1, tapply, TotalData1$prd, mean))
 
 #ANOVA.txt
-zz <- file("ANOVA_stat.txt", open="wt")
+zz <- file(anova_output_xfile, open="wt")
 sink(zz)
 description_version()
-cat("\n")
 cat("  List of Input Data Obtained from NCA         \n")
 cat("-----------------------------------------------\n")
 if(multiple){
@@ -84,8 +91,7 @@ else{
 show(TotalData1)
 }
 
-cat("\n")
-cat("\n")
+cat("\n\n")
 cat("  Class Level Information                  \n")
 cat("-------------------------------------------------------\n")
 cat("  Class       Levels      Values\n")  
@@ -97,17 +103,14 @@ cat("-----------\n")
 cat("DRUG 1: the Ref. product; DRUG 2: the Test product\n")
 cat("SEQUENCE 1:  Ref. -> Test, and SEQUENCE 2: Test -> Ref.\n")
 cat("-------------------------------------------------------\n")
-cat("\n")
-cat("\n")
-cat("\n")
+cat("\n\n")
 cat(" Means                  \n")
 cat("------------------------------------------------\n")
 if(multiple){
 seq_mean<-data.frame(SEQUENCE=rseq$seq,Cmax=round(rseq$Cmax, digits=2), AUC0t=round(rseq$AUC0t,digits=2))
 colnames(seq_mean)<- c("SEQUENCE","Cmax_ss","AUCtau_ss" )
 show(seq_mean)
-cat("\n")
-cat("\n")
+cat("\n\n")
 subj_mean<-data.frame(SUBJECT=as.numeric(levels(values$subj)),SEQUENCE=rsubj$seq,Cmax=round(rsubj$Cmax,digits=2), 
                       AUC0t=round(rsubj$AUC0t,digits=2))                      
 colnames(subj_mean)<- c("SUBJECT","SEQUENCE","Cmax_ss","AUCtau_ss")
@@ -122,7 +125,6 @@ cat("\n")
 drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=round(rdrug$Cmax,digits=2), AUC0t=round(rdrug$AUC0t,digits=2))                      
 colnames(drug_mean)<- c("DRUG","Cmax_ss","AUCtau_ss" )
 show(drug_mean)
-cat("\n")
 cat("\n")
 cat("\n")
 MultipleBANOVA(RefData, TestData, TotalData, L1, L2,
@@ -149,7 +151,6 @@ drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=round(rdrug$Cmax,digits=2), AUC0t=rou
 show(drug_mean)
 cat("\n")
 cat("\n")
-cat("\n")
 BANOVA(RefData, TestData,TotalData, L1, L2,
        lnCmax_MSinter, lnCmax_MSintra, lnCmax_SSinter, lnCmax_SSintra,
        lnAUC0t_MSinter, lnAUC0t_MSintra, lnAUC0t_SSinter, lnAUC0t_SSintra,
@@ -159,20 +160,28 @@ BANOVA(RefData, TestData,TotalData, L1, L2,
 }
 cat("\n")
 sink()
+close(zz)
 
 options(warn=-1)
-pdf("ODplots.pdf", paper = "a4", bg = "white")
+##
+## close OD analysis by default
+##
+ODAnalysis<-ODAnalysis
+##
+if(ODAnalysis){
+pdf(ODplot_output_xfile, paper = "a4", bg = "white")
 description_plot()
 if(multiple){
 MultipleBANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,
                    IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
                    IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,TotalData)
-}
+           }
 else{
 BANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00,
            IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
            IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
            IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22,TotalData)
-}
-dev.off()
+     }
+    dev.off()
+  }
 }

@@ -13,7 +13,7 @@ NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
                    cat("*****************************************\n")
                    ans<-readline()
                       if (ans == "y" | ans == "Y"){
-                      save(TotalData,file=Totalname)
+                      saveRDS(TotalData,Totalname)
                       cat("\n")
                               }
                       else{
@@ -35,10 +35,10 @@ NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
                          }
                         }
                       }
-              save(TotalData,file=Totalname)
+              saveRDS(TotalData,Totalname)
                 }
                 else{
-                 save(TotalData,file=Totalname)
+                 saveRDS(TotalData,Totalname)
                   }
            if(parallel){
               if(multiple){

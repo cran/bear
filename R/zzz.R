@@ -1,23 +1,25 @@
-.First.lib <- function(...) {
+# change the following line since R v.2.15.3 as .onAttach [2013/3/4 AM 06:27:15]
+# .First.lib <- function(...) {  <-- should not use again.
+
+.onAttach <- function(lib, pkg)  {
 
 # echo output to screen
-cat("\n")
-cat("\n")
-cat("***********************************************************************\n")
-cat("                                                                     \n")
-cat("                                  bear                               \n")
-cat("                                v 2.5.3                              \n")   
-cat("                    http://pkpd.kmu.edu.tw/bear                      \n")
-cat("                                                                     \n")
-cat(" This package is designed to analyze average bioequivalence (ABE)    \n")
-cat(" (NCA -> ANOVA) or bioavailability (NCA only) data, with study       \n")
-cat(" design of a standard RT/TR 2-treatment, 2-sequence, and 2-period,   \n")
-cat(" crossover design (2x2x2), or a replicate ABE study including        \n")
-cat(" 2-treatment, 2-sequence, with more than 2 periods (i.e., 2x2x3/     \n")
-cat(" 2x2x4/.../2x2x6), or a parallel ABE study (2x2x1). Bear can be      \n")
-cat(" used for SINGLE-DOSE or MULTIPLE-DOSE BE STUDY.                     \n")
-cat("                                                                     \n")
-cat("                   Please type 'go()' to get started.                \n")
-cat("                                                                     \n")
-cat("***********************************************************************\n")
+
+packageStartupMessage("
+..........................................
+
+   .b                  
+   88                 
+   888oooo    .ooooo.   eoooo.  oooood8b
+   d88    88 d8(   )8b      )8b  888  8)
+   888    88 888ooo88b o8o89888  888
+   888    88 888       88(   88  888
+     o8ooo8   88bod8P   doooo8Q d888b 
+                          
+   bear (BE/BA for R)
+                                                                   
+   Please type 'go()' to run; or
+   'about.bear()' to read more.                
+
+..........................................")
 }

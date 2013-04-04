@@ -45,11 +45,12 @@ if(multiple){
         }
  else {
     if (pick == 5){
+        graphics.off()
         go()
          }
   else {
     if (pick == 6){
-        cat("\nThank you for using bear!  Bye now. \n\n")
+        cat("\n  Thank you for using bear!  Bye now. \n\n")
         graphics.off()}
          }     
        }

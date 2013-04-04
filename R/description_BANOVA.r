@@ -1,4 +1,5 @@
 description_BANOVA<-function(){
+cat("\n\n")
 cat("****************************************************************************\n")
 cat("               Statistical analysis (ANOVA(lm), 90%CI...)                   \n")
 cat("--------------------------------------------------------------------------  \n")
@@ -9,5 +10,6 @@ cat(" be applied to obtain estimates for the adjusted differences between       
 cat(" treatment means and the standard error associated with these differences.  \n")
 cat(" Log-transformed BA measures will also be analyzed.                         \n")
 cat("****************************************************************************\n")
-cat("\n")
+cat("\n\n")
+readline(" Press Enter to continue...")
 }

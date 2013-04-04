@@ -26,7 +26,8 @@ file.menu <- c("NCA --> Statistical analysis for 2x2x2 crossover study",
     else {
     if (pick == 4){
        cat("\n")
-      cat("\nThank you for using bear!  Bye now. \n")
+      cat("\n    Thank you for using bear!  Bye now. \n")
+      graphics.off()
          }   
         }
       }
@@ -62,7 +63,8 @@ else{
     else {
     if (pick == 5){
       cat("\n")
-      cat("\nThank you for using bear!  Bye now. \n")}
+      cat("\n    Thank you for using bear!  Bye now. \n")}
+      graphics.off()
        }
       }
     }

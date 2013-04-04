@@ -1,4 +1,6 @@
-library(plotrix) 
+## this function is for outlier detection plotting. nothing to do with anova... --YJ
+## library(plotrix)   <-- no need for this line! --YJ
+##
 BANOVAplot<-function(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00,
                      IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
                      IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,

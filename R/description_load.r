@@ -1,8 +1,7 @@
 description_load<-function(){
     cat("\n\n")
     filepath<-getwd()
-    cat("Bear will load your data file from the directory of \n")
-    cat("",filepath,".\n")
-    cat("\n")
-    cat("\nEnter the file name (** Please NO file extention! **):\n")
+    cat("bear will read and load your data file (*.Rdata) from\n")
+    cat("",filepath,"by default.\n\n")
+    readline("  Press Enter to select file...")
 }

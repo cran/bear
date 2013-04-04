@@ -1,8 +1,16 @@
-##demo for NCA
+##
+## will be called by NCAmenu(); demo for NCA
+##
 demomenu<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
-  file.menu <- c("lambda_z est. from 2-4 data points",
+Demo<-Demo  ## set Demo as Global see go.r
+Demo<<-TRUE
+Replicateddata<-NULL
+MultipleParadata<-NULL
+Paralleldata<-NULL
+
+  file.menu <- c("lambda_z est. from 2-6 data points",
                  "lambda_z est. with adjusted R sq. (ARS)",
                  "lambda_z est. with Akaike information criterion (AIC)",
                  "lambda_z est. with Two-Times-Tmax method (TTT)",
@@ -15,7 +23,9 @@ cat("\n")
     description_NCAinput()
     
  if(replicated){
-    data(Replicateddata)
+    filelocxx <- system.file("extdata", "Replicateddata.rda", package="bear")
+    load(filelocxx)  ## because it is a *.rda data file
+    ## saveRDS(Replicateddata,"Replicateddata_demo.RData")
 
     with(entertitle.demo(), {
      description_RepNCAinput()  
@@ -68,6 +78,7 @@ SingleTdata<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
 SingleTdata1 <- na.omit(SingleTdata1)
+
 Totalplot<- rbind(SingleRdata,SingleTdata)              
       
    if (pick == 1){
@@ -118,7 +129,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -132,7 +144,10 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
  else{
  if(parallel){
      if(multiple){
-     data(MultipleParadata)
+     filelocxx <- system.file("extdata", "MultipleParadata.rda", package="bear")
+     load(filelocxx)  ## because it is a *.rda data file
+     ## saveRDS(MultipleParadata,"MultipleParadata_demo.RData")
+     
      with(Multiplentertitle.demo(), {
      description_ParaNCAinput()  
       Singledata<-split(MultipleParadata, list(MultipleParadata$drug))
@@ -165,7 +180,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
         }
     else {
     if (pick == 2){
-      show(SingleRdata)
+        show(SingleRdata)
         show(SingleTdata)
         cat("\n")
        MultipleParaARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
@@ -206,7 +221,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -218,7 +234,10 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
   })     
  }
      else{
-     data(Paralleldata)
+     filelocxx <- system.file("extdata", "Paralleldata.rda", package="bear")
+     load(filelocxx)  ## because it is a *.rda data file
+     ## saveRDS(Paralleldata,"Paralleldata_demo.RData")
+     
      with(entertitle.demo(), {
      description_ParaNCAinput()  
       Singledata<-split(Paralleldata, list(Paralleldata$drug))
@@ -288,7 +307,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -302,7 +322,9 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
 } 
 else{
   if(multiple){
-     data(Multipledata)
+     filelocxx <- system.file("extdata", "Multipledata.rda", package="bear")
+     load(filelocxx)
+     
      with(Multiplentertitle.demo(), {
      description_NCAinput()  
       TotalSingledata<-Multipledata
@@ -376,7 +398,8 @@ else{
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -388,7 +411,8 @@ else{
    })
   }
   else{   
-     data(TotalSingledata)
+     filelocxx <- system.file("extdata", "TotalSingledata.rda", package="bear")
+     load(filelocxx)
 
      with(entertitle.demo(), {
      description_NCAinput()  
@@ -459,7 +483,8 @@ else{
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }

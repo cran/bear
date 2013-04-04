@@ -17,8 +17,8 @@ pick <- menu(file.menu, title = " << Separator and decimal formats >> ")
 if (pick == 1){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ## TotalSingledata.file <-readline()
+        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
          if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -30,7 +30,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
           }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
+        ## TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -61,8 +62,8 @@ if (pick == 1){
   if (pick == 2){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##  TotalSingledata.file <-readline()
+        ##  TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -74,7 +75,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
          }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
+        ## TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -105,8 +107,8 @@ if (pick == 1){
   if (pick == 3){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##  TotalSingledata.file <-readline()
+        ##  TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -118,7 +120,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
         }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
+        ## TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -149,8 +152,8 @@ if (pick == 1){
   if (pick == 4){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##  TotalSingledata.file <-readline()
+        ##  TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -162,7 +165,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
         }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
+        ##  TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -193,8 +197,8 @@ if (pick == 1){
   if (pick == 5){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##   TotalSingledata.file <-readline()
+        ##   TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -206,7 +210,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
         }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
+        ##   TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -237,8 +242,8 @@ if (pick == 1){
   if (pick == 6){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##  TotalSingledata.file <-readline()
+        ##  TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -250,7 +255,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
         }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=",")
+        ##  TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=",")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -281,8 +287,8 @@ if (pick == 1){
   if (pick == 7){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##   TotalSingledata.file <-readline()
+        ##   TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -294,7 +300,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
         }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
+        ##   TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -325,8 +332,8 @@ if (pick == 1){
   if (pick == 8){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##   TotalSingledata.file <-readline()
+        ##   TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -338,7 +345,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
         }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
+        ##   TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")
@@ -369,8 +377,8 @@ if (pick == 1){
   if (pick == 9){
   cat("\n\n")
         description_import()
-        TotalSingledata.file <-readline()
-        TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
+        ##  TotalSingledata.file <-readline()
+        ##  TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
         if(parallel){
          cnames<-c("subj","drug","time", "conc")
          }
@@ -382,7 +390,8 @@ if (pick == 1){
               cnames<-c("subj", "seq","prd", "time", "conc")
             }    
         }
-        TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
+        ##  TotalSingledata<-read.csv(TotalSingledata.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
+        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
         TotalSingledata<-edit(TotalSingledata)
         TotalSingledata<-na.omit(TotalSingledata)
         cat("\n\n")

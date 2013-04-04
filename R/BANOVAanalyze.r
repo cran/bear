@@ -1,7 +1,9 @@
 #Generalized Linear Models (GLM)
 BANOVAanalyze<-function(TotalData, multiple=FALSE, separateWindows=TRUE)
 {
- 
+## ODA is off by default
+ODAnalysis<-ODAnalysis
+##
 description_BANOVA()
 if(multiple){
   TotalData<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
@@ -13,7 +15,7 @@ if(multiple){
   cat("(or press Enter to use default value: 80.000 )\n")
    Lm<-readline()
    if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
-   lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
+   lnCmax_theta1 <- Lm/100        # theta1: lower acceptance limit
    lnCmax_theta2 <- 1/lnCmax_theta1
 
   cat("\n")
@@ -184,11 +186,14 @@ MultipleBANOVAoutput(RefData, TestData, TotalData,  L1, L2,
        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
 ##show in console
 graphics.off()
+
+if(ODAnalysis){
 windows(record = TRUE)
 .SavedPlots<-NULL
 MultipleBANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,
                    IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
                    IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22, TotalData)
+              }
 
 }
 else{
@@ -257,13 +262,16 @@ BANOVAoutput(RefData, TestData, TotalData,  L1, L2,
        IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
        IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22,
        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
-##show in console
+## show in console
 graphics.off()
+##  close ODA by default
+if(ODAnalysis){
 windows(record = TRUE)
 .SavedPlots<-NULL
 BANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00, 
            IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
            IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
            IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22, TotalData)
-  }
+      }
+   }
 }

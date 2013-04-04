@@ -103,7 +103,7 @@ TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
      TotalData<- na.omit(TotalData)
      show(TotalData)
      cat("\n")
-     cat("Enter the file name:\n")
+     cat("Enter the file name to save (no extension!):\n")
         Totalname <-readline()
         Totalname<-paste(Totalname,".RData",sep="")
            if(file.exists(Totalname)){
@@ -115,7 +115,7 @@ TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
            ans<-readline()
              if (ans == "y" | ans == "Y")
                 {
-                save(TotalData, file=Totalname)
+                saveRDS(TotalData, Totalname)
                 cat("\n")
                 }
                 else{
@@ -138,10 +138,10 @@ TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
                            }
                     }
              }
-              save(TotalData,file=Totalname)
+              saveRDS(TotalData,Totalname)
            }
         else{
-           save(TotalData,file=Totalname)
+           saveRDS(TotalData,Totalname)
           }
        if(parallel){
          if(multiple){
@@ -266,9 +266,9 @@ ParaMIXcsv()
 else {
   if (pick == 3){
      description_load() 
-     Totalname <-readline()
-     Totalname<-paste(Totalname,".RData",sep="")
-     load(Totalname)
+     ## Totalname <-readline()
+     ## Totalname<-paste(Totalname,".RData",sep="")
+     TotalData<-readRDS(file.choose())
      TotalData<-edit(TotalData)
      TotalData<- na.omit(TotalData)
      if(parallel){
@@ -290,7 +290,7 @@ else {
      } 
      cat("\n\n")
      show(TotalData)
-     save(TotalData,file=Totalname)
+     saveRDS(TotalData,Totalname)
      cat("\n\n")
      if(parallel){
       if(multiple){
@@ -333,8 +333,9 @@ else {
   else {
   if (pick == 5){
       cat("\n")
-      cat("\nThank you for using bear!  Bye now. \n\n")
-                }
+      cat("\n  Thank you for using bear!  Bye now. \n\n")
+      graphics.off()
+        }
      }
     }
    }

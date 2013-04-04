@@ -44,5 +44,6 @@ cat(" column#4: sampling time                                                   
 cat(" column#5: drug plasma/serum/blood concentration (conc)                    \n")
  }
 } 
-cat("****************************************************************************\n")
+cat("****************************************************************************\n\n")
+readline("  Press Enter to continue...")
 }

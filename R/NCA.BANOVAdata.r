@@ -30,7 +30,7 @@ cat("\n")
      TotalSingledata<- na.omit(TotalSingledata)
      show(TotalSingledata)
      cat("\n")
-       cat("Enter the file name:\n")
+       cat("Enter the file name (no extension!):\n")
         TotalSinglename <-readline()
         TotalSinglename<-paste(TotalSinglename,".RData",sep="")
            if(file.exists(TotalSinglename)){
@@ -42,11 +42,11 @@ cat("\n")
            ans<-readline()
              if (ans == "y" | ans == "Y")
                 {
-                save(TotalSingledata, file=TotalSinglename)
+                saveRDS(TotalSingledata, TotalSinglename)
                 cat("\n")
                 }
                 else{
-                cat("\nEnter file name:\n")
+                cat("\nEnter file name (no extension!):\n")
                 TotalSinglename <-readline()
                 TotalSinglename<-paste(TotalSinglename,".RData",sep="")
                 repeat{
@@ -65,10 +65,10 @@ cat("\n")
                            }
                     }
              }
-              save(TotalSingledata,file=TotalSinglename)
+              saveRDS(TotalSingledata,TotalSinglename)
            }
         else{
-           save(TotalSingledata,file=TotalSinglename)
+           saveRDS(TotalSingledata,TotalSinglename)
           }
         if(parallel){
             if(multiple){
@@ -124,9 +124,10 @@ else {
   if (pick == 3){
      cat("\n")
      description_load()
-     TotalSinglename <-readline()
-     TotalSinglename<-paste(TotalSinglename,".RData",sep="")
-     load(TotalSinglename)
+##     TotalSinglename <-readline() 
+##     TotalSinglename<-paste(TotalSinglename,".RData",sep="")
+##     load(TotalSinglename)
+     TotalSingledata<-readRDS(file.choose())
      TotalSingledata<-edit(TotalSingledata)
      TotalSingledata<- na.omit(TotalSingledata)
      if(parallel){
@@ -142,7 +143,6 @@ else {
        }
      cat("\n\n")
      show(TotalSingledata)
-     save(TotalSingledata,file=TotalSinglename)
      cat("\n\n")
         if(parallel){
             if(multiple){
@@ -194,7 +194,8 @@ else {
         }  
   else {
   if (pick == 5){
-      cat("\nThank you for using bear!  Bye now. \n\n")
+      cat("\n  Thank you for using bear!  Bye now. \n\n")
+      graphics.off()
                 }
      }
     }

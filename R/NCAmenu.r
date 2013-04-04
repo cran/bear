@@ -79,7 +79,9 @@ else{
     else {
     if (pick == 4){
         cat("\n")
-      cat("\nThank you for using bear!  Bye now. \n")}
+        cat("\n  Thank you for using bear!  Bye now. \n")
+        graphics.off()
+        }
        }      
       }
     }

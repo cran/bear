@@ -1,9 +1,18 @@
-##TTT method
-options(warn=-1)
+## TTT method
+
 TTT<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0,  
                separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE,replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)
 {
+options(warn=-1)
 description_TTT()
+
+### plots of regression line for lambda_z_estimation
+lambda_z_regression_lines<-lambda_z_regression_lines
+###
+windows(record=TRUE)
+par(las=1, ask=TRUE)
+pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
+
 #split dataframe into sub-dataframe by subject for reference data
   if(replicated){
        R.split<-split(SingleRdata, list(SingleRdata$code))
@@ -64,6 +73,71 @@ description_TTT()
           ke[j]<-(-coef(Lm1)[2])
           R_sq[j]<-summary(Lm1)$r.sq
           AR_sq[j]<-summary(Lm1)$adj.r.squared
+###
+### now see if we can plot this --YJ
+###
+          if(multiple){                   ### for multiple-dose(with '-TlastD'); original whole dataset
+          xx1<-R.split[[j]]$time-TlastD
+          xxx1<-(R.split[[j]][R.split[[j]]$time>=(R.split[[j]]$time[xr]*2),])$time-TlastD}  
+          else{                           ### for single-dose; original whole dataset
+          xx1<-R.split[[j]]$time
+          xxx1<-(R.split[[j]][R.split[[j]]$time>=(R.split[[j]]$time[xr]*2),])$time  ### selected data points for regression line
+          }         
+          yy1<-R.split[[j]]$conc
+          yyy1<-(R.split[[j]][R.split[[j]]$time>=(R.split[[j]]$time[xr]*2),])$conc
+          main<-paste(c("[TTT] Subj. Ref#_", R.split[[j]]$subj[1]),collapse=" ")
+          if(multiple){
+             plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 1.25*max(xx1)), ylim=range(1, 10.*max(yy1)),
+             xlab="Time", ylab= "Conc. (in log10 scale)",     ## log="y" as semilog plot here (YJ)
+             main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
+             lines(xx1,yy1, lty=20)
+             axis(1, pos=1)
+             axis(2, pos=0,las=1)
+         }
+          else{
+             plot(xx1,yy1,log="y", xlim=range(0,1.25*max(xx1)), ylim=range(1,10.*max(yy1)),xlab="Time", ylab= "Conc. (in log10 scale)", main=main,
+             cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
+             lines(xx1,yy1, lty=20)
+             axis(1,tcl=-.2,labels=TRUE)
+          }
+          ### points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)  ## this works!  -YJ
+          ### lines(xx1,yy1, lty=2)    ## this works!  -YJ
+          ### the following line plots the selected points on main graph.
+          points(xxx1,yyy1, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### add selected data points; and work fine.
+          ## add a regression line here
+          LLm<-lm(log10(yyy1)~xxx1)               ## must use log10(yyy1) here for plot(...,log="y",..) is 10-based log scale
+          abline(LLm,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here
+          ### add text here
+          leg_txt<-"log10(Conc.) ="
+          leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[1]],format="f",digits=3),sep=" ")
+          leg_txt<-paste(leg_txt,"+ (",sep=" ")
+          leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[2]],format="f",digits=4),sep="") ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+          leg_txt<-paste(leg_txt,")*Time",sep="")
+          leg_txt<-paste(leg_txt,"; ",sep="")
+          leg_txt<-paste(leg_txt,"Adj. R_sq =",sep="")
+          leg_txt<-paste(leg_txt,formatC(summary(LLm)$adj.r.squared,format="f",digits=4),sep=" ")
+          ## show(leg_txt)
+          ### add legend here
+          ### legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+          legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+          ### here revert between pdf() and graphic device                          ### warning: [min(yy1)/10] must be > or = 1.0 here
+          if(pdf_activate){
+             dev.copy()                ## copy to pdf file 2nd plots to end
+             dev.set(which=x11c)       ## back to graphic device now to continue...
+                          }
+          else{
+             x11c<-dev.cur()                 ## the current graphics device
+             pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
+                  paper="a4")
+             description_plot()              ## bear output logo
+             pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
+             dev.set(which=x11c)             ## back to graphics device...
+             dev.copy()                      ## copy the first plot here
+             dev.set(which=x11c)             ## back to graphics device
+              }
+###
+###  end plotting here...
+### 
            
              auc_ref <-0
              tmax_ref<-0
@@ -197,7 +271,7 @@ AR_melt<-melt(AR_sq)
 
 #split dataframe into sub-dataframe by subject for test data
 if(replicated){
-       T.split<-split(SingleTdata, list(SingleTdata$code))
+      T.split<-split(SingleTdata, list(SingleTdata$code))
          
       subj1<-0
       prd1<-0
@@ -252,6 +326,72 @@ if(replicated){
       ke1[j]<-(-coef(Lm2)[2])
       R_sq1[j]<-summary(Lm2)$r.sq
       AR_sq1[j]<-summary(Lm2)$adj.r.squared
+###
+### now see if we can plot this --YJ
+###
+       if(multiple){                   ### for multiple-dose(with '-TlastD'); original whole dataset
+           xx1<-T.split[[j]]$time-TlastD
+           xxx1<-(T.split[[j]][T.split[[j]]$time>=(T.split[[j]]$time[xt]*2),])$time-TlastD}  
+         else{                           ### for single-dose; original whole dataset
+           xx1<-T.split[[j]]$time
+           xxx1<-(T.split[[j]][T.split[[j]]$time>=(T.split[[j]]$time[xt]*2),])$time  ### selected data points for regression line
+         }         
+           yy1<-T.split[[j]]$conc
+           yyy1<-(T.split[[j]][T.split[[j]]$time>=(T.split[[j]]$time[xt]*2),])$conc
+           main<-paste(c("[TTT] Subj. Test#_", T.split[[j]]$subj[1]),collapse=" ")
+           if(multiple){
+              plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 1.25*max(xx1)), ylim=range(1, 10.*max(yy1)),
+              xlab="Time", ylab= "Conc. (in log10 scale)",                            ### log="y" as semilog plot here (YJ)
+              main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=1,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
+              lines(xx1,yy1, lty=20)
+              axis(1, pos=1)
+              axis(2, pos=0,las=1)
+           }
+           else{
+              plot(xx1,yy1,log="y", xlim=range(0,1.25*max(xx1)), ylim=range(1,10.*max(yy1)),xlab="Time", ylab= "Conc. (in log10 scale)", main=main,
+              cex.lab = 1.2,cex.main = 1,pch=1,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
+              lines(xx1,yy1, lty=20)
+              axis(1,tcl=-.2,labels=TRUE)
+           }           
+           ### points(xx1,yy1,pch=19,bty="l",font.lab=2,cex.lab=1,cex.axis=1,cex.main=1)  ## this works!  -YJ
+           ### lines(xx1,yy1, lty=2)    ## this works!  -YJ
+           ### the following line plots the selected points on main graph.
+           points(xxx1,yyy1, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### add selected data points; and work fine.
+           ## add a regression line here
+           LLm<-lm(log10(yyy1)~xxx1)               ## must use log10(yyy1) here for plot(...,log="y",..) is 10-based log scale
+           abline(LLm,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here; otherwise, it won't work.
+           ### add text here
+           leg_txt<-"log10(Conc.) ="
+           leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[1]],format="f",digits=3),sep=" ")
+           leg_txt<-paste(leg_txt,"+ (",sep=" ")
+           leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[2]],format="f",digits=4),sep="")  ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+           leg_txt<-paste(leg_txt,")*Time",sep="")
+           leg_txt<-paste(leg_txt,"; ",sep="")
+           leg_txt<-paste(leg_txt,"Adj. R_sq =",sep="")
+           leg_txt<-paste(leg_txt,formatC(summary(LLm)$adj.r.squared,format="f",digits=4),sep=" ")
+           ## show(leg_txt)
+           ### add legend here
+           ### legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+           legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+           ### here revert between pdf() and graphic device                      ### warning: [min(yy1)/10] must be > or = 1.0 here
+           if(pdf_activate){
+              dev.copy()                ## copy to pdf file 2nd plots to end
+              dev.set(which=x11c)       ## back to graphic device now to continue...
+                           }
+           else{
+              x11c<-dev.cur()                 ## the current graphics device
+              pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
+                   paper="a4")
+              description_plot()              ## bear output logo
+              pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
+              dev.set(which=x11c)             ## back to graphics device...
+              dev.copy()                      ## copy the first plot here
+              dev.set(which=x11c)             ## back to graphics device
+               }
+###
+###  end plotting here...
+###
+
           auc_test <-0
           Cmax_test<-0
           Cmin_test<-0
@@ -377,6 +517,9 @@ if(replicated){
               cat("\n\n")
               }
  }
+### close dev() now
+dev.off(which=x11c+1)  ## to close pdf device now... YJ
+###
 ke1_melt<-melt(ke1)
 R1_melt<-melt(R_sq1)
 AR1_melt<-melt(AR_sq1)

@@ -1,4 +1,4 @@
-# menu for NCA non-replicated and replicated study
+# menu for NCA non-replicated and replicated study <-  Wow!  how can I guess this?  totally different.
 Multiplemenu<-function(multiple=FALSE)
 {
 cat("\n")
@@ -26,7 +26,8 @@ cat("\n")
     else {
     if (pick == 4){
         cat("\n")
-        cat("\nThank you for using bear!  Bye now. \n")}
+        cat("\n  Thank you for using bear!  Bye now. \n")}
+        graphics.off()
           }
          } 
        }
@@ -62,8 +63,9 @@ cat("\n")
     else {
     if (pick == 5){
         cat("\n")
-      cat("\nThank you for using bear!  Bye now. \n")
-      graphics.off()}
+      cat("\n   Thank you for using bear!  Bye now. \n")
+      graphics.off()
+           }
          } 
        }
       }

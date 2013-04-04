@@ -1,9 +1,15 @@
-##NCA
+###
+### NCA - for manual data point selection  & is going to generate regression_lines_plots_for_lambda_z.pdf (not implementer yet...)
+###
 NCA<-function(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
                SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
                Tau, TlastD,SingleRdata0,SingleTdata0,
-               Demo=FALSE,BANOVA=FALSE,replicated=FALSE,MIX=FALSE, parallel=FALSE, multiple=FALSE)
+               Demo=TRUE,BANOVA=FALSE,replicated=FALSE,MIX=FALSE, parallel=FALSE, multiple=FALSE)  
+               ## switch Demo=TRUE to allow Demo to save Lambda_z_selection as .csv & it works. --YJ
 {
+options(warn=-1)
+lambda_z_regr_select_ref<- lambda_z_regr_select_ref
+lambda_z_regr_select_test<- lambda_z_regr_select_test
 
 #fitting data with linear regression model
 #cat("<<Output: linear regression model: conc. vs. time>>\n")
@@ -12,8 +18,12 @@ NCA<-function(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
 
 if(replicated){
        R.split<-split(SingleRdata, list(SingleRdata$code))
-       Lm1 <- lmList(conc ~ time |code, data = ref_data) 
-         
+       write.csv(data.frame(subj=ref_data$subj,seq=ref_data$seq,period=ref_data$prd,drug=ref_data$drug,
+                 code=ref_data$code,time=ref_data$time,conc=formatC(ref_data$conc_data,format="f",digits=3)),
+                 file=lambda_z_regr_select_ref,row.names=FALSE)
+       Lm1 <- lmList(conc ~ time |code, data = ref_data)   ## lmList() is from nlme; to list lm objects; here 'conc' is log10(conc), 
+                                                           ## not untransformed conc.(conc_data).
+
       subj<-0
       prd<-0
       seq<-0
@@ -26,12 +36,16 @@ if(replicated){
         code[j]<-R.split[[j]][["code"]][1]
         AdjR[j]<-summary(Lm1)$adj.r.squared
        }
-    keindex_ref<-data.frame(subj=subj, seq=seq, prd=prd, code=code, time=-2.3*(coef(Lm1)[2]), 
+       keindex_ref<-data.frame(subj=subj, seq=seq, prd=prd, code=code, time=-2.3*(coef(Lm1)[2]), 
              R_squared=summary(Lm1)$r.sq, Adj_R_squared=melt(AdjR)$value )
   }
  else{
         R.split<-split(SingleRdata, list(SingleRdata$subj))
-        Lm1 <- lmList(conc ~ time |subj, data = ref_data)
+        write.csv(data.frame(subj=ref_data$subj,time=ref_data$time,conc=ref_data$conc_data),
+                  file=lambda_z_regr_select_ref,row.names=FALSE)
+
+        Lm1 <- lmList(conc ~ time |subj, data = ref_data)  ##lmList() is from nlme; to list lm objects;
+                                                           ## not untransformed conc.(conc_data).
        
         subj<-0
         AdjR<-0
@@ -39,11 +53,11 @@ if(replicated){
           subj[j]<-R.split[[j]][["subj"]][1]
           AdjR[j]<-summary(Lm1)$adj.r.squared
          }
-     keindex_ref<-data.frame(subj=subj, time=-2.3*(coef(Lm1)[2]), 
-             R_squared=summary(Lm1)$r.sq, Adj_R_squared=melt(AdjR)$value )  
+       keindex_ref<-data.frame(subj=subj, time=-2.3*(coef(Lm1)[2]), 
+             R_squared=summary(Lm1)$r.sq, Adj_R_squared=melt(AdjR)$value )
        }
  
-  #calculate AUC
+#calculate AUC
  CmaxRef<-0
  CminRef<-0
  AUCINFRef<-0
@@ -212,40 +226,54 @@ if(replicated){
               cat("\n\n")
              }
   }
-################################################################# Test linear regression
+#### linear regression for Test product
 #split dataframe into sub-dataframe by subject for test data
 #"time.test" means "kel"
 if(replicated){
-       T.split<-split(SingleTdata, list(SingleTdata$code))
-       Lm2 <- lmList(conc ~ time |code, data = test_data) 
+      T.split<-split(SingleTdata, list(SingleTdata$code))
+      write.csv(data.frame(subj=test_data$subj,seq=test_data$seq,period=test_data$prd,drug=test_data$drug,
+                 code=test_data$code,time=test_data$time,conc=formatC(test_data$conc_data,format="f",digits=3)),
+                 file=lambda_z_regr_select_test,row.names=FALSE)
+
+      Lm2 <- lmList(conc ~ time |code, data = test_data) 
          
       subj1<-0
       prd1<-0
       seq1<-0
       code1<-0
       AdjT<-0
-       for (j in 1:(length(T.split))){
-        subj1[j]<-T.split[[j]][["subj"]][1]
-        prd1[j]<-T.split[[j]][["prd"]][1]
-        seq1[j]<-T.split[[j]][["seq"]][1]
-        code1[j]<-T.split[[j]][["code"]][1]
-        AdjT[j]<-summary(Lm2)$adj.r.squared
-       }
+      j<-0
+
+      for (j in 1:(length(T.split))){
+      subj1[j]<-T.split[[j]][["subj"]][1]
+      prd1[j]<-T.split[[j]][["prd"]][1]
+      seq1[j]<-T.split[[j]][["seq"]][1]
+      code1[j]<-T.split[[j]][["code"]][1]
+      AdjT[j]<-summary(Lm2)$adj.r.squared
+               }
       keindex_test<-data.frame(subj=subj1, seq=seq1, prd=prd1, code=code1, time=-2.3*(coef(Lm2)[2]), 
              R_squared=summary(Lm2)$r.sq, Adj_R_squared=melt(AdjT)$value )
+      
    }
  else{
         T.split<-split(SingleTdata, list(SingleTdata$subj))
+        write.csv(data.frame(subj=test_data$subj,time=test_data$time,conc=test_data$conc_data),
+                  file=lambda_z_regr_select_test,row.names=FALSE)
+                    
         Lm2 <- lmList(conc ~ time |subj, data = test_data)
         
         subj1<-0
         AdjT<-0
-         for (j in 1:(length(T.split))){
-         subj1[j]<-T.split[[j]][["subj"]][1]
-         AdjT[j]<-summary(Lm2)$adj.r.squared
-            }
+        j<-0
+        
+        for (j in 1:(length(T.split))){
+        subj1[j]<-T.split[[j]][["subj"]][1]
+        AdjT[j]<-summary(Lm2)$adj.r.squared
+                }
+        
          keindex_test<-data.frame(subj=subj1, time=-2.3*(coef(Lm2)[2]),
-              R_squared=summary(Lm2)$r.sq,Adj_R_squared=melt(AdjT)$value)
+             R_squared=summary(Lm2)$r.sq,Adj_R_squared=melt(AdjT)$value)
+          
          }
 
   #calculate AUC
@@ -421,7 +449,7 @@ FluTest<-0
 
 
 cat("--------------------------------------------------------------------------\n")
-cat("<<Output: linear regression model: conc. vs. time>>\n")
+cat("<<Output: linear regression model (for Lambda_z): conc. vs. time>>\n")
 cat("\n")
    if(replicated){
       Lm1 <- lmList(conc ~ time |code, data = ref_data) 
@@ -435,7 +463,7 @@ cat("Individual PK parameters for Ref. product\n")
 cat("\n")
 show(keindex_ref)
 cat("--------------------------------------------------------------------------\n")
-cat("<<Output: linear regression model: conc. vs. time>>\n")
+cat("<<Output: linear regression model (for Lambda_z): conc. vs. time>>\n")
 cat("\n")
   if(replicated){
      Lm2 <- lmList(conc ~ time |code, data = test_data)
@@ -709,7 +737,7 @@ if(replicated){
       if(multiple){
         SingleRdata<-SingleRdata0
         SingleTdata<-SingleTdata0
-        MultipleNCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData, Tau, TlastD,rdata.split,tdata.split )
+        MultipleNCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData,Tau,TlastD,rdata.split,tdata.split )
         MultipleNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis,TlastD)
           if (Demo){
           #Demo=TRUE, BANOVA=FALSE
@@ -728,8 +756,8 @@ if(replicated){
              }
         }
       else{
-      NCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData,rdata.split,tdata.split )
-      NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
+      NCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData, rdata.split,tdata.split)
+      NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis,TlastD)
        
        if (Demo){
         if(BANOVA){

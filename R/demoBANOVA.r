@@ -1,7 +1,8 @@
 #Demo for Statistical analysis (ANOVA(lm), 90%CI...)
-options(warn=-1)
+
 demoBANOVA<-function(replicated=FALSE,parallel=FALSE, multiple=FALSE)
 {
+options(warn=-1)
 if(parallel){
    if(multiple){
      TotalData<-data.frame (subj=as.factor(c(1,17,2,18,3,20,7,23,8,24,9,25,10,26,

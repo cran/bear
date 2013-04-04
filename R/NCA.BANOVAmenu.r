@@ -5,9 +5,10 @@ cat("\n")
   file.menu <- c("NCA --> Statistical analysis (ANOVA(lm), 90%CI...)",
                  "Run demo for NCA --> Statistical analysis",
                  "Back to the previous step",
+                 "Back to the top menu",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << NCA--> Statistical analysis for 2x2x2 Crossover Study>> ")
+  pick <- menu(file.menu, title = " << NCA --> Statistical Analysis for 2x2x2 Crossover Study >>")
   if(multiple){
    if (pick == 1){
       cat("\n")
@@ -21,14 +22,22 @@ cat("\n")
     else {
     if (pick == 3){
         cat("\n")
+        graphics.off()
         Multiplestat1menu()
          }
    else {
     if (pick == 4){
-        cat("\nThank you for using bear!  Bye now. \n\n")
+        graphics.off()
+        go()
               }
+   else {
+     if (pick== 5){
+        cat("\n   Thank you for using bear!  Bye now. \n\n")
+        graphics.off()
+                  }
            }
-       }
+        }
+      }
     }
   } 
   else{ 
@@ -39,20 +48,28 @@ cat("\n")
     else {
     if (pick == 2){
         cat("\n")
-       demomenu1()
+        demomenu1()
        }
     else {
     if (pick == 3){
         cat("\n")
+        graphics.off()
         Multiplestatmenu()
          }
    else {
-    if (pick == 4){
-        cat("\nThank you for using bear!  Bye now. \n\n")
+ if (pick == 4){
+        graphics.off()
+        go()
               }
+   else {
+     if (pick== 5){
+        cat("\n   Thank you for using bear!  Bye now. \n\n")
+        graphics.off()
+               }
            }
+         }
        }
     }
   }
-} 
+}
   

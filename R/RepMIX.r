@@ -1,22 +1,44 @@
-#replicated study
+###
+### This is for parallel or replicated crossover BE study.  --YJ
+###
+
 RepMIX<-function(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF, 
                  lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
                  parallel=FALSE, multiple=FALSE)
 {
+##
+pivotal_output_xfile<- pivotal_output_xfile
+##
 cat("\n")
 ##Cmax/Cmax_ss
-if(parallel){
+if(parallel){                   ## so here is for parallel BE!
    if(multiple){
     cat("*** This is a 2-treatment parallel multiple-dosed study. \n")
     Data<-data.frame(subj=as.factor(TotalData$subj),drug=as.factor(TotalData$drug),Cmax_ss=TotalData$Cmax, 
-                    AUCtau_ss=TotalData$AUC0t, lnCmax_ss=TotalData$lnCmax,lnAUCtau_ss=TotalData$lnAUC0t) 
+                     AUCtau_ss=TotalData$AUC0t, lnCmax_ss=TotalData$lnCmax,lnAUCtau_ss=TotalData$lnAUC0t)
+    ##
+    ## DataMTL will not be used later. Just create it for dump pivotal paramaters. -YJ
+    ##
+                     
+    DataMTL<-data.frame(subj=as.factor(TotalData$subj),drug=as.factor(TotalData$drug),Cmax_ss=TotalData$Cmax, 
+                     AUCtau_ss=formatC(TotalData$AUC0t,format="f",digits=3))
+                     
+    write.csv(DataMTL,file = pivotal_output_xfile, row.names = FALSE)     ## output a csv file for multiple
+    
    }
    else{
     cat("*** This is a 2-treatment parallel single-dosed study. \n")
+    ##
+    ## DataSGL will not be used later. Just create it for dump pivotal paramaters. -YJ
+    ##
+    DataSGL<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),Cmax=TotalData$Cmax, 
+                         AUC0t=formatC(TotalData$AUC0t,format="f",digits=3), AUC0INF=formatC(TotalData$AUC0INF,format="f",digits=3))
+                       
+    write.csv(DataSGL,file = pivotal_output_xfile, row.names = FALSE)  ## output a csv file for single
    }
  }
 else{ 
-prdcount<-length(levels(TotalData$prd)) #count periods
+prdcount<-length(levels(TotalData$prd))   ## count periods (such as TRT/RTRT/etc.)
 cat("*** This is a 2-treatment, 2-sequence, and ",prdcount,"-period replicated design. \n") 
 } 
 cat("--------------------------------------------------------------------------\n")
@@ -80,6 +102,14 @@ cat("  Statistical analysis (lme) - replicate BE study               \n")
 modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~drug - 1|subj, 
                weights=varIdent(form = ~ 1 | drug), 
                data=TotalData, method="REML" )
+##
+## DataSGL will not be used later. Just create it for dumping pivotal paramaters. -YJ
+##
+DataSGL<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
+                   prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF)
+                   
+write.csv(DataSGL,file = pivotal_output_xfile, row.names = FALSE)  ## output a csv file for single
+##
 } 
 cat("--------------------------------------------------------------------------\n")
 if(multiple){
@@ -93,7 +123,15 @@ print(anova(modAUCtau_ss)[2:4,])
 cat("\n")
 cat("Type III Tests of Fixed Effects\n")
 print(anova(modAUCtau_ss, type="marginal")[2:4,])
-}
+##
+## DataMPL will not be used later. Just create it for dumping pivotal paramaters. -YJ
+##
+DataMPL<-data.frame(subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
+                   prd=as.factor(TotalData$prd),Cmax_ss=TotalData$Cmax, AUCtau_ss=TotalData$AUC0t)
+                   
+write.csv(DataMPL,file = pivotal_output_xfile, row.names = FALSE)     ## output a csv file for multiple
+##
+  }
 }
 else{
 cat("  Dependent Variable: AUC0t                                                \n")

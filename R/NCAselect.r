@@ -1,6 +1,14 @@
+###
+### for graph-mode data point selection  -- YJ
+###
+
 NCAselect<-function(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0,
-                    Demo=FALSE, BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)
+                    Demo=FALSE, BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)   ### switch 'Demo=TRUE' for testing -YJ
 {
+### plots of regression line for lambda_z_estimation
+lambda_z_regression_lines<-lambda_z_regression_lines
+###
+
 cat("\n\n")
     cat("****************************************************************************\n")
     cat(" Data for the Ref. Products:                                                \n")
@@ -8,7 +16,7 @@ cat("\n\n")
     if(multiple){
     cat(" 1. Cmax_ss, Tmax_ss, AUC(tau)ss, ln(Cmax_ss), ln(AUC(tau)ss), T1/2(z),  \n")
     cat("    Vd/F, MRT, lambda, Cl/F, Cav and Fluctuation  were calculated.\n")
-    cat(" 2.  AUC(tau)ss was calculated using the linear trapezoidal method.       \n")
+    cat(" 2. AUC(tau)ss was calculated using the linear trapezoidal method.       \n")
     }
     else{
     cat(" 1. AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf), lambda_z, Cl/F, Vd, MRT,  \n")
@@ -18,8 +26,8 @@ cat("\n\n")
     cat("                                                                            \n")
     cat("****************************************************************************\n")
     cat("\n\n")
-      #split dataframe into sub-dataframe by subject for reference data
-      if(replicated){
+#split dataframe into sub-dataframe by subject for reference data
+if(replicated){
        R.split<-split(SingleRdata1, list(SingleRdata1$code))
         subj<-0
         prd<-0
@@ -38,43 +46,195 @@ cat("\n\n")
         subj[j]<-R.split[[j]][["subj"]][1]
          }
        }
- windows(record = TRUE )
+windows(record=TRUE)
+par(ask=TRUE)
+pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
+
 if(multiple){
- par(mfrow=c(1,2))
+ par(mfrow=c(1,1))  ### one pic for each window; old-man version
        #calculate kel for reference data
        co_data1<-NULL
        for(i in seq_along(R.split)){
-         xx1<-R.split[[i]]$time-TlastD
+         xx1<-R.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
          yy1<-R.split[[i]]$conc
-           main<-paste(c("Select 2-4 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
-         plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 2*xx1), ylim=range(1, 4*max(yy1)), xlab="Time", ylab= "Conc. (in log scale)", 
-         main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19)
+         main<-paste(c("[Manual Select] Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
+         plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 2*xx1), ylim=range(1, 10.*max(yy1)),
+              xlab="Time", ylab= "Conc. (in log scale)",     ## log="y" as semilog plot here (YJ)
+         main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
          lines(xx1,yy1, lty=20)
          axis(1, pos=1)
          axis(2, pos=0,las=1)     
-         co_data1[[i]]<-identify(xx1, yy1, n=4)
+         co_data1[[i]]<-identify(xx1, yy1, n=6)    ### set max. select = 6 here! with subj(i)
+###         
+###  co_data1[[i]] is data.frame for # of data points, e.g. 8, 9, 10
+###
+### convert the data point # back to (x,y) data; same as the next step but this step is for single subj ONLY
+###      
+         
+         rr_melt<-melt(co_data1)
+         ## show(rr_melt)
+         YY.split<-split(rr_melt,list(rr_melt$L1))
+         ## show(YY.split)
+         xy1<-NULL
+         s1<-NULL
+         d1<-NULL
+         d2<-NULL
+         y0<-NULL
+         y1<-NULL
+         y2<-NULL
+         for(j in seq_along(YY.split)){
+               tx<-NULL
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                  tx[[k]]<-YY.split[[i]][["value"]][k]
+                  }
+                   xy1[[j]]<-R.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!
+                   s1[[j]]<-c(xy1[[j]]$subj)
+                   d1[[j]]<-c(xy1[[j]]$time)
+                   d2[[j]]<-c(xy1[[j]]$conc)
+                     }
+         y0<-melt(s1)
+         y1<-melt(d1)
+         y2<-melt(d2)
+         
+         refx1_data<-data.frame(subj=y0$value,time=y1$value,conc=log10(y2$value),conc_data=y2$value,drug=c(1))
+         refx1_data<-unique(refx1_data)   ### don't know why there are duplicated data; unique() remove all duplicates.
+         ## show(refx1_data)  ### for debug; make sure it chooses the correct data points here
+###
+### above refx1_data is only for current subj
+###         
+### add the regression line for lambda_z estimation from here (YJ)
+###
+         xxx1<-refx1_data$time-TlastD    ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+         yyy1<-refx1_data$conc
+         conc_plot<-refx1_data$conc_data
+         points(xxx1,conc_plot, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### here we have to use original data (conc) to plot selected points;
+         lm_this_subj<-lm(yyy1~xxx1)                                  ### but use long10(conc.) to do linear regression.
+         ## add a regression line here
+         abline(lm_this_subj,col="red",lwd=2)
+         ### add text here
+         leg_txt<-"log10(Conc.) ="
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
+         leg_txt<-paste(leg_txt,"+ (",sep=" ")
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
+         leg_txt<-paste(leg_txt,")*Time",sep="")
+         leg_txt<-paste(leg_txt,"  ",sep="")
+         leg_txt<-paste(leg_txt,"R_sq =",sep="")
+         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
+         ## show(leg_txt)
+         ### add legend here
+         legend(x=min(xx1)-TlastD/2,y=min(yy1)/10,leg_txt,xjust=0,yjust=0,cex=0.8,box.col="white")  ## find the appropriate position, shrink font size for legend with cex=0.7
+         ### here revert between pdf() and graphic device          ### warning: [min(xx1)-TlastD/2 & min(yy1)/10] must be > or = to 1.0
+         if(pdf_activate){
+            dev.copy()                ## copy to pdf file 2nd plots to end
+            dev.set(which=x11c)       ## back to graphic device now to continue...
+                         }
+         else{
+            x11c<-dev.cur()                 ## the current graphics device
+            pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
+                 paper="a4")
+            description_plot()              ## bear output logo
+            pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
+            dev.set(which=x11c)             ## back to graphics device...
+            dev.copy()                      ## copy the 1st plot from here
+            dev.set(which=x11c)             ## back to graphics device
+             }
+##         readline(" Press Enter to continue...")                 
            }
          }
 else{ 
-      par(mfrow=c(2,2))
+      par(mfrow=c(1,1))
        #calculate kel for reference data
        co_data1<-NULL
        for(i in seq_along(R.split)){
          xx1<-R.split[[i]]$time
          yy1<-R.split[[i]]$conc
          if(replicated){
-          main<-paste(c("Subj# Ref_",R.split[[i]]$subj[1],
+          main<-paste(c("[Manual Select] Subj# Ref_",R.split[[i]]$subj[1],
                          ", Seq_",R.split[[i]]$seq[1],
                          ", Prd_",R.split[[i]]$prd[1]),collapse=" ")
           }
           else{
-           main<-paste(c("Select 2-4 data points. Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
+           main<-paste(c("[Manual Select] Subj# Ref_",R.split[[i]]$subj[1]),collapse=" ")
            }
-         plot(xx1,yy1,log="y", xlim=range(xx1), ylim=range(yy1),xlab="Time", ylab= "Conc. (in log scale)", main=main,
-         cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n")
+         plot(xx1,yy1,log="y", xlim=range(xx1), ylim=range(1,10.*max(yy1)),xlab="Time", ylab= "Conc. (in log scale)", main=main,
+         cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
          lines(xx1,yy1, lty=20)
          axis(1,tcl=-.2,labels=TRUE)
-         co_data1[[i]]<-identify(xx1, yy1, n=4)
+         co_data1[[i]]<-identify(xx1, yy1, n=6)   ### set max. select = 6 here! with subj(i)
+###         
+###  co_data1[[i]] is data.frame for # of data points, e.g. 8, 9, 10
+###
+### convert the data point # back to (x,y) data; same as the next step but this step is for single subj ONLY
+###      
+         
+         rr_melt<-melt(co_data1)
+         ## show(rr_melt)
+         YY.split<-split(rr_melt,list(rr_melt$L1))
+         ## show(YY.split)
+         xy1<-NULL
+         s1<-NULL
+         d1<-NULL
+         d2<-NULL
+         y0<-NULL
+         y1<-NULL
+         y2<-NULL
+         for(j in seq_along(YY.split)){
+               tx<-NULL
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                  tx[[k]]<-YY.split[[i]][["value"]][k]
+                  }
+                   xy1[[j]]<-R.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!
+                   s1[[j]]<-c(xy1[[j]]$subj)
+                   d1[[j]]<-c(xy1[[j]]$time)
+                   d2[[j]]<-c(xy1[[j]]$conc)
+                     }
+         y0<-melt(s1)
+         y1<-melt(d1)
+         y2<-melt(d2)
+         
+         refx1_data<-data.frame(subj=y0$value,time=y1$value,conc=log10(y2$value),conc_data=y2$value,drug=c(1))
+         refx1_data<-unique(refx1_data)   ### don't know why there are duplicated data; unique() remove all duplicates.
+         ## show(refx1_data)  ### for debug? make sure it chooses the correct data points here
+###
+### above refx1_data is only for current subj
+###         
+### add the regression line for lambda_z estimation from here (YJ)
+###
+         xxx1<-refx1_data$time
+         yyy1<-refx1_data$conc
+         conc_plot<-refx1_data$conc_data
+         points(xxx1,conc_plot, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### here we have to use original data (conc) to plot selected points;
+         lm_this_subj<-lm(yyy1~xxx1)                                  ### but use long10(conc.) to do linear regression.
+         ## add a regression line here
+         abline(lm_this_subj,col="red",lwd=2)
+         ### add text here
+         leg_txt<-"log10(Conc.) ="
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
+         leg_txt<-paste(leg_txt,"+ (",sep=" ")
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
+         leg_txt<-paste(leg_txt,")*Time",sep="")
+         leg_txt<-paste(leg_txt,"  ",sep="")
+         leg_txt<-paste(leg_txt,"R_sq =",sep="")
+         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
+         ## show(leg_txt)
+         ### add legend here
+         legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+         ### here revert between pdf() and graphic device                          ### warning: [min(xx1) & min(yy1)/10] must be > or = 1.0!!
+         if(pdf_activate){
+            dev.copy()                ## copy to pdf file 2nd plots to end
+            dev.set(which=x11c)       ## back to graphic device now to continue...
+                         }
+         else{
+            x11c<-dev.cur()                 ## the current graphics device
+            pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
+                 paper="a4")
+            description_plot()              ## bear output logo
+            pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
+            dev.set(which=x11c)             ## back to graphics device...
+            dev.copy()                      ## copy the first plot from here
+            dev.set(which=x11c)             ## back to graphics device
+             }
+##         readline(" Press Enter to continue...")
            }
          }    
           r_melt<-melt(co_data1)
@@ -147,7 +307,7 @@ rdata.split<-split(rdata,list(rdata$code))
       if(multiple){
       cat(" 1. Cmax_ss, Tmax_ss, AUC(tau)ss, ln(Cmax_ss), ln(AUC(tau)ss), T1/2(z),  \n")
       cat("    Vd/F, MRT, lambda, Cl/F, Cav and Fluctuation  were calculated.\n")
-      cat(" 2.  AUC(tau)ss was calculated using the linear trapezoidal method.       \n")
+      cat(" 2. AUC(tau)ss was calculated using the linear trapezoidal method.       \n")
         }
       else{
       cat(" 1. AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf), lambda_z, Cl/F, Vd, MRT,  \n")
@@ -180,41 +340,191 @@ rdata.split<-split(rdata,list(rdata$code))
             #calculate kel for test data
              co_data2<-NULL
 if(multiple){
-      par(mfrow=c(1,2))
+            par(mfrow=c(1,1))
             for(i in seq_along(T.split)){
-              xx2<-T.split[[i]]$time-TlastD
+              xx2<-T.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
               yy2<-T.split[[i]]$conc
-                  main<-paste(c("Select 2-4 data points. Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
+                  main<-paste(c("[Manual Select] Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
                      
-              plot(xx2,yy2, log="y", axes=FALSE,xlim=range(xx2+(xx2/2), 2*xx2), ylim=range(1, 4*max(yy2)), xlab="Time", ylab= "Conc. (in log scale)", 
-              main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19)
+              plot(xx2,yy2, log="y", axes=FALSE,xlim=range(xx2+(xx2/2), 2*xx2), ylim=range(1, 10.*max(yy2)),
+                  xlab="Time", ylab= "Conc. (in log scale)",       ## log="y" is to set Y-axis as log10() scale
+              main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ)
               lines(xx2,yy2, lty=20)
               axis(1, pos=1)
               axis(2, pos=0,las=1)     
-              co_data2[[i]]<-identify(xx2,yy2, n=4)
+              co_data2[[i]]<-identify(xx2,yy2, n=6)   ### set max. select = 6 here! with subj(i)
+###         
+###  co_data1[[i]] is data.frame for # of data points, e.g. 8, 9, 10
+###
+### convert the data point # back to (x,y) data; same as the next step but this step is for single subj ONLY
+###      
+         
+         tt_melt<-melt(co_data2)
+         ## show(tt_melt)
+         YY.split<-split(tt_melt,list(tt_melt$L1))
+         ## show(YY.split)
+         xy1<-NULL
+         s1<-NULL
+         d1<-NULL
+         d2<-NULL
+         y0<-NULL
+         y1<-NULL
+         y2<-NULL
+         for(j in seq_along(YY.split)){
+               tx<-NULL
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                  tx[[k]]<-YY.split[[i]][["value"]][k]
+                  }
+                   xy1[[j]]<-T.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!
+                   s1[[j]]<-c(xy1[[j]]$subj)
+                   d1[[j]]<-c(xy1[[j]]$time)
+                   d2[[j]]<-c(xy1[[j]]$conc)
+                     }
+         y0<-melt(s1)
+         y1<-melt(d1)
+         y2<-melt(d2)
+         
+         testx1_data<-data.frame(subj=y0$value,time=y1$value,conc=log10(y2$value),conc_data=y2$value,drug=c(1))
+         testx1_data<-unique(testx1_data)   ### don't know why there are duplicated data; unique() remove all duplicates.
+         ## show(testx1_data)   ### for debug; make sure it chooses the correct data points here
+###
+### above testx1_data is only for current subj
+###         
+### add the regression line for lambda_z estimation from here (YJ)
+###
+         xxx1<-testx1_data$time-TlastD  ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+         yyy1<-testx1_data$conc
+         conc_plot<-testx1_data$conc_data
+         points(xxx1,conc_plot, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### here we have to use original data (conc) to plot selected points;
+         lm_this_subj<-lm(yyy1~xxx1)                                  ### but use long10(conc.) to do linear regression.
+         ## add a regression line here
+         abline(lm_this_subj,col="red",lwd=2)
+         ### add text here
+         leg_txt<-"log10(Conc.) ="
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
+         leg_txt<-paste(leg_txt,"+ (",sep=" ")
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
+         leg_txt<-paste(leg_txt,")*Time",sep="")
+         leg_txt<-paste(leg_txt,"  ",sep="")
+         leg_txt<-paste(leg_txt,"R_sq =",sep="")
+         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
+         ## show(leg_txt)
+         legend(x=min(xx1)-TlastD/2,y=min(yy1)/10,leg_txt,xjust=0,yjust=0,cex=0.8,box.col="white")  ## find the appropriate posiiton, shrink font size for legend with cex=0.7
+         ### here revert between pdf() and graphic device            ### warning: [min(xx1)-TlastD/2 & min(yy1)/10] must be > or = to 1.0
+         if(pdf_activate){
+            dev.copy()                ## copy to pdf file 2nd plots to end
+            dev.set(which=x11c)       ## back to graphic device now to continue...
+                         }
+         else{
+            x11c<-dev.cur()                 ## the current graphics device
+            pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
+                 paper="a4")
+            description_plot()              ## bear output logo
+            pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
+            dev.set(which=x11c)             ## back to graphics device...
+            dev.copy()                      ## copy the first plot from here
+            dev.set(which=x11c)             ## back to graphics device
+             }
+##         readline(" Press Enter to continue...")
               }
 }
 else{
-            par(mfrow=c(2,2))
+            par(mfrow=c(1,1))
             for(i in seq_along(T.split)){
               xx2<-T.split[[i]]$time
               yy2<-T.split[[i]]$conc
               if(replicated){
-                  main<-paste(c("Subj# Test_",T.split[[i]]$subj[1],
+                  main<-paste(c("[Manual Select] Subj# Test_",T.split[[i]]$subj[1],
                                 "Seq_",T.split[[i]]$seq[1],
                                 "Prd_",T.split[[i]]$prd[1]),collapse=" ")
                  }
                  else{
-                  main<-paste(c("Select 2-4 data points. Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
+                  main<-paste(c("[Manual Select] Subj# Test_",T.split[[i]]$subj[1]),collapse=" ")
                }
               
-              plot(xx2,yy2, log="y",xlim=range(xx2), ylim=range(yy2),xlab="Time", ylab= "Conc. (in log scale)", main=main ,
-              cex.lab = 1.2,cex.main = 1,pch=1,lab=c(20,20,30), xaxt="n")
+              plot(xx2,yy2, log="y",xlim=range(xx2), ylim=range(1,10.*max(yy2)),xlab="Time", ylab= "Conc. (in log scale)", main=main ,
+              cex.lab = 1.2,cex.main = 1,pch=1,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ)
               lines(xx2,yy2,lty=20)
               axis(1,tcl=-.2,labels=TRUE)
-              co_data2[[i]]<-identify(xx2,yy2, n=4)
+              co_data2[[i]]<-identify(xx2,yy2, n=6)  ### set max. select = 6 here! with subj(i)
+###         
+###  co_data1[[i]] is data.frame for # of data points, e.g. 8, 9, 10
+###
+### convert the data point # back to (x,y) data; same as the next step but this step is for single subj ONLY
+###      
+         
+         tt_melt<-melt(co_data2)
+         ## show(tt_melt)
+         YY.split<-split(tt_melt,list(tt_melt$L1))
+         ## show(YY.split)
+         xy1<-NULL
+         s1<-NULL
+         d1<-NULL
+         d2<-NULL
+         y0<-NULL
+         y1<-NULL
+         y2<-NULL
+         for(j in seq_along(YY.split)){
+               tx<-NULL
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                  tx[[k]]<-YY.split[[i]][["value"]][k]
+                  }
+                   xy1[[j]]<-T.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!
+                   s1[[j]]<-c(xy1[[j]]$subj)
+                   d1[[j]]<-c(xy1[[j]]$time)
+                   d2[[j]]<-c(xy1[[j]]$conc)
+                     }
+         y0<-melt(s1)
+         y1<-melt(d1)
+         y2<-melt(d2)
+         
+         testx1_data<-data.frame(subj=y0$value,time=y1$value,conc=log10(y2$value),conc_data=y2$value,drug=c(1))
+         testx1_data<-unique(testx1_data)   ### don't know why there are duplicated data; unique() remove all duplicates.
+         ##  show(testx1_data)   ### for debug; make sure it chooses the correct data points here
+###
+### above testx1_data is only for current subj
+###         
+### add the regression line for lambda_z estimation from here (YJ)
+###
+         xxx1<-testx1_data$time
+         yyy1<-testx1_data$conc
+         conc_plot<-testx1_data$conc_data
+         points(xxx1,conc_plot, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### here we have to use original data (conc) to plot selected points;
+         lm_this_subj<-lm(yyy1~xxx1)                                  ### but use long10(conc.) to do linear regression.
+         ## add a regression line here
+         abline(lm_this_subj,col="red",lwd=2)
+         ### add text here
+         leg_txt<-"log10(Conc.) ="
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
+         leg_txt<-paste(leg_txt,"+ (",sep=" ")
+         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
+         leg_txt<-paste(leg_txt,")*Time",sep="")
+         leg_txt<-paste(leg_txt,"  ",sep="")
+         leg_txt<-paste(leg_txt,"R_sq =",sep="")
+         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
+         ## show(leg_txt)
+         legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+         ### here revert between pdf() and graphic device                          ### warning: [min(xx1) & min(yy1)/10] must be > or = 1.0!!
+         if(pdf_activate){
+            dev.copy()                ## copy to pdf file 2nd plots to end
+            dev.set(which=x11c)       ## back to graphic device now to continue...
+                         }
+         else{
+            x11c<-dev.cur()                 ## the current graphics device
+            pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
+                 paper="a4")
+            description_plot()              ## bear output logo
+            pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
+            dev.set(which=x11c)             ## back to graphics device...
+            dev.copy()                      ## copy the first plot from here
+            dev.set(which=x11c)             ## back to graphics device
+             }
+##         readline(" Press Enter to continue...")  
               }
 }
+### close dev() now
+dev.off(which=x11c+1)  ## to close pdf device now... YJ
+###
               t_melt<-melt(co_data2)
               YY.split<-split(t_melt,list(t_melt$L1))
               
@@ -281,18 +591,23 @@ test_data<-data.frame(subj=yy0$value,time=yy1$value, conc=log10(yy2$value),conc_
 tdata<-data.frame(subj=yy0$value,time=yy1$value,conc=yy2$value)
 tdata.split<-split(tdata,list(tdata$subj))
  }
+###
+###  The following lines to end were orignally plan to not to save NCAselect() if it is a demo.
+###  Now I change it to save manual selection no metter what it is demo or not. -YJ
+###
+
 if(replicated){
-  if (Demo){
-    if(MIX){
-     #Demo=TRUE, MIX=TRUE
-     RepNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-     } 
-     else{
-     #Demo=TRUE, MIX=FALSE
-     RepNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-        }
-     }   
-  else {
+###  if (Demo){
+###    if(MIX){
+###     #Demo=TRUE, MIX=TRUE
+###     RepNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+###     } 
+###     else{
+###     #Demo=TRUE, MIX=FALSE
+###     RepNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+###        }
+###     }   
+###  else {
      if(MIX){
      ##Demo=FALSE, MIX=TRUE
      RepNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
@@ -301,24 +616,24 @@ if(replicated){
      #Demo=FALSE, BANOVA=FALSE
        RepNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)              
          }
-      }
+###      }
     }
 else{
  if(parallel){
     if(multiple){
-      if (Demo){
-        if(MIX){
-        #Demo=TRUE, BANOVA=TRUE
-        MultipleParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-        Tau, TlastD,SingleRdata0,SingleTdata0)
-         } 
-        else{
-        #Demo=TRUE, BANOVA=FALSE
-        MultipleParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-        Tau, TlastD,SingleRdata0,SingleTdata0)
-         }
-       }   
-      else {
+###      if (Demo){
+###        if(MIX){
+###        #Demo=TRUE, BANOVA=TRUE
+###        MultipleParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+###        Tau, TlastD,SingleRdata0,SingleTdata0)
+###         } 
+###        else{
+###        #Demo=TRUE, BANOVA=FALSE
+###        MultipleParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+###        Tau, TlastD,SingleRdata0,SingleTdata0)
+###         }
+###       }   
+###      else {
        if(MIX){
        ##Demo=FALSE, BANOVA=TRUE
        MultipleParaNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
@@ -329,20 +644,20 @@ else{
        MultipleParaNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
        Tau, TlastD,SingleRdata0,SingleTdata0)
         }
-       }
+###       }
     }
     else{
-     if (Demo){
-        if(MIX){
-        #Demo=TRUE, BANOVA=TRUE
-         ParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-         } 
-         else{
-        #Demo=TRUE, BANOVA=FALSE
-        ParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-        }
-       }   
-     else {
+###     if (Demo){
+###        if(MIX){
+###        #Demo=TRUE, BANOVA=TRUE
+###         ParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+###         } 
+###         else{
+###        #Demo=TRUE, BANOVA=FALSE
+###        ParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+###        }
+###       }   
+###     else {
         if(MIX){
         ##Demo=FALSE, BANOVA=TRUE
         ParaNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
@@ -352,23 +667,23 @@ else{
         ParaNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
         }
       }
-     }
+###     }
    }   
 else{
  if(multiple){
-  if (Demo){
-    if(BANOVA){
-     #Demo=TRUE, BANOVA=TRUE
-     MultipleNCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-     Tau, TlastD,SingleRdata0,SingleTdata0)
-    } 
-     else{
-     #Demo=TRUE, BANOVA=FALSE
-     MultipleNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-     Tau, TlastD,SingleRdata0,SingleTdata0)
-        }
-     }   
-  else {
+###  if (Demo){
+###    if(BANOVA){
+###     #Demo=TRUE, BANOVA=TRUE
+###     MultipleNCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+###     Tau, TlastD,SingleRdata0,SingleTdata0)
+###    } 
+###     else{
+###     #Demo=TRUE, BANOVA=FALSE
+###     MultipleNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+###     Tau, TlastD,SingleRdata0,SingleTdata0)
+###        }
+###     }   
+###  else {
      if(BANOVA){
      ##Demo=FALSE, BANOVA=TRUE
      MultipleNCAselectsave.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
@@ -379,20 +694,20 @@ else{
        MultipleNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
        Tau, TlastD,SingleRdata0,SingleTdata0)
         }
-      }
+###      }
      }
  else{
-  if (Demo){
-    if(BANOVA){
-     #Demo=TRUE, BANOVA=TRUE
-     NCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-    } 
-     else{
-     #Demo=TRUE, BANOVA=FALSE
-     NCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-        }
-     }   
-  else {
+###  if (Demo){
+###    if(BANOVA){
+###     #Demo=TRUE, BANOVA=TRUE
+###     NCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+###    } 
+###     else{
+###     #Demo=TRUE, BANOVA=FALSE
+###     NCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+###        }
+###     }   
+###  else {
      if(BANOVA){
      ##Demo=FALSE, BANOVA=TRUE
      NCAselectsave.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
@@ -401,7 +716,7 @@ else{
      #Demo=FALSE, BANOVA=FALSE
        NCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
         }
-      }
+###      }
      }
    } 
   }

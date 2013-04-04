@@ -1,0 +1,181 @@
+v2.5.4
+    - mostly based on BE/BA forums (bear feature request).
+    - grouping each run with random batch# and system date marked; more outputs from this version. 
+      and no more overwrite previous outputs now.
+    - outlier detection analysis (ODA) is taken away from routine run; and also ODA outputs
+      is separated;
+    - max. data point selections for lambda_z estimation was increased to 6 (2-6);
+    - single plot for point selection now (used to be 2x2 plots), old-man version?
+    - fix inconsistent outputs for unbalanced dataset;
+    - incomplete dataset will be blocked before being analyzed (hopefully);
+    - use "file.choose()" for data file loading;
+    - total lambda_z selections outputs as .csv format (sarawuto); not for demo functions;
+    - pivotal and misc pk parameters output as .csv format;
+    - change data() for demo functions (demodemu.r & demomenu1.r); to adapt future R (with R v3.0);
+    - add "extdata" directory to store demo data files as .rda format;
+    - add 'legend=FASLE' into lineplot.CI(...) (NCAplot.r) otherwise, lineplot.ci() package will 
+      crash with error... [Error in rep_len(col, n.leg) : cannot replicate NULL to a non-zero 
+      length] only with R v3.0.0 alpha;
+    - add linear regression line plots for lambda_z estimation for manual data points selections (
+      OK for R 2.15.3 and still got dev.copy() error when testing on R3.0.0beta (Helmut & sarawuto).
+    - change save() and load() to saveRDS() and readRDS() for convenient scripting.
+    - add mean (sd) plots on semilog scale (Helmut).
+    - add alarm() and readline("...") for methods of estimation lambda_z to alert user what 
+      they should know before next step.(as requested by d_labes)
+    - add a section containing the means (SD) for each formulation (by time point) in NCA output 
+      file (as requested by Helmut).
+    - modify some output files.
+    - add plots of linear regression lines for lambda_z estimation for ARS, AIC, TTT,TTT-AIC &
+      TTT-ARS.
+    - change all load() and save() to readRDS() and saveRDS().
+    
+v2.5.3
+    - generalized SAS-like outputs (such as ANOVA and Type III SS) with 2x2x2 crossover;
+    - added variance model into lme() and fixed random effect in lme() for replicate study
+      as suggested by D. Labes posted at bebac forum (browse this thread at bebac forum);
+    - the maximum data points that can be chosen to estimation of £fz is set to 4, at 
+      least 2 data points are required. The "Select the exact 3 data points" has been changed 
+      to "Select 2-4 data point"; and
+    - other minor changes.
+v2.5.2
+    - changed anova model back to lm(log(PK)~ seq + subj:seq + prd + drug , data) as with 
+      v2.4.0; if not, this will result in error in calculation of 90% CI, as well as point
+      estimates (thanks to Ji?i Hofmann, Czech Republic).
+v2.5.1
+    - re-compiled again to change the requirement with R v2.10.0 to enable installation in MacOSX;
+      however, bear was still compiled with R v2.11.0.
+v2.5.0
+    - added Welch t tests (also 90% CI) for a parallel BE study (thanks to Helmut Schutz);
+    - added CVintra (intra-subject CV) calculation for a replicate BE study (lme_stat.txt)
+      right after classical 90% CI;
+    - hide ln(PK) list in the report of ANOVA_stat.txt/lm_stat.txt/lme_stat.txt;
+    - completed the function of a parallel BE study with multiple-dosed (used to be single-dosed only);
+      and
+    - some other bugs fixed
+v2.4.4
+    - fixed the output file, Statistical_summaries.txt; i.e., Table 2: remove n1, n2 list from
+      nonreplicate or replicate crossover BE study; They only appear in Parallel BE study.
+v2.4.3
+    - changed the statitical model from linear mixed model(lme()) to linear model (lm())(similar to 
+      SAS GLM) for a parallel BE study; basically, the results obtained from lme() or lm() are the same.
+      However, to meet the regulatory requirements (both FDA and EU), lm() has been adopted since this
+      version. Later, the Welch t-test will be added for a parallel BE study for unequal variances in
+      the next release. See more discussion: Post#01 and Post#02.
+    - recompiled bear under R v.2.11.0.
+v2.4.2
+    - fixed NCA outputs for the unbalanced parallel BE study
+    - fixed TOST descriptions
+    - recomplied with R v2.10.1
+v2.4.1
+    - add time/date stamp on the header or title page of text or pdf (plots) outputs (11.10(e) of 21 CRF 
+      Part 11); more to be made for Part 11...
+    - set .pdf output format as A4 paper size.
+    - modify all .Rd files to fit R v2.9.2 requirements
+    - change of the name "seq:subj" to "subj(seq)" in anova with the mode of "Y ~ seq + subj:seq +
+      per + trt" in order to be conveniently cross validated with SAS (thanks to Elmaestro)
+    - mostly minor changes with this release
+v2.4.0
+    - add data analysis of multiple-dose (MD) ABE data
+    - add Cook's distance for outlier detection with various criteria
+    - fixed y-axis scaling problem
+v2.3.1
+    - fixed NCA plots of  Time scale (with autoscale)
+    - used the difference of lsmeans between the Ref. and the Test to calculate 90% CIs for 
+      Cmax and AUCs
+v2.3.0
+    - add sample size estimation and lme analysis for the parallel BE study
+    - add References into bear's output (such as ANOVA)
+    - label outliers' subjects number for boxplot only if there is any (see crossover demo)
+    - add input data summary of BA measurement (class level information, means, etc.)
+    - add interpretations for some statistical tests (such as Hotelling T2 test)
+    - add add Two One-Sided Tests (TOST) and Anderson-Hauck's tests (just for educational 
+      purposes ONLY)
+    - allow users to change BE acceptance range now (not fixed on 80%-125% any more!); different
+      countries have different regulatory basis...
+    - show MSResidual and MSSubject(seq) values when calculating inter- and intra-subject CV
+    - change Hotelling T2 test layout
+
+v 2.2.0
+    - add point estimate along with 90% CI in output file called 'Statistical_summaries.txt 
+      (suggested by D. Labes).
+    - add sample size estimation for replicate BE study, and output re-arrangement.
+    - add Hotelling T2 function and boxplot for outlier detection
+    - add Quantiles for intrasubject and intersubject (with boxplot)
+    - add replicated study for 2*2*3, 2*2*4, 2*2*5, and 2*2*6 (using lme to analyze replicated
+      BE study)
+    - add sample size estimation for replicated study (using 2*2*2 sample size estimation extended 
+      to 2*2*n sample size of replicate crossover design)
+
+v.2.1.0
+    - we add 'analysis of outliers detection' since this release.  These include some normality 
+      tests, and some diagnostic plots for this functions, such as QQ plots and intra- and 
+      inter-subject residual plots.
+    - fix intra-subject CV calculation based on ref. #6. (thanks to Helmut Schutz).
+
+v1.5.0~2.0.3
+   - now £fz can be estimated from three methods: manual selections of the 3 exact data points,
+     computer selection based on adjusted R sq. (ARS), and the Two-Times-Tmax (TTT) Method.
+   - re-structure all codes of bear since v2.0.0.
+   - add R sq. in NCA output; the original one is adjusted R sq. & changed T1/2 to T1/2(z) in NCA 
+     output file
+   - corrected some typo errors appearing in the output files or console display
+   - rearrange the output files with better styles: such as 3-decimal digits for 'power', etc.
+   - built-in the data file (.RData) required for demo purposes; user doesn't need to enter/import
+     /load it again
+   - manual selection of the 3 exact data points can be saved now.  user does not have to redo it 
+     next time.
+   - displayed the method used to estimate £fz in NCA output
+   - changed '0.693' to ln(2) when estimating T1/2(z) (= ln(2)/£fz) in NCA algorithm
+   - changed LSM-ref and LSM-test to LSMEAN-ref and LSMEAN-test, respectively, in the output file 
+     of 'Statistical_Summaries.txt'
+   - and many more that I just cannot remember right now...
+
+v1.1.5
+   - fixed the anova (lm) calculation due to the import of a .csv file. (thanks to Ji?i Hofmann, 
+     Czech Republic)
+   - added Type III SS (suggested by EIMaestro)
+   - changed upper bound of sample size estimation from 105% to 95% (more conservative; suggested 
+     by Helmut Schutz)
+
+v1.1.4
+   - fixed the compatibility for iMac and Linux (thanks to Koji Shimamoto, Tokyo, Japan; also for 
+     his testing bear on iMac)
+
+v1.1.3-1.1.0
+   - removed the function of "Sample size estimation (raw data)"; also improve the function of 
+     "Sample size estimation (Log Transform)."
+   - fixed the rounding error in the display of "Sample size estimation (Log transform)" (thanks
+     to Helmut Schutz)
+   - fixed some the format (comma, semicolon, etc.) of import data file (thanks to Helmut Schutz); users 
+     now can choose their favorite formats.
+   - display the PATH where bear will import from and will output the all results to.
+   - display only one graphic devices (using PageDown & PageUp to change plots) (thanks to Helmut Schutz)
+   - display semilog (not linear) plots when choosing data points to do linear regression for 
+     £fz in NCA (thanks to Helmut Schutz)
+   - calculate CV_intra & CV_inter now (thanks to Helmut Schutz)
+   - output both the .csv and the .RData file formats obtained from NCA; users can choose either 
+     one for anova.
+   - use "Tests of SUBJECT(SEQUENCE) as an error term" in ANOVA output (thanks to Helmut Schutz)
+   - changed ANOVA(GLM) to ANOVA (lm) in the menu title (thanks to ElMaestro)
+-----
+
+To-do lists (July 23, 2009)
+-----
+- add configuration setup file (as .RData data frame) into bear.  Use can create/edit this 
+  configuration file. Once data has been imported, don't need to enter anything... just sit 
+  back and watch. 
+
+-----
+References
+1. Hauschke D, Steinijans VW, Diletti E and Burke M. Sample size determination for bioequivalence
+    assessment using a multiplicative model. J. Pharmacokin. Biopharm. 20:557-561, 1992. 
+2. U.S. Dept of Health and Human Services, Food and Drug Administration, Center for Drug Evaluation and
+    Research.  Guidance for industry. Statistical approaches to establishing bioequivalence, 2001.
+3. Liu JP and Chow SC. Sample size determination for the twp one-sided tests procedure in bioequivalence.
+    J. Pharmacokin. Biopharm. 20:101-104, 1992. 
+4. Schuirmann DJ. A comparison of the two one-sided tests procedure and the power approach for assessing
+    the equivalence of average bioavailability. J. Pharmacokin. Biopharm. 15:657-680, 1987. 
+5. Chow SC, Liu JP. Design and Analysis of Bioavailability and Bioequivalence Studies. 2009; 3rd. ed., CRC
+    Press, Chapman & Hall/CRC.
+6. Hauschke D, Steinijans V, Pigeot I. Bioequivalence Studies in Drug Development: Mehtods and
+    Applications, 2007; John Wiley & Sons Ltd. 

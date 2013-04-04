@@ -73,7 +73,7 @@ show(comdata)
                    cat("*****************************************\n")
                    ans<-readline()
                       if (ans == "y" | ans == "Y"){
-                      save(comdata,file=comdataname)
+                      saveRDS(comdata,comdataname)
                       cat("\n")
                               }
                       else{
@@ -95,10 +95,10 @@ show(comdata)
                          }
                         }
                       }
-              save(comdata,file=comdataname)
+              saveRDS(comdata,comdataname)
                 }
                 else{
-                 save(comdata,file=comdataname)
+                 saveRDS(comdata,comdataname)
                   }
              if(replicated){
                    if(MIX){

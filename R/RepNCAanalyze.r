@@ -1,7 +1,10 @@
 #Input assay data Menu for Data Analysis for Single dose
-options(warn=-1)
+
 RepNCAanalyze<-function(TotalSingledata, Dose, xaxis,yaxis, separateWindows=TRUE, MIX=FALSE)
 {
+
+options(warn=-1)
+
 description_NCA()
 
 with(entertitle(), {
@@ -47,7 +50,7 @@ show(SingleRdata)
 SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
 SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
 SingleRdata1 <- na.omit(SingleRdata1)
-##SingleRdata1-->for select 3 points
+##SingleRdata1-->for select 2-6 points
 cat("\n\n")
 Testdata<-data.frame(subj=Singledata[[2]]$subj, seq=Singledata[[2]]$seq, prd=Singledata[[2]]$prd,
                      drug=Singledata[[2]]$drug, time=Singledata[[2]]$time, conc=Singledata[[2]]$conc,
@@ -57,23 +60,24 @@ show(SingleTdata)
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
 SingleTdata1 <- na.omit(SingleTdata1)
-##SingleTdata1-->for select 3 points
+##SingleTdata1-->for select 2-6 points
 cat("\n\n")
 #'Total" for NCAplot
 Totalplot<- rbind(SingleRdata,SingleTdata)
 
    cat("\n")
-   file.menu <- c("Select 2-4 data points manually",
-                  "Load previous selection (2-4 data points)",
+   file.menu <- c("Select 2-6 data points manually",
+                  "Load previous selection (2-6 data points)",
                   "Use Adjusted R sq. (ARS) method",
                   "Use Akaike information criterion (AIC) method",
                   "Use the Two-Times-Tmax(TTT) method",
                   "Use TTT and ARS method",
                   "Use TTT and AIC method")
    cat("\n")
-   pick <- menu(file.menu, title = "<< Lambda_z options >>")
+   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>")
 
    if (pick ==1){
+      description_pointselect()
      if(MIX){
      RepNCAselect.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
      bye()
@@ -86,16 +90,23 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
  else {
   if (pick == 2){
      description_load()
-     comdataname <-readline()
-     comdataname<-paste(comdataname,".RData",sep="")
-     load(comdataname)
+     ##  comdataname <-readline()
+     ##  comdataname<-paste(comdataname,".RData",sep="")
+     ##  load(comdataname)
+     comdata<-readRDS(file.choose())
      comdata<-edit(comdata)
      comdata<- na.omit(comdata)
      colnames(comdata)<-list("subj", "time", "conc","conc_data","seq", "prd", "drug","code")
      cat("\n\n")
      description_drug()
      show(comdata)
-     save(comdata,file=comdataname)
+##
+## no need to save it again!  since this file has been created previously.-- YJ
+##
+##     cat("\n\n Enter the file name to be saved (no extension!):\n")
+##     comdataname <-readline()
+##     comdataname<-paste(comdataname,".RData",sep="")
+##     save(comdata,file=comdataname)
      cat("\n\n")
 
       Tcomdata<-split(comdata, list(comdata$drug))

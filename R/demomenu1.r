@@ -1,8 +1,17 @@
-##demo for NCA
+##
+## will be called by NCA.BANOVAmenu(); demo fro NCA -> ANOVA
+##
 demomenu1<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
+Demo<-Demo  ## set Demo as Global see go.r
+Demo<<-TRUE
+Replicateddata<-NULL
+MultipleParadata<-NULL
+Paralleldata<-NULL
+Multipledata<-NULL
+
 cat("\n")
-  file.menu <- c("NCA (2-4 data points) --> Statistical analysis",
+  file.menu <- c("NCA (select 2-6 data points) --> Statistical analysis",
                  "NCA (ARS) --> Statistical analysis",
                  "NCA (AIC) --> Statistical analysis",
                  "NCA (TTT) --> Statistical analysis",
@@ -13,7 +22,9 @@ cat("\n")
  cat("\n")
   pick <- menu(file.menu, title = " << NCA --> Statistical analysis>> ")
   if(replicated){
-    data(Replicateddata)
+    filelocxx <- system.file("extdata", "Replicateddata.rda", package="bear")
+    load(filelocxx)  ## because it is a *.rda data file
+    ## saveRDS(Replicateddata,"Replicateddata_demo.RData")
 
     with(entertitle.demo(), {
      description_RepNCAinput()  
@@ -67,52 +78,79 @@ SingleTdata<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
 SingleTdata1 <- na.omit(SingleTdata1)
-Totalplot<- rbind(SingleRdata,SingleTdata)              
+
+Totalplot<- rbind(SingleRdata,SingleTdata)
+
+    ###
+    ### prepare to save sum_all_by_product.csv here... YJ
+    TKK<-Totalplot
+    ### dump ref data
+    SS_ref<-subset(TKK,TKK$drug==1)                                                                                                    
+    timeXX<-SS_ref$time                                                                                                                
+    timeXX<-unique(timeXX)                                                                                                             
+    product_F<-factor(SS_ref$time)   # get mean & sd by time as factor                                                                 
+    mean.conc.ref<-tapply(SS_ref$conc,product_F, mean)                                                                                 
+    SD.conc.ref<-tapply(SS_ref$conc,product_F, sd)                                                                                     
+    SS_test<-subset(TKK,TKK$drug==2)
+    timeZZ<-SS_test$time                                                                                                                
+    timeZZ<-unique(timeZZ)                                                                                                             
+    product_F<-factor(SS_test$time)                                                                                                    
+    mean.conc.test<-tapply(SS_test$conc,product_F, mean)                                                                               
+    SD.conc.test<-tapply(SS_test$conc,product_F, sd)                                                                                   
+    sum_all_Ref<-data.frame(time=timeXX,mean_ref=mean.conc.ref,SD_ref=SD.conc.ref)
+    sum_all_test<-data.frame(time=timeZZ,mean_test=mean.conc.test,SD_ref=SD.conc.test)
+    write.csv(sum_all_Ref,file="sum_all_Ref.csv",row.names=FALSE)  
+    write.csv(sum_all_Ref,file="sum_all_test.csv",row.names=FALSE) ### <-- it's working!!  YJ
+    ###
+    ### show(sum_all_by_product)  ### try to write.csv() and then read.csv() again and show(), 
+    ### cat("\n\n"); readline()   ### finally file.remove("sum_all_by_product.csv") after show().
+    ###              
       
    if (pick == 1){
+        description_pointselect()
       cat("\n")
-        show(SingleRdata)
-        show(SingleTdata)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
         RepNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
         RepNCA.MIXmenu()
         }
     else {
     if (pick == 2){
         cat("\n")
-        show(SingleRdata)
-        show(SingleTdata)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
         RepARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
        }
     else {
     if (pick == 3){
         cat("\n")
-        show(SingleRdata)
-        show(SingleTdata)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
         RepAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
        }
     else {
     if (pick == 4){
         cat("\n")
-        show(SingleRdata)
-        show(SingleTdata)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
         RepTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
        }
     else {
     if (pick == 5){
         cat("\n")
-        show(SingleRdata)
-        show(SingleTdata)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
         RepTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
          }
    else {
     if (pick == 6){
         cat("\n")
-        show(SingleRdata)
-        show(SingleTdata)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
         RepTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
         }
@@ -123,7 +161,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -137,7 +176,9 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
  else{
     if(parallel){
      if(multiple){
-      data(MultipleParadata)
+      filelocxx <- system.file("extdata", "MultipleParadata.rda", package="bear")
+      load(filelocxx)  ## because it is a *.rda data file; leave it as was
+      
       with(Multiplentertitle.demo(), {
       description_ParaNCAinput()  
       Singledata<-split(MultipleParadata, list(MultipleParadata$drug))
@@ -161,8 +202,33 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
       SingleTdata<-subset(SingleTdata0, time >=TlastD)
       
       Totalplot<- rbind(SingleRdata,SingleTdata)
+      ###
+      ### prepare to save sum_all_by_product.csv here... YJ
+      TKK<-Totalplot
+      ### dump ref data
+      SS_ref<-subset(TKK,TKK$drug==1)                                                                                                    
+      timeXX<-SS_ref$time                                                                                                                
+      timeXX<-unique(timeXX)                                                                                                             
+      product_F<-factor(SS_ref$time)   # get mean & sd by time as factor                                                                 
+      mean.conc.ref<-tapply(SS_ref$conc,product_F, mean)                                                                                 
+      SD.conc.ref<-tapply(SS_ref$conc,product_F, sd)                                                                                     
+      SS_test<-subset(TKK,TKK$drug==2)
+      timeZZ<-SS_test$time                                                                                                                
+      timeZZ<-unique(timeZZ)                                                                                                             
+      product_F<-factor(SS_test$time)                                                                                                    
+      mean.conc.test<-tapply(SS_test$conc,product_F, mean)                                                                               
+      SD.conc.test<-tapply(SS_test$conc,product_F, sd)                                                                                   
+      sum_all_Ref<-data.frame(time=timeXX,mean_ref=mean.conc.ref,SD_ref=SD.conc.ref)
+      sum_all_test<-data.frame(time=timeZZ,mean_test=mean.conc.test,SD_ref=SD.conc.test)
+      write.csv(sum_all_Ref,file="sum_all_Ref.csv",row.names=FALSE)  
+      write.csv(sum_all_Ref,file="sum_all_test.csv",row.names=FALSE) ### <-- it's working!!  YJ
+      ###
+      ### show(sum_all_by_product)  ### try to write.csv() and then read.csv() in NCAoutput() again and show() it, 
+      ### cat("\n\n"); readline()   ### finally file.remove("sum_all_by_product.csv") to remove this file.
+      ###                    
       
     if (pick == 1){
+        description_pointselect()
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
@@ -217,7 +283,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -229,7 +296,9 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
   })         
  }
     else{
-     data(Paralleldata)
+     filelocxx <- system.file("extdata", "Paralleldata.rda", package="bear")
+     load(filelocxx)  ## because it is a *.rda data file
+     
      with(entertitle.demo(), {
      description_ParaNCAinput()  
       Singledata<-split(Paralleldata, list(Paralleldata$drug))
@@ -249,9 +318,34 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
       SingleTdata1 <- na.omit(SingleTdata1)
       Totalplot<- rbind(SingleRdata,SingleTdata)
+      ###
+      ### prepare to save sum_all_by_product.csv here... YJ
+      TKK<-Totalplot
+      ### dump ref data
+      SS_ref<-subset(TKK,TKK$drug==1)                                                                                                    
+      timeXX<-SS_ref$time                                                                                                                
+      timeXX<-unique(timeXX)                                                                                                             
+      product_F<-factor(SS_ref$time)   # get mean & sd by time as factor                                                                 
+      mean.conc.ref<-tapply(SS_ref$conc,product_F, mean)                                                                                 
+      SD.conc.ref<-tapply(SS_ref$conc,product_F, sd)                                                                                     
+      SS_test<-subset(TKK,TKK$drug==2)
+      timeZZ<-SS_test$time                                                                                                                
+      timeZZ<-unique(timeZZ)                                                                                                             
+      product_F<-factor(SS_test$time)                                                                                                    
+      mean.conc.test<-tapply(SS_test$conc,product_F, mean)                                                                               
+      SD.conc.test<-tapply(SS_test$conc,product_F, sd)                                                                                   
+      sum_all_Ref<-data.frame(time=timeXX,mean_ref=mean.conc.ref,SD_ref=SD.conc.ref)
+      sum_all_test<-data.frame(time=timeZZ,mean_test=mean.conc.test,SD_ref=SD.conc.test)
+      write.csv(sum_all_Ref,file="sum_all_Ref.csv",row.names=FALSE)  
+      write.csv(sum_all_Ref,file="sum_all_test.csv",row.names=FALSE) ### <-- it's working!!  YJ
+      ###
+      ### show(sum_all_by_product)  ### try to write.csv() and then read.csv() again and show(), 
+      ### cat("\n\n"); readline()   ### finally file.remove("sum_all_by_product.csv") after show().
+      ###                    
       
     if (pick == 1){
-      cat("\n")
+        description_pointselect()
+        cat("\n")
         show(SingleRdata)
         show(SingleTdata)
         ParaNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
@@ -305,7 +399,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -319,7 +414,9 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
 } 
  else{
      if(multiple){
-     data(Multipledata)
+     filelocxx <- system.file("extdata", "Multipledata.rda", package="bear")
+     load(filelocxx)  ## because it is a *.rda data file
+     
      with(Multiplentertitle.demo(), {
      description_NCAinput()  
       TotalSingledata<-Multipledata
@@ -343,8 +440,31 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
      SingleRdata<-subset(SingleRdata0, time >=TlastD)
      SingleTdata<-subset(SingleTdata0, time >=TlastD)
      Totalplot<- rbind(SingleRdata0,SingleTdata0)
-      
+     ###
+     ### prepare to save sum_all_by_product.csv here... YJ
+     TKK<-Totalplot
+     SS_ref<-subset(TKK,TKK$drug==1)                                                                                                    
+     timeXX<-SS_ref$time                                                                                                                
+     timeXX<-unique(timeXX)                                                                                                             
+     product_F<-factor(SS_ref$time)   # get mean & sd by time as factor                                                                 
+     mean.conc.ref<-tapply(SS_ref$conc,product_F, mean)                                                                                 
+     SD.conc.ref<-tapply(SS_ref$conc,product_F, sd)                                                                                     
+     SS_test<-subset(TKK,TKK$drug==2)
+     timeZZ<-SS_test$time                                                                                                                
+     timeZZ<-unique(timeZZ)                                                                                                             
+     product_F<-factor(SS_test$time)                                                                                                    
+     mean.conc.test<-tapply(SS_test$conc,product_F, mean)                                                                               
+     SD.conc.test<-tapply(SS_test$conc,product_F, sd)                                                                                   
+     sum_all_Ref<-data.frame(time=timeXX,mean_ref=mean.conc.ref,SD_ref=SD.conc.ref)
+     sum_all_test<-data.frame(time=timeZZ,mean_test=mean.conc.test,SD_ref=SD.conc.test)
+     write.csv(sum_all_Ref,file="sum_all_Ref.csv",row.names=FALSE)  
+     write.csv(sum_all_Ref,file="sum_all_test.csv",row.names=FALSE) ### <-- it's working!!  YJ
+     ### show(sum_all_by_product)  ### try to write.csv() and then read.csv() again and show(), 
+     ### cat("\n\n"); readline()   ### finally file.remove("sum_all_by_product.csv") after show().
+     ###                   
+           
     if (pick == 1){
+        description_pointselect()
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")                 
@@ -399,7 +519,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
    else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }      
              }
            }
@@ -412,7 +533,9 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
  }
    else{
     description_NCAinput()
-    data(TotalSingledata)
+    filelocxx <- system.file("extdata", "TotalSingledata.rda", package="bear")
+    load(filelocxx)  ## because it is a *.rda data file
+    
     cat("\n\n")
      ##NCAanalyze or NCAGLManalyze
      with(entertitle.demo(), {
@@ -435,9 +558,34 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
       SingleTdata1 <- na.omit(SingleTdata1)
       Totalplot<- rbind(SingleRdata,SingleTdata)
+      ###
+      ### prepare to save sum_all_by_product.csv here... YJ
+      TKK<-Totalplot
+      ### dump ref data
+      SS_ref<-subset(TKK,TKK$drug==1)                                                                                                    
+      timeXX<-SS_ref$time                                                                                                                
+      timeXX<-unique(timeXX)                                                                                                             
+      product_F<-factor(SS_ref$time)   # get mean & sd by time as factor                                                                 
+      mean.conc.ref<-tapply(SS_ref$conc,product_F, mean)                                                                                 
+      SD.conc.ref<-tapply(SS_ref$conc,product_F, sd)                                                                                     
+      SS_test<-subset(TKK,TKK$drug==2)
+      timeZZ<-SS_test$time                                                                                                                
+      timeZZ<-unique(timeZZ)                                                                                                             
+      product_F<-factor(SS_test$time)                                                                                                    
+      mean.conc.test<-tapply(SS_test$conc,product_F, mean)                                                                               
+      SD.conc.test<-tapply(SS_test$conc,product_F, sd)                                                                                   
+      sum_all_Ref<-data.frame(time=timeXX,mean_ref=mean.conc.ref,SD_ref=SD.conc.ref)
+      sum_all_test<-data.frame(time=timeZZ,mean_test=mean.conc.test,SD_ref=SD.conc.test)
+      write.csv(sum_all_Ref,file="sum_all_Ref.csv",row.names=FALSE)  
+      write.csv(sum_all_Ref,file="sum_all_test.csv",row.names=FALSE) ### <-- it's working!!  YJ
+      ###
+      ### show(sum_all_by_product)  ### try to write.csv() and then read.csv() again and show(), 
+      ### cat("\n\n"); readline()   ### finally file.remove("sum_all_by_product.csv") after show().
+      ###                    
     if (pick == 1){
       cat("\n")
-         show(SingleRdata)
+        description_pointselect()
+        show(SingleRdata)
         show(SingleTdata)
         NCAselectdemo.BANOVA(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
         NCA.BANOVAmenu()
@@ -446,7 +594,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
     else {
     if (pick == 2){
         cat("\n")
-          show(SingleRdata)
+        show(SingleRdata)
         show(SingleTdata)
         ARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         NCA.BANOVAmenu()
@@ -457,42 +605,43 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-       AIC_BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       NCA.BANOVAmenu()
+        AIC_BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
        }
     else {
     if (pick == 4){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-       TTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       NCA.BANOVAmenu()
+        TTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
        }
     else {
     if (pick == 5){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-       TTTARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       NCA.BANOVAmenu()
+        TTTARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
          }
    else {
     if (pick == 6){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-       TTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       NCA.BANOVAmenu()
+        TTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
         }
     else {
     if (pick == 7){
         cat("\n")
-      NCA.BANOVAmenu()
+        NCA.BANOVAmenu()
          }
      else {
     if (pick == 8){
        cat("\n")
-       cat("\nThank you for using bear!  Bye now. \n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
               }
              }
            }

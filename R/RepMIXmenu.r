@@ -49,7 +49,8 @@ cat("\n")
        }
    else {
     if (pick == 4){
-        cat("\nThank you for using bear!  Bye now. \n\n")
+        cat("\n  Thank you for using bear!  Bye now. \n\n")
+        graphics.off()
              }
            }
        }

@@ -1,4 +1,5 @@
 description_size<-function(parallel=FALSE){
+cat("\n\n")
 cat("****************************************************************************\n")
 cat("                            Required data                                   \n")
 cat("----------------------------------------------------------------------------\n")
@@ -18,5 +19,6 @@ cat(" 4. Lower acceptance limit represents the lower BE criteria to be accepted;
 cat("    the upper acceptance limit is equal to 1/(lower acceptance limit).     \n")
 cat("    Usually the lower limit can be 80.000% or, 70.000% in some cases.      \n")
 cat("****************************************************************************\n")
-cat("\n")
+cat("\n\n")
+readline(" Press Enter to continue...")
 }

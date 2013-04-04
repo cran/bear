@@ -1,8 +1,7 @@
 description_import<-function(){
    cat("\n\n")
    filepath<-getwd()
-   cat("Bear will load your data file from the directory of \n")
-   cat("",filepath,".\n")
-   cat("\n")
-   cat("\nEnter the file name (** Please NO file extention! **):\n")
+   cat("bear will read and import your data file (*.csv) from\n")
+   cat("",filepath,"by default.\n\n")
+   readline("  Press Enter to select file...")
 }

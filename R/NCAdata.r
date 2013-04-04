@@ -30,7 +30,7 @@ if (pick == 1){
      TotalSingledata<- na.omit(TotalSingledata)
      show(TotalSingledata)
      cat("\n")
-      cat("Enter the file name:\n")
+      cat("Enter the file name (no extension!):\n")
         TotalSinglename <-readline()
         TotalSinglename<-paste(TotalSinglename,".RData",sep="")
            if(file.exists(TotalSinglename)){
@@ -42,11 +42,11 @@ if (pick == 1){
            ans<-readline()
              if (ans == "y" | ans == "Y")
                 {
-                save(TotalSingledata, file=TotalSinglename)
+                saveRDS(TotalSingledata, TotalSinglename)
                 cat("\n")
                 }
                 else{
-                cat("\nEnter file name:\n")
+                cat("\nEnter filename to be saved (no file extension!):\n")
                 TotalSinglename <-readline()
                 TotalSinglename<-paste(TotalSinglename,".RData",sep="")
                 repeat{
@@ -65,10 +65,10 @@ if (pick == 1){
                            }
                     }
              }
-              save(TotalSingledata,file=TotalSinglename)
+              saveRDS(TotalSingledata,TotalSinglename)
            }
         else{
-           save(TotalSingledata,file=TotalSinglename)
+           saveRDS(TotalSingledata,TotalSinglename)
           }
            if(parallel){
              if(multiple){
@@ -108,7 +108,7 @@ else {
       }
       else{
         if (replicated){
-        description_RepNCAcsv
+        description_RepNCAcsv()
         return(RepNCAcsv())
         }
         else{
@@ -123,14 +123,15 @@ else {
       }
     }
 else {
-  if (pick == 3){
+  if (pick == 3){ 
       cat("\n")
       description_load()
-         TotalSinglename <-readline()
-         TotalSinglename<-paste(TotalSinglename,".RData",sep="")
-         load(TotalSinglename)
-         TotalSingledata<-edit(TotalSingledata)
-         TotalSingledata<- na.omit(TotalSingledata)
+##     TotalSinglename <-readline() 
+##     TotalSinglename<-paste(TotalSinglename,".RData",sep="")
+##     load(TotalSinglename)
+     TotalSingledata<-readRDS(file.choose())  # musch better than using load()
+     TotalSingledata<-edit(TotalSingledata)
+     TotalSingledata<- na.omit(TotalSingledata)
          if(parallel){
          colnames(TotalSingledata)<-list("subj", "drug","time", "conc")
          }
@@ -144,7 +145,9 @@ else {
           }
          cat("\n\n")
          show(TotalSingledata)
-         save(TotalSingledata,file=TotalSinglename)
+         TotalSinglename <-readline(" Enter the filename to be saved (no extension):")                           
+         TotalSinglename<-paste(TotalSinglename,".RData",sep="")
+         saveRDS(TotalSingledata,TotalSinglename)
          cat("\n\n")
          if(parallel){
            if(multiple){
@@ -193,10 +196,11 @@ else {
              }
           }
       }
-    } 
+}
   else {
   if (pick == 5){
-     cat("\nThank you for using bear!  Bye now. \n\n")
+     cat("\n   Thank you for using bear!  Bye now. \n\n")
+     graphics.off()
                 }
      }
     }

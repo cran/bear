@@ -1,17 +1,23 @@
-RepMIXoutput<-function(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF
-                       ,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2
-                       ,parallel=FALSE, multiple=FALSE)
+RepMIXoutput<-function(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
+                       lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
+                       parallel=FALSE, multiple=FALSE)
 {
+
+## to avoid "not visible binding..." error message with codetool
+lm_stat_xfile<- lm_stat_xfile 
+lme_stat_xfile<- lme_stat_xfile
+##
+
 filepath<-getwd()
 cat("\n")
 cat("****************************************************************************\n")
 cat(" The following output files can be found at the directory of                \n")
-cat(" ",filepath,".                                                              \n")
+cat(" ",filepath,"                                                              \n")
 cat("----------------------------------------------------------------------------\n")
 if(parallel){
-   cat(" lm_stat.txt \n")}
+   cat(" xxx_lm_stat.txt \n")}
  else{
-   cat(" lme_stat.txt \n")
+   cat(" xxx_lme_stat.txt \n")
 }
 if(multiple){
 cat("    -->lme/lm: Cmax_ss, AUC(tau)ss, lnCmax_ss, lnAUC(tau)ss               \n")
@@ -60,28 +66,25 @@ drug_mean<-data.frame(DRUG=rdrug$drug,Cmax=rdrug$Cmax, AUC0t=rdrug$AUC0t, AUC0IN
                       
 }
 if(parallel){
-   zz <- file("lm_stat.txt", open="wt")}
+   zz <- file(lm_stat_xfile, open="wt")}
  else{
-   zz <- file("lme_stat.txt", open="wt")}
+   zz <- file(lme_stat_xfile, open="wt")}
 sink(zz)
 description_version()
-cat("\n")
 cat("  List of Input Data from NCA                  \n")
 cat("-----------------------------------------------\n")
 show(TotalData1)
 cat("\n")
 cat("\n")
-cat("\n")
-cat("  Class Level Information                  \n")
+cat("  Class Levels Information                     \n")
 cat("-----------------------------------------------\n")
 cat("  Class       Levels      Values\n")  
 if(parallel){
 cat("  SUBJECT     ",level[[1]],"        ",sort(as.numeric(levels(values$subj))) ,"\n")
 cat("  DRUG         ",level[[2]],"        ",sort(as.numeric(levels(values$drug))),"\n")
 cat("-----------\n")
-cat("DRUG 1: the Ref. product; DRUG 2: the Test product\n")
-cat("--------------------------------------------------\n")
-cat("\n")
+cat(" DRUG 1: the Ref. product; DRUG 2: the Test product \n")
+cat("----------------------------------------------------\n")
 cat("\n")
 cat("\n")
 
@@ -89,7 +92,6 @@ cat(" Means                  \n")
 cat("--------------------------------------------------\n") 
       
 show(drug_mean)
-cat("\n")
 cat("\n")
 cat("\n")                     
    if(multiple){
@@ -102,18 +104,16 @@ cat("\n")
  }
 else{ 
 cat("  SUBJECT     ",level[[1]],"        ",subj_mean$SUBJECT,"\n")
-cat("  DRUG         ",level[[2]],"        ",sort(as.numeric(levels(values$drug))),"\n")
+cat("  DRUG/TRT     ",level[[2]],"        ",sort(as.numeric(levels(values$drug))),"\n")
 cat("  SEQUENCE     ",level[[3]],"        ",sort(as.numeric(levels(values$seq))),"\n")
 cat("  PERIOD       ",level[[4]],"        ",sort(as.numeric(levels(values$prd))),"\n")
 cat("--------\n")
-cat("DRUG 1: the Ref. product; DRUG 2: the Test product\n")
-cat("--------------------------------------------------\n")
-cat("\n")
-cat("\n")
+cat(" DRUG 1: the Ref. product; DRUG 2: the Test product \n")
+cat("----------------------------------------------------\n")
 cat("\n")
 
 cat(" Means                  \n")
-("--------------------------------------------------\n")
+cat("----------------------------------------------------\n")
 
 show(seq_mean)
 cat("\n")
@@ -130,11 +130,10 @@ cat("\n")
 show(drug_mean)
 cat("\n")
 cat("\n")
-cat("\n")
 RepMIX(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
         lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
 } 
-cat("\n")
+cat("\n\n")
 sink()
- 
+close(zz)
 } 
