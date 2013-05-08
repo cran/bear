@@ -1,16 +1,20 @@
 ###Aceto revised NCA codes for lambda_z (WinNolin)
+### other methods like this: NCAselect(), aic(), TTT(), ARS(), TTTARS(). 
+###
 TTTAIC<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0,  
               separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE,replicated=FALSE,MIX=FALSE, parallel=FALSE, multiple=FALSE)
 {
 options(warn=-1)
 description_TTTAIC()
-
+cat("\n\n Warning: bear is going to save all linear regression plots\n for lambda_z estimation now.\n\n")
+readline(" It may take a while to finish. Press Enter to continue...")
 ### plots of regression line for lambda_z_estimation
 lambda_z_regression_lines<-lambda_z_regression_lines
 ###
-windows(record=TRUE)
-par(las=1, ask=TRUE)
-pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
+par(mfrow=c(1,1),las=1)   ### set 'ask=FASLE' (as default) to generate pdf file quickly, no more stop here. -YJ
+pdf(lambda_z_regression_lines,paper="a4")  ### now prepare to save as pdf here.  -YJ
+logo_plot_desc()
+###
 
 #split dataframe into sub-dataframe by subject for reference data
   if(replicated){
@@ -84,17 +88,20 @@ pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
           }         
           yy1<-R.split[[j]]$conc
           yyy1<-(R.split[[j]][(nrow(R.split[[j]])-n_TTT_AIC+1):nrow(R.split[[j]]),])$conc
-          main<-paste(c("[TTT-AIC] Subj. Ref#_", R.split[[j]]$subj[1]),collapse=" ")
+          if (replicated){
+               main<-paste("[TTTAIC] Subj.# ",subj[j]," [Period# ",prd[j],", Seq# ",seq[j]," - Ref.]",sep="")}
+           else {
+               main<-paste(c("[TTTAIC] Subj.#", R.split[[j]]$subj[1],"-Ref."),collapse=" ")}
           if(multiple){
-             plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 1.25*max(xx1)), ylim=range(1, 10.*max(yy1)),
-             xlab="Time", ylab= "Conc. (in log10 scale)",     ## log="y" as semilog plot here (YJ)
+             plot(xx1,yy1, log="y", axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
+             xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "),     ## log="y" as semilog plot here (YJ)
              main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
              lines(xx1,yy1, lty=20)
-             axis(1, pos=1)
+             axis(1, pos=0.001)
              axis(2, pos=0,las=1)
          }
           else{
-             plot(xx1,yy1,log="y", xlim=range(0,1.25*max(xx1)), ylim=range(1,10.*max(yy1)),xlab="Time", ylab= "Conc. (in log10 scale)", main=main,
+             plot(xx1,yy1,log="y", xlim=range(xx1), ylim=c(1e-3,1e+5),xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "), main=main,
              cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
              lines(xx1,yy1, lty=20)
              axis(1,tcl=-.2,labels=TRUE)
@@ -120,24 +127,6 @@ pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
           ### add legend here
           ### legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
           legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
-          ### here revert between pdf() and graphic device                          ### warning: [min(yy1)/10] must be > or = 1.0 here
-          if(pdf_activate){
-             dev.copy()                ## copy to pdf file 2nd plots to end
-             dev.set(which=x11c)       ## back to graphic device now to continue...
-                          }
-          else{
-             x11c<-dev.cur()                 ## the current graphics device
-             pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
-                  paper="a4")
-             description_plot()              ## bear output logo
-             pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
-             dev.set(which=x11c)             ## back to graphics device...
-             dev.copy()                      ## copy the first plot here
-             dev.set(which=x11c)             ## back to graphics device
-              }
-###
-###  end plotting here...
-###
 
              auc_ref <-0
              tmax_ref<-0
@@ -181,7 +170,7 @@ pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
                   CminRef[j]<-Cmin_ref
                   AUCINFRef[j]<-aucINF
                   AUCTRef[j]<-auc_ref[length(R.split[[j]][["conc"]])]
-                  TmaxRef[j]<-R.split[[j]]$time[xr] #R.split[[j]][xr,5]->R.split[[j]]$time[xr]
+                  TmaxRef[j]<-ifelse(multiple, R.split[[j]]$time[xr] -TlastD, R.split[[j]]$time[xr]) #R.split[[j]][xr,5]->R.split[[j]]$time[xr]
                   T12Ref[j]<-log(2)/ke[j]
                   KelRef[j]<-ke[j]
                   
@@ -338,17 +327,20 @@ if(replicated){
           }         
           yy1<-T.split[[j]]$conc
           yyy1<-(T.split[[j]][(nrow(T.split[[j]])-n_TTT_AIC+1):nrow(T.split[[j]]),])$conc
-          main<-paste(c("[TTT-AIC] Subj. Test#_", T.split[[j]]$subj[1]),collapse=" ")
+          if (replicated){
+               main<-paste("[TTTAIC] Subj.# ",subj1[j]," [Period# ",prd1[j],", Seq# ",seq1[j]," - Test]",sep="")}
+           else {
+               main<-paste(c("[TTTAIC] Subj.#", T.split[[j]]$subj[1],"-Test"),collapse=" ")}
           if(multiple){
-             plot(xx1,yy1, log="y", axes=FALSE,xlim=range(xx1+(xx1/2), 1.25*max(xx1)), ylim=range(1, 10.*max(yy1)),
-             xlab="Time", ylab= "Conc. (in log10 scale)",     ## log="y" as semilog plot here (YJ)
+             plot(xx1,yy1, log="y", axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
+             xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "),     ## log="y" as semilog plot here (YJ)
              main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
              lines(xx1,yy1, lty=20)
-             axis(1, pos=1)
+             axis(1, pos=0.001)
              axis(2, pos=0,las=1)
          }
           else{
-             plot(xx1,yy1,log="y", xlim=range(0,1.25*max(xx1)), ylim=range(1,10.*max(yy1)),xlab="Time", ylab= "Conc. (in log10 scale)", main=main,
+             plot(xx1,yy1,log="y", xlim=range(xx1), ylim=c(1e-3,1e+5),xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "), main=main,
              cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
              lines(xx1,yy1, lty=20)
              axis(1,tcl=-.2,labels=TRUE)
@@ -374,24 +366,6 @@ if(replicated){
           ### add legend here
           ### legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
           legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
-          ### here revert between pdf() and graphic device                          ### warning: [min(yy1)/10] must be > or = 1.0 here
-          if(pdf_activate){
-             dev.copy()                ## copy to pdf file 2nd plots to end
-             dev.set(which=x11c)       ## back to graphic device now to continue...
-                          }
-          else{
-             x11c<-dev.cur()                 ## the current graphics device
-             pdf(lambda_z_regression_lines,  ## activate pdf log file from now on... starting with ref. product
-                  paper="a4")
-             description_plot()              ## bear output logo
-             pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
-             dev.set(which=x11c)             ## back to graphics device...
-             dev.copy()                      ## copy the first plot here
-             dev.set(which=x11c)             ## back to graphics device
-              }
-###
-###  end plotting here...
-###
 
           auc_test <-0
           Cmax_test<-0
@@ -436,7 +410,7 @@ if(replicated){
                   CminTest[j]<-Cmin_test
                   AUCINFTest[j]<-aucINF
                   AUCTTest[j]<-auc_test[length(T.split[[j]][["conc"]])]
-                  TmaxTest[j]<-T.split[[j]]$time[xt] #T.split[[j]][xt,5] -->T.split[[j]]$time[xt]
+                  TmaxTest[j]<-ifelse(multiple, T.split[[j]]$time[xt] -TlastD, T.split[[j]]$time[xt]) #T.split[[j]][xt,5] -->T.split[[j]]$time[xt]
                   T12Test[j]<-log(2)/ke1[j]
                   KelTest[j]<-ke1[j]
                  
@@ -520,7 +494,8 @@ if(replicated){
               }
  }
 ### close dev() now
-dev.off(which=x11c+1)  ## to close pdf device now... YJ
+dev.off()  ## to close pdf device now... YJ
+graphics.off()
 ###
 
 ke1_melt<-melt(ke1)
@@ -646,91 +621,96 @@ if(multiple){
                    lnCmax=log(Total$Cmax),lnAUC0t=log(Total$AUC0t),lnAUC0INF=log(Total$AUC0INF))
    }
 }
-show(TotalData)
+### the following lines were for the individual plots on screen. <--- YJ
+### Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
+### s.split<-split(Totalplot,list(Totalplot$subj))
+### cat("\n\n Raw dataset:-\n\n");show(Totalplot);cat("\n\n")
+### 
+### #Plot Cp vs Time
+###  #creat 3(row)*2(column) multiple figure array
+###  #Plot LogCp vs Time
+###    #creat 3(row)*2(column) multiple figure array
+### Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
+### s.split<-split(Totalplot,list(Totalplot$subj))
+### if(parallel){
+###  if(multiple){
+###     paraR.split<-split(SingleRdata1, list(SingleRdata1$subj))
+###     paraT.split<-split(SingleTdata1, list(SingleTdata1$subj))
+###     
+###     RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
+###     TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
+###    }
+###    else{
+###     Totalplot$conc[Totalplot$conc == 0] <- NA
+###     Totalplot <- na.omit(Totalplot)
+###     Totalplot.split<-split(Totalplot, list(Totalplot$subj))
+###  
+###     Totalplotpara<-split( Totalplot, list(Totalplot$drug))
+###     paraR.split<-split( Totalplotpara[[1]], list(Totalplotpara[[1]]$subj))
+###     paraT.split<-split( Totalplotpara[[2]], list(Totalplotpara[[2]]$subj))  
+###      }
+###   }
+###  else{
+###  if(replicated){
+###      prdcount<-length(levels(TotalData$prd))
+###      #f <- factor(Totalplot$drug)
+###      LR<-data.frame(subj=Totalplot$subj,  seq=Totalplot$seq, prd=Totalplot$prd, drug=Totalplot$drug,
+###                     time=Totalplot$time,  conc=Totalplot$conc, code=Totalplot$code)
+###      LR$conc[LR$conc == 0] <- NA
+###      LR <- na.omit(LR)
+###      Ls.split<-split(LR, list(LR$subj))
+###         }
+###   else{
+###       if(multiple){
+###      LR<-data.frame(subj=SingleRdata0$subj, time=SingleRdata0$time,  conc=SingleRdata0$conc)
+###      LR$conc[LR$conc == 0] <- NA
+###      LR <- na.omit(LR)
+###      LR.split<-split(LR, list(LR$subj))
+###      
+###      LT<-data.frame(subj=SingleTdata0$subj, time=SingleTdata0$time,  conc=SingleTdata0$conc)
+###      LT$conc[LT$conc == 0] <- NA
+###      LT <- na.omit(LT)
+###      LT.split<-split(LT, list(LT$subj))
+###          RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
+###          TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
+###       }
+###       else{
+###      LR<-data.frame(subj=SingleRdata$subj, time=SingleRdata$time,  conc=SingleRdata$conc)
+###      LR$conc[LR$conc == 0] <- NA
+###      LR <- na.omit(LR)
+###      LR.split<-split(LR, list(LR$subj))
+### 
+###      LT<-data.frame(subj=SingleTdata$subj, time=SingleTdata$time,  conc=SingleTdata$conc)
+###      LT$conc[LT$conc == 0] <- NA
+###      LT <- na.omit(LT)
+###      LT.split<-split(LT, list(LT$subj))
+###     }
+###    }
+### }   
+### windows(record = TRUE )   ### not req. any more. --- may consider to delete plotsingle(), etc. same for AIC, AIC-TTT, etc.
+### if(replicated){
+###     plotsingle.Rep(Ls.split, s.split,xaxis,yaxis,i, prdcount ) 
+###    }
+### else{ 
+###  if(parallel){
+###     if(multiple){
+###        Multipleplotsingle.para(R.split,T.split,paraR.split,paraT.split,xaxis,yaxis,RR.split,TT.split,TlastD )
+###        }
+###       else{
+###         plotsingle.para(R.split, T.split, paraR.split,paraT.split,xaxis,yaxis )
+###       }
+###   }
+###   ### else{                 ## no more plot on screen now.  -YJ (v2.5.5.1)
+###   ###    if(multiple){
+###   ###      ### Multipleplotsingle(LR.split,LT.split,RR.split,TT.split,xaxis,yaxis,TlastD ) ### not req. any more; all log into .pdf
+###   ###      }
+###   ###     else{
+###   ###      ### plotsingle(LR.split,LT.split,xaxis,yaxis,R.split,T.split,multiple=FALSE)  ### this will show on screen instantly, not log into .pdf. -YJ
+###   ###     }
+###   ### }
+### }
+###
 
-#Plot Cp vs Time
- #creat 3(row)*2(column) multiple figure array
- #Plot LogCp vs Time
-   #creat 3(row)*2(column) multiple figure array
-Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
-s.split<-split(Totalplot,list(Totalplot$subj))
-if(parallel){
- if(multiple){
-    paraR.split<-split(SingleRdata1, list(SingleRdata1$subj))
-    paraT.split<-split(SingleTdata1, list(SingleTdata1$subj))
-    
-    RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
-    TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
-   }
-   else{
-    Totalplot$conc[Totalplot$conc == 0] <- NA
-    Totalplot <- na.omit(Totalplot)
-    Totalplot.split<-split(Totalplot, list(Totalplot$subj))
- 
-    Totalplotpara<-split( Totalplot, list(Totalplot$drug))
-    paraR.split<-split( Totalplotpara[[1]], list(Totalplotpara[[1]]$subj))
-    paraT.split<-split( Totalplotpara[[2]], list(Totalplotpara[[2]]$subj))  
-     }
-  }
- else{
- if(replicated){
-     prdcount<-length(levels(TotalData$prd))
-     #f <- factor(Totalplot$drug)
-     LR<-data.frame(subj=Totalplot$subj,  seq=Totalplot$seq, prd=Totalplot$prd, drug=Totalplot$drug,
-                    time=Totalplot$time,  conc=Totalplot$conc, code=Totalplot$code)
-     LR$conc[LR$conc == 0] <- NA
-     LR <- na.omit(LR)
-     Ls.split<-split(LR, list(LR$subj))
-        }
-  else{
-      if(multiple){
-     LR<-data.frame(subj=SingleRdata0$subj, time=SingleRdata0$time,  conc=SingleRdata0$conc)
-     LR$conc[LR$conc == 0] <- NA
-     LR <- na.omit(LR)
-     LR.split<-split(LR, list(LR$subj))
-     
-     LT<-data.frame(subj=SingleTdata0$subj, time=SingleTdata0$time,  conc=SingleTdata0$conc)
-     LT$conc[LT$conc == 0] <- NA
-     LT <- na.omit(LT)
-     LT.split<-split(LT, list(LT$subj))
-         RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
-         TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
-      }
-      else{
-     LR<-data.frame(subj=SingleRdata$subj, time=SingleRdata$time,  conc=SingleRdata$conc)
-     LR$conc[LR$conc == 0] <- NA
-     LR <- na.omit(LR)
-     LR.split<-split(LR, list(LR$subj))
-
-     LT<-data.frame(subj=SingleTdata$subj, time=SingleTdata$time,  conc=SingleTdata$conc)
-     LT$conc[LT$conc == 0] <- NA
-     LT <- na.omit(LT)
-     LT.split<-split(LT, list(LT$subj))
-    }
-   }
-}   
-windows(record = TRUE )
-if(replicated){
-    plotsingle.Rep(Ls.split, s.split,xaxis,yaxis,i, prdcount ) 
-   }
-else{ 
- if(parallel){
-    if(multiple){
-       Multipleplotsingle.para(R.split,T.split,paraR.split,paraT.split,xaxis,yaxis,RR.split,TT.split,TlastD )
-       }
-      else{
-        plotsingle.para(R.split, T.split, paraR.split,paraT.split,xaxis,yaxis )
-      }
-  }
-  else{ 
-   if(multiple){
-       Multipleplotsingle(LR.split,LT.split,RR.split,TT.split,xaxis,yaxis,TlastD )
-       }
-      else{
-        plotsingle(LR.split,LT.split,xaxis,yaxis,R.split,T.split )
-      }
-  }
-}  
 ##export with txt file
 if(replicated){
 RepTTTAICoutput(sumindexR, sumindexT,R.split,T.split,keindex_ref,keindex_test,Dose,TotalData)
@@ -782,7 +762,6 @@ else{
        else {
          if(MIX){
          ##Demo=FALSE, MIX=TRUE
-        
          ParaMIXanalyze(TotalData)
          }
           else{
@@ -805,7 +784,6 @@ else{
            else {
              if(BANOVA){
             ##Demo=FALSE, BANOVA=TRUE
-             dev.off()
              MultipleBANOVAanalyze(TotalData)
                 }
              else{
@@ -819,21 +797,19 @@ else{
         NCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
       if (Demo){
       #Demo=TRUE, BANOVA=FALSE
-      NCAmenu()
+          NCAmenu()
       }
       else {
         if(BANOVA){
          ##Demo=FALSE, BANOVA=TRUE
-         dev.off()
          BANOVAanalyze(TotalData)
          }
          else{
          #Demo=FALSE, BANOVA=FALSE
-        NCAsave(TotalData)
+         NCAsave(TotalData)
          }
        }
      }
    }
  }
 } 
-

@@ -8,14 +8,14 @@ cat("\n")
                  "Quit")
  cat("\n")
 if(parallel){
-       pick <- menu(file.menu, title = " << NCA for Parallel Study>> ")
+       pick <- menu(file.menu, title = " << NCA for Parallel Study>> ", graphics=TRUE)
    }
 else{
    if(replicated ){
-       pick <- menu(file.menu, title = " << NCA for Replicated Crossover Study>> ")
+       pick <- menu(file.menu, title = " << NCA for Replicated Crossover Study>> ", graphics=TRUE)
     } 
     else{ 
-       pick <- menu(file.menu, title = " << NCA for 2x2x2 Crossover Study>> ")
+       pick <- menu(file.menu, title = " << NCA for 2x2x2 Crossover Study>> ", graphics=TRUE)
     }
 } 
     if (pick == 1){

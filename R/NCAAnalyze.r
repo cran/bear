@@ -1,6 +1,7 @@
 ###
 ###  Input assay data Menu for Data Analysis for Single dose (don't analyze anything with this?  YJ)
-###
+###  This script has two parts: multiple & else (i.e., single); all are non-replicate; if replicate -> RepNCAanalyze.r  -YJ
+### 
 
 
 NCAanalyze<-function(TotalSingledata, Dose,  Tau, TlastD, xaxis,yaxis, separateWindows=TRUE,
@@ -10,7 +11,7 @@ NCAanalyze<-function(TotalSingledata, Dose,  Tau, TlastD, xaxis,yaxis, separateW
 options(warn=-1)
 
 description_NCA()
-if (multiple) {
+if (multiple) {                                    ### first come with multiple. -YJ
 with(Multiplentertitle(),{
 description_drug()
 
@@ -55,6 +56,9 @@ SingleTdata<-subset(SingleTdata0, time >=TlastD)
 cat("\n\n")
 #'Total" for NCAplot
 Totalplot<- rbind(SingleRdata0,SingleTdata0)
+###
+create.products_sum(Totalplot)
+###
 
    cat("\n")
    file.menu <- c("Select 2-6 data points manually",            
@@ -65,7 +69,7 @@ Totalplot<- rbind(SingleRdata0,SingleTdata0)
                   "Use TTT and ARS method",
                   "Use TTT and AIC method")                 
    cat("\n")               
-   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>")
+   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
 
    if (pick ==1){
      description_pointselect()
@@ -208,7 +212,7 @@ Totalplot<- rbind(SingleRdata0,SingleTdata0)
   })
 }
 
-else{
+else{                                             ### then here come with single. -YJ
 with(entertitle(),{
 description_drug()
 
@@ -250,7 +254,9 @@ SingleTdata1 <- na.omit(SingleTdata1)
 cat("\n\n")
 #'Total" for NCAplot
 Totalplot<- rbind(SingleRdata,SingleTdata)
-
+###
+create.products_sum(Totalplot)
+###
    cat("\n")
    file.menu <- c("Select 2-6 data points manually",            
                   "Load previous selection (2-6 data points)",  
@@ -260,7 +266,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
                   "Use TTT and ARS method",
                   "Use TTT and AIC method")                 
    cat("\n")               
-   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>")
+   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
 
    if (pick ==1){
      description_pointselect()
@@ -303,8 +309,8 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
       ref_data<-data.frame(subj=Tcomdata[[1]]$subj,time=Tcomdata[[1]]$time,conc=Tcomdata[[1]]$conc,conc_data=Tcomdata[[1]]$conc_data) 
       test_data<-data.frame(subj=Tcomdata[[2]]$subj,time=Tcomdata[[2]]$time,conc=Tcomdata[[2]]$conc,conc_data=Tcomdata[[2]]$conc_data)
    
-       rdata.split<-split(ref_data,list(ref_data$subj))
-       tdata.split<-split(test_data,list(test_data$subj))
+      rdata.split<-split(ref_data,list(ref_data$subj))
+      tdata.split<-split(test_data,list(test_data$subj))
    
      if(parallel){
       if(MIX){

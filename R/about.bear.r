@@ -1,7 +1,7 @@
 about.bear<-function(){
 cat("\n\n")
 cat(" ----------------------------------------------------------------\n\n")
-cat("  bear v2.5.4                                                      \n")
+cat("  bear v2.5.5                                                      \n")
 cat("  http://pkpd.kmu.edu.tw/bear                                      \n")  
 cat("                                                                   \n")  
 cat(" This package is designed to analyze average bioequivalence (ABE)  \n")  
@@ -24,5 +24,5 @@ cat(" R website: http://www.r-project.org                               \n")
 cat(" Users are recommended to browse Bebac Forum: R for BE/BA ->       \n") 
 cat(" http://forum.bebac.at/?category=19                              \n\n")
 cat(" ----------------------------------------------------------------  \n")
-cat("\n Type 'go()' to run bear.\n\n")
+cat("\n Type 'go()' to run bear or 'demo(bear.demo)' to run demo.\n\n")
 }

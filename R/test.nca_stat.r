@@ -1,31 +1,44 @@
 ##
-## will be called by NCAmenu(); demo for NCA ONLY <--- YJ
+## will be called by NCA.BANOVAmenu(); demo fro NCA -> ANOVA
 ##
-demomenu<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
+test.nca_stat<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
-cat("\n")
-Demo<-Demo  ## set Demo as Global see go.r
-Demo<<-TRUE
-Replicateddata<-NULL
-MultipleParadata<-NULL
-Paralleldata<-NULL
 
-  file.menu <- c("lambda_z est. from 2-6 data points",
-                 "lambda_z est. with adjusted R sq. (ARS)",
-                 "lambda_z est. with Akaike information criterion (AIC)",
-                 "lambda_z est. with Two-Times-Tmax method (TTT)",
-                 "lambda_z est. with TTT and ARS",
-                 "lambda_z est. with TTT and AIC",
+OutputFilez()
+Demo<-NULL
+Demo<<-TRUE
+ODAnalysis<-NULL
+ODAnalysis<<-FALSE
+replicated=FALSE
+parallel=FALSE
+multiple=FALSE
+
+cat("\n\n Please note that during running this demo you will be asked to\n")
+cat(" press 'Enter' or 'Return' key lots of times to continue. It will not\n")
+cat(" happen to real runs. It is just default setting for demo mode in R.\n")
+cat(" You have to click R console first and then press 'Enter' or 'Return'\n")
+cat(" key sometimes if the screen seems keeping freezed there.\n\n")
+cat(" This demo will load raw data from backgroud. So it will start from\n")
+cat(" from method selection of lambda_z estimation, then do NCA and\n")
+cat(" finally perform statistical analysis with NCA results, together\n")
+cat(" with some plots showing, as well as generating output files.\n\n")
+readline(" To continue this demo, press 'Enter' key now.")
+
+cat("\n")
+  file.menu <- c("NCA (select 2-6 data points) --> Statistical analysis",
+                 "NCA (ARS) --> Statistical analysis",
+                 "NCA (AIC) --> Statistical analysis",
+                 "NCA (TTT) --> Statistical analysis",
+                 "NCA (TTT and ARS) --> Statistical analysis",
+                 "NCA (TTT and AIC) --> Statistical analysis",
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = "  << Method Selection for of lambda_z Estimation>> ", graphics=TRUE)
-    description_NCAinput()
-    
- if(replicated){
+  pick <- menu(file.menu, title = " << Method Selection for of lambda_z Estimation>> ")
+  if(replicated){
     filelocxx <- system.file("extdata", "Replicateddata.rda", package="bear")
     load(filelocxx)  ## because it is a *.rda data file
-    ## saveRDS(Replicateddata,"Replicateddata_demo.RData")
+    ## saveRDS(Replicateddata,"Replicateddata_demo.RData")  ## not required here.it's a demo.
 
     with(entertitle.demo(), {
      description_RepNCAinput()  
@@ -38,23 +51,24 @@ Paralleldata<-NULL
      pretime<-NULL
      preconc<-NULL
      precode<-NULL
-      for (j in 1:length(predata)){
-      j=j
-      code[j]<-j
+   for (j in 1:length(predata)){
+    j=j
+    code[j]<-j
  
-      LL<-cbind(subj=predata[[j]]$subj,seq=predata[[j]]$seq,prd=predata[[j]]$prd,drug=predata[[j]]$drug,
+    LL<-cbind(subj=predata[[j]]$subj,seq=predata[[j]]$seq,prd=predata[[j]]$prd,drug=predata[[j]]$drug,
            time=predata[[j]]$time,conc=predata[[j]]$conc,code=code[j])
      
-       presubj[[j]]<-c(LL[,1])
-       preseq[[j]]<-c(LL[,2])
-       preprd[[j]]<-c(LL[,3])
-       predrug[[j]]<-c(LL[,4])
-       pretime[[j]]<-c(LL[,5])
-       preconc[[j]]<-c(LL[,6])
-       precode[[j]]<-c(LL[,7]) 
+     presubj[[j]]<-c(LL[,1])
+     preseq[[j]]<-c(LL[,2])
+     preprd[[j]]<-c(LL[,3])
+     predrug[[j]]<-c(LL[,4])
+     pretime[[j]]<-c(LL[,5])
+     preconc[[j]]<-c(LL[,6])
+     precode[[j]]<-c(LL[,7])
+      
      }
  
-      setdata<-data.frame(subj=melt(presubj)$value, seq=melt(preseq)$value,prd=melt(preprd)$value,
+setdata<-data.frame(subj=melt(presubj)$value, seq=melt(preseq)$value,prd=melt(preprd)$value,
                     drug=melt(predrug)$value, time=melt(pretime)$value, conc=melt(preconc)$value,
                     code=melt(precode)$value)
                    
@@ -79,55 +93,60 @@ SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
 SingleTdata1 <- na.omit(SingleTdata1)
 
-Totalplot<- rbind(SingleRdata,SingleTdata)              
-###
+Totalplot<- rbind(SingleRdata,SingleTdata)
 create.products_sum(Totalplot)
-###
-
+      
    if (pick == 1){
-        show(SingleRdata)
-        show(SingleTdata)
-        cat("\n")
-        RepNCAselectdemo(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
+        description_pointselect()
+      cat("\n")
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
+        RepNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
+        RepNCA.MIXmenu()
         }
     else {
     if (pick == 2){
-        show(SingleRdata)
-        show(SingleTdata)
         cat("\n")
-        RepARSdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
+        RepARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        RepNCA.MIXmenu()
        }
     else {
     if (pick == 3){
-        show(SingleRdata)
-        show(SingleTdata)
         cat("\n")
-        RepAICdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
+        RepAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        RepNCA.MIXmenu()
        }
     else {
     if (pick == 4){
-        show(SingleRdata)
-        show(SingleTdata)
         cat("\n")
-       RepTTTdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
+        RepTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        RepNCA.MIXmenu()
        }
     else {
     if (pick == 5){
-        show(SingleRdata)
-        show(SingleTdata)
         cat("\n")
-        RepTTTARSdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
+        RepTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        RepNCA.MIXmenu()
          }
    else {
     if (pick == 6){
-        show(SingleRdata)
-        show(SingleTdata)
         cat("\n")
-       RepTTTAICdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        ## show(SingleRdata)   ### close this!  YJ
+        ## show(SingleTdata)
+        RepTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        RepNCA.MIXmenu()
         }
    else {
     if (pick == 7){
-         Repmenu()
+        RepNCA.MIXmenu()
          }       
    else {
     if (pick == 8){
@@ -145,14 +164,13 @@ create.products_sum(Totalplot)
   })        
  }  
  else{
- if(parallel){
+    if(parallel){
      if(multiple){
-     filelocxx <- system.file("extdata", "MultipleParadata.rda", package="bear")
-     load(filelocxx)  ## because it is a *.rda data file
-     ## saveRDS(MultipleParadata,"MultipleParadata_demo.RData")
-     
-     with(Multiplentertitle.demo(), {
-     description_ParaNCAinput()  
+      filelocxx <- system.file("extdata", "MultipleParadata.rda", package="bear")
+      load(filelocxx)  ## because it is a *.rda data file; leave it as was
+      
+      with(Multiplentertitle.demo(), {
+      description_ParaNCAinput()  
       Singledata<-split(MultipleParadata, list(MultipleParadata$drug))
       Ref<-Singledata[[1]]
       Refdata<-data.frame(subj=Ref$subj,drug=Ref$drug,time=Ref$time, conc=Ref$conc)
@@ -174,55 +192,60 @@ create.products_sum(Totalplot)
       SingleTdata<-subset(SingleTdata0, time >=TlastD)
       
       Totalplot<- rbind(SingleRdata,SingleTdata)
-###
-create.products_sum(Totalplot)
-###
-
+      create.products_sum(Totalplot)
+      
     if (pick == 1){
+        description_pointselect()
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
-        MultipleParaNCAselectdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+        MultipleParaNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+        MultipleParaNCA.MIXmenu()
         }
     else {
     if (pick == 2){
-        show(SingleRdata)
+      show(SingleRdata)
         show(SingleTdata)
         cat("\n")
-       MultipleParaARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
        }
     else {
     if (pick == 3){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
-       MultipleParaAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
        }
     else {
     if (pick == 4){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
-       MultipleParaTTTdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
        }
     else {
     if (pick == 5){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
-       MultipleParaTTTARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
        }
    else {
     if (pick == 6){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
-       MultipleParaTTTAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
+       MultipleParaNCA.MIXmenu()
        }
    else {
     if (pick == 7){
         cat("\n")
-        MultipleParamenu()
+         MultipleParaNCA.MIXmenu()
        }       
    else {
     if (pick == 8){
@@ -237,12 +260,11 @@ create.products_sum(Totalplot)
      }
     }
    }
-  })     
+  })         
  }
-     else{
+    else{
      filelocxx <- system.file("extdata", "Paralleldata.rda", package="bear")
      load(filelocxx)  ## because it is a *.rda data file
-     ## saveRDS(Paralleldata,"Paralleldata_demo.RData")
      
      with(entertitle.demo(), {
      description_ParaNCAinput()  
@@ -263,55 +285,60 @@ create.products_sum(Totalplot)
       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
       SingleTdata1 <- na.omit(SingleTdata1)
       Totalplot<- rbind(SingleRdata,SingleTdata)
-###
-create.products_sum(Totalplot)
-###
+      create.products_sum(Totalplot)
       
     if (pick == 1){
+        description_pointselect()
+        cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-        cat("\n")
-        ParaNCAselectdemo(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
+        ParaNCAselectdemo.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
+        ParaNCA.MIXmenu()
         }
     else {
     if (pick == 2){
-      show(SingleRdata)
+      cat("\n")
+        show(SingleRdata)
         show(SingleTdata)
-        cat("\n")
-       ParaARSdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
        }
     else {
     if (pick == 3){
+        cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-        cat("\n")
-       ParaAICdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
        }
     else {
     if (pick == 4){
-        show(SingleRdata)
-        show(SingleTdata)
         cat("\n")
-       ParaTTTdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        show(SingleRdata)
+        show(SingleTdata) 
+       ParaTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
        }
     else {
     if (pick == 5){
+        cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-        cat("\n")
-       ParaTTTARSdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
        }
    else {
     if (pick == 6){
+        cat("\n")
         show(SingleRdata)
         show(SingleTdata)
-        cat("\n")
-       ParaTTTAICdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+       ParaNCA.MIXmenu()
        }
    else {
     if (pick == 7){
         cat("\n")
-        Paramenu()
+        ParaNCA.MIXmenu()
        }       
    else {
     if (pick == 8){
@@ -326,13 +353,13 @@ create.products_sum(Totalplot)
      }
     }
    }
-  })     
+  })    
  }
 } 
-else{
-  if(multiple){
+ else{
+     if(multiple){
      filelocxx <- system.file("extdata", "Multipledata.rda", package="bear")
-     load(filelocxx)
+     load(filelocxx)  ## because it is a *.rda data file
      
      with(Multiplentertitle.demo(), {
      description_NCAinput()  
@@ -357,55 +384,60 @@ else{
      SingleRdata<-subset(SingleRdata0, time >=TlastD)
      SingleTdata<-subset(SingleTdata0, time >=TlastD)
      Totalplot<- rbind(SingleRdata0,SingleTdata0)
-###
-create.products_sum(Totalplot)
-###
-      
+     create.products_sum(Totalplot)
+           
     if (pick == 1){
+        description_pointselect()
         show(SingleRdata0)
         show(SingleTdata0)
-        cat("\n")
-        MultipleNCAselectdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        cat("\n")                 
+         MultipleNCAselectdemo.BANOVA(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+         MultipleNCA.BANOVAmenu()
         }
     else {
     if (pick == 2){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
-       MultipleARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       MultipleARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
        }
     else {
     if (pick == 3){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
-       MultipleAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleAIC_BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
        }
     else {
     if (pick == 4){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
-       MultipleTTTdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleTTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
        }
     else {
     if (pick == 5){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
-       MultipleTTTARSdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       MultipleTTTARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+        MultipleNCA.BANOVAmenu()
        }
    else {
     if (pick == 6){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
-       MultipleTTTAICdemo(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       MultipleTTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
+       MultipleNCA.BANOVAmenu()
        }
    else {
     if (pick == 7){
         cat("\n")
-        MultipleNCAmenu()
+        MultipleNCA.BANOVAmenu()
        }       
    else {
     if (pick == 8){
@@ -413,6 +445,105 @@ create.products_sum(Totalplot)
        cat("\n  Thank you for using bear!  Bye now. \n")
        graphics.off()
               }      
+             }
+           }
+        }
+       }
+      }
+     }
+    }
+   }) 
+ }
+   else{
+    description_NCAinput()
+    filelocxx <- system.file("extdata", "TotalSingledata.rda", package="bear")
+    load(filelocxx)  ## because it is a *.rda data file
+    
+    cat("\n\n")
+     ##NCAanalyze or NCAGLManalyze
+     with(entertitle.demo(), {
+     description_drug()
+
+      Singledata<-split(TotalSingledata, list(TotalSingledata$seq, TotalSingledata$prd))
+      Ref<-rbind(Singledata[[1]],Singledata[[4]])
+      Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), time=Ref$time, conc=Ref$conc)
+      SingleRdata<-Refdata[ do.call(order, Refdata) ,]
+      
+      SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
+      SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
+      SingleRdata1 <- na.omit(SingleRdata1)
+        cat("\n\n")
+      Test<-rbind(Singledata[[2]],Singledata[[3]])
+      Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), time=Test$time, conc=Test$conc)
+      SingleTdata<-Testdata[ do.call(order, Testdata) ,]
+      
+      SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
+      SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
+      SingleTdata1 <- na.omit(SingleTdata1)
+      Totalplot<- rbind(SingleRdata,SingleTdata)
+      create.products_sum(Totalplot)
+
+    if (pick == 1){
+      cat("\n")
+        description_pointselect()
+        show(SingleRdata)
+        show(SingleTdata)
+        NCAselectdemo.BANOVA(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
+        NCA.BANOVAmenu()
+        }
+
+    else {
+    if (pick == 2){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+        ARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
+       }
+       
+    else {
+    if (pick == 3){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+        AIC_BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
+       }
+    else {
+    if (pick == 4){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+        TTT.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
+       }
+    else {
+    if (pick == 5){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+        TTTARS.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
+         }
+   else {
+    if (pick == 6){
+        cat("\n")
+        show(SingleRdata)
+        show(SingleTdata)
+        TTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
+        NCA.BANOVAmenu()
+        }
+    else {
+    if (pick == 7){
+        cat("\n")
+        NCA.BANOVAmenu()
+         }
+     else {
+    if (pick == 8){
+       cat("\n")
+       cat("\n  Thank you for using bear!  Bye now. \n")
+       graphics.off()
+              }
              }
            }
         }
@@ -421,94 +552,6 @@ create.products_sum(Totalplot)
      }
     }
    })
-  }
-  else{   
-     filelocxx <- system.file("extdata", "TotalSingledata.rda", package="bear")
-     load(filelocxx)
-
-     with(entertitle.demo(), {
-     description_NCAinput()  
-      Singledata<-split(TotalSingledata, list(TotalSingledata$seq, TotalSingledata$prd))
-      Ref<-rbind(Singledata[[1]],Singledata[[4]])
-      Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1), time=Ref$time, conc=Ref$conc)
-      SingleRdata<-Refdata[ do.call(order, Refdata) ,]
-     
-      SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
-      SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
-      SingleRdata1 <- na.omit(SingleRdata1)
-        cat("\n\n")
-      Test<-rbind(Singledata[[2]],Singledata[[3]])
-      Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), time=Test$time, conc=Test$conc)
-      SingleTdata<-Testdata[ do.call(order, Testdata) ,]
-     
-      SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
-      SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
-      SingleTdata1 <- na.omit(SingleTdata1)
-      Totalplot<- rbind(SingleRdata,SingleTdata)
-###
-create.products_sum(Totalplot)
-###
-      
-    if (pick == 1){
-        show(SingleRdata)
-        show(SingleTdata)
-        cat("\n")
-        NCAselectdemo(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
-        }
-    else {
-    if (pick == 2){
-        show(SingleRdata)
-        show(SingleTdata)
-        cat("\n")
-       ARSdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       }
-    else {
-    if (pick == 3){
-        show(SingleRdata)
-        show(SingleTdata)
-        cat("\n")
-       AICdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       }
-    else {
-    if (pick == 4){
-        show(SingleRdata)
-        show(SingleTdata)
-        cat("\n")
-       TTTdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       }
-    else {
-    if (pick == 5){
-        show(SingleRdata)
-        show(SingleTdata)
-        cat("\n")
-       TTTARSdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       }
-   else {
-    if (pick == 6){
-        show(SingleRdata)
-        show(SingleTdata)
-        cat("\n")
-       TTTAICdemo(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-       }
-   else {
-    if (pick == 7){
-        cat("\n")
-        NCAmenu()
-       }       
-   else {
-    if (pick == 8){
-       cat("\n")
-       cat("\n  Thank you for using bear!  Bye now. \n")
-       graphics.off()
-              }      
-             }
-           }
-        }
-       }
-      }
-     }
-    }
-   })    
    }
   }
  }

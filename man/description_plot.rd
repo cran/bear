@@ -9,14 +9,12 @@
 \description{
 
 Authors: Hsin-ya Lee, Yung-jin Lee
-100, Shih-chuan 1st Rd.
-College of Pharmacy,
-Kaohsiung Medical University,
-Kaoshiung, Taiwan 80708
-E-mail: hsinyalee@gmail.com,
-        pkpd.taiwan@gmail.com
-bear's website: http://pkpd.kmu.edu.tw/bear
-R website: www.r-project.org
+Kaohsiung Veterans General Hospital (HY) &
+ptpc inc. (YJ),
+Kaoshiung, Taiwan 80794
+E-mail: mobilepk@gmail.com
+website: http://pkpd.kmu.edu.tw/bear
+
 }
 
 \keyword{misc}

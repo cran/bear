@@ -1,3 +1,44 @@
+v2.5.4.9 (pre-release)
+    - OK, let's back to v2.5.4.9 as pre-release version; it makes more logical and
+      convenient for users to upgrade from CRAN. The next official release will be
+      v2.5.5, of course. Users only need to update their packages from CRAN in this case.
+    - NCA plots are switched from plot() to ggplot() now; better graphics looking
+      I think; add 'ggplot2' as Depends and 'plyr' as Suggests in DESCRIPTION.
+    - use some helper functions from "Cookbook for R" authored by Winston Chang to
+      use ggplot() (website);
+    - remove console plotting now; all plots will be logged into .pdf of NCA plots;
+      this will remove 5 R scripts from previous version;
+    - add test or demo functions; splited from original /R directory;
+    - add page break for xxx_nca_outputs.txt;
+    - fix bugs for the section containing the means (SD) for each formulation 
+      (by time point) in NCA output file. (thanks to Elba Romero). This is only
+      for the situations of running NCA demo or NCA.
+    - improve data point selection methods with correct subject labelling;
+    - add bear coverpage for nca plot and ODA plot pdf files (using library(png));
+    - fixed the part of data point manual selection logged as .pdf. With R3.0.0, it
+      is still a problem; however, it is OK with R2.15.3 (miss it so much). Porbably
+      in R3.0.0 the graphic windows have been changed as stated in its update doc. Now
+      it should be fine. Quite different from ARS, AIC, TTT, etc.. my mistake.
+    - remove the function to save 'TotalData' again after NCA as a .RData. It does not
+      make any sense to do this.
+    - remove DOA on-screen plots since all plots have been logged into a .pdf file.
+      It's a redundance procesure, just like on-screen NCA plots.
+    - improve pivotal_output.csv; now it is much better than previously.
+    - now manual data seletion from previously saved .RData can also be plotted into
+      pdf now, as well as on-screen plots.
+    - fix 'Tmax_ss' for multiple dose BE; the original one should be substracted with
+      TlastD (the time of the final dose be given)
+    - fix NCAselect again; try to improve graphic looking for multiple dose BE dataset,
+      especially the setting of ylim(); done.
+    - fixed the section containing the means (SD) for each formulation (by time point) 
+      in NCA output file; it was the same for the ref. & test products in the previous
+      version. Sorry about this.
+    - hide on-screen linear regression plots, but still save all plots as one .pdf file.
+    - set 'ylim=c(1e-3, 1e+5)' in all linear regression plots for lambda_z estimations; it
+      looks better in this case.
+    - all selection menu -> 'graphics=TRUE' now
+    - 
+      
 v2.5.4
     - mostly based on BE/BA forums (bear feature request).
     - grouping each run with random batch# and system date marked; more outputs from this version. 
@@ -11,7 +52,8 @@ v2.5.4
     - use "file.choose()" for data file loading;
     - total lambda_z selections outputs as .csv format (sarawuto); not for demo functions;
     - pivotal and misc pk parameters output as .csv format;
-    - change data() for demo functions (demodemu.r & demomenu1.r); to adapt future R (with R v3.0);
+    - change data() for demo functions (demodemu.r & demomenu1.r); to adapt future R (with R v3.0 
+      alpha);
     - add "extdata" directory to store demo data files as .rda format;
     - add 'legend=FASLE' into lineplot.CI(...) (NCAplot.r) otherwise, lineplot.ci() package will 
       crash with error... [Error in rep_len(col, n.leg) : cannot replicate NULL to a non-zero 

@@ -9,5 +9,8 @@ import(
   sciplot,
   plotrix,
   ICSNP,
-  gdata
+  gdata,
+  ggplot2,
+  png,
+  grid
 )

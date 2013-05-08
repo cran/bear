@@ -8,14 +8,14 @@ OutputFilez<-function(){
    nca_output_xfile<-NULL                 ### NCAoutput.r
    lm_stat_xfile<-NULL                    ### RepMIXoutput.r
    lme_stat_xfile<-NULL                   ### RepMIXoutput.r
-   pivotal_output_xfile<-NULL             ### BANOVA.r & RepMIX.r
+   pivotal_output_xfile<-NULL             ### NCAoutput.r
    misc_pk_output_xfile<-NULL             ### NCAoutput.r
    nca_plot_xfile<-NULL                   ### NCAplot.r
    ODplot_output_xfile<-NULL              ### BANOVAoutput.r
    oda_output_xfile<-NULL                 ### BANOVA.r
-   lambda_z_regression_lines<-NULL        ### NCAselect.r & ARS.r & TTT.r &...
-   lambda_z_regr_select_ref<-NULL         ### NCA.r
-   lambda_z_regr_select_test<-NULL        ### NCA.r
+   lambda_z_regression_lines<-NULL        ### NCAselect.r (or NCA.r) & ARS.r & TTT.r &...
+   lambda_z_regr_select_ref<-NULL         ### NCA.r only
+   lambda_z_regr_select_test<-NULL        ### NCA.r only
    
 ## create random batch number & system.date() for the head of output files
 

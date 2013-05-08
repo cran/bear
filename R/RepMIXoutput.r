@@ -2,7 +2,7 @@ RepMIXoutput<-function(TotalData, L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,tes
                        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
                        parallel=FALSE, multiple=FALSE)
 {
-
+options(width=100)
 ## to avoid "not visible binding..." error message with codetool
 lm_stat_xfile<- lm_stat_xfile 
 lme_stat_xfile<- lme_stat_xfile
@@ -69,6 +69,7 @@ if(parallel){
    zz <- file(lm_stat_xfile, open="wt")}
  else{
    zz <- file(lme_stat_xfile, open="wt")}
+cat("\n\n Generate lm (linear model) or lme (linear mixed effect) output now...\n");readline(" Press Enter to continue...");cat("\n\n")
 sink(zz)
 description_version()
 cat("  List of Input Data from NCA                  \n")

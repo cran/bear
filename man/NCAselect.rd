@@ -4,10 +4,11 @@
 
 \alias{NCAselect}
 
-\title{Select the exact 3 points in NCA}
+\title{Select 2-6 data points for lambda(z) estimation in NCA}
 
 \description{
-This function can help users select the exact 3 points for NCA function.
+This function can help users to select 2-6 data points for lambda(z)
+estimation in NCA
 }
 
 \keyword{misc}

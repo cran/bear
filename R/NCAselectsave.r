@@ -2,13 +2,13 @@ NCAselectsave<-function(Totalplot, Dose, ref_data, test_data, SingleRdata,Single
                         Tau, TlastD,SingleRdata0,SingleTdata0, BANOVA=FALSE, replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)
 {
 comdata<-rbind(ref_data,test_data)
-cat("****************************************************************************\n")
-cat("     drug# 1: Ref.                                                          \n")
-cat("     drug# 2: Test                                                          \n")
-cat("****************************************************************************\n")
+cat("*****************************\n")
+cat("     drug# 1: Ref.           \n")
+cat("     drug# 2: Test           \n")
+cat("******************************n")
 show(comdata)
          cat("\n")
-         cat("\nSave selections (y/n)?\n")
+         cat("\n Save your data point selections (y/n)?\n")
             ans<-readline()
             cat("\n")
               if (ans == "n" | ans == "N"){
@@ -62,7 +62,7 @@ show(comdata)
                 ) 
                } 
               else {
-               cat("\nEnter the file name (without file extention):\n")
+               cat("\nEnter the file name (no file extention!):\n")
                comdataname <-readline()
                comdataname<-paste(comdataname,".RData",sep="")
                  if(file.exists(comdataname)){
@@ -77,7 +77,7 @@ show(comdata)
                       cat("\n")
                               }
                       else{
-                      cat("\nEnter the file name (without file extention):\n")
+                      cat("\nEnter the file name (no file extention!):\n")
                       comdataname <-readline()
                       comdataname<-paste(comdataname,".RData",sep="")
                         repeat{
@@ -95,7 +95,7 @@ show(comdata)
                          }
                         }
                       }
-              saveRDS(comdata,comdataname)
+                 saveRDS(comdata,comdataname)
                 }
                 else{
                  saveRDS(comdata,comdataname)

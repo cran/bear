@@ -8,7 +8,7 @@ cat("\n")
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << Statistical analysis menu>> ")
+  pick <- menu(file.menu, title = " << Statistical analysis menu>> ", graphics=TRUE)
     if (pick == 1){
       cat("\n")
         MultipleBANOVAmenu()
@@ -40,7 +40,7 @@ cat("\n")
                    "Back to the previous step",
                    "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << Statistical analysis menu>> ")
+  pick <- menu(file.menu, title = " << Statistical analysis menu>> ", graphics=TRUE)
     if (pick == 1){
       cat("\n")
         BANOVAmenu()

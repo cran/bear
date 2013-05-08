@@ -9,7 +9,7 @@ cat("\n")
                  "Back to top menu",
                  "Quit")
    cat("\n")
-  pick <- menu(file.menu, title = " << Sample size estimation>> ")
+  pick <- menu(file.menu, title = " << Sample size estimation>> ", graphics=TRUE)
     if (pick == 1){
       cat("\n")
         logdata()

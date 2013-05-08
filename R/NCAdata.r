@@ -9,7 +9,7 @@ file.menu <- c("Input/edit data from keyboard",
                "Quit")
 cat("\n")
 
-pick <- menu(file.menu, title = " << NCA >> ")
+pick <- menu(file.menu, title = " << NCA >> ", graphics=TRUE)
 if (pick == 1){
     cat("\n")
      if(parallel){
@@ -68,7 +68,7 @@ if (pick == 1){
               saveRDS(TotalSingledata,TotalSinglename)
            }
         else{
-           saveRDS(TotalSingledata,TotalSinglename)
+              saveRDS(TotalSingledata,TotalSinglename)
           }
            if(parallel){
              if(multiple){
@@ -145,9 +145,10 @@ else {
           }
          cat("\n\n")
          show(TotalSingledata)
-         TotalSinglename <-readline(" Enter the filename to be saved (no extension):")                           
-         TotalSinglename<-paste(TotalSinglename,".RData",sep="")
-         saveRDS(TotalSingledata,TotalSinglename)
+         ### TotalSinglename <-readline(" Enter the filename to be saved (no extension):")  ### this is loaded from .RData;                     
+         ### TotalSinglename<-paste(TotalSinglename,".RData",sep="")                        ### no need to ask to save it back.
+         ### saveRDS(TotalSingledata,TotalSinglename)
+         ### write.csv(TotalSingledata,TotalSinglename,row.names=FALSE)                     ### is it necessary? -YJ
          cat("\n\n")
          if(parallel){
            if(multiple){
@@ -199,7 +200,7 @@ else {
 }
   else {
   if (pick == 5){
-     cat("\n   Thank you for using bear!  Bye now. \n\n")
+     cat("\n  Thank you for using bear!  Bye now. \n\n")
      graphics.off()
                 }
      }

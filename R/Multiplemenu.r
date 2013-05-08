@@ -9,7 +9,7 @@ cat("\n")
                  "Back to the previous step",
                  "Quit")
 cat("\n")
-  pick <- menu(file.menu, title = " << Noncompartmental analysis (NCA)>> ")
+  pick <- menu(file.menu, title = " << Noncompartmental analysis (NCA)>> ", graphics=TRUE)
     if (pick == 1){
       cat("\n")
         MultipleNCAmenu()
@@ -40,7 +40,7 @@ cat("\n")
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << Noncompartmental analysis (NCA)>> ")
+  pick <- menu(file.menu, title = " << Noncompartmental analysis (NCA)>> ", graphics=TRUE)
     if (pick == 1){
       cat("\n")
         NCAmenu()

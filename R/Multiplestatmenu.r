@@ -8,7 +8,7 @@ file.menu <- c("NCA --> Statistical analysis for 2x2x2 crossover study",
                "Back to the previous step",
                "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " <<NCA --> Statistical Analysis>> ")
+  pick <- menu(file.menu, title = " <<NCA --> Statistical Analysis>> ", graphics=TRUE)
     if (pick == 1){
       cat("\n")
         MultipleNCA.BANOVAmenu()
@@ -40,7 +40,7 @@ else{
                  "Back to the previous step",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " <<NCA --> Statistical Analysis>> ")
+  pick <- menu(file.menu, title = " <<NCA --> Statistical Analysis>> ", graphics=TRUE)
     if (pick == 1){
       cat("\n")
         NCA.BANOVAmenu()

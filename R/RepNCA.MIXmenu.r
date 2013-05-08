@@ -15,10 +15,10 @@ cat("\n")
                  "Quit")
  cat("\n")}
   if(parallel){
-  pick <- menu(file.menu, title = "<< NCA--> Statistical Analysis for Parallel Study >> ")
+  pick <- menu(file.menu, title = "<< NCA--> Statistical Analysis for Parallel Study >> ", graphics=TRUE)
    }
   else{
-  pick <- menu(file.menu, title = "<< NCA--> Statistical Analysis for Replicated Crossover Study >> ")
+  pick <- menu(file.menu, title = "<< NCA--> Statistical Analysis for Replicated Crossover Study >> ", graphics=TRUE)
   }  
     if (pick == 1){
       cat("\n")

@@ -9,7 +9,7 @@ file.menu <- c("Input/edit data from keyboard",
                "Quit")
 cat("\n")
 
-pick <- menu(file.menu, title = " << NCA--> Statistical analysis >> ")
+pick <- menu(file.menu, title = " << NCA--> Statistical analysis >> ", graphics=TRUE)
 if (pick == 1){
 cat("\n")
     if(parallel){

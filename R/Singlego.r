@@ -10,10 +10,10 @@ cat("\n")
                  "Quit")
    cat("\n")
 if(multiple){
-       pick <- menu(file.menu, title = " << Multiple dose menu>> ")
+       pick <- menu(file.menu, title = " << Multiple dose menu>> ", graphics=TRUE)
    }
   else{
-  pick <- menu(file.menu, title = " << Single dose menu >> ")
+  pick <- menu(file.menu, title = " << Single dose menu >> ", graphics=TRUE)
    }
     if (pick == 1){
       cat("\n")

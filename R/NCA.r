@@ -1,5 +1,6 @@
 ###
-### NCA - for manual data point selection  & is going to generate regression_lines_plots_for_lambda_z.pdf (not implementer yet...)
+### NCA - for manual data point selection - YJ
+### other methods like this: ARS(), aic(), TTT(), TTTAIC(), TTTARS(). 
 ###
 NCA<-function(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
                SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
@@ -11,6 +12,37 @@ options(warn=-1)
 lambda_z_regr_select_ref<- lambda_z_regr_select_ref
 lambda_z_regr_select_test<- lambda_z_regr_select_test
 
+###
+### we try to plot regr lines for lambda(z); it works great. we need test with replicated BE. -YJ
+###
+cat("\n\n Warning: bear is going to save all linear regression plots\n for lambda_z estimation now.\n\n")
+readline(" It may take a while to finish. Press Enter to continue...")
+
+if(multiple){
+  if(replicated){
+    NCAreglplot(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
+                SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+                Tau, TlastD,SingleRdata0,SingleTdata0,
+                Demo=TRUE,BANOVA=FALSE,replicated=TRUE,MIX=FALSE, parallel=FALSE, multiple=TRUE)}
+   else {
+    NCAreglplot(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
+                SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+                Tau, TlastD,SingleRdata0,SingleTdata0,
+                Demo=TRUE,BANOVA=FALSE,replicated=FALSE,MIX=FALSE, parallel=FALSE, multiple=TRUE)}
+    }
+else{
+ if(replicated){
+    NCAreglplot(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
+               SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+               Tau, TlastD,SingleRdata0,SingleTdata0,
+               Demo=TRUE,BANOVA=FALSE,replicated=TRUE,MIX=FALSE, parallel=FALSE, multiple=FALSE)}
+  else{
+    NCAreglplot(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
+               SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+               Tau, TlastD,SingleRdata0,SingleTdata0,
+               Demo=TRUE,BANOVA=FALSE,replicated=FALSE,MIX=FALSE, parallel=FALSE, multiple=FALSE)}
+}
+###
 #fitting data with linear regression model
 #cat("<<Output: linear regression model: conc. vs. time>>\n")
 #split dataframe into sub-dataframe by subject for reference data
@@ -46,6 +78,7 @@ if(replicated){
 
         Lm1 <- lmList(conc ~ time |subj, data = ref_data)  ##lmList() is from nlme; to list lm objects;
                                                            ## not untransformed conc.(conc_data).
+        ### cat("\n\n show ref_data as follows:\n\n");show(ref_data);cat("\n\n");readline("Pause...")
        
         subj<-0
         AdjR<-0
@@ -149,7 +182,7 @@ if(replicated){
                   CminRef[j]<-Cmin_ref
                   AUCINFRef[j]<-aucINF
                   AUCTRef[j]<-auc_ref[length(R.split[[j]][["conc"]])]
-                  TmaxRef[j]<-tmax_ref$time #revised: tmax_ref[,5]
+                  TmaxRef[j]<-ifelse(multiple, tmax_ref$time - TlastD, tmax_ref$time) #revised: tmax_ref[,5]  # -YJ
                   T12Ref[j]<-log(2)/ke
                   KelRef[j]<-ke
                  
@@ -370,7 +403,7 @@ FluTest<-0
                   CminTest[j]<-Cmin_test
                   AUCINFTest[j]<-aucINF
                   AUCTTest[j]<-auc_test[length(T.split[[j]][["conc"]])]
-                  TmaxTest[j]<-tmax_test$time
+                  TmaxTest[j]<-ifelse(multiple, tmax_test$time - TlastD, tmax_test$time)  ### for multiple, shoud -TlastD. -YJ
                   T12Test[j]<-log(2)/ke1
                   KelTest[j]<-ke1
                  
@@ -576,98 +609,102 @@ if(multiple){
                    lnCmax=log(Total$Cmax),lnAUC0t=log(Total$AUC0t),lnAUC0INF=log(Total$AUC0INF))
    }
 }
-show(TotalData)
+### the following lines were for the individual plots on screen. <--- YJ
+### Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
+### s.split<-split(Totalplot,list(Totalplot$subj))
+### cat("\n\n Raw dataset:-\n\n");show(Totalplot);cat("\n\n")
+### 
+### #Plot Cp vs Time
+### #creat 3(row)*2(column) multiple figure array
+### #Plot LogCp vs Time
+### #creat 3(row)*2(column) multiple figure array
+### Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
+### s.split<-split(Totalplot,list(Totalplot$subj))
+### if(parallel){
+###  if(multiple){
+###     paraR.split<-split(SingleRdata1, list(SingleRdata1$subj))
+###     paraT.split<-split(SingleTdata1, list(SingleTdata1$subj))
+###     
+###     RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
+###     TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
+###    }
+###    else{
+###     Totalplot$conc[Totalplot$conc == 0] <- NA
+###     Totalplot <- na.omit(Totalplot)
+###     Totalplot.split<-split(Totalplot, list(Totalplot$subj))
+###  
+###     Totalplotpara<-split( Totalplot, list(Totalplot$drug))
+###     paraR.split<-split( Totalplotpara[[1]], list(Totalplotpara[[1]]$subj))
+###     paraT.split<-split( Totalplotpara[[2]], list(Totalplotpara[[2]]$subj))  
+###      }
+###  }
+### else{
+###  if(replicated){
+###      prdcount<-length(levels(TotalData$prd))
+###      LR<-data.frame(subj=Totalplot$subj,  seq=Totalplot$seq, prd=Totalplot$prd, drug=Totalplot$drug,
+###                     time=Totalplot$time,  conc=Totalplot$conc, code=Totalplot$code)
+###      LR$conc[LR$conc == 0] <- NA
+###      LR <- na.omit(LR)
+###      Ls.split<-split(LR, list(LR$subj))
+###         }
+###   else{
+###     if(multiple){
+###      LR<-data.frame(subj=SingleRdata0$subj, time=SingleRdata0$time,  conc=SingleRdata0$conc)
+###      LR$conc[LR$conc == 0] <- NA
+###      LR <- na.omit(LR)
+###      LR.split<-split(LR, list(LR$subj))
+###      
+###      LT<-data.frame(subj=SingleTdata0$subj, time=SingleTdata0$time,  conc=SingleTdata0$conc)
+###      LT$conc[LT$conc == 0] <- NA
+###      LT <- na.omit(LT)
+###      LT.split<-split(LT, list(LT$subj))
+###          RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
+###          TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
+###     }
+###       else{
+###     LR<-data.frame(subj=SingleRdata$subj, time=SingleRdata$time,  conc=SingleRdata$conc)
+###     LR$conc[LR$conc == 0] <- NA
+###     LR <- na.omit(LR)
+###     LR.split<-split(LR, list(LR$subj))
+### 
+###     LT<-data.frame(subj=SingleTdata$subj, time=SingleTdata$time,  conc=SingleTdata$conc)
+###     LT$conc[LT$conc == 0] <- NA
+###     LT <- na.omit(LT)
+###     LT.split<-split(LT, list(LT$subj))
+###       }
+###     }
+###  }
+### windows(record = TRUE )   ### not req. any more. --- may consider to delete plotsingle(), etc. same for AIC, AIC-TTT, etc.
+### if(replicated){
+###     plotsingle.Rep(Ls.split, s.split,xaxis,yaxis,i, prdcount ) 
+###    }
+### else{ 
+###  if(parallel){
+###     if(multiple){
+###        Multipleplotsingle.para(R.split,T.split,paraR.split,paraT.split,xaxis,yaxis,RR.split,TT.split,TlastD )
+###        }
+###       else{
+###         plotsingle.para(R.split, T.split, paraR.split,paraT.split,xaxis,yaxis )
+###       }
+###   }
+###   ### else{                 ## no more plot on screen now.  -YJ (v2.5.5.1)
+###   ###    if(multiple){
+###   ###      ### Multipleplotsingle(LR.split,LT.split,RR.split,TT.split,xaxis,yaxis,TlastD ) ### not req. any more; all log into .pdf
+###   ###      }
+###   ###     else{
+###   ###      ### plotsingle(LR.split,LT.split,xaxis,yaxis,R.split,T.split,multiple=FALSE)  ### this will show on screen instantly, not log into .pdf. -YJ
+###   ###     }
+###   ### }
+### }
+###
 
-#Plot Cp vs Time
-#creat 3(row)*2(column) multiple figure array
-#Plot LogCp vs Time
-#creat 3(row)*2(column) multiple figure array
-Totalplot<-Totalplot[ do.call(order, Totalplot) ,]
-s.split<-split(Totalplot,list(Totalplot$subj))
-if(parallel){
- if(multiple){
-    paraR.split<-split(SingleRdata1, list(SingleRdata1$subj))
-    paraT.split<-split(SingleTdata1, list(SingleTdata1$subj))
-    
-    RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
-    TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
-   }
-   else{
-    Totalplot$conc[Totalplot$conc == 0] <- NA
-    Totalplot <- na.omit(Totalplot)
-    Totalplot.split<-split(Totalplot, list(Totalplot$subj))
- 
-    Totalplotpara<-split( Totalplot, list(Totalplot$drug))
-    paraR.split<-split( Totalplotpara[[1]], list(Totalplotpara[[1]]$subj))
-    paraT.split<-split( Totalplotpara[[2]], list(Totalplotpara[[2]]$subj))  
-     }
- }
-else{
- if(replicated){
-     prdcount<-length(levels(TotalData$prd))
-     LR<-data.frame(subj=Totalplot$subj,  seq=Totalplot$seq, prd=Totalplot$prd, drug=Totalplot$drug,
-                    time=Totalplot$time,  conc=Totalplot$conc, code=Totalplot$code)
-     LR$conc[LR$conc == 0] <- NA
-     LR <- na.omit(LR)
-     Ls.split<-split(LR, list(LR$subj))
-        }
-  else{
-    if(multiple){
-     LR<-data.frame(subj=SingleRdata0$subj, time=SingleRdata0$time,  conc=SingleRdata0$conc)
-     LR$conc[LR$conc == 0] <- NA
-     LR <- na.omit(LR)
-     LR.split<-split(LR, list(LR$subj))
-     
-     LT<-data.frame(subj=SingleTdata0$subj, time=SingleTdata0$time,  conc=SingleTdata0$conc)
-     LT$conc[LT$conc == 0] <- NA
-     LT <- na.omit(LT)
-     LT.split<-split(LT, list(LT$subj))
-         RR.split<-split(SingleRdata0, list(SingleRdata0$subj))
-         TT.split<-split(SingleTdata0, list(SingleTdata0$subj))
-    }
-      else{
-    LR<-data.frame(subj=SingleRdata$subj, time=SingleRdata$time,  conc=SingleRdata$conc)
-    LR$conc[LR$conc == 0] <- NA
-    LR <- na.omit(LR)
-    LR.split<-split(LR, list(LR$subj))
-
-    LT<-data.frame(subj=SingleTdata$subj, time=SingleTdata$time,  conc=SingleTdata$conc)
-    LT$conc[LT$conc == 0] <- NA
-    LT <- na.omit(LT)
-    LT.split<-split(LT, list(LT$subj))
-      }
-    }
- }
-windows(record = TRUE )
-
-if(replicated){
-    plotsingle.Rep(Ls.split, s.split,xaxis,yaxis,i, prdcount ) 
-   }
-else{ 
- if(parallel){
-    if(multiple){
-       Multipleplotsingle.para(R.split,T.split,paraR.split,paraT.split,xaxis,yaxis,RR.split,TT.split,TlastD )
-       }
-      else{
-        plotsingle.para(R.split, T.split, paraR.split,paraT.split,xaxis,yaxis )
-      }
-  }
-  else{ 
-     if(multiple){
-       Multipleplotsingle(LR.split,LT.split,RR.split,TT.split,xaxis,yaxis,TlastD )
-       }
-      else{
-        plotsingle(LR.split,LT.split,xaxis,yaxis,R.split,T.split )
-      }
-  }
-}  
 ##export with txt file
 if(replicated){
       RepNCAoutput(sumindexR, sumindexT,R.split, T.split,keindex_ref,keindex_test,Dose,TotalData,rdata.split,tdata.split )
       RepNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
     if (Demo){
         if(MIX){
-        ##Demo=TRUE, MIX=TRUE
+         ##Demo=TRUE, MIX=TRUE
          RepMIXanalyze(TotalData)
         }
         else{
@@ -682,7 +719,7 @@ if(replicated){
          }
           else{
          #Demo=FALSE, MIX=FALSE
-        RepNCAsave(TotalData)
+         RepNCAsave(TotalData)
            }
          }     
     }
@@ -699,7 +736,7 @@ if(replicated){
           }
            else {
              if(MIX){
-            ##Demo=FALSE, BANOVA=TRUE
+             ##Demo=FALSE, BANOVA=TRUE
              MultipleParaMIXanalyze(TotalData)
                 }
              else{
@@ -713,7 +750,7 @@ if(replicated){
       ParaNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis) 
       if (Demo){
         if(MIX){
-        ##Demo=TRUE, MIX=TRUE
+         ##Demo=TRUE, MIX=TRUE
          ParaMIXanalyze(TotalData)
         }
         else{
@@ -745,7 +782,7 @@ if(replicated){
           }
            else {
              if(BANOVA){
-            ##Demo=FALSE, BANOVA=TRUE
+             ##Demo=FALSE, BANOVA=TRUE
              dev.off()
              MultipleBANOVAanalyze(TotalData)
                 }
@@ -762,7 +799,6 @@ if(replicated){
        if (Demo){
         if(BANOVA){
         ##Demo=TRUE, BANOVA=TRUE
-         dev.off()
          BANOVAanalyze(TotalData)
         }
         else{
@@ -773,7 +809,6 @@ if(replicated){
        else {
          if(BANOVA){
          ##Demo=FALSE, BANOVA=TRUE
-         dev.off()
          BANOVAanalyze(TotalData)
          }
           else{
@@ -786,6 +821,3 @@ if(replicated){
    }
  }
 }  
-
-
- 

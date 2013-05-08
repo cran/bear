@@ -1,4 +1,7 @@
-#Generalized Linear Models (GLM)
+### Generalized Linear Models (GLM)
+### at the end, HY also showed the ODA plots on SCREEN; BANOVAoutput() call BANOVAplot() to log all ODA plots into pdf file.
+### so I omit this part (to display ODA plots on screen) since bear v2.5.4.9. -YJ
+### 
 BANOVAanalyze<-function(TotalData, multiple=FALSE, separateWindows=TRUE)
 {
 ## ODA is off by default
@@ -262,16 +265,20 @@ BANOVAoutput(RefData, TestData, TotalData,  L1, L2,
        IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
        IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22,
        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
-## show in console
+###
+### show in console
 graphics.off()
-##  close ODA by default
-if(ODAnalysis){
-windows(record = TRUE)
-.SavedPlots<-NULL
-BANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00, 
-           IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
-           IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
-           IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22, TotalData)
-      }
+### close ODA by default
+### I turn off displaying ODA plots on screen function with remarked following lines.
+###  YJ (04/23/2013)
+###
+### if(ODAnalysis){
+### windows(record = TRUE)
+### .SavedPlots<-NULL
+### BANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00, 
+###            IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
+###            IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
+###            IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22, TotalData)
+###       }
    }
 }

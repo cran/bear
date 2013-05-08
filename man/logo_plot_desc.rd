@@ -1,10 +1,10 @@
 \encoding{UTF-8}
 
-\name{description_version}
+\name{logo_plot_desc}
 
-\alias{description_version}
+\alias{logo_plot_desc}
 
-\title{Description for version}
+\title{Description for NCA/ODA plots version}
 
 \description{
 

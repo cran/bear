@@ -11,35 +11,17 @@ BANOVA<-function(RefData, TestData,TotalData, L1, L2,
 #theta2:  higher acceptance limit
 #represent GLM
 ##
+options(width=100)
 oda_output_xfile<- oda_output_xfile
-pivotal_output_xfile<- pivotal_output_xfile
 ODAnalysis<- ODAnalysis
 ##
 if(multiple){
 cat("*** A 2-trt, 2-seq, and 2-period Crossover Multiple Dose Design. \n")
-Data<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
+Data<-data.frame(subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
                    prd=as.factor(TotalData$prd),Cmax_ss=TotalData$Cmax,AUCtau_ss=TotalData$AUC0t)
-##
-## DataMTL will not be used later. Just create it for dumping pivotal paramaters. -YJ
-##
-DataMTL<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
-                   prd=as.factor(TotalData$prd),Cmax_ss=formatC(TotalData$Cmax,format="f",digits=3),
-                   AUCtau_ss=formatC(TotalData$AUC0t,format="f",digits=3))
-                   
-write.csv(DataMTL,file = pivotal_output_xfile, row.names = FALSE)     ## output a csv file for multiple
-
 }
 else{
 cat("*** A 2-trt, 2-seq, and 2-period Crossover Single Dose Design. \n")
-##
-## DataSGL will not be used later. Just create it for dumping pivotal paramaters. -YJ
-##
-DataSGL<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
-                   prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=formatC(TotalData$AUC0t,format="f",digits=3),
-                   AUC0INF=formatC(TotalData$AUC0INF,format="f",digits=3))
-                   
-write.csv(DataSGL,file = pivotal_output_xfile, row.names = FALSE)  ## output a csv file for single
-##
 }
 cat("\n\n")
 
@@ -924,6 +906,7 @@ cat("\n")
 }
 if(ODAnalysis){
 zzoda <- file(oda_output_xfile, open="wt")
+cat("\n\n Generate ODA output now...\n");readline(" Press Enter to continue...");cat("\n\n")
 sink(zzoda)
 description_version()
 cat("\n\n")

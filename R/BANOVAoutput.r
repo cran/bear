@@ -1,4 +1,6 @@
 ##########.txt output
+### not only ANOVA output, but also ODA plots (with BANOVAplot()). -YJ
+###
 options(warn=-1)
 BANOVAoutput<-function(RefData, TestData,TotalData, L1, L2,
        lnCmax_MSinter, lnCmax_MSintra, lnCmax_SSinter, lnCmax_SSintra,
@@ -11,7 +13,7 @@ BANOVAoutput<-function(RefData, TestData,TotalData, L1, L2,
        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,
        lnAUC0INF_theta2, multiple=FALSE)
 {
-
+options(width=100)
 ## to avoid "not visible binding..." error message with codetool
 anova_output_xfile<- anova_output_xfile
 ODplot_output_xfile<- ODplot_output_xfile
@@ -76,6 +78,7 @@ rseq<-as.data.frame(sapply(TotalData1, tapply, TotalData1$seq, mean))
 rprd<-as.data.frame(sapply(TotalData1, tapply, TotalData1$prd, mean))
 
 #ANOVA.txt
+cat("\n\n Generate anova output now...\n");readline(" Press Enter to continue...");cat("\n\n")
 zz <- file(anova_output_xfile, open="wt")
 sink(zz)
 description_version()
@@ -169,8 +172,9 @@ options(warn=-1)
 ODAnalysis<-ODAnalysis
 ##
 if(ODAnalysis){
+cat("\n\n Save ODA plots now...\n");readline(" Press Enter to continue...");cat("\n\n")
 pdf(ODplot_output_xfile, paper = "a4", bg = "white")
-description_plot()
+logo_plot_desc()
 if(multiple){
 MultipleBANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,
                    IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,

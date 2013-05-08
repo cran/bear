@@ -8,7 +8,7 @@ cat("\n")
                  "Back to the top menu",
                  "Quit")
  cat("\n")
-  pick <- menu(file.menu, title = " << NCA --> Statistical Analysis for 2x2x2 Crossover Study >>")
+  pick <- menu(file.menu, title = " << NCA --> Stat Analysis for 2x2x2 Crossover Study >>", graphics=TRUE)
   if(multiple){
    if (pick == 1){
       cat("\n")

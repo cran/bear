@@ -1,0 +1,1 @@
+test.nca_stat()

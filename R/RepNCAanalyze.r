@@ -1,4 +1,6 @@
-#Input assay data Menu for Data Analysis for Single dose
+### Input assay data Menu for Data Analysis for Single dose; NCA ONLY for replicate BE dataset -YJ
+### This script is only for replicate; if non-replicate -> NCAanalyze.r   -YJ
+### 
 
 RepNCAanalyze<-function(TotalSingledata, Dose, xaxis,yaxis, separateWindows=TRUE, MIX=FALSE)
 {
@@ -64,6 +66,9 @@ SingleTdata1 <- na.omit(SingleTdata1)
 cat("\n\n")
 #'Total" for NCAplot
 Totalplot<- rbind(SingleRdata,SingleTdata)
+###
+create.products_sum(Totalplot)
+###
 
    cat("\n")
    file.menu <- c("Select 2-6 data points manually",
@@ -74,7 +79,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
                   "Use TTT and ARS method",
                   "Use TTT and AIC method")
    cat("\n")
-   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>")
+   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
 
    if (pick ==1){
       description_pointselect()

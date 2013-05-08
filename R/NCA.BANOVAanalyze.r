@@ -53,31 +53,11 @@ if(!identical(R_subj_no,T_subj_no)) {       ### use identical() here to compare 
 cat("\n\n")
 # "Total" for NCAplot
 Totalplot<- rbind(SingleRdata0,SingleTdata0)
-    ###
-    ### prepare for save sum_all_by_product.csv here... YJ
-    TKK<-Totalplot
-    ## TKK<-TKK[ do.call(order, TKK) ,]
-    ### dump ref data
-    SS_ref<-subset(TKK,TKK$drug==1)                                                                                                    
-    timeXX<-SS_ref$time                                                                                                                
-    timeXX<-unique(timeXX)                                                                                                             
-    product_F<-factor(SS_ref$time)   # get mean & sd by time as factor                                                                 
-    mean.conc.ref<-tapply(SS_ref$conc,product_F, mean)                                                                                 
-    SD.conc.ref<-tapply(SS_ref$conc,product_F, sd)                                                                                     
-    SS_test<-subset(TKK,TKK$drug==2)
-    timeZZ<-SS_test$time                                                                                                                
-    timeZZ<-unique(timeZZ)                                                                                                             
-    product_F<-factor(SS_test$time)                                                                                                    
-    mean.conc.test<-tapply(SS_test$conc,product_F, mean)                                                                               
-    SD.conc.test<-tapply(SS_test$conc,product_F, sd)                                                                                   
-    sum_all_Ref<-data.frame(time=timeXX,mean_ref=mean.conc.ref,SD_ref=SD.conc.ref)
-    sum_all_test<-data.frame(time=timeZZ,mean_test=mean.conc.test,SD_ref=SD.conc.test)
-    write.csv(sum_all_Ref,file="sum_all_Ref.csv",row.names=FALSE)  
-    write.csv(sum_all_Ref,file="sum_all_test.csv",row.names=FALSE) ### <-- it's working!!  YJ
-    ###
-    ### show(sum_all_by_product)  ### try to write.csv() and then read.csv() in NCAoutput() again and show() it,     
-    ### cat("\n\n"); readline()   ### finally file.remove("sum_all_by_product.csv") to remove this file.
-    ###
+###
+### write the file creations as a function since it will be called frequently. ---YJ
+###
+create.products_sum(Totalplot)
+###
 
    cat("\n")
    file.menu <- c("Select 2-6 data points manually",            
@@ -88,7 +68,7 @@ Totalplot<- rbind(SingleRdata0,SingleTdata0)
                   "Use TTT and ARS method",
                   "Use TTT and AIC method")                 
    cat("\n")               
-   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>")
+   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
 
    if (pick ==1){
      description_pointselect()  
@@ -200,33 +180,9 @@ if(!identical(R_subj_no,T_subj_no)) {       ### use identical() here to compare 
 
 #'Total" for NCAplot
 Totalplot<- rbind(SingleRdata,SingleTdata)
-   ###
-   ### prepare for save sum_all_by_product.csv here... YJ
-   TKK<-Totalplot
-   ### TKK<-TKK[ do.call(order, TKK) ,]
-   ### dump ref data
-   SS_ref<-subset(TKK,TKK$drug==1)                                                                                                    
-   timeXX<-SS_ref$time                                                                                                                
-   timeXX<-unique(timeXX)
-   timeXX<-sort(timeXX)
-   product_F<-factor(SS_ref$time)   # get mean & sd by time as factor                                                                 
-   mean.conc.ref<-tapply(SS_ref$conc,product_F, mean)                                                                                 
-   SD.conc.ref<-tapply(SS_ref$conc,product_F, sd)                                                                                     
-   SS_test<-subset(TKK,TKK$drug==2)
-   timeZZ<-SS_test$time                                                                                                                
-   timeZZ<-unique(timeZZ)
-   timeZZ<-sort(timeZZ)
-   product_F<-factor(SS_test$time)                                                                                                    
-   mean.conc.test<-tapply(SS_test$conc,product_F, mean)                                                                               
-   SD.conc.test<-tapply(SS_test$conc,product_F, sd)                                                                                   
-   sum_all_Ref<-data.frame(time=timeXX,mean_ref=mean.conc.ref,SD_ref=SD.conc.ref)
-   sum_all_test<-data.frame(time=timeZZ,mean_test=mean.conc.test,SD_ref=SD.conc.test)
-   write.csv(sum_all_Ref,file="sum_all_Ref.csv",row.names=FALSE)  
-   write.csv(sum_all_Ref,file="sum_all_test.csv",row.names=FALSE) ### <-- it's working!!  YJ
-   ###
-   ### show(sum_all_by_product)  ### try to write.csv() and then read.csv() again and show() it on NCAoutput(), 
-   ### cat("\n\n"); readline()   ### finally file.remove("sum_all_by_product.csv") after show().
-   ###
+###
+create.products_sum(Totalplot)
+###
 
    cat("\n")
    file.menu <- c("Select 2-6 data points manually",
@@ -317,11 +273,3 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
   })
  }
 }       
- 
-
-
-
-
-
-
-
