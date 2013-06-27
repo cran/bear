@@ -46,7 +46,7 @@ if(multiple){
  else {
     if (pick == 5){
         graphics.off()
-        go()
+        go2menu()
          }
   else {
     if (pick == 6){

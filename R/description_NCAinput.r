@@ -1,7 +1,7 @@
 description_NCAinput<-function(replicated=FALSE, parallel=FALSE){
 cat("\n\n")
 cat("****************************************************************************\n")
-cat("  Input Data Foramt                                                         \n")
+cat("  Input Data Format                                                         \n")
 cat("----------------------------------------------------------------------------\n")
 cat("   -> subject no.(subj)                                                     \n")
 if(parallel){
@@ -18,8 +18,8 @@ cat("       if 4 periods                                                        
 cat("          1:Ref.-> Test -> Ref.-> Test                                      \n")
 cat("          2:Test-> Ref. -> Test-> Ref. or                                 \n\n")
 cat("       if 3 periods                                                         \n")
-cat("          1:Ref. -> Test -> Rest                                            \n")
-cat("          2:Test -> Ref. -> Tef.                                            \n")
+cat("          1:Ref. -> Test -> Ref.                                            \n")
+cat("          2:Test -> Ref. -> Test                                            \n")
 }
   else{
 cat("          1:Ref. -> Test                                                    \n")

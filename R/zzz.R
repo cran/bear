@@ -6,7 +6,7 @@ packageStartupMessage("
 ....................................
                           
    bear (BE/BA for R) 
-   v2.5.5
+   v2.5.6
                                                                    
    Please type 'go()' to run; or
    'about.bear()' to read more; or

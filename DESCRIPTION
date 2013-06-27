@@ -1,6 +1,6 @@
 Package: bear
-Version: 2.5.5
-Date: 2013-05-08
+Version: 2.5.6
+Date: 2013-06-27
 Title: Average bioequivalence and bioavailability data analysis tool
 Author: Hsin-ya Lee, Yung-jin Lee
 Maintainer: Yung-jin Lee <mobilepk@gmail.com>
@@ -17,6 +17,6 @@ Description: An average bioequivalence (ABE) and bioavailability data
 License: GPL (>= 2)
 NeedsCompilation: no
 URL: http://pkpd.kmu.edu.tw/bear
-Packaged: 2013-05-06 22:55:28 UTC; datawalker
+Packaged: 2013-06-27 00:16:23 UTC; datawalker
 Repository: CRAN
-Date/Publication: 2013-05-07 06:22:08
+Date/Publication: 2013-06-27 06:48:48

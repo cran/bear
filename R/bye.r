@@ -5,10 +5,10 @@ cat("\n")
   file.menu <- c("Back to Top menu",
                  "Quit")
   cat("\n")
-  pick <- menu(file.menu, title = " << Try again or quit? >> ", graphics=TRUE)
+  pick <- menu(file.menu, title = " << Restart or quit? >> ", graphics=TRUE)
     if (pick == 1){
      cat("\n")
-     go()}
+     go2menu()}
     else {
      if (pick == 2){
         cat("\n")

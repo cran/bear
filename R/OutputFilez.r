@@ -14,8 +14,8 @@ OutputFilez<-function(){
    ODplot_output_xfile<-NULL              ### BANOVAoutput.r
    oda_output_xfile<-NULL                 ### BANOVA.r
    lambda_z_regression_lines<-NULL        ### NCAselect.r (or NCA.r) & ARS.r & TTT.r &...
-   lambda_z_regr_select_ref<-NULL         ### NCA.r only
-   lambda_z_regr_select_test<-NULL        ### NCA.r only
+   lambda_z_regr_select_ref<-NULL         ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
+   lambda_z_regr_select_test<-NULL        ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
    
 ## create random batch number & system.date() for the head of output files
 

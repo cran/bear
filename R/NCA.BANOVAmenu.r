@@ -28,7 +28,7 @@ cat("\n")
    else {
     if (pick == 4){
         graphics.off()
-        go()
+        go2menu()
               }
    else {
      if (pick== 5){
@@ -59,7 +59,7 @@ cat("\n")
    else {
  if (pick == 4){
         graphics.off()
-        go()
+        go2menu()
               }
    else {
      if (pick== 5){

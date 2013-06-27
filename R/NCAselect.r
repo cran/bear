@@ -10,22 +10,24 @@ options(warn=-1)
 ### plots of regression line for lambda_z_estimation
 ### lambda_z_regression_lines<-lambda_z_regression_lines   ### will move to NCA() to generate this pdf. -YJ
 ###
-windows(record=TRUE)
+### windows(record=TRUE)   ### not working in linux;
+description_pointselect()
+dev.new()                  ### works great for both linux & windows
 par(mfrow=c(1,1),las=1, ask=TRUE)
+### par(mai=c(0.9,0.9,0.9,0.9))   ### best-fit for my plots and suitable for ivivc for R and bear. -YJ
+### par(mai=c(1.,1.,1.,1.))       ### testing... not work well. -YJ
 
 cat("\n\n")
     cat("****************************************************************************\n")
     cat(" Data for the Ref. Products:                                                \n")
     cat("----------------------------------------------------------------------------\n")
     if(multiple){
-    cat(" 1. Cmax_ss, Tmax_ss, AUC(tau)ss, ln(Cmax_ss), ln(AUC(tau)ss), T1/2(z),  \n")
-    cat("    Vd/F, MRT, lambda(z), Cl/F, Cav and Fluctuations will be calculated.\n")
-    cat(" 2. AUC(tau)ss is calculated using the linear trapezoidal method.       \n")
+    cat(" Cmax_ss, Tmax_ss, AUC(tau)ss, ln(Cmax_ss), ln(AUC(tau)ss), T1/2(z),  \n")
+    cat("  Vd/F, MRT, lambda(z), Cl/F, Cav and Fluctuations will be calculated.\n")
     }
     else{
-    cat(" 1. AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf), lambda_z, Cl/F, Vd, MRT,  \n")
-    cat("    and half-life (T1/2(z))                                \n")
-    cat(" 2. AUC(0-t) is calculated using the linear trapezoidal method.            \n")
+    cat(" AUC(0-t), AUC(0-inf), AUMC(0-t), AUMC(0-inf), lambda_z, Cl/F, Vd, MRT,  \n")
+    cat("  and half-life (T1/2(z))                                                \n")
     }
     cat("                                                                            \n")
     cat("****************************************************************************\n")
@@ -56,13 +58,13 @@ if(multiple){
        #calculate kel for reference data
        co_data1<-NULL
        for(i in seq_along(R.split)){
-         xx1<-R.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+         xx1<-R.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substrate TlastD for one dosing tau.
          yy1<-R.split[[i]]$conc
          ### cat("\n\n show yy1:");show(yy1);cat("\n\n")
          main<-paste(c("[Manual Selection] Subj#",R.split[[i]]$subj[1],"-Ref."),collapse=" ")
          plot(xx1,yy1, log="y",axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
               xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)"),        ### log="y" as semilog plot here (YJ)
-         main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19) ### ,frame.plot=FALSE) ### remove plot frame with'frame.plot=FALSE' here  -YJ
+         main=main,las=1, cex.lab = 1.2,cex.main = 1.0,lab=c(15,15,40),pch=19) ### ,frame.plot=FALSE) ### remove plot frame with 'frame.plot=FALSE' here  -YJ
          lines(xx1,yy1, lty=20)
          ### if (min(yy1)<1) {axis(1, pos=2)}
          ###    else {axis(1, pos=min(yy1))}  ### for x-axis
@@ -89,7 +91,7 @@ if(multiple){
          y2<-NULL
          for(j in seq_along(YY.split)){
                tx<-NULL
-                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replace YY.split[[j]] with YY.split[[i]] for this & next line
                   tx[[k]]<-YY.split[[i]][["value"]][k]
                   }
                    xy1[[j]]<-R.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!
@@ -107,7 +109,7 @@ if(multiple){
 ###
 ### above refx1_data is only for current subj
 ###         
-         xxx1<-refx1_data$time-TlastD    ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+         xxx1<-refx1_data$time-TlastD    ###  watch for this!! for multiple dose, we have to substrate TlastD for one dosing tau.
          yyy1<-refx1_data$conc
          conc_plot<-refx1_data$conc_data
          points(xxx1,conc_plot, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### here we have to use original data (conc) to plot selected points;
@@ -144,7 +146,7 @@ else{
            }
          plot(xx1,yy1,log="y", xlim=range(xx1), ylim=c(1e-3,1e+5),
               xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "), main=main,
-              cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
+              cex.lab = 1.2,cex.main = 1,pch=19,lab=c(15,15,40),xaxt="n",frame.plot=FALSE)   ### remove plot frame with 'frame.plot=FALSE' here  -YJ
          lines(xx1,yy1, lty=20)
          axis(1,tcl=-.2,labels=TRUE)
          co_data1[[i]]<-identify(xx1, yy1, n=6)   ### set max. select = 6 here! with subj(i)
@@ -168,7 +170,7 @@ else{
          y2<-NULL
          for(j in seq_along(YY.split)){
                tx<-NULL
-                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replace YY.split[[j]] with YY.split[[i]] for this & next line
                   tx[[k]]<-YY.split[[i]][["value"]][k]
                   }
                    xy1[[j]]<-R.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!
@@ -310,13 +312,13 @@ rdata.split<-split(rdata,list(rdata$code))
              co_data2<-NULL
 if(multiple){
          for(i in seq_along(T.split)){
-           xx2<-T.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+           xx2<-T.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substrate TlastD for one dosing tau.
            yy2<-T.split[[i]]$conc
                main<-paste(c("[Manual Selection] Subj#",T.split[[i]]$subj[1],"-Test"),collapse=" ")
                   
            plot(xx2,yy2, log="y", axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
                xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "),   ## log="y" is to set Y-axis as log10() scale
-           main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19) ### ,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ)
+           main=main,las=1, cex.lab = 1.2,cex.main = 1.0,lab=c(15,15,40),pch=19) ### ,frame.plot=FALSE)   ### remove plot frame with 'frame.plot=FALSE' here  -YJ)
            lines(xx2,yy2, lty=20)
            ### if (min(yy1)<1) {axis(1, pos=2)}
            ###    else {axis(1, pos=min(yy1))}  ### for x-axis
@@ -343,7 +345,7 @@ if(multiple){
          y2<-NULL
          for(j in seq_along(YY.split)){
                tx<-NULL
-                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replace YY.split[[j]] with YY.split[[i]] for this & next line
                   tx[[k]]<-YY.split[[i]][["value"]][k]
                   }
                    xy1[[j]]<-T.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!
@@ -361,7 +363,7 @@ if(multiple){
 ###
 ### above testx1_data is only for current subj
 ###
-         xxx1<-testx1_data$time-TlastD  ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+         xxx1<-testx1_data$time-TlastD  ###  watch for this!! for multiple dose, we have to substrate TlastD for one dosing tau.
          yyy1<-testx1_data$conc
          conc_plot<-testx1_data$conc_data
          points(xxx1,conc_plot, pch="X", type="p", col="blue",lwd=2,cex=1.5)  ### here we have to use original data (conc) to plot selected points;
@@ -378,7 +380,7 @@ if(multiple){
          leg_txt<-paste(leg_txt,"\nR_sq =",sep="")
          leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
          ## show(leg_txt)
-         legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ## find the appropriate posiiton, shrink font size for legend with cex=0.7              
+         legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ## find the appropriate position, shrink font size for legend with cex=0.7              
       }
 }
 else{
@@ -396,7 +398,7 @@ else{
               
               plot(xx2,yy2, log="y",xlim=range(xx2), ylim=c(1e-3,1e+5),
                    xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "), main=main ,
-                   cex.lab = 1.2,cex.main = 1,pch=1,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ)
+                   cex.lab = 1.2,cex.main = 1,pch=1,lab=c(15,15,40), xaxt="n",frame.plot=FALSE)   ### remove plot frame with 'frame.plot=FALSE' here  -YJ)
               lines(xx2,yy2,lty=20)
               axis(1,tcl=-.2,labels=TRUE)
               co_data2[[i]]<-identify(xx2,yy2, n=6)  ### set max. select = 6 here! with subj(i)
@@ -419,7 +421,7 @@ else{
          y2<-NULL
          for(j in seq_along(YY.split)){
                tx<-NULL
-                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replcace YY.split[[j]] with YY.split[[i]] for this & next line
+                for(k in 1:length(YY.split[[i]][["value"]])){   ## Yes! replace YY.split[[j]] with YY.split[[i]] for this & next line
                   tx[[k]]<-YY.split[[i]][["value"]][k]
                   }
                    xy1[[j]]<-T.split[[i]][tx, , ]               ## replace r.split 'j' with 'i' is correct way!

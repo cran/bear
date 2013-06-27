@@ -15,9 +15,10 @@ NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex
 {
 options(warn=-1)
 options(width=100)
+lin.AUC<-lin.AUC
 cat("\n\n Generate NCA output now...\n");readline(" Press Enter to continue...");cat("\n\n")
 Demo<-Demo  # set Demo as Global, see go.r
-Demo=TRUE   # add thie line for testing; actually it can be demo or not demo... it's been forced to TRUE now. -YJ
+Demo=TRUE   # add this line for testing; actually it can be demo or not demo... it's been forced to TRUE now. -YJ
 
 ## to avoid "not visible binding..." error message with codetool
 nca_output_xfile<- nca_output_xfile
@@ -74,51 +75,54 @@ cat("------------------------<<   NCA Summary and Outputs  >>-------------------
 ### 1_Cmax.txt
 
          if (NCA){
-              cat("1. Lambda_z is calculated with manual data points selection method.\n")
-                
-                 }
+              cat("1. Lambda_z is calculated with manual data points selection method.\n\n")
+               }
                 else {
                  if(ARS){
                  cat("1. Lambda_z is calculated using the adjusted R squared (ARS) method\n") 
-                 cat("   without including the data point of (Tmax, Cmax).\n")
+                 cat("   without including the data point of (Tmax, Cmax).\n\n")
                  }
                 else{
                   if(TTT){
-                  cat("1. Lambda_z is calculated using the Two-Times-Tmax (TTT) method.            \n")
+                  cat("1. Lambda_z is calculated using the Two-Times-Tmax (TTT) method.       \n\n")
                   cat("ref.:Scheerans C, Derendorf H and C Kloft. Proposal for a Standardised   \n")
 									cat("     Identification of the Mono-Exponential Terminal Phase for Orally    \n")
-									cat("     Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).        \n") 
+									cat("     Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).      \n\n") 
                      }
                 else {
                  if(aic){
                  cat("1. Lambda_z is calculated using Akaike information criterion (AIC) method\n") 
-                 cat("   without including the data point of (Tmax, Cmax).\n")
+                 cat("   without including the data point of (Tmax, Cmax).\n\n")
                  }
                  else {
                  if(TTTARS){
                  cat("1. Lambda_z is calculated using the Two-Times-Tmax (TTT) and adjusted R squared\n") 
-                 cat("  (ARS) method without including the data point of (Tmax, Cmax).\n")
+                 cat("  (ARS) method without including the data point of (Tmax, Cmax).\n\n")
                  }
                  else {
                  if(TTTAIC){
                  cat("1. Lambda_z is calculated using Two-Times-Tmax (TTT) and Akaike information \n") 
-                 cat("   criterion (AIC) method without including the data point of (Tmax, Cmax).\n")
+                 cat("   criterion (AIC) method without including the data point of (Tmax, Cmax).\n\n")
                        } 
                       } 
                      }
                    }       
                  }
                 } 
+          if(lin.AUC){
+          cat("2. The linear trapezoidal method is used to calculate AUC.\n\n")}
+          else{
+          cat("2. The lin-up/log-down trapezoidal method is used to calculate AUC.\n\n")
+          }                                
           if(multiple){
-          cat("2. This is a multiple-dose BA/BE study.                 \n")
+          cat("3. This is a multiple-dose BA/BE study.                 \n")
           cat("---------------------------------------------------------------------------\n")
           }
           else{
-          cat("2. This is a single-dose BA/BE study.                   \n")
+          cat("3. This is a single-dose BA/BE study.                   \n")
           cat("---------------------------------------------------------------------------\n")
           }
-cat("\n")
-cat("\n")
+cat("\n\n")
 cat("\f")
 cat("                    Reference                      \n")
 cat("---------------------------------------------------\n")
@@ -137,7 +141,7 @@ cat("---------------------------------------------------\n")
  FluRef<-0
  
       for (j in 1:length(R.split)){
-         #if subj of W.split==subj of kepar, then use ke of kepar to claculate AUC(0~INF)
+         #if subj of W.split==subj of kepar, then use ke of kepar to calculate AUC(0~INF)
           if(replicated){
           ke<-0
           R_sq<-0
@@ -177,7 +181,22 @@ cat("---------------------------------------------------\n")
           aumc_ref<-0
           for(i in 2:length(R.split[[j]][["time"]])){
              #calculate AUC and exclude AUC==NA (auc<-0)
-             auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5
+             ###
+             ### original is all linear trapezoidal; -- YJ
+             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ###
+             if(lin.AUC){
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5}
+             else{
+                if(R.split[[j]][["conc"]][i]>R.split[[j]][["conc"]][i-1] || R.split[[j]][["conc"]][i] == R.split[[j]][["conc"]][i-1]){
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5}
+                else{
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]-R.split[[j]][["conc"]][i-1])/
+                              log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
+                    }
+             }
+             ###             
+             ### auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5
              auc_ref[i]<-auc_ref[i]+auc_ref[i-1]
              #calculate AUMC
              if(multiple){
@@ -465,7 +484,22 @@ FluTest<-0
           
           for(i in 2:length(T.split[[j]][["time"]])){
              #calculate AUC and exclude AUC==NA (auc<-0)
-             auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5
+             ###
+             ### original is all linear trapezoidal; -- YJ
+             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ###
+             if(lin.AUC){
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5}
+             else{
+                if(T.split[[j]][["conc"]][i]>T.split[[j]][["conc"]][i-1] || T.split[[j]][["conc"]][i] == T.split[[j]][["conc"]][i-1]){
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5}
+                else{
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]-T.split[[j]][["conc"]][i-1])/
+                              log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
+                    }
+             }
+             ###             
+             ### auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5
              auc_test[i]<-auc_test[i]+auc_test[i-1]
              #calculate AUMC
               if(multiple){
@@ -1704,7 +1738,7 @@ cat("\n\n Generate stat_sum output now...\n");readline(" Press Enter to continue
 zz <- file(statSum_output_xfile, open="wt")
 sink(zz)
 description_version()
-cat("Statistical Summaries for Pivotal Parameters of Bioequivalence (N=",L1+L2,")\n")
+cat("Statistical Summaries for Pivotal Parameters of Bioequivalence (N =",L1+L2,")\n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
 if(multiple){                              ### multiple-dose BE study
@@ -1801,7 +1835,7 @@ else{                                    ### single-dosed BE study
 show(outputS1)
 cat("\n")
 cat("\n")
-cat("Statistical Summaries for Pivotal Parameters of Bioequivalence (N=",L1+L2,")\n")
+cat("Statistical Summaries for Pivotal Parameters of Bioequivalence (N =",L1+L2,")\n")
 cat("(cont'd)\n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
@@ -1841,7 +1875,7 @@ outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
                      CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
                       
 
-colnames(outputS2)<- c("Parmeters"," PE (%)"," lower 90%CI"," upper 90%CI")
+colnames(outputS2)<- c("Parameters"," PE (%)"," lower 90%CI"," upper 90%CI")
 show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
@@ -1885,7 +1919,7 @@ else{
                      CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
    }                   
 
-colnames(outputS2)<- c("Parmeters", " PE (%)"," lower 90%CI"," upper 90%CI")
+colnames(outputS2)<- c("Parameters", " PE (%)"," lower 90%CI"," upper 90%CI")
 show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
@@ -1923,7 +1957,7 @@ cat("\n")
 cat("-------------------------------------------------------------------------\n")
 cat(" Both F values and P values were obtained from ANOVA, respectively.\n")
 cat(" 90%CI: 90% confidence interval \n")
-cat(" PE(%): point estimate; = quared root of (lower 90%CI * upper 90%CI)\n")
+cat(" PE(%): point estimate; = squared root of (lower 90%CI * upper 90%CI)\n")
 cat(" Please note: no posterior power calculated. Ref.: Hoenig JM and Heisey DM. \n")
 cat(" The abuse of power: the pervasive fallacy of power calculations for data \n")
 cat(" analysis. The American Statistician 55/1, 19-24 (2001). See discussions \n")
@@ -1934,11 +1968,11 @@ cat("--------------------------------------------------------------------------\
 }
 cat("\n")
 #Table 2:Summaries for Pharmacokinetic Parameters 
-cat("Summaries for misc. Pharmacokinetic Parameters (N=",L1+L2,")\n")
+cat("Summaries for misc. Pharmacokinetic Parameters (N =",L1+L2,")\n")
 cat("\n")
 if(multiple){
  if(parallel){
-   cat("               Test","(n1=",L2,")","         Reference","(n2=",L1,")\n")
+   cat("               Test","(n1 =",L2,")","         Reference","(n2 =",L1,")\n")
    cat("--------------------------------------------------------------------------\n")
    cat("\n")
    outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax_ss","T1/2(z)","Vd/F","MRT","Cav","Fluc. (%)"),
@@ -2017,7 +2051,7 @@ cat("\n")
 }
 else{
 if(parallel){
-   cat("                Test","(n1=",L2,")","        Reference","(n2=",L1,")\n")
+   cat("                Test","(n1 =",L2,")","        Reference","(n2 =",L1,")\n")
    cat("--------------------------------------------------------------------------\n")
    cat("\n")
    outputTest<-data.frame(Parameters=c("Cl/F","Lambda_z","Tmax","T1/2(z)","Vd/F","MRT0inf","AUC.index (%)"),

@@ -9,6 +9,6 @@ cat(" regarding only one source of variation - treatment. There are no sources  
 cat(" of variation associated with sequence or period because there are no       \n")
 cat(" sequences or periods in a parallel design.  Log-transformed BA measures    \n")
 cat(" will also be analyzed.                                                     \n")
-cat("****************************************************************************\n")
+cat("............................................................................\n")
 cat("\n")
 }

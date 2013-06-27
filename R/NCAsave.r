@@ -4,7 +4,7 @@
 NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
 
 ###   cat("\n\n")
-###      cat("\n Input the file name to save pivotal BE parameters (no file extention!):\n")
+###      cat("\n Input the file name to save pivotal BE parameters (no file extension!):\n")
 ###                Totalname <-readline()
 ###                Totalname<-paste(Totalname,".RData",sep="")
 ###                  if(file.exists(Totalname)){
@@ -19,7 +19,7 @@ NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
 ###                       cat("\n")
 ###                               }
 ###                       else{
-###                       cat("\n Input the file name to save pivotal BE parameters (no file extention!):\n")
+###                       cat("\n Input the file name to save pivotal BE parameters (no file extension!):\n")
 ###                       Totalname <-readline()
 ###                       Totalname<-paste(Totalname,".RData",sep="")
 ###                         repeat{

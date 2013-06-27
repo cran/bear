@@ -1,5 +1,5 @@
 ###
-### This function is for plotting regression lines of data manual slection for lambda_z,
+### This function is for plotting regression lines of data manual selection for lambda_z,
 ### from previously saved data point selection file (.RData).
 ### The function of on-screen data point selection plots is within NCAselec().
 ### Hoep this will work. Basicaly I copy and paste all codes from NCAselect() first and then
@@ -51,19 +51,19 @@ if(multiple){
        #calculate kel for reference data
        co_data1<-NULL
        for(i in seq_along(R.split)){
-         xx1<-R.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+         xx1<-R.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substrata TlastD for one dosing tau.
          yy1<-R.split[[i]]$conc
-         main<-paste(c("[Manual Selection] Subj#",R.split[[i]]$subj[1],"-Ref."),collapse=" ")
+         main<-paste(c("[Manual Selection] Subj#",R.split[[i]]$subj[1],"- Ref."),collapse=" ")
          plot(xx1,yy1, log="y", axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
               xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "),     ## log="y" as semilog plot here (YJ)
-         main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19) ### ,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
+         main=main,las=1, cex.lab = 1.2,cex.main = 1.0,lab=c(15,15,40),pch=19) ### ,frame.plot=FALSE)   ### remove plot frame with 'frame.plot=FALSE' here  -YJ
          lines(xx1,yy1, lty=20)
          axis(1, pos=0.001)
          axis(2, pos=0,las=1)
          xxx1<-LR.split[[i]]$time-TlastD              ### can be error here... -YJ
          yyy1<-LR.split[[i]]$conc                     ### here 'conc' is log10(conc) for regression. -YJ
          yyyy1<-LR.split[[i]]$conc_data               ### conc_data is untransformed data and is for plot.
-         ### co_data1[i]<-data.frame(xxx1,yyy1)       ### Ah! this means data from previosuly saved .RData.
+         ### co_data1[i]<-data.frame(xxx1,yyy1)       ### Ah! this means data from previously saved .RData.
          ### cat("\n\n show yyy1:\n\n");show(yyy1);cat("\n\n")
          ### cat("\n\n show yyyy1:\n\n");show(yyyy1);cat("\n\n")
          points(xxx1,yyyy1, pch="X", type="p", 
@@ -71,18 +71,22 @@ if(multiple){
          lm_this_subj<-lm(yyy1~xxx1)                  ### but use long10(conc.) to do linear regression.
          ## add a regression line here
          abline(lm_this_subj,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here
-         ### add text here
-         leg_txt<-"log10(Conc.) ="
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
-         leg_txt<-paste(leg_txt,"+ (",sep=" ")
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
-         leg_txt<-paste(leg_txt,")*Time",sep="")
-         leg_txt<-paste(leg_txt,"  ",sep="")
-         leg_txt<-paste(leg_txt,"\nR_sq =",sep="")
-         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
-         ## show(leg_txt)
-         ### add legend here
-         legend("topright",leg_txt,xjust=0,yjust=0,box.col="white")  ## find the appropriate position, shrink font size for legend with cex=0.7
+         
+         ### Add legend HERE [2013/6/26 AM 06:41:29] -YJ
+         ###
+         ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+         ### set box.col="white" to remove legend box frame...- YJ
+         ###
+         A<-formatC(lm_this_subj$coefficients[[1]],format="f",digits=3)
+         B<-formatC(lm_this_subj$coefficients[[2]],format="f",digits=4)
+         C<-formatC(summary(lm_this_subj)$adj.r.squared,format="f",digits=4)
+         
+         legend("top",legend= as.expression(c(bquote(paste("log10(Conc.) = ",.(A),"+ (",.(B),")*Time;")),
+                                              bquote(paste(" Adj. ",R^2," = ",.(C))))),
+                xjust=0,yjust=0,box.col="white",box.lwd=0,cex=1.2)
+         ###
+         ### end of legend
+         ###
        }
   }
 else{ 
@@ -101,7 +105,7 @@ else{
            main<-paste(c("[Manual Selection] Subj#",R.split[[i]]$subj[1],"-Ref."),collapse=" ")
            }
          plot(xx1,yy1,log="y", xlim=range(xx1), ylim=c(1e-3,1e+5),xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "), main=main,
-         cex.lab = 1.2,cex.main = 1,pch=19,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ
+         cex.lab = 1.2,cex.main = 1,pch=19,lab=c(15,15,40), xaxt="n",frame.plot=FALSE)   ### remove plot frame with 'frame.plot=FALSE' here  -YJ
          lines(xx1,yy1, lty=20)
          axis(1,tcl=-.2,labels=TRUE)
          xxx1<-LR.split[[i]]$time                     ### works great now. -YJ    
@@ -112,18 +116,22 @@ else{
          lm_this_subj<-lm(yyy1~xxx1)                  ### but use long10(conc.) to do linear regression.
          ## add a regression line here
          abline(lm_this_subj,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here
-         ### add text here
-         leg_txt<-"log10(Conc.) ="
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
-         leg_txt<-paste(leg_txt,"+ (",sep=" ")
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
-         leg_txt<-paste(leg_txt,")*Time",sep="")
-         leg_txt<-paste(leg_txt,"  ",sep="")
-         leg_txt<-paste(leg_txt,"\nR_sq =",sep="")
-         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
-         ## show(leg_txt)
-         ### add legend here
-         legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+         
+         ### Add legend HERE [2013/6/26 AM 06:41:29] -YJ
+         ###
+         ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+         ### set box.col="white" to remove legend box frame...- YJ
+         ###
+         A<-formatC(lm_this_subj$coefficients[[1]],format="f",digits=3)
+         B<-formatC(lm_this_subj$coefficients[[2]],format="f",digits=4)
+         C<-formatC(summary(lm_this_subj)$adj.r.squared,format="f",digits=4)
+         
+         legend("top",legend= as.expression(c(bquote(paste("log10(Conc.) = ",.(A),"+ (",.(B),")*Time;")),
+                                              bquote(paste(" Adj. ",R^2," = ",.(C))))),
+                xjust=0,yjust=0,box.col="white",box.lwd=0,cex=1.2)
+         ###
+         ### end of legend
+         ###
        }
   }    
   
@@ -155,16 +163,16 @@ if(multiple){
    par(mfrow=c(1,1))
    co_data2<-NULL
    for(i in seq_along(T.split)){
-         xx2<-T.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substarct TlastD for one dosing tau.
+         xx2<-T.split[[i]]$time-TlastD   ###  watch for this!! for multiple dose, we have to substrata TlastD for one dosing tau.
          yy2<-T.split[[i]]$conc
-         main<-paste(c("[Manual Selection] Subj#",T.split[[i]]$subj[1],"-Test"),collapse=" ")
+         main<-paste(c("[Manual Selection] Subj#",T.split[[i]]$subj[1],"- Test"),collapse=" ")
          plot(xx2,yy2, log="y", axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
               xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "),   ## log="y" is to set Y-axis as log10() scale
-              main=main,las=1, cex.lab = 1.2,cex.main = 0.8,pch=19) ### ,frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ)
+              main=main,las=1, cex.lab = 1.2,cex.main = 1.0,lab=c(15,15,40),pch=19) ### ,frame.plot=FALSE)   ### remove plot frame with 'frame.plot=FALSE' here  -YJ)
          lines(xx2,yy2, lty=20)
          axis(1, pos=0.001)
          axis(2, pos=0,las=1)
-         ### co_data2[[i]]<-data.frame(xxx1,yyy1)     ### Ah! this means data from previosuly saved .RData.
+         ### co_data2[[i]]<-data.frame(xxx1,yyy1)     ### Ah! this means data from previously saved .RData.
          xxx1<-LT.split[[i]]$time-TlastD              ### OK now. -YJ
          yyy1<-LT.split[[i]]$conc                     ### here 'conc' is log10(conc) for regression. -YJ
          yyyy1<-LT.split[[i]]$conc_data               ### conc_data is untransformed data and is for plot.
@@ -173,17 +181,22 @@ if(multiple){
          lm_this_subj<-lm(yyy1~xxx1)                  ### but use long10(conc.) to do linear regression.
          ## add a regression line here
          abline(lm_this_subj,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here
-         ### add text here
-         leg_txt<-"log10(Conc.) ="
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
-         leg_txt<-paste(leg_txt,"+ (",sep=" ")
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
-         leg_txt<-paste(leg_txt,")*Time",sep="")
-         leg_txt<-paste(leg_txt,"  ",sep="")
-         leg_txt<-paste(leg_txt,"\nR_sq =",sep="")
-         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
-         ## show(leg_txt)
-         legend("topright",leg_txt,xjust=0,yjust=0,box.col="white")  ## find the appropriate posiiton, shrink font size for legend with cex=0.7
+         
+         ### Add legend HERE [2013/6/26 AM 06:41:29] -YJ
+         ###
+         ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+         ### set box.col="white" to remove legend box frame...- YJ
+         ###
+         A<-formatC(lm_this_subj$coefficients[[1]],format="f",digits=3)
+         B<-formatC(lm_this_subj$coefficients[[2]],format="f",digits=4)
+         C<-formatC(summary(lm_this_subj)$adj.r.squared,format="f",digits=4)
+         
+         legend("top",legend= as.expression(c(bquote(paste("log10(Conc.) = ",.(A),"+ (",.(B),")*Time;")),
+                                              bquote(paste(" Adj. ",R^2," = ",.(C))))),
+                xjust=0,yjust=0,box.col="white",box.lwd=0,cex=1.2)
+         ###
+         ### end of legend
+         ###         
      }
 }
 else{
@@ -193,14 +206,14 @@ else{
           if(replicated){
               main<-paste(c("[Manual Selection] Subj#",T.split[[i]]$subj[1],
                             "Period#",T.split[[i]]$prd[1],
-                            "Seq#",T.split[[i]]$seq[1],"-Test"),collapse=" ")
+                            "Seq#",T.split[[i]]$seq[1],"- Test"),collapse=" ")
              }
              else{
-              main<-paste(c("[Manual Selection] Subj#",T.split[[i]]$subj[1],"-Test"),collapse=" ")
+              main<-paste(c("[Manual Selection] Subj#",T.split[[i]]$subj[1],"- Test"),collapse=" ")
            }
               
          plot(xx2,yy2, log="y",xlim=range(xx2), ylim=c(1e-3,1e+5),xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "), main=main ,
-         cex.lab = 1.2,cex.main = 1,pch=1,lab=c(20,20,30), xaxt="n",frame.plot=FALSE)   ### remove plot frame with'frame.plot=FALSE' here  -YJ)
+         cex.lab = 1.2,cex.main = 1,pch=1,lab=c(15,15,40), xaxt="n",frame.plot=FALSE)   ### remove plot frame with 'frame.plot=FALSE' here  -YJ)
          lines(xx2,yy2,lty=20)
          axis(1,tcl=-.2,labels=TRUE)
          xxx1<-LT.split[[i]]$time                     ### OK now. -YJ
@@ -211,17 +224,22 @@ else{
          lm_this_subj<-lm(yyy1~xxx1)                                  ### but use long10(conc.) to do linear regression.
          ## add a regression line here
          abline(lm_this_subj,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here
-         ### add text here
-         leg_txt<-"log10(Conc.) ="
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[1]],format="f",digits=3),sep=" ")
-         leg_txt<-paste(leg_txt,"+ (",sep=" ")
-         leg_txt<-paste(leg_txt,formatC(lm_this_subj$coefficients[[2]],format="f",digits=5),sep="")
-         leg_txt<-paste(leg_txt,")*Time",sep="")
-         leg_txt<-paste(leg_txt,"  ",sep="")
-         leg_txt<-paste(leg_txt,"\nR_sq =",sep="")
-         leg_txt<-paste(leg_txt,formatC(summary(lm_this_subj)$r.squared,format="f",digits=4),sep=" ")
-         ## show(leg_txt)
-         legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+
+         ### Add legend HERE [2013/6/26 AM 06:41:29] -YJ
+         ###
+         ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+         ### set box.col="white" to remove legend box frame...- YJ
+         ###
+         A<-formatC(lm_this_subj$coefficients[[1]],format="f",digits=3)
+         B<-formatC(lm_this_subj$coefficients[[2]],format="f",digits=4)
+         C<-formatC(summary(lm_this_subj)$adj.r.squared,format="f",digits=4)
+         
+         legend("top",legend= as.expression(c(bquote(paste("log10(Conc.) = ",.(A),"+ (",.(B),")*Time;")),
+                                              bquote(paste(" Adj. ",R^2," = ",.(C))))),
+                xjust=0,yjust=0,box.col="white",box.lwd=0,cex=1.2)
+         ###
+         ### end of legend
+         ###                  
     }
 }
 ### close dev() now

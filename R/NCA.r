@@ -11,7 +11,24 @@ NCA<-function(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,
 options(warn=-1)
 lambda_z_regr_select_ref<- lambda_z_regr_select_ref
 lambda_z_regr_select_test<- lambda_z_regr_select_test
-
+###
+### select AUC calculation method
+###
+lin.AUC<- lin.AUC
+file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
+               "All with Linear Trapezoidal Method")
+pick <- menu(file.menu, title = " << Method for AUC Calculations>> ", graphics=TRUE)
+lin.AUC<<-ifelse(pick==1,FALSE,TRUE)
+###
+### label which AUC calculation method has been used. -YJ
+###
+cat("\n")
+if(lin.AUC){
+cat("*** The linear trapezoidal method is used to calculate AUC.\n")}
+else{
+cat("*** The lin-up/log-down trapezoidal method is used to calculate AUC.\n")
+}
+### 
 ###
 ### we try to plot regr lines for lambda(z); it works great. we need test with replicated BE. -YJ
 ###
@@ -144,8 +161,22 @@ if(replicated){
           Cmin_ref<-0
           aumc_ref<-0
           for(i in 2:length(R.split[[j]][["time"]])){
-             #calculate AUC and exclude AUC==NA (auc<-0)
-             auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5
+             #calculate AUC and exclude AUC==NA (auc<-0) -HS
+             ###
+             ### original is all linear trapezoidal; -- YJ
+             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ###
+             if(lin.AUC){
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5}
+             else{
+                if(R.split[[j]][["conc"]][i]>R.split[[j]][["conc"]][i-1] || R.split[[j]][["conc"]][i] == R.split[[j]][["conc"]][i-1]){
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5}
+                else{
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]-R.split[[j]][["conc"]][i-1])/
+                              log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
+                    }
+             }
+             ### 
              auc_ref[i]<-auc_ref[i]+auc_ref[i-1]
              #calculate AUMC
              if(multiple){
@@ -365,8 +396,22 @@ FluTest<-0
           aumc_test<-0
 
           for(i in 2:length(T.split[[j]][["time"]])){
-             #calculate AUC and exclude AUC==NA (auc<-0)
-             auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5
+             ###
+             ### original is all linear trapezoidal; -- YJ
+             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ###
+             if(lin.AUC){
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5}
+             else{
+                if(T.split[[j]][["conc"]][i]>T.split[[j]][["conc"]][i-1] || T.split[[j]][["conc"]][i] == T.split[[j]][["conc"]][i-1]){
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5}
+                else{
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]-T.split[[j]][["conc"]][i-1])/
+                              log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
+                    }
+             }
+             ###
+             ### auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5
              auc_test[i]<-auc_test[i]+auc_test[i-1]
              #calculate AUMC
              if(multiple){

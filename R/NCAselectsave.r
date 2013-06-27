@@ -62,7 +62,7 @@ show(comdata)
                 ) 
                } 
               else {
-               cat("\nEnter the file name (no file extention!):\n")
+               cat("\nEnter the file name (no file extension!):\n")
                comdataname <-readline()
                comdataname<-paste(comdataname,".RData",sep="")
                  if(file.exists(comdataname)){
@@ -77,7 +77,7 @@ show(comdata)
                       cat("\n")
                               }
                       else{
-                      cat("\nEnter the file name (no file extention!):\n")
+                      cat("\nEnter the file name (no file extension!):\n")
                       comdataname <-readline()
                       comdataname<-paste(comdataname,".RData",sep="")
                         repeat{

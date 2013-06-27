@@ -9,7 +9,7 @@ subj<-NULL
 code<-NULL
 ymax<-0
 ymin<-0
-cat("\n\n Save PK plots from NCA analysis now...\n");readline(" It may take longer to complete.\n Press Enter to continue...")
+cat("\n\n Save PK plots from NCA analysis now...\n");readline(" It may take a while to complete.\n Press Enter to continue...")
 
 nca_plot_xfile<- nca_plot_xfile   ## to avoid "not visible binding..." error message with codetool
   

@@ -8,7 +8,7 @@ cat(" adjusted R squared values.  It starts with the last three data points from
 cat(" the concentration-time course, performing log-linear regression to calculate  \n")
 cat(" the slope of that tail portion of the concentration-time curve.  And then     \n")
 cat(" the last 4 data points, the last 5 data points, on and on until it excludes   \n")
-cat(" the data points of Cmax. Thus, this method may exclude the data point of      \n")
+cat(" the data points of Cmax. Thus, this method will exclude the data point of     \n")
 cat(" (Tmax, Cmax).                                                               \n\n")
 cat(" Please note: ARS is only for when one (or more) curve(s) have # of data       \n")
 cat(" points > 2 after Tmax; otherwise, it will cause error. bear will be crashed   \n")

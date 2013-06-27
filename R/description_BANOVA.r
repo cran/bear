@@ -9,7 +9,7 @@ cat(" sequence, subjects nested in sequences, period and treatment. ANOVA will  
 cat(" be applied to obtain estimates for the adjusted differences between        \n")
 cat(" treatment means and the standard error associated with these differences.  \n")
 cat(" Log-transformed BA measures will also be analyzed.                         \n")
-cat("****************************************************************************\n")
+cat("............................................................................\n")
 cat("\n\n")
 readline(" Press Enter to continue...")
 }

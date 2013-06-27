@@ -1,7 +1,7 @@
 about.bear<-function(){
 cat("\n\n")
 cat(" ----------------------------------------------------------------\n\n")
-cat("  bear v2.5.5                                                      \n")
+cat("  bear v2.5.6                                                      \n")
 cat("  http://pkpd.kmu.edu.tw/bear                                      \n")  
 cat("                                                                   \n")  
 cat(" This package is designed to analyze average bioequivalence (ABE)  \n")  

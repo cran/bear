@@ -6,10 +6,30 @@ TTTAIC<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata
 {
 options(warn=-1)
 description_TTTAIC()
+###
+### select AUC calculation method
+###
+lin.AUC<- lin.AUC
+file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
+               "All with Linear Trapezoidal Method")
+pick <- menu(file.menu, title = " << Method for AUC Calculations>> ", graphics=TRUE)
+lin.AUC<<-ifelse(pick==1,FALSE,TRUE)
+###
+### label which AUC calculation method has been used. -YJ
+###
+cat("\n")
+if(lin.AUC){
+cat("*** The linear trapezoidal method is used to calculate AUC.\n")}
+else{
+cat("*** The lin-up/log-down trapezoidal method is used to calculate AUC.\n")
+}
+###
 cat("\n\n Warning: bear is going to save all linear regression plots\n for lambda_z estimation now.\n\n")
 readline(" It may take a while to finish. Press Enter to continue...")
 ### plots of regression line for lambda_z_estimation
 lambda_z_regression_lines<-lambda_z_regression_lines
+lambda_z_regr_select_ref<-  lambda_z_regr_select_ref
+lambda_z_regr_select_test<- lambda_z_regr_select_test
 ###
 par(mfrow=c(1,1),las=1)   ### set 'ask=FASLE' (as default) to generate pdf file quickly, no more stop here. -YJ
 pdf(lambda_z_regression_lines,paper="a4")  ### now prepare to save as pdf here.  -YJ
@@ -91,7 +111,7 @@ logo_plot_desc()
           if (replicated){
                main<-paste("[TTTAIC] Subj.# ",subj[j]," [Period# ",prd[j],", Seq# ",seq[j]," - Ref.]",sep="")}
            else {
-               main<-paste(c("[TTTAIC] Subj.#", R.split[[j]]$subj[1],"-Ref."),collapse=" ")}
+               main<-paste(c("[TTTAIC] Subj.#", R.split[[j]]$subj[1],"- Ref."),collapse=" ")}
           if(multiple){
              plot(xx1,yy1, log="y", axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
              xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "),     ## log="y" as semilog plot here (YJ)
@@ -113,21 +133,23 @@ logo_plot_desc()
           ## add a regression line here
           LLm<-lm(log10(yyy1)~xxx1)               ## must use log10(yyy1) here for plot(...,log="y",..) is 10-based log scale
           abline(LLm,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here
-          ### add text here
-          leg_txt<-"log10(Conc.) = "
-          leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[1]],format="f",digits=5),sep="")
-          leg_txt<-paste(leg_txt," + ( ",sep="")
-          leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[2]],format="f",digits=5),sep="") ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
-          leg_txt<-paste(leg_txt," )*Time;\n",sep="")
-          leg_txt<-paste(leg_txt,"   Adj. R_sq = ",sep="")
-          leg_txt<-paste(leg_txt,formatC(summary(LLm)$adj.r.squared,format="f",digits=5),sep="")
-          leg_txt<-paste(leg_txt,"; AIC = ",sep="")
-          leg_txt<-paste(leg_txt,formatC(aic[j],format="f",digits=3),sep="")
-          ## show(leg_txt)
-          ### add legend here
-          ### legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
-          legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
 
+           ### Add legend HERE [2013/6/26 AM 06:41:29] -YJ
+           ###
+           ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+           ### set box.col="white" to remove legend box frame...- YJ
+           ###
+           A<-formatC(LLm$coefficients[[1]],format="f",digits=3)
+           B<-formatC(LLm$coefficients[[2]],format="f",digits=4)
+           C<-formatC(summary(LLm)$adj.r.squared,format="f",digits=4)
+           D<-formatC(aic[j],format="f",digits=3)
+           
+           legend("top",legend= as.expression(c(bquote(paste("log10(Conc.) = ",.(A),"+ (",.(B),")*Time;")),
+                                                bquote(paste(" Adj. ",R^2," = ",.(C),"; AIC = ",.(D))))),
+                  xjust=0,yjust=0,box.col="white",box.lwd=0,cex=1.2)
+           ###
+           ### end of legend
+           ###           
              auc_ref <-0
              tmax_ref<-0
              Cmax_ref<-0
@@ -135,7 +157,22 @@ logo_plot_desc()
              aumc_ref<-0
             for(i in 2:length(R.split[[j]][["time"]])){
              #calculate AUC and exclude AUC==NA (auc<-0)
-             auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5
+             ###
+             ### original is all linear trapezoidal; -- YJ
+             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ###
+             if(lin.AUC){
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5}
+             else{
+                if(R.split[[j]][["conc"]][i]>R.split[[j]][["conc"]][i-1] || R.split[[j]][["conc"]][i] == R.split[[j]][["conc"]][i-1]){
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5}
+                else{
+                  auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]-R.split[[j]][["conc"]][i-1])/
+                              log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
+                    }
+             }
+             ###             
+             ### auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5
              auc_ref[i]<-auc_ref[i]+auc_ref[i-1]
              #calculate AUMC
              if(multiple){
@@ -210,7 +247,16 @@ logo_plot_desc()
                  cat("\n<<Selected data points for lambda_z estimation>>\n")
                  cat("--------------------------------------------------\n")
                  show(R.split[[j]][(nrow(R.split[[j]])-n_TTT_AIC+1):nrow(R.split[[j]]),])
-
+                 ###
+                 ### save point selection here -YJ
+                 ###
+                 datalog<-as.data.frame(R.split[[j]][(nrow(R.split[[j]])-n_TTT_AIC+1):nrow(R.split[[j]]),])
+                 if(file.exists(lambda_z_regr_select_ref)){
+                    write.table(datalog,lambda_z_regr_select_ref,sep=",", col.names=FALSE, row.names=FALSE, append=TRUE)}  ### append to previous .csv file; no col.names & row.names! -YJ
+                  else{
+                    write.table(datalog,lambda_z_regr_select_ref,sep=",", col.names=TRUE, row.names=FALSE, append=FALSE)  ### create a new .csv file; keep 'col.names' at the beginning -YJ
+                      }
+                 ###
 
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n")
@@ -330,7 +376,7 @@ if(replicated){
           if (replicated){
                main<-paste("[TTTAIC] Subj.# ",subj1[j]," [Period# ",prd1[j],", Seq# ",seq1[j]," - Test]",sep="")}
            else {
-               main<-paste(c("[TTTAIC] Subj.#", T.split[[j]]$subj[1],"-Test"),collapse=" ")}
+               main<-paste(c("[TTTAIC] Subj.#", T.split[[j]]$subj[1],"- Test"),collapse=" ")}
           if(multiple){
              plot(xx1,yy1, log="y", axes=FALSE,xlim=range(0, 1.2*Tau), ylim=c(1e-3,1e+5),
              xlab=xaxis, ylab= paste(yaxis,"(as log10 scale)",sep=" "),     ## log="y" as semilog plot here (YJ)
@@ -352,20 +398,23 @@ if(replicated){
           ## add a regression line here
           LLm<-lm(log10(yyy1)~xxx1)               ## must use log10(yyy1) here for plot(...,log="y",..) is 10-based log scale
           abline(LLm,col="red",lwd=2,untf=FALSE)  ## WORKING! Bravo~  has to set 'untf=FALSE' here
-          ### add text here
-          leg_txt<-"log10(Conc.) = "
-          leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[1]],format="f",digits=5),sep="")
-          leg_txt<-paste(leg_txt," + ( ",sep="")
-          leg_txt<-paste(leg_txt,formatC(LLm$coefficients[[2]],format="f",digits=5),sep="") ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
-          leg_txt<-paste(leg_txt," )*Time;\n",sep="")
-          leg_txt<-paste(leg_txt,"   Adj. R_sq = ",sep="")
-          leg_txt<-paste(leg_txt,formatC(summary(LLm)$adj.r.squared,format="f",digits=5),sep="")
-          leg_txt<-paste(leg_txt,"; AIC = ",sep="")
-          leg_txt<-paste(leg_txt,formatC(aic1[j],format="f",digits=3),sep="")
-          ## show(leg_txt)
-          ### add legend here
-          ### legend(x=min(xx1),y=min(yy1)/10,leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
-          legend("top",leg_txt,xjust=0,yjust=0,box.col="white")  ### set box.col="white" to remove legend box frame...  - YJ
+
+           ### Add legend HERE [2013/6/26 AM 06:41:29] -YJ
+           ###
+           ### if want to convert to ln() format: 2.303674*LLm$coefficients[[2]]
+           ### set box.col="white" to remove legend box frame...- YJ
+           ###
+           A<-formatC(LLm$coefficients[[1]],format="f",digits=3)
+           B<-formatC(LLm$coefficients[[2]],format="f",digits=4)
+           C<-formatC(summary(LLm)$adj.r.squared,format="f",digits=4)
+           D<-formatC(aic1[j],format="f",digits=3)
+           
+           legend("top",legend= as.expression(c(bquote(paste("log10(Conc.) = ",.(A),"+ (",.(B),")*Time;")),
+                                                bquote(paste(" Adj. ",R^2," = ",.(C),"; AIC = ",.(D))))),
+                  xjust=0,yjust=0,box.col="white",box.lwd=0,cex=1.2)
+           ###
+           ### end of legend
+           ###                     
 
           auc_test <-0
           Cmax_test<-0
@@ -375,7 +424,22 @@ if(replicated){
 
           for(i in 2:length(T.split[[j]][["time"]])){
              #calculate AUC and exclude AUC==NA (auc<-0)
-             auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5
+             ###
+             ### original is all linear trapezoidal; -- YJ
+             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ###
+             if(lin.AUC){
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5}
+             else{
+                if(T.split[[j]][["conc"]][i]>T.split[[j]][["conc"]][i-1] || T.split[[j]][["conc"]][i] == T.split[[j]][["conc"]][i-1]){
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5}
+                else{
+                  auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]-T.split[[j]][["conc"]][i-1])/
+                              log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
+                    }
+             }
+             ###             
+             ### auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5
              auc_test[i]<-auc_test[i]+auc_test[i-1]
              #calculate AUMC
               if(multiple){
@@ -451,7 +515,16 @@ if(replicated){
                  cat("\n<<Selected data points for lambda_z estimation>>\n")
                  cat("--------------------------------------------------\n")
                  show(T.split[[j]][(nrow(T.split[[j]])-n_TTT_AIC+1):nrow(T.split[[j]]),])
-
+                 ###
+                 ### save point selection here -YJ
+                 ###
+                 datalog<-as.data.frame(T.split[[j]][(nrow(T.split[[j]])-n_TTT_AIC+1):nrow(T.split[[j]]),])
+                 if(file.exists(lambda_z_regr_select_test)){
+                    write.table(datalog,lambda_z_regr_select_test,sep=",", col.names=FALSE, row.names=FALSE, append=TRUE)}  ### append to previous .csv file; no col.names & row.names! -YJ
+                  else{
+                    write.table(datalog,lambda_z_regr_select_test,sep=",", col.names=TRUE, row.names=FALSE, append=FALSE)  ### create a new .csv file; keep 'col.names' at the beginning -YJ
+                      }
+                 ###
 
               cat("\n<<Final PK Parameters>>\n")
               cat("----------------------------\n")

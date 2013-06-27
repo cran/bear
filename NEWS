@@ -1,4 +1,35 @@
+v2.5.5.9 (pre-release)
+-------------------------
+
+    - added csv outputs for data point selections of linear regression to calculate
+      lambda_z with ARS, AIC, TTT, TTTAIC & TTTARS now; it used to be only available
+      for manual selection of data points; It's most easy fucntion to implement so far
+      which I cannot figure out how to do this long time ago.
+    - fixed R^2 display on linear regression plots for terminal elim. constant (lambda_z)
+      estimation; just a mathematical annotation (squared 2), it took me two whole
+      nights to complete; Wow, it's not easy for this little thing...
+    - fixed NCAselect() & NCAregplot() with plot(...,lab=c(15,15,40),...) for better
+      looking.
+    - fixed selection of all linear or lin-up/log-down calc. for AUC with manual selection
+      of data points; others (AIC, ARS, TTT & etc. have been fixed last time); previously
+      the selection does not work effectively, even the 'all linear' is selected.
+    - corrected some typos; Is it cont. or cont'd? Answer: In formal writing use cont'd.
+      ref. link: http://wiki.answers.com/Q/Is_it_cont_or_cont%27d (used in NCAOutput). 
+      fine.
+    - fixed 'description_pointselect()' to give more details about Windows, Linux/unix
+      or ubuntu, and Mac OS X.
+    - added lin-up/log-down trapezoidal AUC calc; the in-up/log-down trapezoidal method
+      is default method now;
+    - fix graphics in linux/unix (ubuntu), Mac OS X; use 'dev.new()' instead of 
+      'windows(record=TRUE)'; original codes won't work any more for R v3.0 or above;
+    - set options(digits=5) as default;
+    
+v2.5.5 (official release)
+-------------------------
+    - offical release on May 07, 2013
+    
 v2.5.4.9 (pre-release)
+-------------------------
     - OK, let's back to v2.5.4.9 as pre-release version; it makes more logical and
       convenient for users to upgrade from CRAN. The next official release will be
       v2.5.5, of course. Users only need to update their packages from CRAN in this case.
