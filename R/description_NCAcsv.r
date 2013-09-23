@@ -45,5 +45,5 @@ cat(" column#5: drug plasma/serum/blood concentration (conc)                    
  }
 } 
 cat("****************************************************************************\n\n")
-readline("  Press Enter to continue...")
+readline("  Press Enter to proceed...")
 }

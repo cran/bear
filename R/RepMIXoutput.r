@@ -69,7 +69,7 @@ if(parallel){
    zz <- file(lm_stat_xfile, open="wt")}
  else{
    zz <- file(lme_stat_xfile, open="wt")}
-cat("\n\n Generate lm (linear model) or lme (linear mixed effect) output now...\n");readline(" Press Enter to continue...");cat("\n\n")
+cat("\n\n Generate lm (linear model) or lme (linear mixed effect) output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 sink(zz)
 description_version()
 cat("  List of Input Data from NCA                  \n")

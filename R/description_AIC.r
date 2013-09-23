@@ -15,5 +15,5 @@ cat(" in this case. If so, please try other method next time.                   
 cat("******************************************************************************* \n")
 cat("\n")
 alarm(); alarm()
-readline(" Press Enter to continue...")
+readline(" Press Enter to proceed...")
 }

@@ -25,5 +25,5 @@ cat("       Please do NOT choose any data point before Tmax.                    
 cat("...............................................................................\n")
 cat("\n\n")
 alarm();alarm()
-readline("  Press Enter to continue...")
+readline("  Press Enter to proceed...")
 }

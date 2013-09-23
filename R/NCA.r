@@ -33,7 +33,7 @@ cat("*** The lin-up/log-down trapezoidal method is used to calculate AUC.\n")
 ### we try to plot regr lines for lambda(z); it works great. we need test with replicated BE. -YJ
 ###
 cat("\n\n Warning: bear is going to save all linear regression plots\n for lambda_z estimation now.\n\n")
-readline(" It may take a while to finish. Press Enter to continue...")
+readline(" It may take a while to finish. Press Enter to proceed...")
 
 if(multiple){
   if(replicated){

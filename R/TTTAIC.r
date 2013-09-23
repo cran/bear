@@ -25,7 +25,7 @@ cat("*** The lin-up/log-down trapezoidal method is used to calculate AUC.\n")
 }
 ###
 cat("\n\n Warning: bear is going to save all linear regression plots\n for lambda_z estimation now.\n\n")
-readline(" It may take a while to finish. Press Enter to continue...")
+readline(" It may take a while to finish. Press Enter to proceed...")
 ### plots of regression line for lambda_z_estimation
 lambda_z_regression_lines<-lambda_z_regression_lines
 lambda_z_regr_select_ref<-  lambda_z_regr_select_ref

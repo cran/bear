@@ -34,7 +34,7 @@ cat("\n")
        cat("\n For now, ODA is only for non-replicated crossover and     \n")
        cat(" non-parallel. Thus, if you choose to run with a replicated  \n")
        cat(" or parallel dataset later, ODA will not be performed.       \n")
-       readline(" Press Enter to continue...\n")
+       readline(" Press Enter to proceed...\n")
        Singlego()
        }
        
@@ -45,7 +45,7 @@ cat("\n")
         cat("\n For now, ODA is only for non-replicated crossover and     \n")
         cat(" non-parallel. Thus, if you choose to run with a replicated  \n")
         cat(" or parallel dataset later, ODA will not be performed.       \n")
-        readline(" Press Enter to continue...\n")
+        readline(" Press Enter to proceed...\n")
         Multiplego()
        }
        

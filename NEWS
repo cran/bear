@@ -1,11 +1,24 @@
+v2.5.7 (official release)
+    - official release on Sept. 27, 2013
+
+v2.5.6.9  (pre-release)
+-------------------------
+    - added LL/UL as data.frame() input; not just LL. (09/18/2013)
+    - fixed abnormal on-screen text display with Mac OS X using data.frame() input (09/10/2013)
+    - fixed BANOVAdata() & BANOVAcsv() with graphic menu; and also spelling check. (09/03/2013)
+    - removed abs() from CV_intra calculation (07/16/2013)
+
+v2.5.6 (official release)
+-------------------------
+    - official release on June 27, 2013
+
 v2.5.5.9 (pre-release)
 -------------------------
-
     - added csv outputs for data point selections of linear regression to calculate
       lambda_z with ARS, AIC, TTT, TTTAIC & TTTARS now; it used to be only available
-      for manual selection of data points; It's most easy fucntion to implement so far
+      for manual selection of data points; It's most easy function to implement so far
       which I cannot figure out how to do this long time ago.
-    - fixed R^2 display on linear regression plots for terminal elim. constant (lambda_z)
+    - fixed R^2 display on linear regression plots for terminal elim. rate constant (lambda_z)
       estimation; just a mathematical annotation (squared 2), it took me two whole
       nights to complete; Wow, it's not easy for this little thing...
     - fixed NCAselect() & NCAregplot() with plot(...,lab=c(15,15,40),...) for better
@@ -26,7 +39,7 @@ v2.5.5.9 (pre-release)
     
 v2.5.5 (official release)
 -------------------------
-    - offical release on May 07, 2013
+    - official release on May 07, 2013
     
 v2.5.4.9 (pre-release)
 -------------------------
@@ -39,13 +52,13 @@ v2.5.4.9 (pre-release)
       use ggplot() (website);
     - remove console plotting now; all plots will be logged into .pdf of NCA plots;
       this will remove 5 R scripts from previous version;
-    - add test or demo functions; splited from original /R directory;
+    - add test or demo functions; split from original /R directory;
     - add page break for xxx_nca_outputs.txt;
     - fix bugs for the section containing the means (SD) for each formulation 
       (by time point) in NCA output file. (thanks to Elba Romero). This is only
       for the situations of running NCA demo or NCA.
-    - improve data point selection methods with correct subject labelling;
-    - add bear coverpage for nca plot and ODA plot pdf files (using library(png));
+    - improve data point selection methods with correct subject labeling;
+    - add bear cover page for nca plot and ODA plot pdf files (using library(png));
     - fixed the part of data point manual selection logged as .pdf. With R3.0.0, it
       is still a problem; however, it is OK with R2.15.3 (miss it so much). Porbably
       in R3.0.0 the graphic windows have been changed as stated in its update doc. Now
@@ -53,11 +66,11 @@ v2.5.4.9 (pre-release)
     - remove the function to save 'TotalData' again after NCA as a .RData. It does not
       make any sense to do this.
     - remove DOA on-screen plots since all plots have been logged into a .pdf file.
-      It's a redundance procesure, just like on-screen NCA plots.
+      It's a redundancy procedure, just like on-screen NCA plots.
     - improve pivotal_output.csv; now it is much better than previously.
-    - now manual data seletion from previously saved .RData can also be plotted into
+    - now manual data selection from previously saved .RData can also be plotted into
       pdf now, as well as on-screen plots.
-    - fix 'Tmax_ss' for multiple dose BE; the original one should be substracted with
+    - fix 'Tmax_ss' for multiple dose BE; the original one should be subtracted with
       TlastD (the time of the final dose be given)
     - fix NCAselect again; try to improve graphic looking for multiple dose BE dataset,
       especially the setting of ylim(); done.
@@ -127,9 +140,9 @@ v2.5.0
     - some other bugs fixed
 v2.4.4
     - fixed the output file, Statistical_summaries.txt; i.e., Table 2: remove n1, n2 list from
-      nonreplicate or replicate crossover BE study; They only appear in Parallel BE study.
+      non-replicate or replicate crossover BE study; They only appear in Parallel BE study.
 v2.4.3
-    - changed the statitical model from linear mixed model(lme()) to linear model (lm())(similar to 
+    - changed the statistical model from linear mixed model(lme()) to linear model (lm())(similar to 
       SAS GLM) for a parallel BE study; basically, the results obtained from lme() or lm() are the same.
       However, to meet the regulatory requirements (both FDA and EU), lm() has been adopted since this
       version. Later, the Welch t-test will be added for a parallel BE study for unequal variances in
@@ -138,7 +151,7 @@ v2.4.3
 v2.4.2
     - fixed NCA outputs for the unbalanced parallel BE study
     - fixed TOST descriptions
-    - recomplied with R v2.10.1
+    - recompiled with R v2.10.1
 v2.4.1
     - add time/date stamp on the header or title page of text or pdf (plots) outputs (11.10(e) of 21 CRF 
       Part 11); more to be made for Part 11...
@@ -148,11 +161,11 @@ v2.4.1
       per + trt" in order to be conveniently cross validated with SAS (thanks to Elmaestro)
     - mostly minor changes with this release
 v2.4.0
-    - add data analysis of multiple-dose (MD) ABE data
+    - add data analysis of multiple-dosed (MD) ABE data
     - add Cook's distance for outlier detection with various criteria
     - fixed y-axis scaling problem
 v2.3.1
-    - fixed NCA plots of  Time scale (with autoscale)
+    - fixed NCA plots of Time scale (with auto-scaled)
     - used the difference of lsmeans between the Ref. and the Test to calculate 90% CIs for 
       Cmax and AUCs
 v2.3.0

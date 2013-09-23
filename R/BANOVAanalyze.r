@@ -13,50 +13,73 @@ if(multiple){
                    prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax_ss, AUC0t=TotalData$AUCtau_ss, 
                    lnCmax=TotalData$lnCmax_ss,lnAUC0t=TotalData$lnAUCtau_ss) 
    
-  cat("\n")
-  cat("Enter lower acceptance limit (%) for lnCmax_ss\n")
-  cat("(or press Enter to use default value: 80.000 )\n")
-   Lm<-readline()
-   if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
-   lnCmax_theta1 <- Lm/100        # theta1: lower acceptance limit
-   lnCmax_theta2 <- 1/lnCmax_theta1
-
-  cat("\n")
-  cat("Enter lower acceptance limit (%) for lnAUC(tau)ss\n")
-  cat("(or press Enter to use default value: 80.000 )\n")
-    Lm<-readline()
-    if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
-    lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
-    lnAUC0t_theta2 <- 1/lnAUC0t_theta1
+  ### cat("\n")
+  ### cat("Enter lower acceptance limit (%) for lnCmax_ss\n")
+  ### cat("(or press Enter to use default value: 80.000 )\n")
+  ###  Lm<-readline()
+  ###  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
+  ###  lnCmax_theta1 <- Lm/100        # theta1: lower acceptance limit
+  ###  lnCmax_theta2 <- 1/lnCmax_theta1
+  ### 
+  ### cat("\n")
+  ### cat("Enter lower acceptance limit (%) for lnAUC(tau)ss\n")
+  ### cat("(or press Enter to use default value: 80.000 )\n")
+  ###   Lm<-readline()
+  ###   if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
+  ###   lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
+  ###   lnAUC0t_theta2 <- 1/lnAUC0t_theta1
+  cat("\n Now set the LOWER/UPPER LIMIT in % as BE criteria \n for pivotal parameters.\n\n");readline(" Press Enter to proceed...")
+  SetLm<-data.frame(Parameters=c("lnCmax(ss)","lnAUC(0-tau)"),LL=c(80,80),UL=c(125,125))
+  SetLm<-edit(SetLm)
+  cat("\n The LOWER LIMIT for BE criteria (as %):\n");show(SetLm);cat("\n\n")
+  lnCmax_theta1  <- SetLm[1,2]        # theta1: lower acceptance limit
+  ### lnCmax_theta2  <- 1/lnCmax_theta1
+  lnCmax_theta2  <- SetLm[1,3]
+  lnAUC0t_theta1 <- SetLm[2,2]        # theta1: lower acceptance limit
+  ### lnAUC0t_theta2 <- 1/lnAUC0t_theta1
+  lnAUC0t_theta2 <- SetLm[2,3]
  }
 else{
    TotalData<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
                    prd=as.factor(TotalData$prd),Cmax=TotalData$Cmax, AUC0t=TotalData$AUC0t, AUC0INF=TotalData$AUC0INF, 
                    lnCmax=TotalData$lnCmax,lnAUC0t=TotalData$lnAUC0t,lnAUC0INF=TotalData$lnAUC0INF) 
 
-  cat("\n")
-  cat("Enter lower acceptance limit (%) for lnCmax\n")
-  cat("(or press Enter to use default value: 80.000 )\n")
-  Lm<-readline()
-  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
-  lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
-  lnCmax_theta2 <- 1/lnCmax_theta1
-
-  cat("\n")
-  cat("Enter lower acceptance limit (%) for lnAUC0t\n")
-  cat("(or press Enter to use default value: 80.000 )\n")
-  Lm<-readline()
-  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
-  lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
-  lnAUC0t_theta2 <- 1/lnAUC0t_theta1
-
-  cat("\n")
-  cat("Enter lower acceptance limit (%) for lnAUC0INF\n")
-  cat("(or press Enter to use default value: 80.000 )\n")
-  Lm<-readline()
-  if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
-  lnAUC0INF_theta1 <- Lm/100      # theta1: lower acceptance limit
-  lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
+  ### cat("\n")
+  ### cat("Enter lower acceptance limit (%) for lnCmax\n")
+  ### cat("(or press Enter to use default value: 80.000 )\n")
+  ### Lm<-readline()
+  ### if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
+  ### lnCmax_theta1 <- Lm/100      # theta1: lower acceptance limit
+  ### lnCmax_theta2 <- 1/lnCmax_theta1
+  ### 
+  ### cat("\n")
+  ### cat("Enter lower acceptance limit (%) for lnAUC0t\n")
+  ### cat("(or press Enter to use default value: 80.000 )\n")
+  ### Lm<-readline()
+  ### if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
+  ### lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
+  ### lnAUC0t_theta2 <- 1/lnAUC0t_theta1
+  ### 
+  ### cat("\n")
+  ### cat("Enter lower acceptance limit (%) for lnAUC0INF\n")
+  ### cat("(or press Enter to use default value: 80.000 )\n")
+  ### Lm<-readline()
+  ### if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
+  ### lnAUC0INF_theta1 <- Lm/100      # theta1: lower acceptance limit
+  ### lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
+  cat("\n Now set the LOWER/UPPER LIMIT in % as BE criteria \n for pivotal parameters.\n\n");readline(" Press Enter to proceed...")
+  SetLm<-data.frame(Parameters=c("lnCmax","lnAUC(0-t)","lnAUC(0-inf)"),LL=c(80,80,80),UL=c(125,125,125))
+  SetLm<-edit(SetLm)
+  cat("\n The LOWER LIMIT for BE criteria (as %):\n");show(SetLm);cat("\n\n")
+  lnCmax_theta1    <- SetLm[1,2]        # theta1: lower acceptance limit
+  ### lnCmax_theta2    <- 1/lnCmax_theta1
+  lnCmax_theta2    <- SetLm[1,3]
+  lnAUC0t_theta1   <- SetLm[2,2]        # theta1: lower acceptance limit
+  ### lnAUC0t_theta2   <- 1/lnAUC0t_theta1
+  lnAUC0t_theta2   <- SetLm[2,3]
+  lnAUC0INF_theta1 <- SetLm[3,2]        # theta1: lower acceptance limit
+  ### lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
+  lnAUC0INF_theta2 <- SetLm[3,3]
  }
  
 Fdata<-split(TotalData, list(TotalData$drug))
@@ -191,7 +214,8 @@ MultipleBANOVAoutput(RefData, TestData, TotalData,  L1, L2,
 graphics.off()
 
 if(ODAnalysis){
-windows(record = TRUE)
+### windows(record = TRUE)
+dev.new()
 .SavedPlots<-NULL
 MultipleBANOVAplot(IntraInterlnCmax00, IntraInterlnAUC0t00,
                    IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,

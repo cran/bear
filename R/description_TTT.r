@@ -19,5 +19,5 @@ cat(" Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).              
 cat("*****************************************************************************\n")
 cat("\n")
 alarm(); alarm()
-readline(" Press Enter to continue...")
+readline(" Press Enter to proceed...")
 }

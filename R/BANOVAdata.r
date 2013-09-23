@@ -12,21 +12,21 @@ file.menu <- c("Input/edit data from keyboard",
                "Quit")
 cat("\n")
 if(parallel){
- pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (lme, 90%CI...)>> ")
+ pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (lme, 90%CI...)>> ", graphics=TRUE)
 }
  else{
  if(replicated ){
- pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (lme, 90%CI...)>> ")
+ pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (lme, 90%CI...)>> ", graphics=TRUE)
  } 
  else{ 
- pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (ANOVA(lm), 90%CI...)>> ")
+ pick <- menu(file.menu, title = " << Data Analysis for Statistical analysis (ANOVA(lm), 90%CI...)>> ", graphics=TRUE)
  }
 } 
 if (pick == 1){
  if(parallel){
 cat("\n")
 cat("*****************************************************************************\n")
-cat("About the data file...                                                       \n")
+cat("About the data file for parallel design...                                   \n")
 cat("-----------------------------------------------------------------------------\n")
 cat("   -> subject no.(subj)                                                      \n")
 cat("   -> drug                                                                   \n")
@@ -45,8 +45,8 @@ cat("       2:Test                                                              
     }
    else{
      cat("   -> Cmax                                                                   \n")
-     cat("   -> AUC0t: the area under the predicted plasma concentration time curve.  \n")
-     cat("            (time = 0 to time of the last measureable Cp)                    \n")
+     cat("   -> AUC0t: the area under the predicted plasma concentration time curve.   \n")
+     cat("            (time = 0 to time of the last measurable Cp)                    \n")
      cat("   -> AUC0INF: area under the predicted plasma concentration time curve.     \n")
      cat("            (time = 0 to infinity)                                           \n")
      cat("   -> ln(Cmax): Log-transformed Cmax                                         \n")
@@ -61,7 +61,7 @@ TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
  else{ 
     cat("\n")
      cat("*****************************************************************************\n")
-     cat("About the data file...                                                       \n")
+     cat("About the data file for non-parallel design...                               \n")
      cat("-----------------------------------------------------------------------------\n")
      cat("   -> subject no.(subj)                                                      \n")
      cat("   -> drug                                                                   \n")
@@ -87,7 +87,7 @@ TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
    else{
      cat("   -> Cmax                                                                   \n")
      cat("   -> AUC0t: the area under the predicted plasma concentration time curve for\n")
-     cat("         test data. (time = 0 to time of the last measureable Cp)            \n")
+     cat("         test data. (time = 0 to time of the last mensurable Cp)            \n")
      cat("   -> AUC0INF: area under the predicted plasma concentration time curve for  \n")
      cat("         test data. (time = 0 to infinity)                                   \n")
      cat("   -> ln(Cmax): Log-transformed Cmax                                         \n")

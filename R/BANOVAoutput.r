@@ -78,7 +78,7 @@ rseq<-as.data.frame(sapply(TotalData1, tapply, TotalData1$seq, mean))
 rprd<-as.data.frame(sapply(TotalData1, tapply, TotalData1$prd, mean))
 
 #ANOVA.txt
-cat("\n\n Generate anova output now...\n");readline(" Press Enter to continue...");cat("\n\n")
+cat("\n\n Generate anova output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 zz <- file(anova_output_xfile, open="wt")
 sink(zz)
 description_version()
@@ -172,7 +172,7 @@ options(warn=-1)
 ODAnalysis<-ODAnalysis
 ##
 if(ODAnalysis){
-cat("\n\n Save ODA plots now...\n");readline(" Press Enter to continue...");cat("\n\n")
+cat("\n\n Save ODA plots now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 pdf(ODplot_output_xfile, paper = "a4", bg = "white")
 logo_plot_desc()
 if(multiple){

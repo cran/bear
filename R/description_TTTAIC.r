@@ -21,5 +21,5 @@ cat(" points > 2 after 2*Tmax; otherwise, it will cause error. bear will be     
 cat(" crashed in this case. If so, please try another method next time.          \n\n")
 cat("*******************************************************************************\n")
 cat("\n")
-readline(" Press Enter to continue...")
+readline(" Press Enter to proceed...")
 }

@@ -12,5 +12,5 @@ cat(" is equal to the last measurable Cp divided by lambda_z.                   
 cat("............................................................................ \n")
 cat("\n")
 alarm(); alarm()
-readline(" Press Enter to continue...")
+readline(" Press Enter to proceed...")
 }

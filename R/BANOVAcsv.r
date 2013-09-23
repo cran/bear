@@ -13,7 +13,7 @@ file.menu <- c("separator = comma (,) &  decimal = point (.)",
                "separator = colon (:) &  decimal = point (.)",
                "Back to Statistical analysis menu")
 cat("\n")
-pick <- menu(file.menu, title = " << Separator and decimal formats >> ")
+pick <- menu(file.menu, title = " << Separator and decimal formats >> ", graphics=TRUE)
 if (pick == 1){
   cat("\n\n")
         description_import()

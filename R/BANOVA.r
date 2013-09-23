@@ -242,16 +242,16 @@ show(summary(aov(log(Cmax) ~ seq, data=TotalData)))
 }
 cat("\n")
 if(multiple){
-cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnCmax_ss)[5,3])-1)),format="f",digits=3),"%\n")
-cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1))\n")
-cat("               =",formatC(100*sqrt(abs(exp((anova(lnCmax_ss)[4,3]-anova(lnCmax_ss)[5,3])/2)-1)),format="f",digits=3),"%\n")
+cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt((exp(anova(lnCmax_ss)[5,3])-1)),format="f",digits=3),"%\n")
+cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
+cat("               =",formatC(100*sqrt((exp((anova(lnCmax_ss)[4,3]-anova(lnCmax_ss)[5,3])/2)-1)),format="f",digits=3),"%\n")
 cat("    MSResidual =",anova(lnCmax_ss)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnCmax_ss)[4,3],"\n")
 }
 else{
-cat("Intra_subj. CV = 100*sqrt(abs(exp(MSResidual)-1)) =",formatC(100*sqrt(abs(exp(anova(lnCmax)[5,3])-1)),format="f",digits=3),"%\n")
-cat("Inter_subj. CV = 100*sqrt(abs(exp((MSSubject(seq)-MSResidual)/2)-1))\n")
-cat("               =",formatC(100*sqrt(abs(exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1)),format="f",digits=3),"%\n")
+cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt((exp(anova(lnCmax)[5,3])-1)),format="f",digits=3),"%\n")
+cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1))\n")
+cat("               =",formatC(100*sqrt((exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1)),format="f",digits=3),"%\n")
 cat("    MSResidual =",anova(lnCmax)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnCmax)[4,3],"\n")
 }
@@ -906,7 +906,7 @@ cat("\n")
 }
 if(ODAnalysis){
 zzoda <- file(oda_output_xfile, open="wt")
-cat("\n\n Generate ODA output now...\n");readline(" Press Enter to continue...");cat("\n\n")
+cat("\n\n Generate ODA output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 sink(zzoda)
 description_version()
 cat("\n\n")

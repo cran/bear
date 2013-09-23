@@ -16,7 +16,7 @@ NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex
 options(warn=-1)
 options(width=100)
 lin.AUC<-lin.AUC
-cat("\n\n Generate NCA output now...\n");readline(" Press Enter to continue...");cat("\n\n")
+cat("\n\n Generate NCA output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 Demo<-Demo  # set Demo as Global, see go.r
 Demo=TRUE   # add this line for testing; actually it can be demo or not demo... it's been forced to TRUE now. -YJ
 
@@ -1734,7 +1734,7 @@ if(replicated){
    }
 
 #Table 1:Statistical Summaries for Bioequivalence Study 
-cat("\n\n Generate stat_sum output now...\n");readline(" Press Enter to continue...");cat("\n\n")
+cat("\n\n Generate stat_sum output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 zz <- file(statSum_output_xfile, open="wt")
 sink(zz)
 description_version()

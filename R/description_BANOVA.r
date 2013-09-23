@@ -11,5 +11,5 @@ cat(" treatment means and the standard error associated with these differences. 
 cat(" Log-transformed BA measures will also be analyzed.                         \n")
 cat("............................................................................\n")
 cat("\n\n")
-readline(" Press Enter to continue...")
+readline(" Press Enter to proceed...")
 }

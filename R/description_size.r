@@ -20,5 +20,5 @@ cat("    the upper acceptance limit is equal to 1/(lower acceptance limit).     
 cat("    Usually the lower limit can be 80.000% or, 70.000% in some cases.      \n")
 cat("****************************************************************************\n")
 cat("\n\n")
-readline(" Press Enter to continue...")
+readline(" Press Enter to proceed...")
 }
