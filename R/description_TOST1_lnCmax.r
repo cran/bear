@@ -17,7 +17,8 @@ cat("**Interpretation:\n")
 cat("Ho: Theta < ",formatC(theta1,format="f",digits=5)," or  Theta > ",formatC(theta2,format="f",digits=5), "\n")
 cat("Ha: ",formatC(theta1,format="f",digits=5)," < or = Theta < or = ",formatC(theta2,format="f",digits=5),"\n")
 cat("where Theta = Mean_Test/Mean_Ref.\n")
-cat("Because all P values are less than 0.05, we will reject the null hypothesis (Ho). \n")
-cat("BE acceptance criterion is set within the range of ",formatC(theta1*100,format="f",digits=3)," - ",formatC(theta2*100,format="f",digits=3),"% .\n")
+cat("Because all P values are less than 0.05\n, we will reject the null hypothesis (Ho).\n")
+cat("BE acceptance criterion is set within the range of ",formatC(theta1*100,format="f",digits=3),"% -",
+     formatC(theta2*100,format="f",digits=3),"%.\n")
 cat("\n")
 }

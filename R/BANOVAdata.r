@@ -103,7 +103,7 @@ TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
      TotalData<- na.omit(TotalData)
      show(TotalData)
      cat("\n")
-     cat("Enter the file name to save (no extension!):\n")
+     cat("Enter the file name to be saved (no extension!):\n")
         Totalname <-readline()
         Totalname<-paste(Totalname,".RData",sep="")
            if(file.exists(Totalname)){
@@ -119,7 +119,7 @@ TotalData<-data.frame (subj=c(0), drug=c(0),Cmax=c(0), AUC0t=c(0), AUC0INF=c(0),
                 cat("\n")
                 }
                 else{
-                cat("\nEnter file name:\n")
+                cat("\nEnter file name to be saved (no extension!):\n")
                 Totalname <-readline()
                 Totalname<-paste(Totalname,".RData",sep="")
                 repeat{
@@ -290,7 +290,7 @@ else {
      } 
      cat("\n\n")
      show(TotalData)
-     saveRDS(TotalData,Totalname)
+     ### saveRDS(TotalData,Totalname)    ### it will be loaded from outside, no need to save it back.  --YJ
      cat("\n\n")
      if(parallel){
       if(multiple){

@@ -35,7 +35,8 @@ lambda_z_regr_select_test<- lambda_z_regr_select_test
 ###
 ### windows(record=TRUE)      ### not req. any more -YJ
 ###
-par(mfrow=c(1,1),las=1)   ### set 'ask=FASLE' (as default) to generate pdf file quickly, no more stop here. -YJ
+### par(mfrow=c(1,1),las=1)   ### set 'ask=FASLE' (as default) to generate pdf file quickly, no more stop here. 
+                              ### see ARS().  -YJ
 pdf(lambda_z_regression_lines,paper="a4")  ### now prepare to save as pdf here.  -YJ
 logo_plot_desc()
 ###

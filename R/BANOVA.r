@@ -1,3 +1,5 @@
+###
+### This is for non-replicate, non-parallel only; parallel or replicated --> RepMIX() --YJ
 ##ANOVA (lm)
 library(ICSNP)
 BANOVA<-function(RefData, TestData,TotalData, L1, L2,
@@ -16,12 +18,14 @@ oda_output_xfile<- oda_output_xfile
 ODAnalysis<- ODAnalysis
 ##
 if(multiple){
-cat("*** A 2-trt, 2-seq, and 2-period Crossover Multiple Dose Design. \n")
+cat("*** A 2-trt, 2-seq, and 2-period crossover multiple-dose design.\n\n")
+description_BE_criteria(lnCmax_theta1,lnCmax_theta2)
 Data<-data.frame(subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
                    prd=as.factor(TotalData$prd),Cmax_ss=TotalData$Cmax,AUCtau_ss=TotalData$AUC0t)
 }
 else{
-cat("*** A 2-trt, 2-seq, and 2-period Crossover Single Dose Design. \n")
+cat("*** A 2-trt, 2-seq, and 2-period crossover single-dose design.\n\n")
+description_BE_criteria(lnCmax_theta1,lnCmax_theta2)
 }
 cat("\n\n")
 

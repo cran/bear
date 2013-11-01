@@ -16,6 +16,7 @@ OutputFilez<-function(){
    lambda_z_regression_lines<-NULL        ### NCAselect.r (or NCA.r) & ARS.r & TTT.r &...
    lambda_z_regr_select_ref<-NULL         ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
    lambda_z_regr_select_test<-NULL        ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
+   NCAsave_pivotal_param<-NULL            ### VCAsave.r
    
 ## create random batch number & system.date() for the head of output files
 
@@ -40,7 +41,8 @@ OutputFilez<-function(){
    lambda_z_regression_lines<-paste(xFile_ext,"lambda_z_regr_lines_plots",sep="")
    nca_plot_xfile<-paste(xFile_ext,"conc_time_plots",sep="")
    ODplot_output_xfile<-paste(xFile_ext,"oda_plots",sep="")
-
+   NCAsave_pivotal_param<-paste(xFile_ext,"NCA_pivotal_param",sep="")
+   
 ## start to add file extension for output files (.txt, .csv, .pdf, etc)
 
    anova_output_xfile<<-paste(anova_output_xfile,".txt",sep="")
@@ -56,5 +58,5 @@ OutputFilez<-function(){
    lambda_z_regression_lines<<-paste(lambda_z_regression_lines,".pdf",sep="")
    nca_plot_xfile<<-paste(nca_plot_xfile,".pdf",sep="")
    ODplot_output_xfile<<-paste(ODplot_output_xfile,".pdf",sep="")
-
+   NCAsave_pivotal_param<<-paste(NCAsave_pivotal_param,".RData",sep="")
 }

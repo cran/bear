@@ -1,7 +1,8 @@
 ### Generalized Linear Models (GLM)
 ### at the end, HY also showed the ODA plots on SCREEN; BANOVAoutput() call BANOVAplot() to log all ODA plots into pdf file.
 ### so I omit this part (to display ODA plots on screen) since bear v2.5.4.9. -YJ
-### 
+### this is for non replicated study; if replicate --> RepMIXanalyze()  --YJ
+###
 BANOVAanalyze<-function(TotalData, multiple=FALSE, separateWindows=TRUE)
 {
 ## ODA is off by default
@@ -28,16 +29,16 @@ if(multiple){
   ###   if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
   ###   lnAUC0t_theta1 <- Lm/100      # theta1: lower acceptance limit
   ###   lnAUC0t_theta2 <- 1/lnAUC0t_theta1
-  cat("\n Now set the LOWER/UPPER LIMIT in % as BE criteria \n for pivotal parameters.\n\n");readline(" Press Enter to proceed...")
-  SetLm<-data.frame(Parameters=c("lnCmax(ss)","lnAUC(0-tau)"),LL=c(80,80),UL=c(125,125))
+  cat("\n Now set the LOWER & UPPER LIMIT in % as BE criteria \n for all pivotal parameters.\n\n");readline(" Press Enter to proceed...")
+  SetLm<-data.frame(Parameters=c("BE criteria"),LL=c(80),UL=c(125))
   SetLm<-edit(SetLm)
-  cat("\n The LOWER LIMIT for BE criteria (as %):\n");show(SetLm);cat("\n\n")
-  lnCmax_theta1  <- SetLm[1,2]        # theta1: lower acceptance limit
+  cat("\n The LOWER & UPPER LIMIT for BE criteria (as %):\n");show(SetLm);cat("\n\n")
+  lnCmax_theta1  <- SetLm[1,2]/100        # theta1: lower acceptance limit
   ### lnCmax_theta2  <- 1/lnCmax_theta1
-  lnCmax_theta2  <- SetLm[1,3]
-  lnAUC0t_theta1 <- SetLm[2,2]        # theta1: lower acceptance limit
+  lnCmax_theta2  <- SetLm[1,3]/100
+  lnAUC0t_theta1 <- SetLm[1,2]/100        # theta1: lower acceptance limit
   ### lnAUC0t_theta2 <- 1/lnAUC0t_theta1
-  lnAUC0t_theta2 <- SetLm[2,3]
+  lnAUC0t_theta2 <- SetLm[1,3]/100
  }
 else{
    TotalData<-data.frame (subj=as.factor(TotalData$subj), drug=as.factor(TotalData$drug),seq=as.factor(TotalData$seq),
@@ -67,19 +68,19 @@ else{
   ### if (substr(Lm, 1, 1) == ""|| Lm<=0)  Lm<-80.000  else Lm<-as.numeric(Lm)
   ### lnAUC0INF_theta1 <- Lm/100      # theta1: lower acceptance limit
   ### lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
-  cat("\n Now set the LOWER/UPPER LIMIT in % as BE criteria \n for pivotal parameters.\n\n");readline(" Press Enter to proceed...")
-  SetLm<-data.frame(Parameters=c("lnCmax","lnAUC(0-t)","lnAUC(0-inf)"),LL=c(80,80,80),UL=c(125,125,125))
+  cat("\n Now set the LOWER & UPPER LIMIT in % as BE criteria \n for all pivotal parameters.\n\n");readline(" Press Enter to proceed...")
+  SetLm<-data.frame(Parameters=c("BE criteria"),LL=c(80),UL=c(125))
   SetLm<-edit(SetLm)
-  cat("\n The LOWER LIMIT for BE criteria (as %):\n");show(SetLm);cat("\n\n")
-  lnCmax_theta1    <- SetLm[1,2]        # theta1: lower acceptance limit
+  cat("\n The LOWER & UPPER LIMIT for BE criteria (as %):\n");show(SetLm);cat("\n\n")
+  lnCmax_theta1    <- SetLm[1,2]/100        # theta1: lower acceptance limit
   ### lnCmax_theta2    <- 1/lnCmax_theta1
-  lnCmax_theta2    <- SetLm[1,3]
-  lnAUC0t_theta1   <- SetLm[2,2]        # theta1: lower acceptance limit
+  lnCmax_theta2    <- SetLm[1,3]/100
+  lnAUC0t_theta1   <- SetLm[1,2]/100        # theta1: lower acceptance limit
   ### lnAUC0t_theta2   <- 1/lnAUC0t_theta1
-  lnAUC0t_theta2   <- SetLm[2,3]
-  lnAUC0INF_theta1 <- SetLm[3,2]        # theta1: lower acceptance limit
+  lnAUC0t_theta2   <- SetLm[1,3]/100
+  lnAUC0INF_theta1 <- SetLm[1,2]/100        # theta1: lower acceptance limit
   ### lnAUC0INF_theta2 <- 1/lnAUC0INF_theta1
-  lnAUC0INF_theta2 <- SetLm[3,3]
+  lnAUC0INF_theta2 <- SetLm[1,3]/100
  }
  
 Fdata<-split(TotalData, list(TotalData$drug))

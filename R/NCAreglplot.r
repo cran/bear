@@ -1,7 +1,7 @@
 ###
 ### This function is for plotting regression lines of data manual selection for lambda_z,
 ### from previously saved data point selection file (.RData).
-### The function of on-screen data point selection plots is within NCAselec().
+### The function of on-screen data point selection plots is using NCAselec().
 ### Hoep this will work. Basicaly I copy and paste all codes from NCAselect() first and then
 ### to revise the codes to the situation. The only difference is that this function has
 ### included already selected data point as ref_data & test_data.  -YJ [04/26/2013]
@@ -17,7 +17,8 @@ options(warn=-1)
 ### plots of regression line for lambda_z_estimation
 lambda_z_regression_lines<-lambda_z_regression_lines
 ###
-par(mfrow=c(1,1),las=1)   ### set 'ask=FASLE' (as default) to generate pdf file quickly, no more stop here. -YJ
+### par(mfrow=c(1,1),las=1)   ### set 'ask=FASLE' (as default) to generate pdf file quickly, no more stop here.
+                              ### see ARS().  -YJ
 pdf(lambda_z_regression_lines,paper="a4")  ### now prepare to save as pdf here.  -YJ
 logo_plot_desc()
 ###

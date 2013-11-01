@@ -25,6 +25,12 @@ nca_output_xfile<- nca_output_xfile
 statSum_output_xfile<- statSum_output_xfile
 pivotal_output_xfile<- pivotal_output_xfile
 misc_pk_output_xfile<- misc_pk_output_xfile
+NCAsave_pivotal_param<-NCAsave_pivotal_param
+                                                  ### may not need NCAsave() any more...
+saveRDS(TotalData,NCAsave_pivotal_param)          ### silent file save mode; users can use this dataset 
+                                                  ### to do "statistic analysis"; it's binary type file;
+                                                  ### it cannot be opened with an ascii or text editor! --YJ
+
 ##
 filepath<-getwd()
 cat("\n")
@@ -112,15 +118,35 @@ cat("------------------------<<   NCA Summary and Outputs  >>-------------------
           if(lin.AUC){
           cat("2. The linear trapezoidal method is used to calculate AUC.\n\n")}
           else{
-          cat("2. The lin-up/log-down trapezoidal method is used to calculate AUC.\n\n")
+          cat("2. The linear-up/log-down trapezoidal method is used to calculate AUC.\n\n")
           }                                
           if(multiple){
-          cat("3. This is a multiple-dose BA/BE study.                 \n")
-          cat("---------------------------------------------------------------------------\n")
+             if(replicated){
+                cat("3. This is a replicated, multiple-dose study.\n")
+                cat("---------------------------------------------------------------------------\n")
+             }
+             else if(parallel){
+                cat("3. This is a parallel, multiple-dose study.\n")
+                cat("---------------------------------------------------------------------------\n")
+             }
+             else{
+                cat("3. This is a 2x2x2 crossover, multiple-dose study.\n")
+                cat("---------------------------------------------------------------------------\n")
+          }
           }
           else{
-          cat("3. This is a single-dose BA/BE study.                   \n")
-          cat("---------------------------------------------------------------------------\n")
+            if(replicated){
+                cat("3. This is a replicated, single-dose study.\n")
+                cat("---------------------------------------------------------------------------\n")
+            }
+            else if(parallel){
+                cat("3. This is a parallel, single-dose study.\n")
+                cat("---------------------------------------------------------------------------\n")
+             }
+            else{
+                cat("3. This is a 2x2x2 crossover, single-dose study.\n")
+                cat("---------------------------------------------------------------------------\n")
+          }
           }
 cat("\n\n")
 cat("\f")

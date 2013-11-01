@@ -4,7 +4,7 @@
 ### 
 
 
-NCAanalyze<-function(TotalSingledata, Dose,  Tau, TlastD, xaxis,yaxis, separateWindows=TRUE,
+NCAanalyze<-function(TotalSingledata,Dose,Tau,TlastD,xaxis,yaxis,separateWindows=TRUE,
                      parallel=FALSE, MIX=FALSE, multiple=FALSE)
 {
 

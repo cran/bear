@@ -1,5 +1,5 @@
 ###
-### This is for parallel or replicated crossover BE study.  --YJ
+### This is for parallel or replicated crossover BE study. non-replicate --> BANOVA() --YJ
 ###
 
 RepMIX<-function(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF, 
@@ -11,17 +11,20 @@ cat("\n")
 ##Cmax/Cmax_ss
 if(parallel){                   ## so here is for parallel BE!
    if(multiple){
-    cat("*** This is a 2-treatment parallel multiple-dosed study. \n")
+    cat("*** This is a 2-treatment parallel multiple-dosed study.\n\n")
+    description_BE_criteria(lnCmax_theta1,lnCmax_theta2)
     Data<-data.frame(subj=as.factor(TotalData$subj),drug=as.factor(TotalData$drug),Cmax_ss=TotalData$Cmax, 
                      AUCtau_ss=TotalData$AUC0t, lnCmax_ss=TotalData$lnCmax,lnAUCtau_ss=TotalData$lnAUC0t)
    }
    else{
-    cat("*** This is a 2-treatment parallel single-dosed study. \n")
+    cat("*** This is a 2-treatment parallel single-dosed study.\n\n")
+    description_BE_criteria(lnCmax_theta1,lnCmax_theta2)
    }
  }
 else{ 
-prdcount<-length(levels(TotalData$prd))   ## count periods (such as TRT/RTRT/etc.)
-cat("*** This is a 2-treatment, 2-sequence, and ",prdcount,"-period replicated design. \n") 
+    prdcount<-length(levels(TotalData$prd))   ## count periods (such as TRT/RTRT/etc.)
+    cat("*** This is a 2-treatment, 2-sequence, and ",prdcount,"-period replicated design.\n\n")
+    description_BE_criteria(lnCmax_theta1,lnCmax_theta2)
 } 
 cat("--------------------------------------------------------------------------\n")
 cat("\n")

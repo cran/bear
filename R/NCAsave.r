@@ -1,7 +1,9 @@
-### save the NCA results
+### save the NCA results; but not called any more.
 ### it will use 'write.csv()' to save 'TotalData' (NCA results for BE pivotal parameters). --YJ
 ###
 NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
+
+NCAsave_pivotal_param<-NCAsave_pivotal_param
 
 ###   cat("\n\n")
 ###      cat("\n Input the file name to save pivotal BE parameters (no file extension!):\n")
@@ -16,6 +18,11 @@ NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
 ###                    ans<-readline()
 ###                       if (ans == "y" | ans == "Y"){
 ###                       saveRDS(TotalData,Totalname)
+
+saveRDS(TotalData,NCAsave_pivotal_param)          ### silent file save mode; users can use this dataset 
+                                                  ### to do "statistic analysis"; it's binary type file;
+                                                  ### it cannot be opened with an ascii or text editor! --YJ
+
 ###                       cat("\n")
 ###                               }
 ###                       else{

@@ -1,11 +1,23 @@
+v2.5.8 (official release)
+    - fixed BE criteria with percentage (/100); sorry about this error;
+    - disable warning message with options(warn=-1) in go2menu();
+    - add the function of NCA saved pivotal parameters back again with automatically
+      saving as .RData (NCAoutput()); it was disabled before;
+    - added more output info of study design for NCAoutput(); not just multiple-
+      dose or single-dose; now also include if it is parallel or if it is replicated;
+    - added LL/UL as data.frame() input for replicated study as the non-replciated;
+    - fixed AIC crashed when running multiple-dose study; and
+    - fixed plots of regression lines (ARS, AIC, etc.) for hiding the first
+      empty (null) plot window.
+
 v2.5.7 (official release)
     - official release on Sept. 27, 2013
 
 v2.5.6.9  (pre-release)
 -------------------------
-    - added LL/UL as data.frame() input; not just LL. (09/18/2013)
-    - fixed abnormal on-screen text display with Mac OS X using data.frame() input (09/10/2013)
-    - fixed BANOVAdata() & BANOVAcsv() with graphic menu; and also spelling check. (09/03/2013)
+    - added LL/UL as data.frame() input; not just LL;
+    - fixed abnormal on-screen text display with Mac OS X using data.frame() input;
+    - fixed BANOVAdata() & BANOVAcsv() with graphic menu; and also spelling check; and
     - removed abs() from CV_intra calculation (07/16/2013)
 
 v2.5.6 (official release)
@@ -107,7 +119,7 @@ v2.5.4
     - change save() and load() to saveRDS() and readRDS() for convenient scripting.
     - add mean (sd) plots on semilog scale (Helmut).
     - add alarm() and readline("...") for methods of estimation lambda_z to alert user what 
-      they should know before next step.(as requested by d_labes)
+      they should know before next step.(as suggested by Detlew)
     - add a section containing the means (SD) for each formulation (by time point) in NCA output 
       file (as requested by Helmut).
     - modify some output files.

@@ -1,5 +1,6 @@
 go2menu<- function() {
 
+options(warn=-1)
 OutputFilez()
 Demo<-NULL
 Demo<<-FALSE
