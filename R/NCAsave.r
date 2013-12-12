@@ -3,7 +3,8 @@
 ###
 NCAsave<-function(TotalData, replicated=FALSE, parallel=FALSE, multiple=FALSE){
 
-NCAsave_pivotal_param<-NCAsave_pivotal_param
+NCAsave_pivotal_param_RData_export<-NCAsave_pivotal_param_RData_export
+NCAsave_pivotal_param_csv_export<-NCAsave_pivotal_param_csv_export
 
 ###   cat("\n\n")
 ###      cat("\n Input the file name to save pivotal BE parameters (no file extension!):\n")
@@ -19,9 +20,9 @@ NCAsave_pivotal_param<-NCAsave_pivotal_param
 ###                       if (ans == "y" | ans == "Y"){
 ###                       saveRDS(TotalData,Totalname)
 
-saveRDS(TotalData,NCAsave_pivotal_param)          ### silent file save mode; users can use this dataset 
-                                                  ### to do "statistic analysis"; it's binary type file;
-                                                  ### it cannot be opened with an ascii or text editor! --YJ
+### saveRDS(TotalData,NCAsave_pivotal_param_RData_export)      ### silent file save mode; users can use this dataset 
+                                                               ### to do "statistic analysis"; it's binary type file;
+                                                               ### it cannot be opened with an ascii or text editor! --YJ
 
 ###                       cat("\n")
 ###                               }

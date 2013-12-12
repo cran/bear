@@ -1,8 +1,9 @@
-#choose separator and decimal type
+### choose separator and decimal type; should this be locale specific?  --YJ
+### 
 BANOVAcsv<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
-file.menu <- c("separator = comma (,) &  decimal = point (.)",
+file.menu <- c("separator = comma (,) &  decimal = point (.) (default)",
                "separator = semicolon (;) &  decimal = comma (,)",
                "separator = semicolon (;) &  decimal = point (.)",
                "separator = {space} &  decimal = comma (,)",
@@ -17,25 +18,25 @@ pick <- menu(file.menu, title = " << Separator and decimal formats >> ", graphic
 if (pick == 1){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-          if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-          if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-         } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###   if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ###   if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ###  } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep=",",dec=".")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -72,25 +73,25 @@ if (pick == 1){
   if (pick == 2){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-         if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-         if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###  if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ###  if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep=";",dec=",")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -126,25 +127,25 @@ if (pick == 1){
   if (pick == 3){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-         if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-         if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###  if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ###  if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep=";",dec=".")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -180,25 +181,25 @@ else {
   if (pick == 4){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-         if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-         if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###  if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ###  if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep=" ",dec=",")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -233,26 +234,26 @@ else {
 else {
   if (pick == 5){
   cat("\n\n")
-        description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-         if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-        if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
+        ### description_import()
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###  if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ### if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep=" ",dec=".")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -288,25 +289,25 @@ else {
   if (pick == 6){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-         if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-         if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=",")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###  if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ###  if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep="\t",dec=",")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -342,25 +343,25 @@ else {
   if (pick == 7){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-         if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-        if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###  if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ### if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep="\t",dec=".")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -396,25 +397,25 @@ else {
   if (pick == 8){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-          if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-         if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###   if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ###  if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep=":",dec=",")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")
@@ -450,25 +451,25 @@ else {
   if (pick == 9){
   cat("\n\n")
         description_import()
-        TotalData.file <-readline()
-        TotalData.file<-paste(TotalData.file,".csv",sep="")
-        if(parallel){
-          if(multiple){
-          cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-          }
-          else{
-          cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-          }
-        } 
-        else{ 
-        if(multiple){
-             cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
-           }
-           else{
-            cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
-           }
-        } 
-        TotalData<-read.csv(TotalData.file,header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
+        ### TotalData.file <-readline()
+        ### TotalData.file<-paste(TotalData.file,".csv",sep="")
+        ### if(parallel){
+        ###   if(multiple){
+        ###   cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###   }
+        ###   else{
+        ###   cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###   }
+        ### } 
+        ### else{ 
+        ### if(multiple){
+        ###      cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+        ###    }
+        ###    else{
+        ###     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+        ###    }
+        ### } 
+        TotalData<-read.csv(file.choose(),header=TRUE,row.names=NULL,sep=":",dec=".")
         TotalData<-edit(TotalData)
         TotalData<-na.omit(TotalData)
         cat("\n\n")

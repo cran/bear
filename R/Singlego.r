@@ -1,6 +1,10 @@
 #menu for single dose
 Singlego<-function(multiple=FALSE)
 {
+
+designtrace<-designtrace
+
+cat("*** You have selected the following ->\n",designtrace,"\n")
 cat("\n")
   file.menu <- c("Sample size estimation for ABE ",
                  "Noncompartmental analysis (NCA)",
@@ -13,34 +17,41 @@ if(multiple){
        pick <- menu(file.menu, title = " << Multiple dose menu>> ", graphics=TRUE)
    }
   else{
-  pick <- menu(file.menu, title = " << Single dose menu >> ", graphics=TRUE)
+      pick <- menu(file.menu, title = " << Single dose menu >> ", graphics=TRUE)
    }
     if (pick == 1){
       cat("\n")
+        designtrace<<-paste(designtrace,"sample size estimation,",sep=" ")
         sizemenu()
         }
     else {
     if (pick == 2){
         if(multiple){
+        designtrace<<-paste(designtrace,"NCA only,",sep=" ")
         Multiple1menu()
         }
         else{
+        designtrace<<-paste(designtrace,"NCA only,",sep=" ")
         Multiplemenu()}
         }
     else {
     if (pick == 3){
         if(multiple){
+        designtrace<<-paste(designtrace,"stat analysis only,",sep=" ")
         stat1menu()
         }
         else{
+        designtrace<<-paste(designtrace,"stat analysis only,",sep=" ")
         statmenu()}
         }
    else {
     if (pick == 4){
         if(multiple){
+        designtrace<<-paste(designtrace,"NCA - stat analysis,",sep=" ")
         Multiplestat1menu()
         }
         else{
+        designtrace<<-paste(designtrace,"NCA - stat analysis,",sep=" ")
         Multiplestatmenu()}
         }
  else {

@@ -10,9 +10,9 @@ options(warn=-1)
 ### plots of regression line for lambda_z_estimation
 ### lambda_z_regression_lines<-lambda_z_regression_lines   ### will move to NCA() to generate this pdf. -YJ
 ###
-### windows(record=TRUE)   ### not working in linux;
+### windows(record=TRUE)   ### not working in linux or Mac OS X;
 description_pointselect()
-dev.new()                  ### works great for both linux & windows
+dev.new()                  ### works great for all platforms
 par(mfrow=c(1,1),las=1, ask=TRUE)
 ### par(mai=c(0.9,0.9,0.9,0.9))   ### best-fit for my plots and suitable for ivivc for R and bear. -YJ
 ### par(mai=c(1.,1.,1.,1.))       ### testing... not work well. -YJ

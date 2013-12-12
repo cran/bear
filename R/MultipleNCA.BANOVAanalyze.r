@@ -1,4 +1,4 @@
-MultipleNCA.BANOVAanalyze<-function(TotalSingledata, Dose, xaxis,yaxis,separateWindows=TRUE)
+MultipleNCA.BANOVAanalyze<-function(TotalSingledata,Dose,xaxis,yaxis,separateWindows=TRUE)
 {
-NCA.BANOVAanalyze(TotalSingledata, Dose, xaxis,yaxis,separateWindows=TRUE, multiple=TRUE)
+NCA.BANOVAanalyze(TotalSingledata,Dose,xaxis,yaxis,separateWindows=TRUE,multiple=TRUE)
 }

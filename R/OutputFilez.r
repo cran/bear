@@ -3,20 +3,21 @@ OutputFilez<-function(){
 ##
 ## these lines are to avoid the error messages of "not visible binding ..." with codetool
 ##
-   anova_output_xfile<-NULL               ### BANOVAoutput.r
-   statSum_output_xfile<-NULL             ### NCAoutput.r
-   nca_output_xfile<-NULL                 ### NCAoutput.r
-   lm_stat_xfile<-NULL                    ### RepMIXoutput.r
-   lme_stat_xfile<-NULL                   ### RepMIXoutput.r
-   pivotal_output_xfile<-NULL             ### NCAoutput.r
-   misc_pk_output_xfile<-NULL             ### NCAoutput.r
-   nca_plot_xfile<-NULL                   ### NCAplot.r
-   ODplot_output_xfile<-NULL              ### BANOVAoutput.r
-   oda_output_xfile<-NULL                 ### BANOVA.r
-   lambda_z_regression_lines<-NULL        ### NCAselect.r (or NCA.r) & ARS.r & TTT.r &...
-   lambda_z_regr_select_ref<-NULL         ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
-   lambda_z_regr_select_test<-NULL        ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
-   NCAsave_pivotal_param<-NULL            ### VCAsave.r
+   anova_output_xfile<-NULL                            ### BANOVAoutput.r
+   statSum_output_xfile<-NULL                          ### NCAoutput.r
+   nca_output_xfile<-NULL                              ### NCAoutput.r
+   lm_stat_xfile<-NULL                                 ### RepMIXoutput.r
+   lme_stat_xfile<-NULL                                ### RepMIXoutput.r
+   pivotal_output_xfile<-NULL                          ### NCAoutput.r
+   misc_pk_output_xfile<-NULL                          ### NCAoutput.r
+   nca_plot_xfile<-NULL                                ### NCAplot.r
+   ODplot_output_xfile<-NULL                           ### BANOVAoutput.r
+   oda_output_xfile<-NULL                              ### BANOVA.r
+   lambda_z_regression_lines<-NULL                     ### NCAselect.r (or NCA.r) & ARS.r & TTT.r &...
+   lambda_z_regr_select_ref<-NULL                      ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
+   lambda_z_regr_select_test<-NULL                     ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
+   NCAsave_pivotal_param_RData_export<-NULL            ### NCAsave.r, NCAoutput.r
+   NCAsave_pivotal_param_csv_export<-NULL              ### NCAsave.r, NCAoutput.r
    
 ## create random batch number & system.date() for the head of output files
 
@@ -41,7 +42,8 @@ OutputFilez<-function(){
    lambda_z_regression_lines<-paste(xFile_ext,"lambda_z_regr_lines_plots",sep="")
    nca_plot_xfile<-paste(xFile_ext,"conc_time_plots",sep="")
    ODplot_output_xfile<-paste(xFile_ext,"oda_plots",sep="")
-   NCAsave_pivotal_param<-paste(xFile_ext,"NCA_pivotal_param",sep="")
+   NCAsave_pivotal_param_RData_export<-paste(xFile_ext,"NCA_pivotal_param_export",sep="")
+   NCAsave_pivotal_param_csv_export<-paste(xFile_ext,"NCA_pivotal_param_export",sep="")
    
 ## start to add file extension for output files (.txt, .csv, .pdf, etc)
 
@@ -58,5 +60,6 @@ OutputFilez<-function(){
    lambda_z_regression_lines<<-paste(lambda_z_regression_lines,".pdf",sep="")
    nca_plot_xfile<<-paste(nca_plot_xfile,".pdf",sep="")
    ODplot_output_xfile<<-paste(ODplot_output_xfile,".pdf",sep="")
-   NCAsave_pivotal_param<<-paste(NCAsave_pivotal_param,".RData",sep="")
+   NCAsave_pivotal_param_RData_export<<-paste(NCAsave_pivotal_param_RData_export,".RData",sep="")
+   NCAsave_pivotal_param_csv_export<<-paste(NCAsave_pivotal_param_csv_export,".csv",sep="")
 }

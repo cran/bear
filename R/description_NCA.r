@@ -1,5 +1,5 @@
 description_NCA<-function(){
-cat("\n\n")
+cat("\n")
 cat("**************************************************************************** \n")
 cat("                      Noncompartmental analysis (NCA)                        \n")
 cat("---------------------------------------------------------------------------- \n")
@@ -11,6 +11,5 @@ cat(" The extrapolated AUC (from time of the last measurable Cp to time infinity
 cat(" is equal to the last measurable Cp divided by lambda_z.                     \n")
 cat("............................................................................ \n")
 cat("\n")
-alarm(); alarm()
-readline(" Press Enter to proceed...")
+alarm(); alarm();readline(" Press Enter to proceed...")
 }

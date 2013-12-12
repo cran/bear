@@ -4,10 +4,26 @@
 
 RepNCAanalyze<-function(TotalSingledata, Dose, xaxis,yaxis, separateWindows=TRUE, MIX=FALSE)
 {
-
 options(warn=-1)
-
 description_NCA()
+
+### move here since v2.5.9 [2013/11/10 AM 01:01:55] -YJ
+lin.AUC<-lin.AUC
+lambda_z_calc<-lambda_z_calc
+BE_LL<-BE_LL
+BE_UL<-BE_UL
+dosez<-dosez
+DosingTau<-DosingTau
+Tlastz<-Tlastz
+xlabz<-xlabz
+ylabz<-ylabz
+
+### file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
+###                "All with Linear Trapezoidal Method")
+### pick <- menu(file.menu, title = " << Method Selections for AUC Calculation>> ", graphics=TRUE)
+### lin.AUC<<-ifelse(pick==1,FALSE,TRUE)
+###
+
 
 with(entertitle(), {
 
@@ -70,22 +86,22 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
 create.products_sum(Totalplot)
 ###
 
-   cat("\n")
-   file.menu <- c("Select 2-6 data points manually",
-                  "Load previous selection (2-6 data points)",
-                  "Use Adjusted R sq. (ARS) method",
-                  "Use Akaike information criterion (AIC) method",
-                  "Use the Two-Times-Tmax(TTT) method",
-                  "Use TTT and ARS method",
-                  "Use TTT and AIC method")
-   cat("\n")
-   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
-
-   if (pick ==1){
+###    cat("\n")
+###    file.menu <- c("Select 2-6 data points manually",
+###                   "Load previous selection (2-6 data points)",
+###                   "Use Adjusted R sq. (ARS) method",
+###                   "Use Akaike information criterion (AIC) method",
+###                   "Use the Two-Times-Tmax(TTT) method",
+###                   "Use TTT and ARS method",
+###                   "Use TTT and AIC method")
+###    cat("\n")
+###    pick <- menu(file.menu, title = "<<Method Selections for Lambda_z Estimation>>", graphics=TRUE)
+### 
+   if (lambda_z_calc ==5){
       description_pointselect()
      if(MIX){
      RepNCAselect.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
-     bye()
+     go2menu()
       }
      else{
      RepNCAselect(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis)
@@ -93,7 +109,7 @@ create.products_sum(Totalplot)
    }
 
  else {
-  if (pick == 2){
+  if (lambda_z_calc == 6){
      description_load()
      ##  comdataname <-readline()
      ##  comdataname<-paste(comdataname,".RData",sep="")
@@ -125,57 +141,57 @@ create.products_sum(Totalplot)
 
         if(MIX){
          RepNCA.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
-         bye()
+         go2menu()
           }
          else{
           RepNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
         }
       }
  else {
-  if (pick == 3){
+  if (lambda_z_calc == 0){
         if(MIX){
          RepARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-         bye()
+         go2menu()
          }
          else{
           RepARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
        }
       }
   else {
-  if (pick == 4){
+  if (lambda_z_calc == 1){
         if(MIX){
          RepAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-         bye()
+         go2menu()
          }
          else{
           Repaic(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
        }
      }
   else {
-  if (pick == 5){
+  if (lambda_z_calc == 2){
        if(MIX){
          RepTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-         bye()  
+         go2menu()  
          }
          else{
          RepTTT(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
       }
     }
   else {
-  if (pick == 6){
+  if (lambda_z_calc == 3){
        if(MIX){
          RepTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-         bye()  
+         go2menu()  
          }
          else{
           RepTTTARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
      }
    }
   else {
-  if (pick == 7){
+  if (lambda_z_calc == 4){
       if(MIX){
          RepTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
-         bye()   
+         go2menu()   
          }
          else{
           RepTTTAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)

@@ -1,11 +1,14 @@
-## this function is for outlier detection plotting. nothing to do with anova... --YJ
-## library(plotrix)   <-- no need for this line! --YJ
-##
-BANOVAplot<-function(IntraInterlnCmax00, IntraInterlnAUC0t00,IntraInterlnAUC0INF00,
+### this function is for outlier detection plotting. nothing to do with anova... --YJ
+### library(plotrix)   <-- no need for this line! --YJ
+### called by BANOVAoutput()   --YJ
+BANOVAplot<-function(IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnAUC0INF00,
                      IntraInterlnCmaxseq11,IntraInterlnCmaxseq22,
                      IntraInterlnAUC0tseq11,IntraInterlnAUC0tseq22,
-                     IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22, TotalData, multiple=FALSE)
+                     IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22,TotalData,
+                     IntraInterlnpAUC00,IntraInterlnpAUCseq11,IntraInterlnpAUCseq22,
+                     multiple=FALSE)
 {
+pAUC<-pAUC               ### for pAUC
 
 #par(mfrow=c(2,2))
 ##lnCmax
@@ -27,6 +30,12 @@ b1 <- "Normal Probability Plot of lnAUC0t (intersubj)"
 c1<-  "lnAUC0t (expected value)" 
 }
 
+if(pAUC){
+a2 <- "Normal Probability Plot of lnpAUC (intrasubj)"
+b2 <- "Normal Probability Plot of lnpAUC (intersubj)"
+c2 <- "lnpAUC (expected value)"
+}
+
 qqnorm(IntraInterlnCmax00$Stud_Intra,
 main = a,
 xlab = "Normal scores", ylab = "Studentized intra-subject residuals",las=1)
@@ -44,7 +53,7 @@ abline(v=0, col = "gray60")
 #lnCmaxseq11_plotlabels<-c(IntraInterlnCmaxseq11$subj)
 #lnCmaxseq22_plotlabels<-c(IntraInterlnCmaxseq22$subj)
 #show(IntraInterlnCmaxseq11$subj)
-#show(IntraInterlnCmaxseq11)
+#show(IntraInterlnCmaxseq11);readline("...Pause here")
 #show(lnCmaxseq11_plotlabels)
 
 ##intra-subject residuals: lnCmax(expected value) vs studentized residuals 
@@ -121,14 +130,17 @@ abline(h=-2, col = "green")
 abline(h=3, col = "red")
 abline(h=-3, col = "red")
 points(IntraInterlnAUC0tseq11$Exp, IntraInterlnAUC0tseq11$Stud_Intra, col=4, pch=15)
-thigmophobe.labels(IntraInterlnAUC0tseq11$Exp,IntraInterlnAUC0tseq11$Stud_Intra,IntraInterlnAUC0tseq11$subj, col="black",text.pos=TRUE)
+thigmophobe.labels(IntraInterlnAUC0tseq11$Exp,IntraInterlnAUC0tseq11$Stud_Intra,IntraInterlnAUC0tseq11$subj,
+                   col="black",text.pos=TRUE)
 
 points(IntraInterlnAUC0tseq22$Exp, IntraInterlnAUC0tseq22$Stud_Intra, col=5, pch=16)
-thigmophobe.labels(IntraInterlnAUC0tseq22$Exp,IntraInterlnAUC0tseq22$Stud_Intra,IntraInterlnAUC0tseq22$subj, col="black",text.pos=TRUE)
+thigmophobe.labels(IntraInterlnAUC0tseq22$Exp,IntraInterlnAUC0tseq22$Stud_Intra,IntraInterlnAUC0tseq22$subj,
+                   col="black",text.pos=TRUE)
 
 temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
                text.width = strwidth("1,000,000000"),
-               pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
+               ### pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
+               pch = c(15,16), col = c(4,5), xjust = 1, yjust = 1)
 
 ##intersubject; lnAUC0t(expected value) vs studentized residuals
 x <- IntraInterlnAUC0t00[,3]
@@ -151,6 +163,69 @@ thigmophobe.labels(IntraInterlnAUC0tseq22$Exp,IntraInterlnAUC0tseq22$Stud_Inter,
 temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
                text.width = strwidth("1,000,000000"),
                pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
+
+### pAUC
+if(pAUC){
+qqnorm(IntraInterlnpAUC00$Stud_Intra,
+main = a2,
+xlab = "Normal scores", ylab = "Studentized intra-subject residuals",las=1)
+qqline(IntraInterlnpAUC00$Stud_Intra)
+abline(h=0, col = "gray60")
+abline(v=0, col = "gray60")
+
+qqnorm(IntraInterlnpAUC00$Stud_Inter,
+main = b2,
+xlab = "Normal scores", ylab = "Studentized inter-subject residuals",las=1)
+qqline(IntraInterlnpAUC00$Stud_Inter)
+abline(h=0, col = "gray60")
+abline(v=0, col = "gray60")
+
+#lnpAUCseq11_plotlabels<-c(IntraInterlnpAUCseq11$subj)
+#lnpAUCseq22_plotlabels<-c(IntraInterlnpAUCseq22$subj)
+##intra-subject residuals: lnpAUC(expected value) vs studentized residuals
+x <- IntraInterlnpAUC00[,3]
+y <- IntraInterlnpAUC00[,5]
+
+plot(x, y,asp=NA,col="lightgray", xlab=c2, ylab="studentized residuals",
+     main="intra-subject residuals",las=1,xlim=c(min(x),max(x)),
+     ylim=c(min(y)-3,max(y)+3))
+abline(h=0, col = "gray60")
+abline(h=2, col = "green")
+abline(h=-2, col = "green")
+abline(h=3, col = "red")
+abline(h=-3, col = "red")
+points(IntraInterlnpAUCseq11$Exp, IntraInterlnpAUCseq11$Stud_Intra, col=4, pch=15)
+thigmophobe.labels(IntraInterlnpAUCseq11$Exp,IntraInterlnpAUCseq11$Stud_Intra,IntraInterlnpAUCseq11$subj, col="black",text.pos=TRUE)
+
+points(IntraInterlnpAUCseq22$Exp, IntraInterlnpAUCseq22$Stud_Intra, col=5, pch=16)
+thigmophobe.labels(IntraInterlnpAUCseq22$Exp,IntraInterlnpAUCseq22$Stud_Intra,IntraInterlnpAUCseq22$subj, col="black",text.pos=TRUE)
+
+temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
+               text.width = strwidth("1,000,000000"),
+               pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
+
+##intersubject; lnpAUC(expected value) vs studentized residuals
+x <- IntraInterlnpAUC00[,3]
+y <- IntraInterlnpAUC00[,7]
+
+plot(x, y,asp=NA,col="lightgray", xlab=c2, ylab="studentized residuals",
+     main="inter-subject residuals",las=1,xlim=c(min(x),max(x)),
+     ylim=c(min(y)-3,max(y)+3))
+abline(h=0, col = "gray60")
+abline(h=2, col = "green")
+abline(h=-2, col = "green")
+abline(h=3, col = "red")
+abline(h=-3, col = "red")
+points(IntraInterlnpAUCseq11$Exp, IntraInterlnpAUCseq11$Stud_Inter, col=4, pch=15)
+thigmophobe.labels(IntraInterlnpAUCseq11$Exp,IntraInterlnpAUCseq11$Stud_Inter,IntraInterlnpAUCseq11$subj, col="black",text.pos=TRUE)
+
+points(IntraInterlnpAUCseq22$Exp, IntraInterlnpAUCseq22$Stud_Inter, col=5, pch=16)
+thigmophobe.labels(IntraInterlnpAUCseq22$Exp,IntraInterlnpAUCseq22$Stud_Inter,IntraInterlnpAUCseq22$subj, col="black",text.pos=TRUE)
+
+temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
+               text.width = strwidth("1,000,000000"),
+               pch = 15:16, col = 4:5, xjust = 1, yjust = 1)
+}
 if(multiple){
 }
 else{               
@@ -184,10 +259,12 @@ abline(h=-2, col = "green")
 abline(h=3, col = "red")
 abline(h=-3, col = "red")
 points(IntraInterlnAUC0INFseq11$Exp, IntraInterlnAUC0INFseq11$Stud_Intra, col=4, pch=15)
-thigmophobe.labels(IntraInterlnAUC0INFseq11$Exp,IntraInterlnAUC0INFseq11$Stud_Intra,IntraInterlnAUC0INFseq11$subj, col="black",text.pos=TRUE)
+thigmophobe.labels(IntraInterlnAUC0INFseq11$Exp,IntraInterlnAUC0INFseq11$Stud_Intra,
+                   IntraInterlnAUC0INFseq11$subj, col="black",text.pos=TRUE)
 
 points(IntraInterlnAUC0INFseq22$Exp, IntraInterlnAUC0INFseq22$Stud_Intra, col=5, pch=16)
-thigmophobe.labels(IntraInterlnAUC0INFseq22$Exp,IntraInterlnAUC0INFseq22$Stud_Intra,IntraInterlnAUC0INFseq22$subj, col="black",text.pos=TRUE)
+thigmophobe.labels(IntraInterlnAUC0INFseq22$Exp,IntraInterlnAUC0INFseq22$Stud_Intra,
+                   IntraInterlnAUC0INFseq22$subj, col="black",text.pos=TRUE)
 
 temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
                text.width = strwidth("1,000,000000"),
@@ -206,10 +283,12 @@ abline(h=-2, col = "green")
 abline(h=3, col = "red")
 abline(h=-3, col = "red")
 points(IntraInterlnAUC0INFseq11$Exp, IntraInterlnAUC0INFseq11$Stud_Inter, col=4, pch=15)
-thigmophobe.labels(IntraInterlnAUC0INFseq11$Exp,IntraInterlnAUC0INFseq11$Stud_Inter,IntraInterlnAUC0INFseq11$subj, col="black",text.pos=TRUE)
+thigmophobe.labels(IntraInterlnAUC0INFseq11$Exp,IntraInterlnAUC0INFseq11$Stud_Inter,
+                   IntraInterlnAUC0INFseq11$subj, col="black",text.pos=TRUE)
 
 points(IntraInterlnAUC0INFseq22$Exp, IntraInterlnAUC0INFseq22$Stud_Inter, col=5, pch=16)
-thigmophobe.labels(IntraInterlnAUC0INFseq22$Exp,IntraInterlnAUC0INFseq22$Stud_Inter,IntraInterlnAUC0INFseq22$subj, col="black",text.pos=TRUE)
+thigmophobe.labels(IntraInterlnAUC0INFseq22$Exp,IntraInterlnAUC0INFseq22$Stud_Inter,
+                   IntraInterlnAUC0INFseq22$subj, col="black",text.pos=TRUE)
 
 temp <- legend("topright",legend = c("sequence 1", "sequence 2"),
                text.width = strwidth("1,000,000000"),
@@ -231,6 +310,11 @@ e  <- "lnCmax (intersubj)"
 d1 <- "lnAUC0t (intrasubj)"
 e1<-  "lnAUC0t (intersubj)"
 }
+if(pAUC){
+f1 <- "lnpAUC (intrasubj)"
+g1<-  "lnpAUC (intersubj)"
+}
+
 lnCmaxintra<-boxplot(IntraInterlnCmax00$Stud_Intra,col="lightgray", main=d, ylab="studentized residuals",las=1)
   if (length(lnCmaxintra$out) > 0){ 
   z<-NULL 
@@ -248,6 +332,17 @@ if (length(lnAUC0tintra$out) > 0){
        } 
    text(lnAUC0tintra$group, lnAUC0tintra$out,IntraInterlnAUC0t00$subj[z],pos = 2 ) 
    } 
+
+if(pAUC){
+lnpAUCintra<-boxplot(IntraInterlnpAUC00$Stud_Intra,col="lightgray", main=f1, ylab="studentized residuals",las=1)
+if (length(lnpAUCintra$out) > 0){  
+  z<-NULL 
+   for(i in seq_along(lnpAUCintra$out)){
+    z[i]<-IntraInterlnpAUC00$subj[IntraInterlnpAUC00$Stud_Intra==lnpAUCintra$out[i]] 
+       } 
+   text(lnpAUCintra$group, lnpAUCintra$out,IntraInterlnpAUC00$subj[z],pos = 2 ) 
+}
+}
 if(multiple){
 }
 else{
@@ -277,6 +372,17 @@ if (length(lnAUC0tinter$out) > 0){
        } 
    text(lnAUC0tinter$group, lnAUC0tinter$out,IntraInterlnAUC0t00$subj[z],pos = 2 ) 
    } 
+
+if(pAUC){
+lnpAUCinter<-boxplot(IntraInterlnpAUC00$Stud_Inter,col="lightgray", main=g1, ylab="studentized residuals",las=1)
+if (length(lnpAUCinter$out) > 0){  
+  z<-NULL 
+   for(i in seq_along(lnpAUCinter$out)){
+    z[i]<-IntraInterlnpAUC00$subj[IntraInterlnpAUC00$Stud_Inter==lnpAUCinter$out[i]] 
+       } 
+   text(lnpAUCinter$group, lnpAUCinter$out,IntraInterlnpAUC00$subj[z],pos = 2 ) 
+}
+}
 if(multiple){
 }
 else{   
@@ -292,11 +398,15 @@ if (length(lnAUC0INFinter$out) > 0){
 ##cook's distance
  lnCmax<- lm(lnCmax ~ seq + subj:seq + prd + drug , data=TotalData)
  lnAUC0t<- lm(lnAUC0t ~ seq + subj:seq + prd + drug , data=TotalData)
+ if(pAUC) lnpAUC<- lm(lnpAUC ~ seq + subj:seq + prd + drug , data=TotalData)
 
 if(multiple){ 
  ##cook's distance 
   op <- par(mfrow=c(1,1))
-  cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax_ss=cooks.distance(lnCmax),lnAUCtau_ss=cooks.distance(lnAUC0t)) 
+  if(pAUC){cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax_ss=cooks.distance(lnCmax),
+     lnAUCtau_ss=cooks.distance(lnAUC0t),lnpAUC=cooks.distance(lnpAUC))}
+  else{cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax_ss=cooks.distance(lnCmax),
+     lnAUCtau_ss=cooks.distance(lnAUC0t))}
   cooks<-split(cook, cook$drug)[[1]]
   cooks<-cooks[ do.call(order, cooks) ,]
   ticks <-c(levels(cooks$subj))
@@ -309,26 +419,42 @@ if(multiple){
   plot(cooks$lnAUCtau_ss, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC(tau)",font.lab=2)
   axis(1, at=c(1:n), labels = ticks)    
   points(cooks$subj,cooks$lnAUCtau_ss) 
+  if(pAUC){
+     plot(cooks$lnpAUC, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnpAUC",font.lab=2)
+     axis(1, at=c(1:n), labels = ticks)    
+     points(cooks$subj,cooks$lnpAUC) 
    }
-   else{
+ }
+
+else{                       ### single-dose study
     op <- par(mfrow=c(1,1))
     lnAUC0INF<- lm(lnAUC0INF ~ seq + subj:seq + prd + drug , data=TotalData)
-    cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax=cooks.distance(lnCmax),lnAUC0t=cooks.distance(lnAUC0t),lnAUC0INF= cooks.distance(lnAUC0INF) ) 
+
+    if(pAUC){cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax=cooks.distance(lnCmax),
+        lnAUC0t=cooks.distance(lnAUC0t),lnAUC0INF= cooks.distance(lnAUC0INF),lnpAUC= cooks.distance(lnpAUC))}
+    else{cook<-data.frame(subj=TotalData$subj,drug=TotalData$drug,lnCmax=cooks.distance(lnCmax),
+        lnAUC0t=cooks.distance(lnAUC0t),lnAUC0INF= cooks.distance(lnAUC0INF))}
+        
     cooks<-split(cook, cook$drug)[[1]]
-     cooks<-cooks[ do.call(order, cooks) ,]
-     ticks <-c(levels(cooks$subj))
-     n <- length(cooks$subj) 
-     ##lnCmax
-     plot(cooks$lnCmax, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnCmax",font.lab=2)
-     axis(1, at=c(1:n), labels = ticks)    
-     points(cooks$subj,cooks$lnCmax) 
-     ##lnAUC0t
-     plot(cooks$lnAUC0t, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC0t",font.lab=2)
-     axis(1, at=c(1:n), labels = ticks)    
-     points(cooks$subj,cooks$lnAUC0t) 
-      ##lnAUC0INF
-     plot(cooks$lnAUC0INF, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC0INF",font.lab=2)
-     axis(1, at=c(1:n), labels = ticks)    
-     points(cooks$subj,cooks$lnAUC0INF) 
+    cooks<-cooks[ do.call(order, cooks) ,]
+    ticks <-c(levels(cooks$subj))
+    n <- length(cooks$subj) 
+    ##lnCmax
+    plot(cooks$lnCmax, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnCmax",font.lab=2)
+    axis(1, at=c(1:n), labels = ticks)    
+    points(cooks$subj,cooks$lnCmax) 
+    ##lnAUC0t
+    plot(cooks$lnAUC0t, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC0t",font.lab=2)
+    axis(1, at=c(1:n), labels = ticks)    
+    points(cooks$subj,cooks$lnAUC0t) 
+    if(pAUC){
+       plot(cooks$lnpAUC, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnpAUC",font.lab=2)
+       axis(1, at=c(1:n), labels = ticks)    
+       points(cooks$subj,cooks$lnpAUC) 
+    }
+     ##lnAUC0INF
+    plot(cooks$lnAUC0INF, type="h", ,xaxt="n",las=1, xlab="Deleted Level of Subject", ylab="Cook's distance",main="lnAUC0INF",font.lab=2)
+    axis(1, at=c(1:n), labels = ticks)    
+    points(cooks$subj,cooks$lnAUC0INF) 
    }
 }

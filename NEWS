@@ -1,3 +1,28 @@
+v2.6.0 (official release)
+    - 
+    - decided not to implement data point interpolation for missing data value (C*)
+      when doing partial AUC or truncated AUC analysis in bear; users may consider 
+      to use an estimate/interpolation/extrapolation for missing data when 
+      necessary beforehand; further ref. included:
+      (1) http://forum.bebac.at/mix_entry.php?id=4655#p4681
+      (2) http://forum.bebac.at/mix_entry.php?id=1933&page=0&category=0&order
+                 =last_answer&descasc=DESC#p2323
+    - start implementing pAUC scheme... pAUC_NCA - done, pAUC-stat - done;
+      pAUC - NCA_Stat done; pAUC - DOA? interpolation pAUC? planning...
+    - fixed AUMC to comply with linear-up/log-down trapezoidal rule as AUC.
+    - added study tracer up to the selected menu;
+    - create the export module for demo datasets;
+    - enable demo datasets export through NCA and ANOVA for later testing purposes;
+    - add 'plot.setup.rds'; plus original 'bear.setup.rds' of setup file for
+      bear;
+    - fixed export/import .csv and .Rdata file for 'statistical analysis' in 
+      NCAoutput();
+    - added bear.setup() for setup files generation; new features.
+    - moved AUC calc. method to NCA.BANONAanalyze(); this has been changed later;
+    - corrected some typos again;
+    - fixed BANOVA() with no "abs()" for CV_intra values;
+    - fixed descriptionTOST() using paste() for better display;
+    
 v2.5.8 (official release)
     - fixed BE criteria with percentage (/100); sorry about this error;
     - disable warning message with options(warn=-1) in go2menu();
@@ -5,7 +30,7 @@ v2.5.8 (official release)
       saving as .RData (NCAoutput()); it was disabled before;
     - added more output info of study design for NCAoutput(); not just multiple-
       dose or single-dose; now also include if it is parallel or if it is replicated;
-    - added LL/UL as data.frame() input for replicated study as the non-replciated;
+    - added LL/UL as data.frame() input for replicated study as the non-replicated;
     - fixed AIC crashed when running multiple-dose study; and
     - fixed plots of regression lines (ARS, AIC, etc.) for hiding the first
       empty (null) plot window.

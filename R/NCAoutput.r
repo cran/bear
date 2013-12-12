@@ -15,21 +15,36 @@ NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex
 {
 options(warn=-1)
 options(width=100)
-lin.AUC<-lin.AUC
+lin.AUC<-lin.AUC        ### for pAUC
+pAUC<-pAUC              ### for pAUC
+pAUC_start<-pAUC_start  ### for pAUC
+pAUC_end<-pAUC_end      ### for pAUC
+lnpAUC<-0               ### for pAUC
+
 cat("\n\n Generate NCA output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 Demo<-Demo  # set Demo as Global, see go.r
 Demo=TRUE   # add this line for testing; actually it can be demo or not demo... it's been forced to TRUE now. -YJ
+BE_LL<-BE_LL
+BE_UL<-BE_UL
+dosez<-dosez
+Tlastz<-Tlastz
+xlabz<-xlabz
+ylabz<-ylabz
+
 
 ## to avoid "not visible binding..." error message with codetool
 nca_output_xfile<- nca_output_xfile
 statSum_output_xfile<- statSum_output_xfile
 pivotal_output_xfile<- pivotal_output_xfile
 misc_pk_output_xfile<- misc_pk_output_xfile
-NCAsave_pivotal_param<-NCAsave_pivotal_param
-                                                  ### may not need NCAsave() any more...
-saveRDS(TotalData,NCAsave_pivotal_param)          ### silent file save mode; users can use this dataset 
-                                                  ### to do "statistic analysis"; it's binary type file;
-                                                  ### it cannot be opened with an ascii or text editor! --YJ
+NCAsave_pivotal_param_RData_export<-NCAsave_pivotal_param_RData_export
+NCAsave_pivotal_param_csv_export<-NCAsave_pivotal_param_csv_export
+
+                                                       ## may not need NCAsave() any more...
+saveRDS(TotalData,NCAsave_pivotal_param_RData_export)  ### silent file save mode; users can use this dataset 
+                                                       ### to do "statistic analysis"; it's binary type file;
+                                                       ### it cannot be opened with an ascii or text editor! --YJ
+write.csv(TotalData,NCAsave_pivotal_param_csv_export,row.names=FALSE)  ### saved as default set (sep, dec) here --YJ
 
 ##
 filepath<-getwd()
@@ -58,9 +73,11 @@ cat("***************************************************************************
 
 #####################################################################################
 zz <- file(nca_output_xfile, open="wt")
-### sink(zz,split=TRUE)  ### see output on the screen simultaneously with this. -YJ
-sink(zz)
+### sink(zz,split=TRUE)  ### see output on the screen simultaneously with this; 'split=TRUE' for debug...  -YJ
+sink(zz)                 ### for debugging, use the above line.
 description_version()
+cat(paste("\n***(1) All BE pivotal parameters have been saved in\n    -> (",pivotal_output_xfile,")\n\n",sep=""))
+cat(paste("***(2) All misc. PK parameters have been saved in\n    -> (",misc_pk_output_xfile,")\n\n",sep=""))
 ### show mean/sd conc. by formulation here
 cat(" Summary of Mean Conc. (SD) vs. time by Formulation:-\n")
 cat("-----------------------------------------------------\n")
@@ -85,7 +102,7 @@ cat("------------------------<<   NCA Summary and Outputs  >>-------------------
                }
                 else {
                  if(ARS){
-                 cat("1. Lambda_z is calculated using the adjusted R squared (ARS) method\n") 
+                 cat("1. Lambda_z is calculated using the adj. R squared (ARS) method\n") 
                  cat("   without including the data point of (Tmax, Cmax).\n\n")
                  }
                 else{
@@ -102,7 +119,7 @@ cat("------------------------<<   NCA Summary and Outputs  >>-------------------
                  }
                  else {
                  if(TTTARS){
-                 cat("1. Lambda_z is calculated using the Two-Times-Tmax (TTT) and adjusted R squared\n") 
+                 cat("1. Lambda_z is calculated using the Two-Times-Tmax (TTT) and adj. R squared\n") 
                  cat("  (ARS) method without including the data point of (Tmax, Cmax).\n\n")
                  }
                  else {
@@ -116,9 +133,9 @@ cat("------------------------<<   NCA Summary and Outputs  >>-------------------
                  }
                 } 
           if(lin.AUC){
-          cat("2. The linear trapezoidal method is used to calculate AUC.\n\n")}
+          cat("2. The linear trapezoidal rule is used to calculate AUC and AUMC.\n\n")}
           else{
-          cat("2. The linear-up/log-down trapezoidal method is used to calculate AUC.\n\n")
+          cat("2. The linear-up/log-down trapezoidal rule is used to calculate\n   AUC and AUMC.\n\n")
           }                                
           if(multiple){
              if(replicated){
@@ -157,6 +174,7 @@ cat("---------------------------------------------------\n")
  CminRef<-0
  AUCINFRef<-0
  AUCTRef<-0
+ if(pAUC){pAUCTRef<-0}  ### for pAUC
  TmaxRef<-0
  MRTINFRef<-0
  T12Ref<-0
@@ -205,11 +223,15 @@ cat("---------------------------------------------------\n")
           Cmax_ref<-0
           Cmin_ref<-0
           aumc_ref<-0
+          if(pAUC){                ### calc. pAUC here if pAUC is TRUE; ### for pAUC
+             pauc_ref<-0           ### need to calc one more parameters with pAUC.  --YJ
+             pauc_ref_range<-""    ### for labeling the range of pAUC with '***'
+           }
           for(i in 2:length(R.split[[j]][["time"]])){
              #calculate AUC and exclude AUC==NA (auc<-0)
              ###
              ### original is all linear trapezoidal; -- YJ
-             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ### now we add lin-up/log-down trapezoidal rule. -YJ
              ###
              if(lin.AUC){
                   auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5}
@@ -221,17 +243,60 @@ cat("---------------------------------------------------\n")
                               log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
                     }
              }
+             
+             if(pAUC){                 ### for pAUC
+                    if(R.split[[j]][["time"]][i]<=pAUC_start||R.split[[j]][["time"]][i]>pAUC_end){  ### to exclude not pAUC part.
+                      pauc_ref[i]<-0
+                      if(R.split[[j]][["time"]][i]==pAUC_start) {pauc_ref_range[i]<-"***"}  ### must be since it is counting from i (=2) not (i-1)
+                      else{pauc_ref_range[i]<-""}
+                    }
+                    else{
+                      pauc_ref[i]<-auc_ref[i];pauc_ref_range[i]<-"***"
+                    }
+                    if(R.split[[j]][["time"]][1]==pAUC_start) pauc_ref_range[1]<-"***"
+             }
              ###             
              ### auc_ref[i]<-(R.split[[j]][["time"]][i]-R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i]+R.split[[j]][["conc"]][i-1])* 0.5
              auc_ref[i]<-auc_ref[i]+auc_ref[i-1]
-             #calculate AUMC
+             if(pAUC){                ### for pAUC
+               if(R.split[[j]][["time"]][i]>pAUC_start && R.split[[j]][["time"]][i]<= pAUC_end){
+                  pauc_ref[i]<-pauc_ref[i]+pauc_ref[i-1]}
+                else{
+                  pauc_ref[i]<-0}
+             }
+
+             ### calculate AUMC
              if(multiple){
+                if (lin.AUC){    ### linear trapezoidal way  --YJ
                 aumc_ref[i]<-((R.split[[j]][["time"]][i]-TlastD)*(R.split[[j]][["conc"]][i])+(R.split[[j]][["time"]][i-1]-TlastD)*(R.split[[j]][["conc"]][i-1]))*
-                          ((R.split[[j]][["time"]][i]-TlastD)-(R.split[[j]][["time"]][i-1]-TlastD))* 0.5
+                          ((R.split[[j]][["time"]][i]-TlastD)-(R.split[[j]][["time"]][i-1]-TlastD))* 0.5}
+                else{            ### still linear trapezoidal  --YJ
+                if(R.split[[j]][["conc"]][i]>R.split[[j]][["conc"]][i-1] || R.split[[j]][["conc"]][i] == R.split[[j]][["conc"]][i-1]){
+                aumc_ref[i]<-((R.split[[j]][["time"]][i]-TlastD)*(R.split[[j]][["conc"]][i])+(R.split[[j]][["time"]][i-1]-TlastD)*(R.split[[j]][["conc"]][i-1]))*
+                          ((R.split[[j]][["time"]][i]-TlastD)-(R.split[[j]][["time"]][i-1]-TlastD))* 0.5}
+                else{            ### logarithmic trapezoidal  --YJ
+                aumc_ref[i]<-((R.split[[j]][["time"]][i]-TlastD)-(R.split[[j]][["time"]][i-1]-TlastD))*((R.split[[j]][["time"]][i]-TlastD)*(R.split[[j]][["conc"]][i])-
+                             (R.split[[j]][["time"]][i-1]-TlastD)*(R.split[[j]][["conc"]][i-1]))/log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])-
+                             ((R.split[[j]][["time"]][i]-TlastD)-(R.split[[j]][["time"]][i-1]-TlastD))^2*(R.split[[j]][["conc"]][i]-R.split[[j]][["conc"]][i-1])/
+                             log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])^2
+                }
                }
+             }
              else{
+             if (lin.AUC){    ### linear trapezoidal way  --YJ
                 aumc_ref[i]<-((R.split[[j]][["time"]][i])*(R.split[[j]][["conc"]][i])+(R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i-1]))*
-                          ((R.split[[j]][["time"]][i])-(R.split[[j]][["time"]][i-1]))* 0.5
+                          ((R.split[[j]][["time"]][i])-(R.split[[j]][["time"]][i-1]))* 0.5}
+                else{
+                if(R.split[[j]][["conc"]][i]>R.split[[j]][["conc"]][i-1] || R.split[[j]][["conc"]][i] == R.split[[j]][["conc"]][i-1]){
+                aumc_ref[i]<-((R.split[[j]][["time"]][i])*(R.split[[j]][["conc"]][i])+(R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i-1]))*
+                          ((R.split[[j]][["time"]][i])-(R.split[[j]][["time"]][i-1]))* 0.5}
+                else{
+                aumc_ref[i]<-((R.split[[j]][["time"]][i])-(R.split[[j]][["time"]][i-1]))*((R.split[[j]][["time"]][i])*(R.split[[j]][["conc"]][i])-
+                             (R.split[[j]][["time"]][i-1])*(R.split[[j]][["conc"]][i-1]))/log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])-
+                             ((R.split[[j]][["time"]][i])-(R.split[[j]][["time"]][i-1]))^2*(R.split[[j]][["conc"]][i]-R.split[[j]][["conc"]][i-1])/
+                             log(R.split[[j]][["conc"]][i]/R.split[[j]][["conc"]][i-1])^2
+                }
+                }
                }
              aumc_ref[i]<-aumc_ref[i]+aumc_ref[i-1]
              Cmax_ref<-max(R.split[[j]][["conc"]], na.rm = FALSE)
@@ -259,6 +324,7 @@ cat("---------------------------------------------------\n")
                   CminRef[j]<-Cmin_ref
                   AUCINFRef[j]<-aucINF
                   AUCTRef[j]<-auc_ref[length(R.split[[j]][["conc"]])]
+                  if(pAUC){pAUCTRef[j]<-max(pauc_ref)}   ### the final pauc_ref.  --YJ    ### for pAUC
                   TmaxRef[j]<-ifelse(multiple, tmax_ref$time - TlastD, tmax_ref$time)  ### -YJ
                   T12Ref[j]<-log(2)/ke
                   KelRef[j]<-ke
@@ -275,24 +341,50 @@ cat("---------------------------------------------------\n")
                        ClFRef[j]<-Dose/aucINF
                        MRTINFRef[j]<-aumcINF/aucINF 
                       }          
-                 cat("\n\n") 
                  if(replicated){
-                 cat("<< NCA Outputs:- Subj.#",su,", Seq",se,", Prd",pr," (Ref.)>>\n")
+                 cat("\n<< NCA Outputs:- <Subj.#",su,">, Seq",se,", Prd",pr," (Ref.)>>\n")
                     }
                    else{
-                 cat("<< NCA Outputs:- Subj.#",su," (Ref.)>>\n")
+                 cat("\n<< NCA Outputs:- <Subj.#",su,"> (Ref.)>>\n")
                     }
-                 cat("---------------------------------------------------\n")
-                 output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3))
+                 cat("--------------------------------------------------------\n")
+                 if(pAUC){        ### for pAUC
+                         ### pAUC_output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],
+                         ### formatC(pauc_ref,format="f",digits=3),pauc_ref_range)
+                         output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],
+                         formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3),
+                         formatC(pauc_ref,format="f",digits=3),pauc_ref_range)
+                         } ### insert pAUC here
+                    else {
+                         output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],
+                         formatC(auc_ref,format="f",digits=3),formatC(aumc_ref,format="f",digits=3))
+                  }
                  if(multiple){
-                  colnames(output)<-list("subj","time","conc", "AUC(tau)ss","AUMC(tau)ss")
+                     if(pAUC){     ### for pAUC
+                          pAUC_label<-""
+                          pAUC_label<-paste("pAUC(",pAUC_start,"-",pAUC_end,")",sep="")
+                          colnames(output)<-list("subj","time","conc","AUC(tau)ss","AUMC(tau)ss",pAUC_label," * ")
+                          }
+                      else{
+                          colnames(output)<-list("subj","time","conc","AUC(tau)ss","AUMC(tau)ss")
+                          }
                   }
                   else{
-                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
+                   if(pAUC){      ### for pAUC
+                         pAUC_label<-""
+                         pAUC_label<-paste("pAUC(",pAUC_start,"-",pAUC_end,")",sep="")
+                         colnames(output)<-list("subj","time","conc","AUC(0-t)","AUMC(0-t)",pAUC_label," * ")
+                           }
+                      else {
+                         colnames(output)<-list("subj","time","conc","AUC(0-t)","AUMC(0-t)")
+                        }
                   }
                  show(output)
+                 cat("--------------------------------------------------------\n")
+                 if(pAUC){cat("***: the covered range of pAUC\n\n")}else{cat("\n")}
+                 ### readline(" ... pause here\n")   ### for debugging   ### for pAUC
               
-                cat("\n<< Selected data points for lambda_z calculations >>\n")
+                cat("<< Selected data points for lambda_z calculations >>\n")
                 cat("----------------------------------------------------\n")
                 if (NCA){
                          ### rr_fix<-rdata.split[[j]]
@@ -433,6 +525,8 @@ cat("---------------------------------------------------\n")
               cat("            Cl/F =",Dose/(auc_ref[length(R.split[[j]][["conc"]])]),"\n")
               cat("            Vd/F =",Dose/((auc_ref[length(R.split[[j]][["conc"]])])*ke),"\n")
               cat("         T1/2(z) =",log(2)/ke,"\n")
+              if(pAUC){                 ### for pAUC
+              cat("           *pAUC =",pAUCTRef[j],"\n")}
               cat("      AUC(tau)ss =",auc_ref[length(R.split[[j]][["conc"]])],"\n")
               cat("     AUMC(tau)ss =",aumc_ref[length(R.split[[j]][["conc"]])],"\n")
               cat("             MRT =",(aumc_ref[length(R.split[[j]][["conc"]])])/(auc_ref[length(R.split[[j]][["conc"]])]),"\n")
@@ -444,6 +538,8 @@ cat("---------------------------------------------------\n")
               cat("            Cl/F =",Dose/aucINF,"\n")
               cat("            Vd/F =",Dose/(aucINF*ke),"\n")
               cat("         T1/2(z) =",log(2)/ke,"\n")
+              if(pAUC){                 ### for pAUC
+              cat("           *pAUC =",pAUCTRef[j],"\n")}
               cat("        AUC(0-t) =",auc_ref[length(R.split[[j]][["conc"]])],"\n") 
               cat("      AUC(0-inf) =",aucINF,"\n")
               cat("       AUMC(0-t) =",aumc_ref[length(R.split[[j]][["conc"]])],"\n")
@@ -451,6 +547,9 @@ cat("---------------------------------------------------\n")
               cat("        MRT(0-t) =",(aumc_ref[length(R.split[[j]][["conc"]])])/(auc_ref[length(R.split[[j]][["conc"]])]),"\n")
               cat("      MRT(0-inf) =",aumcINF/aucINF,"\n")
               }
+              cat("-----------------------------\n")
+              if(pAUC) cat(" where *pAUC means ",pAUC_label,sep="")  ### make a note for 'pAUC'; ### for pAUC
+              cat("\n\n")
   }  
 cat("\n\n")
 cat("\f")
@@ -460,6 +559,7 @@ CmaxTest<-0
 CminTest<-0
 AUCINFTest<-0
 AUCTTest<-0
+if(pAUC) pAUCTTest<-0     ### for pAUC
 TmaxTest<-0
 MRTINFTest<-0
 T12Test<-0
@@ -469,7 +569,7 @@ ClFTest<-0
 CavTest<-0
 FluTest<-0
       for (j in 1:length(T.split)){
-         #if subj of W.split==subj of kepar, then use ke of kepar to claculate AUC(0~INF)
+         #if subj of W.split==subj of kepar, then use ke of kepar to calculate AUC(0~INF)
            if(replicated){
           ke1<-0
           R_sq1<-0
@@ -507,12 +607,16 @@ FluTest<-0
           Cmin_test<-0
           tmax_test<-0
           aumc_test<-0
+       if(pAUC){                 ### calc. pAUC here if pAUC is TRUE ### for pAUC
+          pauc_test<-0           ### need to calc one more parameters with pAUC.  --YJ
+          pauc_test_range<-""    ### for labeling the range of pAUC with '***'
+          }
           
           for(i in 2:length(T.split[[j]][["time"]])){
              #calculate AUC and exclude AUC==NA (auc<-0)
              ###
              ### original is all linear trapezoidal; -- YJ
-             ### now we add lin-up/log-down trapezoidal method. -YJ
+             ### now we add lin-up/log-down trapezoidal rule. -YJ
              ###
              if(lin.AUC){
                   auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5}
@@ -524,18 +628,60 @@ FluTest<-0
                               log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])   ### lin-up/log-down trapezoidal --YJ
                     }
              }
+             if(pAUC){
+                    if(T.split[[j]][["time"]][i]<=pAUC_start||T.split[[j]][["time"]][i]>pAUC_end){  ### to exclude not pAUC part.
+                      pauc_test[i]<-0
+                      if(T.split[[j]][["time"]][i]==pAUC_start) {pauc_test_range[i]<-"***"}
+                      else{pauc_test_range[i]<-""}
+                    }
+                    else{
+                      pauc_test[i]<-auc_test[i];pauc_test_range[i]<-"***"
+                    }
+                    if(T.split[[j]][["time"]][1]==pAUC_start) pauc_test_range[1]<-"***"
+             }
              ###             
              ### auc_test[i]<-(T.split[[j]][["time"]][i]-T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i]+T.split[[j]][["conc"]][i-1])* 0.5
              auc_test[i]<-auc_test[i]+auc_test[i-1]
-             #calculate AUMC
-              if(multiple){
-             aumc_test[i]<-((T.split[[j]][["time"]][i]-TlastD)*(T.split[[j]][["conc"]][i])+(T.split[[j]][["time"]][i-1]-TlastD)*(T.split[[j]][["conc"]][i-1]))*
-                          ((T.split[[j]][["time"]][i]-TlastD)-(T.split[[j]][["time"]][i-1]-TlastD))* 0.5
-              }
+             if(pAUC){
+               if(T.split[[j]][["time"]][i]>pAUC_start && T.split[[j]][["time"]][i]<= pAUC_end){
+                  pauc_test[i]<-pauc_test[i]+pauc_test[i-1]}
+                else{
+                  pauc_test[i]<-0}
+             }
+
+             ### calculate AUMC
+             if(multiple){
+                if (lin.AUC){    ### linear trapezoidal way  --YJ
+                aumc_test[i]<-((T.split[[j]][["time"]][i]-TlastD)*(T.split[[j]][["conc"]][i])+(T.split[[j]][["time"]][i-1]-TlastD)*(T.split[[j]][["conc"]][i-1]))*
+                          ((T.split[[j]][["time"]][i]-TlastD)-(T.split[[j]][["time"]][i-1]-TlastD))* 0.5}
+                else{            ### still linear trapezoidal  --YJ
+                if(T.split[[j]][["conc"]][i]>T.split[[j]][["conc"]][i-1] || T.split[[j]][["conc"]][i] == T.split[[j]][["conc"]][i-1]){
+                aumc_test[i]<-((T.split[[j]][["time"]][i]-TlastD)*(T.split[[j]][["conc"]][i])+(T.split[[j]][["time"]][i-1]-TlastD)*(T.split[[j]][["conc"]][i-1]))*
+                          ((T.split[[j]][["time"]][i]-TlastD)-(T.split[[j]][["time"]][i-1]-TlastD))* 0.5}
+                else{            ### logarithmic trapezoidal  --YJ
+                aumc_test[i]<-((T.split[[j]][["time"]][i]-TlastD)-(T.split[[j]][["time"]][i-1]-TlastD))*((T.split[[j]][["time"]][i]-TlastD)*(T.split[[j]][["conc"]][i])-
+                             (T.split[[j]][["time"]][i-1]-TlastD)*(T.split[[j]][["conc"]][i-1]))/log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])-
+                             ((T.split[[j]][["time"]][i]-TlastD)-(T.split[[j]][["time"]][i-1]-TlastD))^2*(T.split[[j]][["conc"]][i]-T.split[[j]][["conc"]][i-1])/
+                             log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])^2
+                }
+               }
+             }
              else{
-             aumc_test[i]<-((T.split[[j]][["time"]][i])*(T.split[[j]][["conc"]][i])+(T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i-1]))*
-                          ((T.split[[j]][["time"]][i])-(T.split[[j]][["time"]][i-1]))* 0.5
-              } 
+             if (lin.AUC){    ### linear trapezoidal way  --YJ
+                aumc_test[i]<-((T.split[[j]][["time"]][i])*(T.split[[j]][["conc"]][i])+(T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i-1]))*
+                          ((T.split[[j]][["time"]][i])-(T.split[[j]][["time"]][i-1]))* 0.5}
+                else{
+                if(T.split[[j]][["conc"]][i]>T.split[[j]][["conc"]][i-1] || T.split[[j]][["conc"]][i] == T.split[[j]][["conc"]][i-1]){
+                aumc_test[i]<-((T.split[[j]][["time"]][i])*(T.split[[j]][["conc"]][i])+(T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i-1]))*
+                          ((T.split[[j]][["time"]][i])-(T.split[[j]][["time"]][i-1]))* 0.5}
+                else{
+                aumc_test[i]<-((T.split[[j]][["time"]][i])-(T.split[[j]][["time"]][i-1]))*((T.split[[j]][["time"]][i])*(T.split[[j]][["conc"]][i])-
+                             (T.split[[j]][["time"]][i-1])*(T.split[[j]][["conc"]][i-1]))/log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])-
+                             ((T.split[[j]][["time"]][i])-(T.split[[j]][["time"]][i-1]))^2*(T.split[[j]][["conc"]][i]-T.split[[j]][["conc"]][i-1])/
+                             log(T.split[[j]][["conc"]][i]/T.split[[j]][["conc"]][i-1])^2
+                }
+                }
+               }
              aumc_test[i]<-aumc_test[i]+aumc_test[i-1]
              Cmax_test<-max(T.split[[j]][["conc"]], na.rm = FALSE)
              Cmin_test<-min(T.split[[j]][["conc"]], na.rm = FALSE)
@@ -562,11 +708,12 @@ FluTest<-0
                   CminTest[j]<-Cmin_test
                   AUCINFTest[j]<-aucINF
                   AUCTTest[j]<-auc_test[length(T.split[[j]][["conc"]])]
+                  if(pAUC){pAUCTTest[j]<-max(pauc_test)}   ### the final pauc_ref.  ### for pAUC
                   TmaxTest[j]<-ifelse(multiple, tmax_test$time - TlastD, tmax_test$time)   ### -YJ
                   T12Test[j]<-log(2)/ke1
                   KelTest[j]<-ke1
                  
-                      if(multiple){
+                  if(multiple){
                   VdFTest[j]<-Dose/((auc_test[length(T.split[[j]][["conc"]])])*ke1)
                   ClFTest[j]<-Dose/(auc_test[length(T.split[[j]][["conc"]])])
                   MRTINFTest[j]<-(aumc_test[length(T.split[[j]][["conc"]])])/(auc_test[length(T.split[[j]][["conc"]])])
@@ -578,25 +725,51 @@ FluTest<-0
                   ClFTest[j]<-Dose/aucINF
                   MRTINFTest[j]<-aumcINF/aucINF     
                         }                 
-                 cat("\n\n") 
                  if(replicated){
-                 cat("<< NCA Outputs:- Subj.#",su1,", Seq",se1,", Prd",pr1," (Test)>>\n")
+                 cat("\n<< NCA Outputs:- <Subj.#",su1,">, Seq",se1,", Prd",pr1," (Test)>>\n")
                     }
                    else{
-                 cat("<< NCA Outputs:- Subj.#",su1," (Test)>>\n")
+                 cat("\n<< NCA Outputs:- <Subj.#",su1,"> (Test)>>\n")
                     }
-                 cat("---------------------------------------------------\n")
-                 output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3) )
+                 cat("--------------------------------------------------------\n")
+                 if(pAUC){              ### for pAUC
+                         ### pAUC_output<-data.frame(R.split[[j]][["subj"]],R.split[[j]][["time"]],R.split[[j]][["conc"]],
+                         ### formatC(pauc_ref,format="f",digits=3),pauc_ref_range)
+                         output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],
+                         formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3),
+                         formatC(pauc_test,format="f",digits=3),pauc_test_range)
+                         } ### insert pAUC here
+                    else {
+                         output<-data.frame(T.split[[j]][["subj"]],T.split[[j]][["time"]],T.split[[j]][["conc"]],
+                         formatC(auc_test,format="f",digits=3),formatC(aumc_test,format="f",digits=3))
+                  }
                   if(multiple){
-                  colnames(output)<-list("subj","time","conc", "AUC(tau)ss","AUMC(tau)ss")
+                  if(pAUC){           ### for pAUC
+                          pAUC_label<-""
+                          pAUC_label<-paste("pAUC(",pAUC_start,"-",pAUC_end,")",sep="")
+                          colnames(output)<-list("subj","time","conc","AUC(tau)ss","AUMC(tau)ss",pAUC_label," * ")
+                          }
+                      else{
+                          colnames(output)<-list("subj","time","conc","AUC(tau)ss","AUMC(tau)ss")
+                          }
                   }
                   else{
-                  colnames(output)<-list("subj","time","conc", "AUC(0-t)","AUMC(0-t)")
+                   if(pAUC){            ### for pAUC
+                         pAUC_label<-""
+                         pAUC_label<-paste("pAUC(",pAUC_start,"-",pAUC_end,")",sep="")
+                         colnames(output)<-list("subj","time","conc","AUC(0-t)","AUMC(0-t)",pAUC_label," * ")
+                           }
+                      else {
+                         colnames(output)<-list("subj","time","conc","AUC(0-t)","AUMC(0-t)")
+                        }
                   }
                  show(output)
+                 cat("--------------------------------------------------------\n")
+                 if(pAUC){cat("***: the covered range of pAUC\n\n")}else{cat("\n")}
+                 ### readline(" ... pause here\n")   ### for debugging
                
               
-                cat("\n<< Selected data points for lambda_z calculations >>\n")
+                cat("<< Selected data points for lambda_z calculations >>\n")
                 cat("----------------------------------------------------\n")
                 if (NCA){
                          ### tt_fix<-tdata.split[[j]]
@@ -738,6 +911,8 @@ FluTest<-0
               cat("            Cl/F =",Dose/(auc_test[length(T.split[[j]][["conc"]])]),"\n")
               cat("            Vd/F =",Dose/((auc_test[length(T.split[[j]][["conc"]])])*ke1),"\n")
               cat("         T1/2(z) =",log(2)/ke1,"\n")
+              if(pAUC){         ### for pAUC
+              cat("           *pAUC =",pAUCTTest[j],"\n")}
               cat("      AUC(tau)ss =",auc_test[length(T.split[[j]][["conc"]])],"\n")
               cat("     AUMC(tau)ss =",aumc_test[length(T.split[[j]][["conc"]])],"\n")
               cat("             MRT =",(aumc_test[length(T.split[[j]][["conc"]])])/(auc_test[length(T.split[[j]][["conc"]])]),"\n")
@@ -749,6 +924,8 @@ FluTest<-0
               cat("            Cl/F =",Dose/aucINF,"\n")
               cat("            Vd/F =",Dose/(aucINF*ke1),"\n")
               cat("         T1/2(z) =",log(2)/ke1,"\n")
+              if(pAUC){               ### for pAUC
+              cat("           *pAUC =",pAUCTTest[j],"\n")}
               cat("        AUC(0-t) =",auc_test[length(T.split[[j]][["conc"]])],"\n") 
               cat("      AUC(0-inf) =",aucINF,"\n")
               cat("       AUMC(0-t) =",aumc_test[length(T.split[[j]][["conc"]])],"\n")
@@ -756,9 +933,11 @@ FluTest<-0
               cat("        MRT(0-t) =",(aumc_test[length(T.split[[j]][["conc"]])])/(auc_test[length(T.split[[j]][["conc"]])]),"\n")
               cat("      MRT(0-inf) =",aumcINF/aucINF,"\n")
               }
-             cat("----------------------------\n")   
+             cat("----------------------------\n")  
+             if(pAUC) cat(" where *pAUC means ",pAUC_label,sep="")  ### make a note for 'pAUC'; ### for pAUC
+             cat("\n\n") 
   }  
-cat("\f")
+cat("\f")    ### the next step is to show all PK parameters. -YJ 
  if(replicated){
   sumindexRR<-split(sumindexR,list(sumindexR$subj))
   sumindexTT<-split(sumindexT,list(sumindexT$subj))
@@ -767,6 +946,7 @@ cat("\f")
     TmaxR<-0
     AUC0tR<-0
     AUC0INFR<-0
+    if(pAUC) partAUCR<-0
     MRT0INFR<-0
     T12R<-0
     VdFR<-0
@@ -774,9 +954,23 @@ cat("\f")
     ClFR<-0
      for (j in 1:(length(sumindexRR))){
       subj[j]<-sumindexRR[[j]][["subj"]][1]
+      if(pAUC){    ### check with ARC(),aic()... for this labelling of 'formatC(mean(sumindexRR[[j]][[5]]' etc.  --YJ
       CmaxR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[5]]),format="f",digits=3))
-      TmaxR[j]<-ifelse(multiple, as.numeric(formatC(mean(sumindexRR[[j]][[8]]-TlastD),format="f",digits=3)),
-                       as.numeric(formatC(mean(sumindexRR[[j]][[8]]),format="f",digits=3)))
+      TmaxR[j]<-ifelse(multiple,as.numeric(formatC(mean(sumindexRR[[j]][[8]]-TlastD),format="f",digits=3)),
+                       as.numeric(formatC(mean(sumindexRR[[j]][[9]]),format="f",digits=3)))
+      AUC0tR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[6]]),format="f",digits=3))
+      AUC0INFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[7]]),format="f",digits=3))
+      partAUCR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[8]]),format="f",digits=3))  ### pAUC here
+      MRT0INFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[10]]),format="f",digits=3))
+      T12R[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[11]]),format="f",digits=3))
+      VdFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[12]]),format="f",digits=3))
+      kelR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[13]]),format="f",digits=3))
+      ClFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[14]]),format="f",digits=3))
+      }
+      else{
+      CmaxR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[5]]),format="f",digits=3))
+      TmaxR[j]<-ifelse(multiple,as.numeric(formatC(mean(sumindexRR[[j]][[8]]-TlastD),format="f",digits=3)),
+                       as.numeric(formatC(mean(sumindexRR[[j]][[9]]),format="f",digits=3)))
       AUC0tR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[6]]),format="f",digits=3))
       AUC0INFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[7]]),format="f",digits=3))
       MRT0INFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[9]]),format="f",digits=3))
@@ -784,20 +978,36 @@ cat("\f")
       VdFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[11]]),format="f",digits=3))
       kelR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[12]]),format="f",digits=3))
       ClFR[j]<-as.numeric(formatC(mean(sumindexRR[[j]][[13]]),format="f",digits=3))
+      }
      }
    CmaxT<-0
    TmaxT<-0
    AUC0tT<-0
    AUC0INFT<-0
+   if(pAUC) partAUCT<-0
    MRT0INFT<-0
    T12T<-0
    VdFT<-0
    kelT<-0
    ClFT<-0
    for (j in 1:(length(sumindexTT))){
+      if(pAUC){
+      CmaxT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[5]]),format="f",digits=3))
+      TmaxT[j]<-ifelse(multiple,as.numeric(formatC(mean(sumindexTT[[j]][[9]]-TlastD),format="f",digits=3)),
+                       as.numeric(formatC(mean(sumindexTT[[j]][[9]]),format="f",digits=3)))
+      AUC0tT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[6]]),format="f",digits=3))
+      AUC0INFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[7]]),format="f",digits=3))
+      partAUCT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[8]]),format="f",digits=3))  ### pAUC here
+      MRT0INFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[10]]),format="f",digits=3))
+      T12T[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[11]]),format="f",digits=3))
+      VdFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[12]]),format="f",digits=3))
+      kelT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[13]]),format="f",digits=3))
+      ClFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[14]]),format="f",digits=3))
+      }
+      else{
       CmaxT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[5]]),format="f",digits=3))
       TmaxT[j]<-ifelse(multiple,as.numeric(formatC(mean(sumindexTT[[j]][[8]]-TlastD),format="f",digits=3)),
-                       as.numeric(formatC(mean(sumindexTT[[j]][[8]]),format="f",digits=3)))
+                       as.numeric(formatC(mean(sumindexTT[[j]][[9]]),format="f",digits=3)))
       AUC0tT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[6]]),format="f",digits=3))
       AUC0INFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[7]]),format="f",digits=3))
       MRT0INFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[9]]),format="f",digits=3))
@@ -805,6 +1015,7 @@ cat("\f")
       VdFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[11]]),format="f",digits=3))
       kelT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[12]]),format="f",digits=3))
       ClFT[j]<-as.numeric(formatC(mean(sumindexTT[[j]][[13]]),format="f",digits=3))
+      }
      } 
    }
 cat("\n\n")
@@ -848,10 +1059,10 @@ cat("\n")
 }
 
 if(multiple){
-cat("             Cmax_ss                     \n") 
+cat("             Cmax_ss                \n") 
  }
 else{
-cat("              Cmax                       \n")
+cat("              Cmax                  \n")
 }
 cat("-----------------------------------\n")
 if(replicated){ 
@@ -902,10 +1113,10 @@ cat("\n")
 
 #2_Tmax
 if(multiple){
-cat("                Tmax_ss                   \n") 
+cat("            Tmax_ss                   \n") 
  }
 else{
-cat("                  Tmax                    \n")
+cat("              Tmax                    \n")
 }
 cat("-----------------------------------\n")
   if(replicated){
@@ -955,7 +1166,7 @@ if(multiple){
 cat("             AUC(tau)ss                 \n") 
  }
 else{
-cat("                AUC0t                     \n")
+cat("              AUC0t                     \n")
 }
 cat("-----------------------------------\n")
   if(replicated){
@@ -999,9 +1210,61 @@ cat("-----------------------------------\n")
 cat("-----------------------------------\n")
 cat("\n")
 
+###
+### insert 'pAUC' display here
+###
+if(pAUC){
+cat("           ",pAUC_label,"          \n")
+cat("-----------------------------------\n")
+  if(replicated){
+  output_partAUC<-data.frame(subj=subj, Test=partAUCT, Ref=partAUCR,Ratio=as.numeric(formatC(partAUCT/partAUCR,format="f",digits=3)))
+  output_partAUCMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(formatC(mean(output_partAUC$Test),format="f",digits=3),formatC(sd(output_partAUC$Test),format="f",digits=3),formatC((sd(output_partAUC$Test)/mean(output_partAUC$Test))*100,format="f",digits=3)),
+                             Ref=c(formatC(mean(output_partAUC$Ref),format="f",digits=3),formatC(sd(output_partAUC$Ref),format="f",digits=3),formatC((sd(output_partAUC$Ref)/mean(output_partAUC$Ref))*100,format="f",digits=3)),
+                             Ratio=c(formatC(mean(output_partAUC$Ratio),format="f",digits=3),formatC(sd(output_partAUC$Ratio),format="f",digits=3),formatC((sd(output_partAUC$Ratio)/mean(output_partAUC$Ratio))*100,format="f",digits=3)))
+  }
+   else{
+  if(parallel){
+    output_partAUCT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$partAUC,format="f",digits=3))) 
+    colnames(output_partAUCT)<- c("subj","Test")
+    output_partAUCTMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Test=c(formatC(mean(output_partAUCT$Test),format="f",digits=3),formatC(sd(output_partAUCT$Test),
+             format="f",digits=3),formatC((sd(output_partAUCT$Test)/mean(output_partAUCT$Test))*100,format="f",digits=3)))
+    output_partAUCR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(sumindexR$partAUC,format="f",digits=3)))
+    colnames(output_partAUCR)<- c("subj","Ref")
+    output_partAUCRMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+      Ref=c(formatC(mean(output_partAUCR$Ref),format="f",digits=3),formatC(sd(output_partAUCR$Ref),format="f",digits=3),
+            formatC((sd(output_partAUCR$Ref)/mean(output_partAUCR$Ref))*100,format="f",digits=3)))
+  }
+  else{
+  output_partAUC<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(sumindexT$partAUC,format="f",digits=3)),
+                           Ref=as.numeric(formatC(sumindexR$partAUC,format="f",digits=3)),
+                           Ratio=as.numeric(formatC(sumindexT$partAUC/sumindexR$partAUC,format="f",digits=3))) 
+  output_partAUCMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+                             Test=c(formatC(mean(output_partAUC$Test),format="f",digits=3),formatC(sd(output_partAUC$Test),format="f",digits=3),formatC((sd(output_partAUC$Test)/mean(output_partAUC$Test))*100,format="f",digits=3)),
+                             Ref=c(formatC(mean(output_partAUC$Ref),format="f",digits=3),formatC(sd(output_partAUC$Ref),format="f",digits=3),formatC((sd(output_partAUC$Ref)/mean(output_partAUC$Ref))*100,format="f",digits=3)),
+                             Ratio=c(formatC(mean(output_partAUC$Ratio),format="f",digits=3),formatC(sd(output_partAUC$Ratio),format="f",digits=3),formatC((sd(output_partAUC$Ratio)/mean(output_partAUC$Ratio))*100,format="f",digits=3)))  
+    }
+  }
+  if(parallel){
+   cat("---------------Test--------------\n")
+   show(output_partAUCT)
+   show(output_partAUCTMean)
+   cat("---------------------------------\n")
+   cat("---------------Ref.--------------\n")
+   show(output_partAUCR)
+   show(output_partAUCRMean)}
+  else{
+   show(output_partAUC)
+   show(output_partAUCMean)}
+  cat("\n")
+cat("-----------------------------------\n")
+cat("\n")
+}
+
 if(multiple){
 #4_AUC0inf
-cat("                 Cav               \n")
+cat("             Cav               \n")
 cat("-----------------------------------\n")
   if(parallel){
     outputCavT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(sumindexT$Cav,format="f",digits=3))) 
@@ -1076,7 +1339,7 @@ cat("\n")
 }
 else{
 #4_AUC0inf
-cat("              AUC0inf              \n")
+cat("             AUC0inf              \n")
 cat("-----------------------------------\n")
   if(replicated){
   outputAUC0INF<-data.frame(subj=subj, Test=AUC0INFT, Ref=AUC0INFR,Ratio=as.numeric(formatC(AUC0INFT/AUC0INFR,format="f",digits=3)))
@@ -1226,7 +1489,7 @@ if(multiple){
 cat("            lnAUC(tau)ss           \n") 
  }
 else{
-cat("             ln(AUC0t)             \n")
+cat("            ln(AUC0t)             \n")
 }
 cat("-----------------------------------\n")
   if(replicated){
@@ -1274,7 +1537,7 @@ cat("-----------------------------------\n")
   
   cat("-----------------------------------\n")
 cat("\n")
-if(multiple){
+if(multiple){       ### do nothing for multiple-dose study!  
 }
 else{
 #8_ln(AUC0inf)
@@ -1325,12 +1588,65 @@ cat("-----------------------------------\n")
 cat("-----------------------------------\n")
 cat("\n")
 }
+###
+### insert 'lnpAUC' display here
+###
+if(pAUC){
+lnpAUC_label<-""
+lnpAUC_label<-paste("ln(",pAUC_label,")",sep="")
+cat("          ",lnpAUC_label,"          \n")
+cat("-----------------------------------\n")
+  if(replicated){
+  output_lnpAUC<-data.frame(subj=subj,Test=as.numeric(formatC(log(partAUCT),format="f",digits=3)), 
+        Ref=as.numeric(formatC(log(partAUCR),format="f",digits=3)), 
+        Ratio=as.numeric(formatC((log(partAUCT)/log(partAUCR)),format="f",digits=3))) 
+  output_lnpAUCMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+        Test=c(formatC(mean(output_lnpAUC$Test),format="f",digits=3),formatC(sd(output_lnpAUC$Test),format="f",digits=3),formatC((sd(output_lnpAUC$Test)/mean(output_lnpAUC$Test))*100,format="f",digits=3)),
+        Ref=c(formatC(mean(output_lnpAUC$Ref),format="f",digits=3),formatC(sd(output_lnpAUC$Ref),format="f",digits=3),formatC((sd(output_lnpAUC$Ref)/mean(output_lnpAUC$Ref))*100,format="f",digits=3)),
+        Ratio=c(formatC(mean(output_lnpAUC$Ratio),format="f",digits=3),formatC(sd(output_lnpAUC$Ratio),format="f",digits=3),formatC((sd(output_lnpAUC$Ratio)/mean(output_lnpAUC$Ratio))*100,format="f",digits=3))) 
+   }
+  else{
+   if(parallel){
+      output_lnpAUCT<-data.frame(subj=sumindexT$subj,Test=as.numeric(formatC(log(sumindexT$partAUC),format="f",digits=3))) 
+      colnames(output_lnpAUCT)<- c("subj","Test")  
+      output_lnpAUCMeanT<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Test=c(formatC(mean(output_lnpAUCT$Test),format="f",digits=3),formatC(sd(output_lnpAUCT$Test),format="f",digits=3),formatC((sd(output_lnpAUCT$Test)/mean(output_lnpAUCT$Test))*100,format="f",digits=3)))
+      output_lnpAUCR<-data.frame(subj=sumindexR$subj,Ref=as.numeric(formatC(log(sumindexR$partAUC),format="f",digits=3))) 
+      colnames(output_lnpAUCR)<- c("subj","Ref")  
+      output_lnpAUCMeanR<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Ref=c(formatC(mean(output_lnpAUCR$Ref),format="f",digits=3),formatC(sd(output_lnpAUCR$Ref),format="f",digits=3),formatC((sd(output_lnpAUCR$Ref)/mean(output_lnpAUCR$Ref))*100,format="f",digits=3)))
+   }
+   else{
+   output_lnpAUC<-data.frame(subj=sumindexR$subj,Test=as.numeric(formatC(log(sumindexT$partAUC),format="f",digits=3)),
+         Ref=as.numeric(formatC(log(sumindexR$partAUC),format="f",digits=3)),
+         Ratio=as.numeric(formatC(log(sumindexT$partAUC)/log(sumindexR$partAUC),format="f",digits=3))) 
+   output_lnpAUCMean<-data.frame(summary=c("LSMEAN","S.D.","C.V(%)"),
+         Test=c(formatC(mean(output_lnpAUC$Test),format="f",digits=3),formatC(sd(output_lnpAUC$Test),format="f",digits=3),formatC((sd(output_lnpAUC$Test)/mean(output_lnpAUC$Test))*100,format="f",digits=3)),
+         Ref=c(formatC(mean(output_lnpAUC$Ref),format="f",digits=3),formatC(sd(output_lnpAUC$Ref),format="f",digits=3),formatC((sd(output_lnpAUC$Ref)/mean(output_lnpAUC$Ref))*100,format="f",digits=3)),
+         Ratio=c(formatC(mean(output_lnpAUC$Ratio),format="f",digits=3),formatC(sd(output_lnpAUC$Ratio),format="f",digits=3),formatC((sd(output_lnpAUC$Ratio)/mean(output_lnpAUC$Ratio))*100,format="f",digits=3)))
+   }
+ } 
+  if(parallel){
+     cat("---------------Test--------------\n")
+     show(output_lnpAUCT)
+     show(output_lnpAUCMeanT)
+     cat("---------------------------------\n")
+     cat("---------------Ref.--------------\n")
+     show(output_lnpAUCR)
+     show(output_lnpAUCMeanR)}
+  else{
+     show(output_lnpAUC)
+     show(output_lnpAUCMean)}
+  cat("\n")
+cat("-----------------------------------\n")
+cat("\n")
+}
 #9_MRT0inf
 if(multiple){
-cat("                MRT                \n") 
+cat("              MRT                \n") 
  }
 else{
-cat("              MRT0inf              \n")
+cat("            MRT0inf              \n")
 }
 cat("-----------------------------------\n")
   if(replicated){
@@ -1372,11 +1688,10 @@ cat("-----------------------------------\n")
   else{
     show(outputMRT0INF)
     show(outputMRT0INFMean)}
-  cat("\n")
 cat("-----------------------------------\n")
-cat("\n\n")
+cat("\n")
 #10_T1/2(z)
-cat("              T1/2(z)              \n")
+cat("            T1/2(z)              \n")
 cat("-----------------------------------\n")
   if(replicated){
   outputT12<-data.frame(subj=subj,Test=T12T,Ref=T12R,Ratio=as.numeric(formatC(T12T/T12R,format="f",digits=3))) 
@@ -1467,7 +1782,7 @@ cat("-----------------------------------\n")
 cat("-----------------------------------\n")
 cat("\n")
 #12_Lambda
-cat("               Lambda_z            \n")
+cat("             Lambda_z            \n")
 cat("-----------------------------------\n")
   if(replicated){
   outputLambda<-data.frame(subj=subj,Test=kelT,Ref=kelR,Ratio=as.numeric(formatC(kelT/kelR,format="f",digits=3))) 
@@ -1511,7 +1826,7 @@ cat("-----------------------------------\n")
 cat("-----------------------------------\n")
 cat("\n")
 #13_Cl/F
-cat("                 Cl/F              \n")
+cat("               Cl/F              \n")
 cat("-----------------------------------\n")
   if(replicated){
   outputClF<-data.frame(subj=subj,Test=ClFT,Ref=ClFR,Ratio=as.numeric(formatC(ClFT/ClFR,format="f",digits=3))) 
@@ -1558,7 +1873,7 @@ sink()
 close(zz)
 
 ##########################################################################
-####for present statistical analysis (GLM result)
+#### to present statistical analysis (GLM result)
 Fdata<-split(TotalData, list(TotalData$drug))
 RefData<-Fdata[[1]]
 TestData<-Fdata[[2]]
@@ -1568,10 +1883,12 @@ if(replicated){
   ref_Cmax<-mean(RefData$lnCmax)
   ref_AUC0t<-mean(RefData$lnAUC0t)
   ref_AUC0INF<-mean(RefData$lnAUC0INF)
+  if(pAUC) ref_lnpAUC<-mean(RefData$lnpAUC)               ### for pAUC
 
   test_Cmax<-mean(TestData$lnCmax)
   test_AUC0t<-mean(TestData$lnAUC0t)
   test_AUC0INF<-mean(TestData$lnAUC0INF)
+  if(pAUC) test_lnpAUC<-mean(TestData$lnpAUC)             ### for pAUC
 
    SeqLeg<-split(RefData, list(RefData$seq))
    SeqLeg1 <- reshape(SeqLeg[[1]], idvar=c("subj", "drug","seq"), timevar =
@@ -1586,9 +1903,11 @@ if(replicated){
     modCmax<-lme(Cmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
     modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
     modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+    if(pAUC) modpAUC<-lme(partAUC ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
     modlnCmax<-lme(lnCmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
     modlnAUC0t<-lme(lnAUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
     modlnAUC0INF<-lme(lnAUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+    if(pAUC) modlnpAUC<-lme(lnpAUC ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
 
      if(prdcount==3){
      upperCmax<-100*exp(summary(modlnCmax)[20][[1]][5,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][5,3])*summary(modlnCmax)[20][[1]][5,2])
@@ -1597,7 +1916,11 @@ if(replicated){
      lowerAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][5,1])*exp(-qt(0.95,summary(modlnAUC0t)[20][[1]][5,3])*summary(modlnAUC0t)[20][[1]][5,2])
      upperAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][5,1])*exp(qt(0.95,summary(modlnAUC0INF)[20][[1]][5,3])*summary(modlnAUC0INF)[20][[1]][5,2])
      lowerAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][5,1])*exp(-qt(0.95,summary(modlnAUC0INF)[20][[1]][5,3])*summary(modlnAUC0INF)[20][[1]][5,2])
-        }
+     if(pAUC){
+     upperlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][5,1])*exp(qt(0.95,summary(modlnpAUC)[20][[1]][5,3])*summary(modlnpAUC)[20][[1]][5,2])
+     lowerlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][5,1])*exp(-qt(0.95,summary(modlnpAUC)[20][[1]][5,3])*summary(modlnpAUC)[20][[1]][5,2])  
+      }
+     }
      if(prdcount==4){
      upperCmax<-100*exp(summary(modlnCmax)[20][[1]][6,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][6,3])*summary(modlnCmax)[20][[1]][6,2])
      lowerCmax<-100*exp(summary(modlnCmax)[20][[1]][6,1])*exp(-qt(0.95,summary(modlnCmax)[20][[1]][6,3])*summary(modlnCmax)[20][[1]][6,2])
@@ -1605,7 +1928,11 @@ if(replicated){
      lowerAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][6,1])*exp(-qt(0.95,summary(modlnAUC0t)[20][[1]][6,3])*summary(modlnAUC0t)[20][[1]][6,2])
      upperAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][6,1])*exp(qt(0.95,summary(modlnAUC0INF)[20][[1]][6,3])*summary(modlnAUC0INF)[20][[1]][6,2])
      lowerAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][6,1])*exp(-qt(0.95,summary(modlnAUC0INF)[20][[1]][6,3])*summary(modlnAUC0INF)[20][[1]][6,2])
-       }
+     if(pAUC){
+     upperlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][6,1])*exp(qt(0.95,summary(modlnpAUC)[20][[1]][6,3])*summary(modlnpAUC)[20][[1]][6,2])
+     lowerlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][6,1])*exp(-qt(0.95,summary(modlnpAUC)[20][[1]][6,3])*summary(modlnpAUC)[20][[1]][6,2])  
+      }
+     }
      if(prdcount==5){
      upperCmax<-100*exp(summary(modlnCmax)[20][[1]][7,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][7,3])*summary(modlnCmax)[20][[1]][7,2])
      lowerCmax<-100*exp(summary(modlnCmax)[20][[1]][7,1])*exp(-qt(0.95,summary(modlnCmax)[20][[1]][7,3])*summary(modlnCmax)[20][[1]][7,2])
@@ -1613,6 +1940,10 @@ if(replicated){
      lowerAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][7,1])*exp(-qt(0.95,summary(modlnAUC0t)[20][[1]][7,3])*summary(modlnAUC0t)[20][[1]][7,2])
      upperAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][7,1])*exp(qt(0.95,summary(modlnAUC0INF)[20][[1]][7,3])*summary(modlnAUC0INF)[20][[1]][7,2])
      lowerAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][7,1])*exp(-qt(0.95,summary(modlnAUC0INF)[20][[1]][7,3])*summary(modlnAUC0INF)[20][[1]][7,2])
+     if(pAUC){
+     upperlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][7,1])*exp(qt(0.95,summary(modlnpAUC)[20][[1]][7,3])*summary(modlnpAUC)[20][[1]][7,2])
+     lowerlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][7,1])*exp(-qt(0.95,summary(modlnpAUC)[20][[1]][7,3])*summary(modlnpAUC)[20][[1]][7,2])  
+      }
        }
      if(prdcount==6){
      upperCmax<-100*exp(summary(modlnCmax)[20][[1]][8,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][8,3])*summary(modlnCmax)[20][[1]][8,2])
@@ -1621,6 +1952,10 @@ if(replicated){
      lowerAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][8,1])*exp(-qt(0.95,summary(modlnAUC0t)[20][[1]][8,3])*summary(modlnAUC0t)[20][[1]][8,2])
      upperAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][8,1])*exp(qt(0.95,summary(modlnAUC0INF)[20][[1]][8,3])*summary(modlnAUC0INF)[20][[1]][8,2])
      lowerAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][8,1])*exp(-qt(0.95,summary(modlnAUC0INF)[20][[1]][8,3])*summary(modlnAUC0INF)[20][[1]][8,2])
+     if(pAUC){
+     upperlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][8,1])*exp(qt(0.95,summary(modlnpAUC)[20][[1]][8,3])*summary(modlnpAUC)[20][[1]][8,2])
+     lowerlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][8,1])*exp(-qt(0.95,summary(modlnpAUC)[20][[1]][8,3])*summary(modlnpAUC)[20][[1]][8,2])  
+      }
       }
      }
  else{
@@ -1628,22 +1963,30 @@ if(replicated){
       if(multiple){
        ref_lnCmax_ss<-mean(RefData$lnCmax_ss)
        ref_lnAUCtau_ss<-mean(RefData$lnAUCtau_ss)
+       if(pAUC) ref_lnpAUC<-mean(RefData$lnpAUC)           ### for pAUC
        test_lnCmax_ss<-mean(TestData$lnCmax_ss)
        test_lnAUCtau_ss<-mean(TestData$lnAUCtau_ss)
+       if(pAUC) test_lnpAUC<-mean(TestData$lnpAUC)         ### for pAUC
 
        L1<-length(RefData$subj)
        L2<-length(TestData$subj)
 
        Cmax_ss<- lme(Cmax_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
        AUCtau_ss<- lme(AUCtau_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
+       if(pAUC) pAUC_stat<- lme(partAUC ~  drug , random=~1|subj, data=TotalData, method="REML" )      ### for pAUC
        lnCmax_ss<- lme(lnCmax_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
        lnAUCtau_ss<- lme(lnAUCtau_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
+       if(pAUC) lnpAUC_stat<- lme(lnpAUC ~  drug , random=~1|subj, data=TotalData, method="REML" )
 
-         ##90$CI (log transformation)
+        ##90$CI (log transformation)
         upperCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
         lowerCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(-qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
         upperAUC0t<-100*exp(summary(lnAUCtau_ss)[20][[1]][2,1])*exp(qt(0.95,summary(lnAUCtau_ss)[20][[1]][2,3])*summary(lnAUCtau_ss)[20][[1]][2,2])
         lowerAUC0t<-100*exp(summary(lnAUCtau_ss)[20][[1]][2,1])*exp(-qt(0.95,summary(lnAUCtau_ss)[20][[1]][2,3])*summary(lnAUCtau_ss)[20][[1]][2,2])
+        if(pAUC){                                    ### for pAUC
+        upperlnpAUC<-100*exp(summary(lnpAUC_stat)[20][[1]][2,1])*exp(qt(0.95,summary(lnpAUC_stat)[20][[1]][2,3])*summary(lnpAUC_stat)[20][[1]][2,2])
+        lowerlnpAUC<-100*exp(summary(lnpAUC_stat)[20][[1]][2,1])*exp(-qt(0.95,summary(lnpAUC_stat)[20][[1]][2,3])*summary(lnpAUC_stat)[20][[1]][2,2])
+        }
         }
       else{
         L1<-length(RefData$subj)
@@ -1652,16 +1995,20 @@ if(replicated){
         ref_Cmax<-mean(RefData$lnCmax)
         ref_AUC0t<-mean(RefData$lnAUC0t)
         ref_AUC0INF<-mean(RefData$lnAUC0INF)
+        if(pAUC) ref_lnpAUC<-mean(RefData$lnpAUC)      ### for pAUC
         test_Cmax<-mean(TestData$lnCmax)
         test_AUC0t<-mean(TestData$lnAUC0t)
         test_AUC0INF<-mean(TestData$lnAUC0INF)
+        if(pAUC) test_lnpAUC<-mean(TestData$lnpAUC)    ### for pAUC
 
         modCmax<-lme(Cmax ~ drug , random=~1|subj, data=TotalData, method="REML" )
         modAUC0t<-lme(AUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" )
         modAUC0INF<-lme(AUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML" )
+        if(pAUC) modpAUC<-lme(partAUC ~ drug , random=~1|subj, data=TotalData, method="REML" )
         modlnCmax<-lme(lnCmax ~ drug , random=~1|subj, data=TotalData, method="REML" )
         modlnAUC0t<-lme(lnAUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" )
         modlnAUC0INF<-lme(lnAUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML" )
+        if(pAUC) modlnpAUC<-lme(lnpAUC ~ drug , random=~1|subj, data=TotalData, method="REML" )
 
         upperCmax<-100*exp(summary(modlnCmax)[20][[1]][2,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][2,3])*summary(modlnCmax)[20][[1]][2,2])
         lowerCmax<-100*exp(summary(modlnCmax)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnCmax)[20][[1]][2,3])*summary(modlnCmax)[20][[1]][2,2])
@@ -1669,14 +2016,20 @@ if(replicated){
         lowerAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnAUC0t)[20][[1]][2,3])*summary(modlnAUC0t)[20][[1]][2,2])
         upperAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][2,1])*exp(qt(0.95,summary(modlnAUC0INF)[20][[1]][2,3])*summary(modlnAUC0INF)[20][[1]][2,2])
         lowerAUC0INF<-100*exp(summary(modlnAUC0INF)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnAUC0INF)[20][[1]][2,3])*summary(modlnAUC0INF)[20][[1]][2,2])
+        if(pAUC){
+        upperlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][2,1])*exp(qt(0.95,summary(modlnpAUC)[20][[1]][2,3])*summary(modlnpAUC)[20][[1]][2,2])
+        lowerlnpAUC<-100*exp(summary(modlnpAUC)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnpAUC)[20][[1]][2,3])*summary(modlnpAUC)[20][[1]][2,2])
+        }
         }
       }
  else{
      if(multiple){
      ref_lnCmax_ss<-mean(RefData$lnCmax_ss)
      ref_lnAUCtau_ss<-mean(RefData$lnAUCtau_ss)
+     if(pAUC) ref_lnpAUC<-mean(RefData$lnpAUC)
      test_lnCmax_ss<-mean(TestData$lnCmax_ss)
      test_lnAUCtau_ss<-mean(TestData$lnAUCtau_ss)
+     if(pAUC) test_lnpAUC<-mean(TestData$lnpAUC)
 
      SeqLeg<-split(RefData, list(RefData$seq))
      L1<-length(SeqLeg[[1]]$seq)
@@ -1684,12 +2037,15 @@ if(replicated){
 
      Cmax_ss<- lm(Cmax_ss ~ seq + subj + prd + drug , data=TotalData)
      AUCtau_ss<- lm(AUCtau_ss ~ seq + subj+ prd + drug , data=TotalData)
+     if(pAUC) pAUC_stat<- lm(partAUC ~ seq + subj+ prd + drug , data=TotalData)
 
      lnCmax_ss<- lm(lnCmax_ss ~ seq + subj + prd + drug , data=TotalData)
      lnAUCtau_ss<- lm(lnAUCtau_ss ~ seq + subj + prd + drug , data=TotalData)
+     if(pAUC) lnpAUC_stat<- lm(lnpAUC ~ seq + subj+ prd + drug , data=TotalData)
 
     SE_lnCmax_ss<-sqrt((anova(lnCmax_ss)[5,3]/2) * (1/L1+1/L2))
     SE_lnAUCtau_ss<-sqrt((anova(lnAUCtau_ss)[5,3]/2) * (1/L1+1/L2))
+    if(pAUC) SE_lnpAUC<-sqrt((anova(lnpAUC_stat)[5,3]/2) * (1/L1+1/L2))
 
     T<-qt(0.95,(L1+L2-2))
 
@@ -1697,17 +2053,24 @@ if(replicated){
     lowerCmax<-100*exp((test_lnCmax_ss - ref_lnCmax_ss)-(T*SE_lnCmax_ss))
     upperCmax<-100*exp((test_lnCmax_ss - ref_lnCmax_ss)+(T*SE_lnCmax_ss))
     lowerAUC0t<-100*exp((test_lnAUCtau_ss - ref_lnAUCtau_ss)-(T*SE_lnAUCtau_ss))
-    UpperAUC0t<-100*exp((test_lnAUCtau_ss - ref_lnAUCtau_ss)+(T*SE_lnAUCtau_ss))
-     }
+    upperAUC0t<-100*exp((test_lnAUCtau_ss - ref_lnAUCtau_ss)+(T*SE_lnAUCtau_ss))
+    if(pAUC){
+    lowerlnpAUC<-100*exp((test_lnpAUC - ref_lnpAUC)-(T*SE_lnpAUC))
+    upperlnpAUC<-100*exp((test_lnpAUC - ref_lnpAUC)+(T*SE_lnpAUC))
+    }
+    }
      else{
       #L1(Reference-->Test),L2(Test-->Reference sequence)2*2*2
       ref_Cmax<-mean(RefData$lnCmax)
       ref_AUC0t<-mean(RefData$lnAUC0t)
       ref_AUC0INF<-mean(RefData$lnAUC0INF)
+      if(pAUC) ref_lnpAUC<-mean(RefData$lnpAUC)
 
       test_Cmax<-mean(TestData$lnCmax)
       test_AUC0t<-mean(TestData$lnAUC0t)
       test_AUC0INF<-mean(TestData$lnAUC0INF)
+      if(pAUC) test_lnpAUC<-mean(TestData$lnpAUC)
+      
       SeqLeg<-split(RefData, list(RefData$seq))
       L1<-length(SeqLeg[[1]]$seq)
       L2<-length(SeqLeg[[2]]$seq)
@@ -1715,46 +2078,50 @@ if(replicated){
       Cmax<- lm(Cmax ~ seq + subj + prd + drug , data=TotalData)
       AUC0t<- lm(AUC0t ~ seq + subj+ prd + drug , data=TotalData)
       AUC0INF<- lm(AUC0INF ~ seq + subj:seq+ prd + drug , data=TotalData)
+      if(pAUC) pAUC_stat<- lm(partAUC ~ seq + subj:seq+ prd + drug , data=TotalData)
       lnCmax<- lm(lnCmax ~ seq + subj:seq + prd + drug , data=TotalData)
       lnAUC0t<- lm(lnAUC0t ~ seq + subj:seq + prd + drug , data=TotalData)
       lnAUC0INF<- lm(lnAUC0INF ~ seq + subj:seq + prd + drug , data=TotalData)
+      if(pAUC) lnpAUC_stat<- lm(lnpAUC ~ seq + subj:seq+ prd + drug , data=TotalData)
 
       T<-qt(0.95,(L1+L2-2))
 
-      SE_Cmax<-sqrt((anova(lnCmax)[5,3]/2) * (1/L1+1/L2))
-      SE_AUC0t<-sqrt((anova(lnAUC0t)[5,3]/2) * (1/L1+1/L2))
-      SE_AUC0INF<-sqrt((anova(lnAUC0INF)[5,3]/2) * (1/L1+1/L2))
+      SE_Cmax<-sqrt((anova(lnCmax)[5,3]/2)*(1/L1+1/L2))
+      SE_AUC0t<-sqrt((anova(lnAUC0t)[5,3]/2)*(1/L1+1/L2))
+      SE_AUC0INF<-sqrt((anova(lnAUC0INF)[5,3]/2)*(1/L1+1/L2))
+      if(pAUC) SE_lnpAUC<-sqrt((anova(lnpAUC_stat)[5,3]/2)*(1/L1+1/L2))
 
-      Z_Cmax<-0.2*(ref_Cmax/SE_Cmax)-qnorm(0.95)
+      Z_Cmax<-0.2*(ref_Cmax/SE_Cmax)-qnorm(0.95)    ### what's for?  z-score? duno.  -YJ
       Z_AUC0t<-0.2*(ref_AUC0t/SE_AUC0t)-qnorm(0.95)
       Z_AUC0INF<-0.2*(ref_AUC0INF/SE_AUC0INF)-qnorm(0.95)
+      if(pAUC) Z_lnpAUC<-0.2*(ref_lnpAUC/SE_lnpAUC)-qnorm(0.95)
 
       T_Cmax<-0.2*(ref_Cmax/SE_Cmax)-qt(0.975,L1+L2-2)
       T_AUC0t<-0.2*(ref_AUC0t/SE_AUC0t)-qt(0.975,L1+L2-2)
       T_AUC0INF<-0.2*(ref_AUC0INF/SE_AUC0INF)-qt(0.975,L1+L2-2)
+      if(pAUC) T_lnpAUC<-0.2*(ref_lnpAUC/SE_lnpAUC)-qt(0.975,L1+L2-2)
 
       PowerCmaxT<-pt(T_Cmax,L1+L2-2)
       PowerTAUC0t<-pt(T_AUC0t,L1+L2-2)
       PowerTAUC0INF<-pt(T_AUC0INF,L1+L2-2)
+      if(pAUC) PowerTlnpAUC<-pt(T_lnpAUC,L1+L2-2)
 
       ##90$CI (log transformation)
       est_lnCmax<-lnCmax$coef[[4]]  
       est_lnAUC0t<-lnAUC0t$coef[[4]] 
-      est_lnAUC0INF<-lnAUC0INF$coef[[4]] 
+      est_lnAUC0INF<-lnAUC0INF$coef[[4]]
+      if(pAUC) est_lnpAUC<-lnpAUC_stat$coef[[4]] 
       
       lowerCmax<-100*exp(est_lnCmax-(T*SE_Cmax))    
       upperCmax<-100*exp(est_lnCmax+(T*SE_Cmax))    
       lowerAUC0t<-100*exp(est_lnAUC0t-(T*SE_AUC0t)) 
-      UpperAUC0t<-100*exp(est_lnAUC0t+(T*SE_AUC0t)) 
-      LowerAUC0INF<-100*exp(est_lnAUC0INF-(T*SE_AUC0INF))
-      UpperAUC0INF<-100*exp(est_lnAUC0INF+(T*SE_AUC0INF))
-
-###      lowerCmax<-100*exp((test_Cmax-ref_Cmax)-(T*SE_Cmax))
-###      upperCmax<-100*exp((test_Cmax-ref_Cmax)+(T*SE_Cmax))
-###      lowerAUC0t<-100*exp((test_AUC0t-ref_AUC0t)-(T*SE_AUC0t))
-###      UpperAUC0t<-100*exp((test_AUC0t-ref_AUC0t)+(T*SE_AUC0t))
-###      LowerAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)-(T*SE_AUC0INF))
-###      UpperAUC0INF<-100*exp((test_AUC0INF - ref_AUC0INF)+(T*SE_AUC0INF))
+      upperAUC0t<-100*exp(est_lnAUC0t+(T*SE_AUC0t))
+      lowerAUC0INF<-100*exp(est_lnAUC0INF-(T*SE_AUC0INF))
+      upperAUC0INF<-100*exp(est_lnAUC0INF+(T*SE_AUC0INF))
+      if(pAUC){
+      lowerlnpAUC<-100*exp(est_lnpAUC-(T*SE_lnpAUC))
+      upperlnpAUC<-100*exp(est_lnpAUC+(T*SE_lnpAUC))
+      }
         }
       }
    }
@@ -1762,14 +2129,48 @@ if(replicated){
 #Table 1:Statistical Summaries for Bioequivalence Study 
 cat("\n\n Generate stat_sum output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
 zz <- file(statSum_output_xfile, open="wt")
-sink(zz)
+### sink(zz,split=TRUE)  ### see output on the screen simultaneously with this; 'split=TRUE' for debug...  -YJ
+sink(zz)                 ### for debugging, use the above line.
 description_version()
 cat("Statistical Summaries for Pivotal Parameters of Bioequivalence (N =",L1+L2,")\n")
 cat("--------------------------------------------------------------------------\n")
 cat("\n")
 if(multiple){                              ### multiple-dose BE study
   if(parallel){
-  outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),
+  if(pAUC){
+  outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss",pAUC_label,"lnCmax_ss","lnAUC(tau)ss",lnpAUC_label),
+                      Test_Mean=c(formatC(mean(outputCmaxT$Test),format="f",digits=3),formatC(mean(outputAUC0tT$Test),format="f",digits=3),
+                                  formatC(mean(output_partAUCT$Test),format="f",digits=3),
+                                  formatC(mean(outputlnCmaxT$Test),format="f",digits=3),formatC(mean(outputlnAUC0tT$Test),format="f",digits=3),
+                                  formatC(mean(output_lnpAUCT$Test),format="f",digits=3)),
+                      Test_SD=c(formatC(sd(outputCmaxT$Test),format="f",digits=3),formatC(sd(outputAUC0tT$Test),format="f",digits=3),
+                                formatC(sd(output_partAUCT$Test),format="f",digits=3),
+                                formatC(sd(outputlnCmaxT$Test),format="f",digits=3),formatC(sd(outputlnAUC0tT$Test),format="f",digits=3),
+                                formatC(sd(output_lnpAUCT$Test),format="f",digits=3)),
+                      Ref_Mean=c(formatC(mean(outputCmaxR$Ref),format="f",digits=3),formatC(mean(outputAUC0tR$Ref),format="f",digits=3),
+                                 formatC(mean(output_partAUCR$Ref),format="f",digits=3),
+                                 formatC(mean(outputlnCmaxR$Ref),format="f",digits=3),formatC(mean(outputlnAUC0tR$Ref),format="f",digits=3),
+                                 formatC(mean(output_lnpAUCR$Ref),format="f",digits=3)),
+                      Ref_SD=c(formatC(sd(outputCmaxR$Ref),format="f",digits=3),formatC(sd(outputAUC0tR$Ref),format="f",digits=3),
+                               formatC(sd(output_partAUCR$Ref),format="f",digits=3),
+                               formatC(sd(outputlnCmaxR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0tR$Ref),format="f",digits=3),
+                               formatC(sd(output_lnpAUCR$Ref),format="f",digits=3))) 
+
+   pivotal.pk.output<-data.frame(subj=RefData$subj,Cmax_ss_Test=formatC(outputCmaxT$Test,format="f",digits=3),AUCtau_ss_Test=formatC(outputAUC0tT$Test,format="f",digits=3),
+                              pAUC_Test=formatC(output_partAUCT$Test,format="f",digits=3),
+                              lnCmax_ss_Test=formatC(outputlnCmaxT$Test,format="f",digits=3),lnAUCtau_ss_Test=formatC(outputlnAUC0tT$Test,format="f",digits=3),
+                              lnpAUC_Test=formatC(output_lnpAUCT$Test,format="f",digits=3),
+                              Cmax_ss_Ref=formatC(outputCmaxR$Ref,format="f",digits=3),AUCtau_ss_Ref=formatC(outputAUC0tR$Ref,format="f",digits=3),
+                              pAUC_Ref=formatC(output_partAUCR$Ref,format="f",digits=3),
+                              lnCmax_ss_Ref=formatC(outputlnCmaxR$Ref,format="f",digits=3),lnAUCtau_ss_Ref=formatC(outputlnAUC0tR$Ref,format="f",digits=3),
+                              lnpAUC_Ref=formatC(output_lnpAUCR$Ref,format="f",digits=3))
+                              
+   colnames(pivotal.pk.output)<- c("Subj","Cmax_ss_Test","AUC(tau)ss_Test","pAUC_Test","lnCmax_ss_Test","lnAUC(tau)ss_Test","lnpAUC_Test",
+                                   "Cmax_ss_Ref","AUC(tau)ss_Ref","pAUC_Ref","lnCmax_ss_Ref","lnAUC(tau)ss_Ref","lnpAUC_Ref")
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   }
+   else{
+     outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),
                       Test_Mean=c(formatC(mean(outputCmaxT$Test),format="f",digits=3),formatC(mean(outputAUC0tT$Test),format="f",digits=3),
                                   formatC(mean(outputlnCmaxT$Test),format="f",digits=3),formatC(mean(outputlnAUC0tT$Test),format="f",digits=3)),
                       Test_SD=c(formatC(sd(outputCmaxT$Test),format="f",digits=3),formatC(sd(outputAUC0tT$Test),format="f",digits=3),
@@ -1786,11 +2187,44 @@ if(multiple){                              ### multiple-dose BE study
                               
    colnames(pivotal.pk.output)<- c("Subj","Cmax_ss_Test","AUC(tau)ss_Test","lnCmax_ss_Test","lnAUC(tau)ss_Test",
                                           "Cmax_ss_Ref","AUC(tau)ss_Ref","lnCmax_ss_Ref","lnAUC(tau)ss_Ref")
-   write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
-
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   }
   }
   else{
-      outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),
+      if(pAUC){
+      outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss",pAUC_label,"lnCmax_ss","lnAUC(tau)ss",lnpAUC_label),
+                      Test_Mean=c(formatC(mean(outputCmax$Test),format="f",digits=3),formatC(mean(outputAUC0t$Test),format="f",digits=3),
+                                  formatC(mean(output_partAUC$Test),format="f",digits=3),
+                                  formatC(mean(outputlnCmax$Test),format="f",digits=3),formatC(mean(outputlnAUC0t$Test),format="f",digits=3),
+                                  formatC(mean(output_lnpAUC$Test),format="f",digits=3)),
+                      Test_SD=c(formatC(sd(outputCmax$Test),format="f",digits=3),formatC(sd(outputAUC0t$Test),format="f",digits=3),
+                                formatC(sd(output_partAUC$Test),format="f",digits=3),
+                                formatC(sd(outputlnCmax$Test),format="f",digits=3),formatC(sd(outputlnAUC0t$Test),format="f",digits=3),
+                                formatC(sd(output_lnpAUC$Test),format="f",digits=3)),
+                      Ref_Mean=c(formatC(mean(outputCmax$Ref),format="f",digits=3),formatC(mean(outputAUC0t$Ref),format="f",digits=3),
+                                 formatC(mean(output_partAUC$Ref),format="f",digits=3),
+                                 formatC(mean(outputlnCmax$Ref),format="f",digits=3),formatC(mean(outputlnAUC0t$Ref),format="f",digits=3),
+                                 formatC(mean(output_lnpAUC$Ref),format="f",digits=3)),
+                      Ref_SD=c(formatC(sd(outputCmax$Ref),format="f",digits=3),formatC(sd(outputAUC0t$Ref),format="f",digits=3),
+                               formatC(sd(output_partAUC$Ref),format="f",digits=3),
+                               formatC(sd(outputlnCmax$Ref),format="f",digits=3),formatC(sd(outputlnAUC0t$Ref),format="f",digits=3),
+                               formatC(sd(output_lnpAUC$Ref),format="f",digits=3)))
+
+   pivotal.pk.output<-data.frame(subj=RefData$subj,Cmax_ss_Test=formatC(outputCmax$Test,format="f",digits=3),AUCtau_ss_Test=formatC(outputAUC0t$Test,format="f",digits=3),
+                              pAUC_Test=formatC(output_partAUC$Test,format="f",digits=3),
+                              lnCmax_ss_Test=formatC(outputlnCmax$Test,format="f",digits=3),lnAUCtau_ss_Test=formatC(outputlnAUC0t$Test,format="f",digits=3),
+                              lnpAUC_Test=formatC(output_lnpAUC$Test,format="f",digits=3),
+                              Cmax_ss_Ref=formatC(outputCmax$Ref,format="f",digits=3),AUCtau_ss_Ref=formatC(outputAUC0t$Ref,format="f",digits=3),
+                              pAUC_Ref=formatC(output_partAUC$Ref,format="f",digits=3),
+                              lnCmax_ss_Ref=formatC(outputlnCmax$Ref,format="f",digits=3),lnAUCtau_ss_Ref=formatC(outputlnAUC0t$Ref,format="f",digits=3),
+                              lnpAUC_Ref=formatC(output_lnpAUC$Ref,format="f",digits=3))
+                              
+   colnames(pivotal.pk.output)<- c("Subj","Cmax_ss_Test","AUC(tau)ss_Test","pAUC_Test","lnCmax_ss_Test","lnAUC(tau)ss_Test","lnpAUC_Test",
+                                          "Cmax_ss_Ref","AUC(tau)ss_Ref","pAUC_Ref","lnCmax_ss_Ref","lnAUC(tau)ss_Ref","lnpAUC_Ref")
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   }
+   else{
+   outputS1<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),
                       Test_Mean=c(formatC(mean(outputCmax$Test),format="f",digits=3),formatC(mean(outputAUC0t$Test),format="f",digits=3),
                                   formatC(mean(outputlnCmax$Test),format="f",digits=3),formatC(mean(outputlnAUC0t$Test),format="f",digits=3)),
                       Test_SD=c(formatC(sd(outputCmax$Test),format="f",digits=3),formatC(sd(outputAUC0t$Test),format="f",digits=3),
@@ -1807,13 +2241,48 @@ if(multiple){                              ### multiple-dose BE study
                               
    colnames(pivotal.pk.output)<- c("Subj","Cmax_ss_Test","AUC(tau)ss_Test","lnCmax_ss_Test","lnAUC(tau)ss_Test",
                                           "Cmax_ss_Ref","AUC(tau)ss_Ref","lnCmax_ss_Ref","lnAUC(tau)ss_Ref")
-   write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
-
-      }
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   }
+  }
 }
 else{                                    ### single-dosed BE study
  if(parallel){
- outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
+   if(pAUC){
+   outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf",pAUC_label,"ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)",lnpAUC_label),
+                      Test_Mean=c(formatC(mean(outputCmaxT$Test),format="f",digits=3),formatC(mean(outputAUC0tT$Test),format="f",digits=3),formatC(mean(outputAUC0INFT$Test),format="f",digits=3),
+                                  formatC(mean(output_partAUCT$Test),format="f",digits=3),
+                                  formatC(mean(outputlnCmaxT$Test),format="f",digits=3),formatC(mean(outputlnAUC0tT$Test),format="f",digits=3),formatC(mean(outputlnAUC0INFT$Test),format="f",digits=3),
+                                  formatC(mean(output_lnpAUCT$Test),format="f",digits=3)),
+                      Test_SD=c(formatC(sd(outputCmaxT$Test),format="f",digits=3),formatC(sd(outputAUC0tT$Test),format="f",digits=3),formatC(sd(outputAUC0INFT$Test),format="f",digits=3),
+                                formatC(sd(output_partAUCT$Test),format="f",digits=3),
+                                formatC(sd(outputlnCmaxT$Test),format="f",digits=3),formatC(sd(outputlnAUC0tT$Test),format="f",digits=3),formatC(sd(outputlnAUC0INFT$Test),format="f",digits=3),
+                                formatC(sd(output_lnpAUCT$Test),format="f",digits=3)),
+                      Ref_Mean=c(formatC(mean(outputCmaxR$Ref),format="f",digits=3),formatC(mean(outputAUC0tR$Ref),format="f",digits=3),formatC(mean(outputAUC0INFR$Ref),format="f",digits=3),
+                                 formatC(mean(output_partAUCR$Ref),format="f",digits=3),
+                                 formatC(mean(outputlnCmaxR$Ref),format="f",digits=3),formatC(mean(outputlnAUC0tR$Ref),format="f",digits=3),formatC(mean(outputlnAUC0INFR$Ref),format="f",digits=3),
+                                 formatC(mean(output_lnpAUCR$Ref),format="f",digits=3)),
+                      Ref_SD=c(formatC(sd(outputCmaxR$Ref),format="f",digits=3),formatC(sd(outputAUC0tR$Ref),format="f",digits=3),formatC(sd(outputAUC0INFR$Ref),format="f",digits=3),
+                               formatC(sd(output_partAUCR$Ref),format="f",digits=3),
+                               formatC(sd(outputlnCmaxR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0tR$Ref),format="f",digits=3),formatC(sd(outputlnAUC0INFR$Ref),format="f",digits=3),
+                               formatC(sd(output_lnpAUCR$Ref),format="f",digits=3)))
+
+   pivotal.pk.output<-data.frame(subj=RefData$subj,Cmax_Test=formatC(outputCmaxT$Test,format="f",digits=3),AUC0t_Test=formatC(outputAUC0tT$Test,format="f",digits=3),
+                              AUC0inf_Test=formatC(outputAUC0INFT$Test,format="f",digits=3),
+                              pAUC_Test=formatC(output_partAUCT$Test,format="f",digits=3),lnCmax_Test=formatC(outputlnCmaxT$Test,format="f",digits=3),
+                              lnAUC0t_Test=formatC(outputlnAUC0tT$Test,format="f",digits=3),lnAUC0inf_Test=formatC(outputlnAUC0INFT$Test,format="f",digits=3),
+                              lnpAUC_Test=formatC(output_lnpAUCT$Test,format="f",digits=3),
+                              Cmax_Ref=formatC(outputCmaxR$Ref,format="f",digits=3),AUC0t_Ref=formatC(outputAUC0tR$Ref,format="f",digits=3),
+                              AUC0inf_Ref=formatC(outputAUC0INFR$Ref,format="f",digits=3),
+                              pAUC_Ref=formatC(output_partAUCR$Ref,format="f",digits=3),lnCmax_Ref=formatC(outputlnCmaxR$Ref,format="f",digits=3),
+                              lnAUC0t_Ref=formatC(outputlnAUC0tR$Ref,format="f",digits=3),lnAUC0inf_Ref=formatC(outputlnAUC0INFR$Ref,format="f",digits=3),
+                              lnpAUC_Ref=formatC(output_lnpAUCR$Ref,format="f",digits=3))
+                              
+   colnames(pivotal.pk.output)<- c("Subj","Cmax_Test","AUC0-t_Test","AUC0-inf_Test","pAUC_Test","ln(Cmax)_Test","ln(AUC0-t)_Test","ln(AUC0-inf)_Test","lnpAUC_Test",
+                                          "Cmax_Ref","AUC0-t_Ref","AUC0-inf_Ref","pAUC_Ref","ln(Cmax)_Ref","ln(AUC0-t)_Ref","ln(AUC0-inf)_Ref","lnpAUC_Ref")
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   }
+   else {
+   outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
                       Test_Mean=c(formatC(mean(outputCmaxT$Test),format="f",digits=3),formatC(mean(outputAUC0tT$Test),format="f",digits=3),formatC(mean(outputAUC0INFT$Test),format="f",digits=3),
                                   formatC(mean(outputlnCmaxT$Test),format="f",digits=3),formatC(mean(outputlnAUC0tT$Test),format="f",digits=3),formatC(mean(outputlnAUC0INFT$Test),format="f",digits=3)), 
                       Test_SD=c(formatC(sd(outputCmaxT$Test),format="f",digits=3),formatC(sd(outputAUC0tT$Test),format="f",digits=3),formatC(sd(outputAUC0INFT$Test),format="f",digits=3),
@@ -1832,10 +2301,46 @@ else{                                    ### single-dosed BE study
                               
    colnames(pivotal.pk.output)<- c("Subj","Cmax_Test","AUC0-t_Test","AUC0-inf_Test","ln(Cmax)_Test","ln(AUC0-t)_Test","ln(AUC0-inf)_Test",
                                           "Cmax_Ref","AUC0-t_Ref","AUC0-inf_Ref","ln(Cmax)_Ref","ln(AUC0-t)_Ref","ln(AUC0-inf)_Ref")
-   write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   }
  }
  else{
- outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
+ if(pAUC){
+    outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf",pAUC_label,"ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)",lnpAUC_label),
+                      Test_Mean=c(formatC(mean(outputCmax$Test),format="f",digits=3),formatC(mean(outputAUC0t$Test),format="f",digits=3),formatC(mean(outputAUC0INF$Test),format="f",digits=3),
+                                  formatC(mean(output_partAUC$Test),format="f",digits=3),
+                                  formatC(mean(outputlnCmax$Test),format="f",digits=3),formatC(mean(outputlnAUC0t$Test),format="f",digits=3),formatC(mean(outputlnAUC0INF$Test),format="f",digits=3),
+                                  formatC(mean(output_lnpAUC$Test),format="f",digits=3)), 
+                      Test_SD=c(formatC(sd(outputCmax$Test),format="f",digits=3),formatC(sd(outputAUC0t$Test),format="f",digits=3),formatC(sd(outputAUC0INF$Test),format="f",digits=3),
+                                formatC(sd(output_partAUC$Test),format="f",digits=3),
+                                formatC(sd(outputlnCmax$Test),format="f",digits=3),formatC(sd(outputlnAUC0t$Test),format="f",digits=3),formatC(sd(outputlnAUC0INF$Test),format="f",digits=3),
+                                formatC(sd(output_lnpAUC$Test),format="f",digits=3)),
+                      Ref_Mean=c(formatC(mean(outputCmax$Ref),format="f",digits=3),formatC(mean(outputAUC0t$Ref),format="f",digits=3),formatC(mean(outputAUC0INF$Ref),format="f",digits=3),
+                                 formatC(mean(output_partAUC$Ref),format="f",digits=3),
+                                 formatC(mean(outputlnCmax$Ref),format="f",digits=3),formatC(mean(outputlnAUC0t$Ref),format="f",digits=3),formatC(mean(outputlnAUC0INF$Ref),format="f",digits=3),
+                                 formatC(mean(output_lnpAUC$Ref),format="f",digits=3)),
+                      Ref_SD=c(formatC(sd(outputCmax$Ref),format="f",digits=3),formatC(sd(outputAUC0t$Ref),format="f",digits=3),formatC(sd(outputAUC0INF$Ref),format="f",digits=3),
+                               formatC(sd(output_partAUC$Ref),format="f",digits=3),
+                               formatC(sd(outputlnCmax$Ref),format="f",digits=3),formatC(sd(outputlnAUC0t$Ref),format="f",digits=3),formatC(sd(outputlnAUC0INF$Ref),format="f",digits=3),
+                               formatC(sd(output_lnpAUC$Ref),format="f",digits=3))) 
+
+   pivotal.pk.output<-data.frame(subj=RefData$subj,Cmax_Test=formatC(outputCmax$Test,format="f",digits=3),AUC0t_Test=formatC(outputAUC0t$Test,format="f",digits=3),
+                              AUC0inf_Test=formatC(outputAUC0INF$Test,format="f",digits=3),pAUC_Test=formatC(output_partAUC$Test,format="f",digits=3),
+                              lnCmax_Test=formatC(outputlnCmax$Test,format="f",digits=3),
+                              lnAUC0t_Test=formatC(outputlnAUC0t$Test,format="f",digits=3),lnAUC0inf_Test=formatC(outputlnAUC0INF$Test,format="f",digits=3),
+                              lnpAUC_Test=formatC(output_lnpAUC$Test,format="f",digits=3),
+                              Cmax_Ref=formatC(outputCmax$Ref,format="f",digits=3),AUC0t_Ref=formatC(outputAUC0t$Ref,format="f",digits=3),
+                              AUC0inf_Ref=formatC(outputAUC0INF$Ref,format="f",digits=3),pAUC_Ref=formatC(output_partAUC$Ref,format="f",digits=3),
+                              lnCmax_Ref=formatC(outputlnCmax$Ref,format="f",digits=3),
+                              lnAUC0t_Ref=formatC(outputlnAUC0t$Ref,format="f",digits=3),lnAUC0inf_Ref=formatC(outputlnAUC0INF$Ref,format="f",digits=3),
+                              lnpAUC_Ref=formatC(output_lnpAUC$Ref,format="f",digits=3))
+                              
+   colnames(pivotal.pk.output)<- c("Subj","Cmax_Test","AUC0-t_Test","AUC0-inf_Test","pAUC_Test","ln(Cmax)_Test","ln(AUC0-t)_Test","ln(AUC0-inf)_Test","lnpAUC_Test",
+                                          "Cmax_Ref","AUC0-t_Ref","AUC0-inf_Ref","pAUC_Ref","ln(Cmax)_Ref","ln(AUC0-t)_Ref","ln(AUC0-inf)_Ref","lnpAUC_Ref")
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+ }
+ else{
+   outputS1<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
                       Test_Mean=c(formatC(mean(outputCmax$Test),format="f",digits=3),formatC(mean(outputAUC0t$Test),format="f",digits=3),formatC(mean(outputAUC0INF$Test),format="f",digits=3),
                                   formatC(mean(outputlnCmax$Test),format="f",digits=3),formatC(mean(outputlnAUC0t$Test),format="f",digits=3),formatC(mean(outputlnAUC0INF$Test),format="f",digits=3)), 
                       Test_SD=c(formatC(sd(outputCmax$Test),format="f",digits=3),formatC(sd(outputAUC0t$Test),format="f",digits=3),formatC(sd(outputAUC0INF$Test),format="f",digits=3),
@@ -1854,10 +2359,13 @@ else{                                    ### single-dosed BE study
                               
    colnames(pivotal.pk.output)<- c("Subj","Cmax_Test","AUC0-t_Test","AUC0-inf_Test","ln(Cmax)_Test","ln(AUC0-t)_Test","ln(AUC0-inf)_Test",
                                           "Cmax_Ref","AUC0-t_Ref","AUC0-inf_Ref","ln(Cmax)_Ref","ln(AUC0-t)_Ref","ln(AUC0-inf)_Ref")
-   write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   ### write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
+   }
  }
 }                                                
-
+### take a break here...  --YJ [2013/11/26 am 07:15:31]
+###
+write.csv(pivotal.pk.output,pivotal_output_xfile,row.names = FALSE)
 show(outputS1)
 cat("\n")
 cat("\n")
@@ -1869,80 +2377,118 @@ if(replicated){
 RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
 RlowerAUC0t<-formatC(lowerAUC0t,format="f",digits=3)
 RlowerAUC0INF<-formatC(lowerAUC0INF,format="f",digits=3)
+if(pAUC) RlowerlnpAUC<-formatC(lowerlnpAUC,format="f",digits=3)
 
- if(prdcount==3){
+if(prdcount==3){
 SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][5,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][5,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][5,1]),format="f",digits=3)
+if(pAUC) SlnpAUC<-formatC(100*exp(summary(modlnpAUC)[20][[1]][5,1]),format="f",digits=3)
  }
-  if (prdcount==4){
+if (prdcount==4){
 SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][6,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][6,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][6,1]),format="f",digits=3)
+if(pAUC) SlnpAUC<-formatC(100*exp(summary(modlnpAUC)[20][[1]][6,1]),format="f",digits=3)
   }
-  if (prdcount==5){
+if (prdcount==5){
 SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][7,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][7,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][7,1]),format="f",digits=3)
+if(pAUC) SlnpAUC<-formatC(100*exp(summary(modlnpAUC)[20][[1]][7,1]),format="f",digits=3)
   }
-  if (prdcount==6){
+if (prdcount==6){
 SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][8,1]),format="f",digits=3)
 SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][8,1]),format="f",digits=3)
 SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][8,1]),format="f",digits=3)
+if(pAUC) SlnpAUC<-formatC(100*exp(summary(modlnpAUC)[20][[1]][8,1]),format="f",digits=3)
   } 
 
 RupperCmax<-formatC(upperCmax,format="f",digits=3)
 RupperAUC0t<-formatC(upperAUC0t,format="f",digits=3)
 RupperAUC0INF<-formatC(upperAUC0INF,format="f",digits=3)
+if(pAUC) RupperlnpAUC<-formatC(upperlnpAUC,format="f",digits=3)
 
-outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
+if(pAUC){
+outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)",lnpAUC_label),
+                     Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF,SlnpAUC), 
+                     CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF,RlowerlnpAUC), 
+                     CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF,RupperlnpAUC))  
+
+}
+else{
+outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)"),
                      Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF), 
                      CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
                      CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
                       
-
+}
 colnames(outputS2)<- c("Parameters"," PE (%)"," lower 90%CI"," upper 90%CI")
+
 show(outputS2)
 cat("\n")
 cat("-------------------------------------------------------------------------\n")
 cat("  90% CI: 90% confidence interval \n")
 cat("  PE (%): point estimate; = squared root of (lower 90%CI * upper 90%CI)\n")
+description_BE_criteria(BE_LL,BE_UL)
 cat("-------------------------------------------------------------------------\n")
 }
 else{
   if(parallel){
      if(multiple){   
-  RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
-  RlowerAUC0t<-formatC(lowerAUC0t,format="f",digits=3)
-   
-  RupperCmax<-formatC(upperCmax,format="f",digits=3)
-  RupperAUC0t<-formatC(upperAUC0t,format="f",digits=3)
-    
-  SlnCmax<-formatC(100*exp(summary(lnCmax_ss)[20][[1]][2,1]),format="f",digits=3)
-  SlnAUC0t<-formatC(100*exp(summary(lnAUCtau_ss)[20][[1]][2,1]),format="f",digits=3)
-    
-  outputS2<-data.frame(Parameters=c("ln(Cmax_ss)","ln(AUC(tau)ss)"),
-                     Point_estimate=c(SlnCmax,SlnAUC0t),
-                     CI90_lower=c(RlowerCmax,RlowerAUC0t), 
-                     CI90_upper=c(RupperCmax,RupperAUC0t))  
+        RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
+        RlowerAUC0t<-formatC(lowerAUC0t,format="f",digits=3)
+        if(pAUC) RlowerlnpAUC<-formatC(lowerlnpAUC,format="f",digits=3)
+         
+        RupperCmax<-formatC(upperCmax,format="f",digits=3)
+        RupperAUC0t<-formatC(upperAUC0t,format="f",digits=3)
+        if(pAUC) RupperlnpAUC<-formatC(upperlnpAUC,format="f",digits=3)
+          
+        SlnCmax<-formatC(100*exp(summary(lnCmax_ss)[20][[1]][2,1]),format="f",digits=3)
+        SlnAUC0t<-formatC(100*exp(summary(lnAUCtau_ss)[20][[1]][2,1]),format="f",digits=3)
+        if(pAUC) SlnpAUC<-formatC(100*exp(summary(lnpAUC_stat)[20][[1]][2,1]),format="f",digits=3)
+        
+        if(pAUC){
+        outputS2<-data.frame(Parameters=c("ln(Cmax_ss)","ln(AUC(tau)ss)",lnpAUC_label),
+                           Point_estimate=c(SlnCmax,SlnAUC0t,SlnpAUC),
+                           CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerlnpAUC), 
+                           CI90_upper=c(RupperCmax,RupperAUC0t,RupperlnpAUC))  
+        }
+        else{
+        outputS2<-data.frame(Parameters=c("ln(Cmax_ss)","ln(AUC(tau)ss)"),
+                           Point_estimate=c(SlnCmax,SlnAUC0t),
+                           CI90_lower=c(RlowerCmax,RlowerAUC0t), 
+                           CI90_upper=c(RupperCmax,RupperAUC0t))  
+        }
      }
      else{
-  RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
-  RlowerAUC0t<-formatC(lowerAUC0t,format="f",digits=3)
-  RlowerAUC0INF<-formatC(lowerAUC0INF,format="f",digits=3)
-  
-  RupperCmax<-formatC(upperCmax,format="f",digits=3)
-  RupperAUC0t<-formatC(upperAUC0t,format="f",digits=3)
-  RupperAUC0INF<-formatC(upperAUC0INF,format="f",digits=3)
-  
-  SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][2,1]),format="f",digits=3)
-  SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][2,1]),format="f",digits=3)
-  SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][2,1]),format="f",digits=3)
-  
-  outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),
-                     Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
-                     CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
-                     CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))  
+       RlowerCmax<-formatC(lowerCmax,format="f",digits=3)
+       RlowerAUC0t<-formatC(lowerAUC0t,format="f",digits=3)
+       RlowerAUC0INF<-formatC(lowerAUC0INF,format="f",digits=3)
+       if(pAUC) RlowerlnpAUC<-formatC(lowerlnpAUC,format="f",digits=3)
+       
+       RupperCmax<-formatC(upperCmax,format="f",digits=3)
+       RupperAUC0t<-formatC(upperAUC0t,format="f",digits=3)
+       RupperAUC0INF<-formatC(upperAUC0INF,format="f",digits=3)
+       if(pAUC) RupperlnpAUC<-formatC(upperlnpAUC,format="f",digits=3)
+       
+       SlnCmax<-formatC(100*exp(summary(modlnCmax)[20][[1]][2,1]),format="f",digits=3)
+       SlnAUC0t<-formatC(100*exp(summary(modlnAUC0t)[20][[1]][2,1]),format="f",digits=3)
+       SlnAUC0INF<-formatC(100*exp(summary(modlnAUC0INF)[20][[1]][2,1]),format="f",digits=3)
+       if(pAUC) SlnpAUC<-formatC(100*exp(summary(modlnpAUC)[20][[1]][2,1]),format="f",digits=3)
+       
+       if(pAUC){
+       outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)",lnpAUC_label),
+                          Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF,SlnpAUC),
+                          CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF,RlowerlnpAUC), 
+                          CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF,RupperlnpAUC))       
+       }
+       else{
+       outputS2<-data.frame(Parameters=c("ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)"),
+                          Point_estimate=c(SlnCmax,SlnAUC0t,SlnAUC0INF),
+                          CI90_lower=c(RlowerCmax,RlowerAUC0t,RlowerAUC0INF), 
+                          CI90_upper=c(RupperCmax,RupperAUC0t,RupperAUC0INF))
+       }
    }                   
 
 colnames(outputS2)<- c("Parameters", " PE (%)"," lower 90%CI"," upper 90%CI")
@@ -1951,32 +2497,71 @@ cat("\n")
 cat("-------------------------------------------------------------------------\n")
 cat("  90%CI: 90% confidence interval \n")
 cat("  PE (%): point estimate; = squared root of (lower 90%CI * upper 90%CI)\n")
+description_BE_criteria(BE_LL,BE_UL)
 cat("-------------------------------------------------------------------------\n")
  }
   else{
    if(multiple){
-   outputS2<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss" ),                      
+   if(pAUC){
+   outputS2<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss",pAUC_label,"lnCmax_ss","lnAUC(tau)ss",lnpAUC_label),                      
+                      F_value=c(formatC(anova(Cmax_ss)[4,4],format="f",digits=3), formatC(anova(AUCtau_ss)[4,4],format="f",digits=3),
+                                formatC(anova(pAUC_stat)[4,4],format="f",digits=3),
+                                formatC(anova(lnCmax_ss)[4,4],format="f",digits=3),formatC(anova(lnAUCtau_ss)[4,4],format="f",digits=3),
+                                formatC(anova(lnpAUC_stat)[4,4],format="f",digits=3)),
+                      P_value=c(formatC(anova(Cmax_ss)[4,5],format="f",digits=3),formatC(anova(AUCtau_ss)[4,5],format="f",digits=3),
+                                formatC(anova(pAUC_stat)[4,5],format="f",digits=3),
+                                formatC(anova(lnCmax_ss)[4,5],format="f",digits=3),formatC(anova(lnAUCtau_ss)[4,5],format="f",digits=3),
+                                formatC(anova(lnpAUC_stat)[4,5],format="f",digits=3)),
+                      Point_estimate=c("-","-","-",formatC(100*exp(test_lnCmax_ss-ref_lnCmax_ss),format="f",digits=3),
+                                formatC(100*exp(test_lnAUCtau_ss-ref_lnAUCtau_ss),format="f",digits=3),
+                                formatC(100*exp(test_lnpAUC-ref_lnpAUC),format="f",digits=3)),
+                      CI90_lower= c("-","-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3),
+                                    formatC(lowerlnpAUC,format="f",digits=3)),
+                      CI90_upper= c("-","-","-",formatC(upperCmax,format="f",digits=3),formatC(upperAUC0t,format="f",digits=3),
+                                    formatC(upperlnpAUC,format="f",digits=3)))     
+   }
+   else{
+   outputS2<-data.frame(Parameters=c("Cmax_ss","AUC(tau)ss","lnCmax_ss","lnAUC(tau)ss"),                      
                       F_value=c(formatC(anova(Cmax_ss)[4,4],format="f",digits=3), formatC(anova(AUCtau_ss)[4,4],format="f",digits=3),
                                 formatC(anova(lnCmax_ss)[4,4],format="f",digits=3),formatC(anova(lnAUCtau_ss)[4,4],format="f",digits=3)),
                       P_value=c(formatC(anova(Cmax_ss)[4,5],format="f",digits=3),formatC(anova(AUCtau_ss)[4,5],format="f",digits=3),
                                 formatC(anova(lnCmax_ss)[4,5],format="f",digits=3),formatC(anova(lnAUCtau_ss)[4,5],format="f",digits=3)),
-                      Point_estimate=c("-","-",formatC(100*exp(test_lnCmax_ss-ref_lnCmax_ss),format="f",digits=3),formatC(100*exp(test_lnAUCtau_ss-ref_lnAUCtau_ss),format="f",digits=3)),
+                      Point_estimate=c("-","-",formatC(100*exp(test_lnCmax_ss-ref_lnCmax_ss),format="f",digits=3),
+                              formatC(100*exp(test_lnAUCtau_ss-ref_lnAUCtau_ss),format="f",digits=3)),
                       CI90_lower= c("-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3)),
-                      CI90_upper= c("-","-",formatC(upperCmax,format="f",digits=3),formatC(UpperAUC0t,format="f",digits=3)))  
-
+                      CI90_upper= c("-","-",formatC(upperCmax,format="f",digits=3),formatC(upperAUC0t,format="f",digits=3)))  
+    }
    }
    else{
-   outputS2<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)" ),                      
+   if(pAUC){
+   outputS2<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf",pAUC_label,"ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)",lnpAUC_label),                      
+                      F_value=c(formatC(anova(Cmax)[4,4],format="f",digits=3),formatC(anova(AUC0t)[4,4],format="f",digits=3), 
+                                formatC(anova(pAUC_stat)[4,4],format="f",digits=3),formatC(anova(AUC0INF)[4,4],format="f",digits=3),
+                                formatC(anova(lnCmax)[4,4],format="f",digits=3),formatC(anova(lnAUC0t)[4,4],format="f",digits=3),
+                                formatC(anova(lnAUC0INF)[4,4],format="f",digits=3),
+                                formatC(anova(lnpAUC_stat)[4,4],format="f",digits=3)), 
+                      P_value=c(formatC(anova(Cmax)[4,5],format="f",digits=3),formatC(anova(AUC0t)[4,5],format="f",digits=3),
+                                formatC(anova(AUC0INF)[4,5],format="f",digits=3),formatC(anova(pAUC_stat)[4,5],format="f",digits=3),
+                                formatC(anova(lnCmax)[4,5],format="f",digits=3),formatC(anova(lnAUC0t)[4,5],format="f",digits=3),
+                                formatC(anova(lnAUC0INF)[4,5],format="f",digits=3),formatC(anova(lnpAUC_stat)[4,5],format="f",digits=3)),  
+                      Point_estimate=c("-","-","-","-",formatC(100*exp(est_lnCmax),format="f",digits=3),formatC(100*exp(est_lnAUC0t),format="f",digits=3),
+                                formatC(100*exp(est_lnAUC0INF),format="f",digits=3),formatC(100*exp(est_lnpAUC),format="f",digits=3)),
+                      CI90_lower= c("-","-","-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3),
+                                formatC(lowerAUC0INF,format="f",digits=3),formatC(lowerlnpAUC,format="f",digits=3)),
+                      CI90_upper= c("-","-","-","-",formatC(upperCmax,format="f",digits=3),formatC(upperAUC0t,format="f",digits=3),
+                                formatC(upperAUC0INF,format="f",digits=3),formatC(upperlnpAUC,format="f",digits=3)))
+   }
+   else{
+   outputS2<-data.frame(Parameters=c("Cmax","AUC0-t","AUC0-inf","ln(Cmax)","ln(AUC0-t)","ln(AUC0-inf)"),                      
                       F_value=c(formatC(anova(Cmax)[4,4],format="f",digits=3), formatC(anova(AUC0t)[4,4],format="f",digits=3), formatC(anova(AUC0INF)[4,4],format="f",digits=3),
                                 formatC(anova(lnCmax)[4,4],format="f",digits=3),formatC(anova(lnAUC0t)[4,4],format="f",digits=3),formatC(anova(lnAUC0INF)[4,4],format="f",digits=3)), 
                       P_value=c(formatC(anova(Cmax)[4,5],format="f",digits=3),formatC(anova(AUC0t)[4,5],format="f",digits=3), formatC(anova(AUC0INF)[4,5],format="f",digits=3),
                           formatC(anova(lnCmax)[4,5],format="f",digits=3),formatC(anova(lnAUC0t)[4,5],format="f",digits=3),formatC(anova(lnAUC0INF)[4,5],format="f",digits=3)),  
-####                      Point_estimate=c("-","-","-",formatC(100*exp(test_Cmax-ref_Cmax),format="f",digits=3),formatC(100*exp(test_AUC0t-ref_AUC0t),format="f",digits=3),formatC(100*exp(test_AUC0INF - ref_AUC0INF),format="f",digits=3)),
                       Point_estimate=c("-","-","-",formatC(100*exp(est_lnCmax),format="f",digits=3),formatC(100*exp(est_lnAUC0t),format="f",digits=3),formatC(100*exp(est_lnAUC0INF),format="f",digits=3)),
-                      CI90_lower= c("-","-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3),formatC(LowerAUC0INF,format="f",digits=3)), 
-                      CI90_upper= c("-","-","-",formatC(upperCmax,format="f",digits=3),formatC(UpperAUC0t,format="f",digits=3),formatC(UpperAUC0INF,format="f",digits=3)))  
-
+                      CI90_lower= c("-","-","-",formatC(lowerCmax,format="f",digits=3),formatC(lowerAUC0t,format="f",digits=3),formatC(lowerAUC0INF,format="f",digits=3)), 
+                      CI90_upper= c("-","-","-",formatC(upperCmax,format="f",digits=3),formatC(upperAUC0t,format="f",digits=3),formatC(upperAUC0INF,format="f",digits=3)))
    }
+ }
 colnames(outputS2)<- c("Parameters"," F values"," P vales","  PE (%)"," Lo 90%CI"," Up 90%CI")
 show(outputS2)
 cat("\n")
@@ -2030,7 +2615,7 @@ if(multiple){
                               Cav_Ref=formatC(outputCavR$Ref,format="f",digits=3),Fluc_Ref=formatC(outputFluR$Ref,format="f",digits=3))
    colnames(misc.pk.output)<- c("Subj","Cl/F_Test","Lambda_z_Test","Tmax_ss_Test","T1/2(z)_Test","Vd/F_test","MRT_Test","Cav_Test","Fluc. (%)_Test",
                                 "Cl/F_Ref","Lambda_z_Ref","Tmax_ss_Ref","T1/2(z)_Ref","Vd/F_Ref","MRT_Ref","Cav_Ref","Fluc. (%)_Ref")
-   write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
+   ### write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
                                  
  }
  else{
@@ -2066,7 +2651,7 @@ if(multiple){
                               Cav_Ref=formatC(outputCav$Ref,format="f",digits=3),Fluc_Ref=formatC(outputFluctuation$Ref,format="f",digits=3))
    colnames(misc.pk.output)<- c("Subj","Cl/F_Test","Lambda_z_Test","Tmax_ss_Test","T1/2(z)_Test","Vd/F_test","MRT_Test","Cav_Test","Fluc. (%)_Test",
                                 "Cl/F_Ref","Lambda_z_Ref","Tmax_ss_Ref","T1/2(z)_Ref","Vd/F_Ref","MRT_Ref","Cav_Ref","Fluc. (%)_Ref")
-   write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
+   ### write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
                                  
  }
 colnames(outputTest)<- c("Parameters"," Mean"," SD"," CV (%)","  Mean"," SD"," CV (%)")
@@ -2109,7 +2694,7 @@ if(parallel){
                               AUC_index_Ref=formatC(outputAUC_RatioR$Ref,format="f",digits=1))
    colnames(misc.pk.output)<- c("Subj","Cl/F_Test","Lambda_z_Test","Tmax_Test","T1/2(z)_Test","Vd/F_test","MRT0inf_Test","AUC.index(%)_Test",
                                 "Cl/F_Ref","Lambda_z_Ref","Tmax_Ref","T1/2(z)_Ref","Vd/F_Ref","MRT0inf_Ref","AUC.index(%)_Ref")
-   write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
+   ### write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
                                   
 }
 else{
@@ -2145,7 +2730,7 @@ else{
                               AUC_index_Ref=formatC(outputAUC0t_AUC0INF$Ref,format="f",digits=1))
    colnames(misc.pk.output)<- c("Subj","Cl/F_Test","Lambda_z_Test","Tmax_Test","T1/2(z)_Test","Vd/F_test","MRT0inf_Test","AUC.index(%)_Test",
                                 "Cl/F_Ref","Lambda_z_Ref","Tmax_Ref","T1/2(z)_Ref","Vd/F_Ref","MRT0inf_Ref","AUC.index(%)_Ref")
-   write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
+   ### write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
  
 }
 colnames(outputTest)<- c("Parameters"," Mean"," SD"," CV (%)","  Mean"," SD"," CV (%)")
@@ -2156,10 +2741,11 @@ cat(" AUC.index (%) : (AUC0-t/AUC0-inf)*100;                       \n")
 cat("         AUC0-t: AUC from time zero to the time of the last   \n")
 cat("                 measurable drug plasma concentrations.       \n")
 cat("--------------------------------------------------------------\n")
-}                        
-cat("\n\n")
+}
+write.csv(misc.pk.output,misc_pk_output_xfile, row.names = FALSE)
 sink()
 close(zz)
+cat("\n\n")
 }
  
  

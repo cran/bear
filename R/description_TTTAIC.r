@@ -1,5 +1,5 @@
 description_TTTAIC<-function(){
-cat("\n\n")
+cat("\n")
 cat("*******************************************************************************\n")
 cat("         Two-Times-Tmax (TTT) and Akaike information criterion (AIC)          \n")
 cat("-------------------------------------------------------------------------------\n")
@@ -20,6 +20,5 @@ cat(" Please note: TTT is only for when one (or more) curve(s) have # of data   
 cat(" points > 2 after 2*Tmax; otherwise, it will cause error. bear will be        \n")
 cat(" crashed in this case. If so, please try another method next time.          \n\n")
 cat("*******************************************************************************\n")
-cat("\n")
-readline(" Press Enter to proceed...")
+cat("\n");readline(" Press Enter to proceed...")
 }

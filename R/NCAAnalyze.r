@@ -7,10 +7,26 @@
 NCAanalyze<-function(TotalSingledata,Dose,Tau,TlastD,xaxis,yaxis,separateWindows=TRUE,
                      parallel=FALSE, MIX=FALSE, multiple=FALSE)
 {
-
 options(warn=-1)
-
 description_NCA()
+
+### move here since v2.5.9 [2013/11/10 AM 01:01:55] -YJ
+lin.AUC<-lin.AUC
+lambda_z_calc<-lambda_z_calc
+BE_LL<-BE_LL
+BE_UL<-BE_UL
+dosez<-dosez
+DosingTau<-DosingTau
+Tlastz<-Tlastz
+xlabz<-xlabz
+ylabz<-ylabz
+
+### file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
+###                "All with Linear Trapezoidal Method")
+### pick <- menu(file.menu, title = " << Method Selections for AUC Calculation>> ", graphics=TRUE)
+### lin.AUC<<-ifelse(pick==1,FALSE,TRUE)
+###
+
 if (multiple) {                                    ### first come with multiple. -YJ
 with(Multiplentertitle(),{
 description_drug()
@@ -60,23 +76,23 @@ Totalplot<- rbind(SingleRdata0,SingleTdata0)
 create.products_sum(Totalplot)
 ###
 
-   cat("\n")
-   file.menu <- c("Select 2-6 data points manually",            
-                  "Load previous selection (.Rdata file)",  
-                  "Use Adjusted R sq. (ARS) method",
-                  "Use Akaike information criterion (AIC) method",                     
-                  "Use the Two-Times-Tmax(TTT) method",
-                  "Use TTT and ARS method",
-                  "Use TTT and AIC method")                 
-   cat("\n")               
-   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
+###    cat("\n")
+###    file.menu <- c("Select 2-6 data points manually",            
+###                   "Load previous selection (.Rdata file)",  
+###                   "Use Adjusted R sq. (ARS) method",
+###                   "Use Akaike information criterion (AIC) method",                     
+###                   "Use the Two-Times-Tmax(TTT) method",
+###                   "Use TTT and ARS method",
+###                   "Use TTT and AIC method")                 
+###    cat("\n")               
+###    pick <- menu(file.menu, title = "<<Method Selections for Lambda_z Estimation>>", graphics=TRUE)
 
-   if (pick ==1){
+   if (lambda_z_calc ==5){
      description_pointselect()
      if(parallel){
       if(MIX){
       MultipleParaNCAselect.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0) 
-      bye()
+      go2menu()
       }
       else{
        MultipleParaNCAselect(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis, Tau, TlastD,SingleRdata0,SingleTdata0)  
@@ -87,7 +103,7 @@ create.products_sum(Totalplot)
      }
    } 
  else {
-  if (pick == 2){
+  if (lambda_z_calc == 6){
      description_load()
      ##  comdataname <-readline()
      ##  comdataname<-paste(comdataname,".RData",sep="")
@@ -118,7 +134,7 @@ create.products_sum(Totalplot)
      if(parallel){
       if(MIX){
       MultipleParaNCA.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split, Tau, TlastD,SingleRdata0,SingleTdata0)  
-      bye()
+      go2menu()
       }
       else{
       MultipleParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split, Tau, TlastD,SingleRdata0,SingleTdata0) 
@@ -129,11 +145,11 @@ create.products_sum(Totalplot)
     }
    } 
  else {
-  if (pick == 3){ 
+  if (lambda_z_calc == 0){ 
     if(parallel){
      if(MIX){
      MultipleParaARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)  
-       bye()
+       go2menu()
       }
       else{
      MultipleParaARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
@@ -144,11 +160,11 @@ create.products_sum(Totalplot)
        }   
     }
   else {
-  if (pick == 4){ 
+  if (lambda_z_calc == 1){ 
      if(parallel){
       if(MIX){
       MultipleParaAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
-       bye()
+       go2menu()
       }
       else{
        MultipleParaAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
@@ -159,11 +175,11 @@ create.products_sum(Totalplot)
        }           
      }
   else {
-  if (pick == 5){ 
+  if (lambda_z_calc == 2){ 
      if(parallel){
        if(MIX){
      MultipleParaTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)  
-       bye()
+       go2menu()
       }
       else{
       MultipleParaTTT(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
@@ -174,11 +190,11 @@ create.products_sum(Totalplot)
       }
      } 
   else {
-  if (pick == 6){ 
+  if (lambda_z_calc == 3){ 
      if(parallel){
        if(MIX){
        MultipleParaTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
-       bye()
+       go2menu()
       }
       else{
        MultipleParaTTTARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
@@ -189,11 +205,11 @@ create.products_sum(Totalplot)
      }
     }  
   else {
-  if (pick == 7){ 
+  if (lambda_z_calc == 4){ 
      if(parallel){
        if(MIX){
       MultipleParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)  
-       bye()
+       go2menu()
       }
       else{
         MultipleParaTTTAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
@@ -257,23 +273,23 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
 ###
 create.products_sum(Totalplot)
 ###
-   cat("\n")
-   file.menu <- c("Select 2-6 data points manually",            
-                  "Load previous selection (2-6 data points)",  
-                  "Use Adjusted R sq. (ARS) method",
-                  "Use Akaike information criterion (AIC) method",                     
-                  "Use the Two-Times-Tmax(TTT) method",
-                  "Use TTT and ARS method",
-                  "Use TTT and AIC method")                 
-   cat("\n")               
-   pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
+###    cat("\n")
+###    file.menu <- c("Select 2-6 data points manually",            
+###                   "Load previous selection (2-6 data points)",  
+###                   "Use Adjusted R sq. (ARS) method",
+###                   "Use Akaike information criterion (AIC) method",                     
+###                   "Use the Two-Times-Tmax(TTT) method",
+###                   "Use TTT and ARS method",
+###                   "Use TTT and AIC method")                 
+###    cat("\n")               
+###    pick <- menu(file.menu, title = "<< Estimation Methods for Lambda_z >>", graphics=TRUE)
 
-   if (pick ==1){
+   if (lambda_z_calc ==5){
      description_pointselect()
      if(parallel){
       if(MIX){
       ParaNCAselect.MIX(Totalplot,SingleRdata1,SingleTdata1,Dose,SingleRdata,SingleTdata,xaxis, yaxis)
-      bye()
+      go2menu()
       }
       else{
        ParaNCAselect(Totalplot,SingleRdata1,SingleTdata1, Dose,SingleRdata,SingleTdata,xaxis, yaxis) 
@@ -284,7 +300,7 @@ create.products_sum(Totalplot)
      }
    } 
  else {
-  if (pick == 2){
+  if (lambda_z_calc == 6){
      description_load()
      ##  comdataname <-readline()
      ##  comdataname<-paste(comdataname,".RData",sep="")
@@ -315,7 +331,7 @@ create.products_sum(Totalplot)
      if(parallel){
       if(MIX){
       ParaNCA.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
-      bye()
+      go2menu()
       }
       else{
       ParaNCA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split) 
@@ -326,11 +342,11 @@ create.products_sum(Totalplot)
     }
    } 
  else {
-  if (pick == 3){ 
+  if (lambda_z_calc == 0){ 
     if(parallel){
      if(MIX){
      ParaARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)  
-       bye()
+       go2menu()
       }
       else{
      ParaARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
@@ -341,11 +357,11 @@ create.products_sum(Totalplot)
        }   
     }
   else {
-  if (pick == 4){ 
+  if (lambda_z_calc == 1){ 
      if(parallel){
       if(MIX){
       ParaAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
-       bye()
+       go2menu()
       }
       else{
        ParaAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
@@ -356,11 +372,11 @@ create.products_sum(Totalplot)
        }           
      }
   else {
-  if (pick == 5){ 
+  if (lambda_z_calc == 2){ 
      if(parallel){
        if(MIX){
      ParaTTT.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)  
-       bye()
+       go2menu()
       }
       else{
       ParaTTT(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
@@ -371,33 +387,33 @@ create.products_sum(Totalplot)
       }
      } 
   else {
-  if (pick == 6){ 
+  if (lambda_z_calc == 3){ 
      if(parallel){
        if(MIX){
        ParaTTTARS.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
-       bye()
+       go2menu()
       }
       else{
        ParaTTTARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
         }
      }
      else{
-     TTTARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)    
+      TTTARS(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)    
      }
     }  
   else {
-  if (pick == 7){ 
+  if (lambda_z_calc == 4){ 
      if(parallel){
        if(MIX){
       ParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)  
-       bye()
+       go2menu()
       }
       else{
         ParaTTTAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1) 
        }
      }
      else{
-     TTTAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)    
+        TTTAIC(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)    
           }  
          }
         }

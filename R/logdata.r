@@ -1,7 +1,9 @@
 # Sample size estimation for log transformation data
 logdata<-function(Demo=FALSE, parallel=FALSE)
 {
-cat("\n")
+designtrace<-designtrace
+dt_old<-""
+dt_old<-designtrace
 
 if(parallel){
 description_size_para()
@@ -9,6 +11,8 @@ description_size_para()
 else{
 description_size()
 }
+
+cat("\n\n*** You have selected the following ->\n",designtrace,"\n\n")   ### to avoid too many texts from description().
 
 if(Demo){
 cat("\n")
@@ -244,8 +248,13 @@ cat(" FARTSSIE, which is a very excellant Excel VBA program for many sample size
 cat(" estimation functions.  Website: http://individual.utoronto.ca/ddubins.    \n")
 cat("\n")
 cat("--------------------------------------------------------------------------\n")
-   cat("\n")
+cat("\n")
    }
+  dt_old<-gsub("Cross-over studies.","",dt_old,fixed=TRUE)   ### find and replace characters in a string... -YJ
+  dt_old<-gsub("Parallel study.","",dt_old,fixed=TRUE)       ### find and replace characters in a string... -YJ
+  dt_old<-trim(dt_old)                                       ### Remove leading and trailing spaces from character strings
+  designtrace<<-dt_old
+  cat("\n Back to the menu of Sample Size Estimation now...\n")
   sizemenu()
 }
 

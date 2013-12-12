@@ -1,6 +1,17 @@
 entertitle<-function(Demo=FALSE, multiple=FALSE){
 
- if (Demo){
+ODAnalysis<-ODAnalysis
+lin.AUC<-lin.AUC
+lambda_z_calc<-lambda_z_calc
+BE_LL<-BE_LL
+BE_UL<-BE_UL
+dosez<-dosez
+DosingTau<-DosingTau
+Tlastz<-Tlastz
+xlabz<-xlabz
+ylabz<-ylabz
+
+if (Demo){
       ##NCAanalyze or NCAGLManalyze
       if(multiple){
       cat(" Input Drug Dose:\n")
@@ -24,21 +35,21 @@ entertitle<-function(Demo=FALSE, multiple=FALSE){
       } 
       cat("\n Input the Title of x-axis (time) for Plot:\n")
       cat(" (or press Enter to use default value - Time)\n\n")
-      cat("Time\n")
+      cat("Time (x-axis)\n")
       xaxis<-"Time after Dosing (hr)"
       cat("\n")
 
       cat("\n Input the title of y-axis (Conc.)for plot:\n")
       cat(" (or press Enter to use default value - Conc.\n\n")
-      cat("Conc.\n")
-      yaxis<-"Drug Conc. in Plasma"
+      cat("Conc.(y-axis)\n")
+      yaxis<-"Drug Plasma Conc. (ng/mL)"
       cat("\n")
 
      }   
   else {
-    cat(" Input Drug Dose:\n")
-    Dose<- readline() 
-    if (substr(Dose, 1, 1) == ""|| Dose<=0)  Dose<-0  else Dose<-as.numeric(Dose) 
+    ### cat(" Input Drug Dose:\n")
+    Dose<- dosez
+    if (Dose<=0)  Dose<-0  else Dose<-as.numeric(Dose) 
        repeat{ 
         if (Dose==0 ){
          cat("\n")
@@ -56,9 +67,9 @@ entertitle<-function(Demo=FALSE, multiple=FALSE){
     } 
    }   
    if(multiple){
-    cat(" Input Dosing Interval (Tau):\n")
-    Tau<-  readline() 
-    if (substr(Tau, 1, 1) == ""|| Tau<=0)  Tau<-0  else Tau<-as.numeric(Tau)
+    ### cat(" Input Dosing Interval (Tau):\n")
+    Tau<- DosingTau 
+    if (Tau<=0)  Tau<-0  else Tau<-as.numeric(Tau)
        repeat{
         if (Tau==0 ){
          cat("\n")
@@ -75,9 +86,9 @@ entertitle<-function(Demo=FALSE, multiple=FALSE){
        return (Tau<-as.numeric(Tau))
     }
    }
-     cat(" Input the Time Point of the Final Dose since Time zero:\n")
-     TlastD<- readline() 
-     if (substr(TlastD, 1, 1) == ""|| TlastD<=0)  TlastD<-0  else TlastD<-as.numeric(TlastD)
+     ### cat(" Input the Time Point of the Final Dose since Time zero:\n")
+     TlastD<- Tlastz
+     if (TlastD<=0)  TlastD<-0  else TlastD<-as.numeric(TlastD)
        repeat{
         if (TlastD==0 ){
          cat("\n")
@@ -96,14 +107,14 @@ entertitle<-function(Demo=FALSE, multiple=FALSE){
    } 
   }  
     
-    cat("\n Input the title of x-axis (Time) for plot:\n")
-    cat("(or Press Enter to use default - 'Time after Dosing')\n\n") 
-    xaxis<-readline()
-     if (substr(xaxis, 1, 1) == "")  xaxis<-"Time after Dosing"  else xaxis<-xaxis
+    ### cat("\n Input the title of x-axis (Time) for plot:\n")
+    ### cat("(or Press Enter to use default - 'Time after Dosing')\n\n") 
+    xaxis<-xlabz
+    if (substr(xaxis, 1, 1) == "")  xaxis<-"Time after Dosing"  else xaxis<-xaxis
      
-    cat("\n Input the title of y-axis (Conc.) for plot:\n")
-    cat("(or Press Enter to use default - 'Drug Plasma Conc.')\n\n") 
-    yaxis<-readline()
+    ### cat("\n Input the title of y-axis (Conc.) for plot:\n")
+    ### cat("(or Press Enter to use default - 'Drug Plasma Conc.')\n\n") 
+    yaxis<-ylabz
     if (substr(yaxis, 1, 1) == "")  yaxis<-"Drug Plasma Conc."  else yaxis<-yaxis
     cat("\n\n Please Wait...  Processing now. \n\n")
  }

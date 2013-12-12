@@ -1,5 +1,5 @@
 description_TTT<-function(){
-cat("\n\n")
+cat("\n")
 cat("*****************************************************************************\n")
 cat("                      Two-Times-Tmax (TTT) method                            \n")
 cat("-----------------------------------------------------------------------------\n")
@@ -18,6 +18,5 @@ cat(" Identification of the Mono-Exponential Terminal Phase for Orally          
 cat(" Administered Drugs. Biopharm Drug Dispos 29, 145-157 (2008).                \n")
 cat("*****************************************************************************\n")
 cat("\n")
-alarm(); alarm()
-readline(" Press Enter to proceed...")
+alarm(); alarm();readline(" Press Enter to proceed...")
 }

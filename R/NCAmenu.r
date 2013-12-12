@@ -1,7 +1,14 @@
 # List of Noncompartment Analysis (NCA) for 2x2 crossover 
 NCAmenu<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
-cat("\n")
+
+designtrace<-designtrace
+dt_old<-""
+dt_old<-designtrace
+
+cat("\n\n*** You have selected the following ->\n",designtrace,"\n")
+### no tracing here... 
+
   file.menu <- c("Run NCA",
                  "Run NCA demo",
                  "Back to the previous step",
@@ -19,6 +26,11 @@ else{
     }
 } 
     if (pick == 1){
+         dt_old<-gsub("NCA only,","",dt_old,fixed=TRUE)   ### remove first if there is any and then will put it back again.
+         dt_old<-trim(dt_old)                             ### Remove leading and trailing spaces from character strings
+         dt_old<-paste(dt_old,"NCA only,",sep=" ")        ### if there is no 'stat analysis only,' following NCA only.
+                                                          ### otherwise, it may be duplicated. --> avoid being duplicated!
+         designtrace<<-dt_old
       cat("\n")
       if(multiple){
          if(parallel){
@@ -70,9 +82,19 @@ else{
     if (pick == 3){
         cat("\n")
        if(multiple){
-       Multiple1menu() 
+       dt_old<-gsub("2x2x2 crossover,","",dt_old,fixed=TRUE)   ### find and replace characters in a string... -YJ
+       dt_old<-gsub("parallel study,","",dt_old,fixed=TRUE)    ### find and replace characters in a string... -YJ
+       dt_old<-trim(dt_old)                                    ### Remove leading and trailing spaces from character strings
+       designtrace<<-dt_old
+       Multiple1menu()
+       
        }
        else{
+       dt_old<-gsub("2x2x2 crossover,","",dt_old,fixed=TRUE)   ### find and replace characters in a string... -YJ
+       dt_old<-gsub("replicated study,","",dt_old,fixed=TRUE)  ### find and replace characters in a string... -YJ
+       dt_old<-gsub("parallel study,","",dt_old,fixed=TRUE)    ### find and replace characters in a string... -YJ
+       dt_old<-trim(dt_old)                                    ### Remove leading and trailing spaces from character strings
+       designtrace<<-dt_old
        Multiplemenu() 
        }
       } 

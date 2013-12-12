@@ -1,4 +1,4 @@
-MultipleBANOVAanalyze<-function(TotalData, separateWindows=TRUE)
+MultipleBANOVAanalyze<-function(TotalData,separateWindows=TRUE)
 {
-BANOVAanalyze(TotalData, multiple=TRUE, separateWindows=TRUE)
+BANOVAanalyze(TotalData, multiple=TRUE,separateWindows=TRUE)
 }

@@ -1,5 +1,5 @@
 description_pointselect<-function(){
-cat("\n\n")
+cat("\n")
 cat("*** Instructions (please read carefully.) ***                                \n\n")
 cat("-------------------------------------------------------------------------------\n")
 cat("                     Point Selection for Lambda_z Estimation                   \n")
@@ -23,7 +23,6 @@ cat(" Do the same procedures until finishing all subjects.                      
 cat(" Note: The # of data points should be at least 2's and max. is 6.              \n")
 cat("       Please do NOT choose any data point before Tmax.                        \n")
 cat("...............................................................................\n")
-cat("\n\n")
-alarm();alarm()
-readline("  Press Enter to proceed...")
+cat("\n")
+alarm();alarm();readline("  Press Enter to proceed...")
 }

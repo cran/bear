@@ -9,26 +9,51 @@ Replicateddata<-NULL
 MultipleParadata<-NULL
 Paralleldata<-NULL
 Multipledata<-NULL
+TotalSingleData<-NULL
 
-cat("\n")
-  file.menu <- c("NCA (select 2-6 data points) --> Statistical analysis",
-                 "NCA (ARS) --> Statistical analysis",
-                 "NCA (AIC) --> Statistical analysis",
-                 "NCA (TTT) --> Statistical analysis",
-                 "NCA (TTT and ARS) --> Statistical analysis",
-                 "NCA (TTT and AIC) --> Statistical analysis",
-                 "Back to the previous step",
-                 "Quit")
- cat("\n")
-  pick <- menu(file.menu, title = " << Method Selection for of lambda_z Estimation>> ", graphics=TRUE)
+### move here since v2.5.9 [2013/11/10 AM 01:01:55] -YJ
+
+lin.AUC<-lin.AUC
+pAUC<-pAUC               ### for pAUC
+lambda_z_calc<-lambda_z_calc
+BE_LL<-BE_LL
+BE_UL<-BE_UL
+dosez<-dosez
+Tlastz<-Tlastz
+xlabz<-xlabz
+ylabz<-ylabz
+
+### file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
+###                "All with Linear Trapezoidal Method")
+### pick <- menu(file.menu, title = " << Method Selections for AUC Calculation>> ", graphics=TRUE)
+### lin.AUC<<-ifelse(pick==1,FALSE,TRUE)
+###
+
+### cat("\n")
+###   file.menu <- c("Select 2-6 data points manually",
+###                  "Use Adjusted R sq. (ARS) method",
+###                  "Use Akaike information criterion (AIC) method",
+###                  "Use the Two-Times-Tmax(TTT) method",
+###                  "Use TTT and ARS method",
+###                  "Use TTT and AIC method",
+###                  "Back to the previous step",
+###                  "Quit")
+###  cat("\n")
+###   pick <- menu(file.menu, title = " <<Method Selections for Lambda_z Estimation>> ", graphics=TRUE)
   if(replicated){
     filelocxx <- system.file("extdata", "Replicateddata.rda", package="bear")
     load(filelocxx)  ## because it is a *.rda data file
-    ## saveRDS(Replicateddata,"Replicateddata_demo.RData")
+    ### save the dataset for testing...  -YJ
+    if(file.exists("SingleRep_demo.csv")){
+         write.csv(Replicateddata,file="SingleRep_demo_02.csv",row.names=FALSE)}
+    else{write.csv(Replicateddata,file="SingleRep_demo.csv",row.names=FALSE)}
+    if(file.exists("SingleRep_demo.RData")){
+         saveRDS(Replicateddata,file="SingleRep_demo_02.RData")}
+    else{saveRDS(Replicateddata,file="SingleRep_demo.RData")}
 
     with(entertitle.demo(), {
      description_RepNCAinput()  
-     predata<-split(Replicateddata,  list(Replicateddata$prd,Replicateddata$subj))
+     predata<-split(Replicateddata,list(Replicateddata$prd,Replicateddata$subj))
      code<-NULL
      presubj<-NULL
      preseq<-NULL
@@ -84,7 +109,7 @@ Totalplot<- rbind(SingleRdata,SingleTdata)
 create.products_sum(Totalplot)
 ###
       
-   if (pick == 1){
+   if (lambda_z_calc == 5){
         description_pointselect()
       cat("\n")
         ## show(SingleRdata)   ### close this!  YJ
@@ -93,7 +118,7 @@ create.products_sum(Totalplot)
         RepNCA.MIXmenu()
         }
     else {
-    if (pick == 2){
+    if (lambda_z_calc == 0){
         cat("\n")
         ## show(SingleRdata)   ### close this!  YJ
         ## show(SingleTdata)
@@ -101,7 +126,7 @@ create.products_sum(Totalplot)
         RepNCA.MIXmenu()
        }
     else {
-    if (pick == 3){
+    if (lambda_z_calc == 1){
         cat("\n")
         ## show(SingleRdata)   ### close this!  YJ
         ## show(SingleTdata)
@@ -109,7 +134,7 @@ create.products_sum(Totalplot)
         RepNCA.MIXmenu()
        }
     else {
-    if (pick == 4){
+    if (lambda_z_calc == 2){
         cat("\n")
         ## show(SingleRdata)   ### close this!  YJ
         ## show(SingleTdata)
@@ -117,7 +142,7 @@ create.products_sum(Totalplot)
         RepNCA.MIXmenu()
        }
     else {
-    if (pick == 5){
+    if (lambda_z_calc == 3){
         cat("\n")
         ## show(SingleRdata)   ### close this!  YJ
         ## show(SingleTdata)
@@ -125,25 +150,13 @@ create.products_sum(Totalplot)
         RepNCA.MIXmenu()
          }
    else {
-    if (pick == 6){
+    if (lambda_z_calc == 4){
         cat("\n")
         ## show(SingleRdata)   ### close this!  YJ
         ## show(SingleTdata)
         RepTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         RepNCA.MIXmenu()
         }
-   else {
-    if (pick == 7){
-        RepNCA.MIXmenu()
-         }       
-   else {
-    if (pick == 8){
-       cat("\n")
-       cat("\n  Thank you for using bear!  Bye now. \n")
-       graphics.off()
-              }      
-             }
-           }
         }
       }
      }
@@ -156,6 +169,12 @@ create.products_sum(Totalplot)
      if(multiple){
       filelocxx <- system.file("extdata", "MultipleParadata.rda", package="bear")
       load(filelocxx)  ## because it is a *.rda data file; leave it as was
+      if(file.exists("MultiplePara_demo.csv")){
+         write.csv(MultipleParadata,file="MultiplePara_demo_02.csv",row.names=FALSE)}
+      else{write.csv(MultipleParadata,file="MultiplePara_demo.csv",row.names=FALSE)}
+      if(file.exists("MultiplePara_demo.RData")){
+         saveRDS(MultipleParadata,file="MultiplePara_demo_02.RData")}
+      else{saveRDS(MultipleParadata,file="MultiplePara_demo.RData")}
       
       with(Multiplentertitle.demo(), {
       description_ParaNCAinput()  
@@ -184,7 +203,7 @@ create.products_sum(Totalplot)
 create.products_sum(Totalplot)
 ###
       
-    if (pick == 1){
+    if (lambda_z_calc == 5){
         description_pointselect()
         show(SingleRdata)
         show(SingleTdata)
@@ -193,7 +212,7 @@ create.products_sum(Totalplot)
         MultipleParaNCA.MIXmenu()
         }
     else {
-    if (pick == 2){
+    if (lambda_z_calc == 0){
       show(SingleRdata)
         show(SingleTdata)
         cat("\n")
@@ -201,7 +220,7 @@ create.products_sum(Totalplot)
        MultipleParaNCA.MIXmenu()
        }
     else {
-    if (pick == 3){
+    if (lambda_z_calc == 1){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
@@ -209,7 +228,7 @@ create.products_sum(Totalplot)
        MultipleParaNCA.MIXmenu()
        }
     else {
-    if (pick == 4){
+    if (lambda_z_calc == 2){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
@@ -217,7 +236,7 @@ create.products_sum(Totalplot)
        MultipleParaNCA.MIXmenu()
        }
     else {
-    if (pick == 5){
+    if (lambda_z_calc == 3){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
@@ -225,26 +244,13 @@ create.products_sum(Totalplot)
        MultipleParaNCA.MIXmenu()
        }
    else {
-    if (pick == 6){
+    if (lambda_z_calc == 4){
         show(SingleRdata)
         show(SingleTdata)
         cat("\n")
        MultipleParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0)
        MultipleParaNCA.MIXmenu()
        }
-   else {
-    if (pick == 7){
-        cat("\n")
-         MultipleParaNCA.MIXmenu()
-       }       
-   else {
-    if (pick == 8){
-       cat("\n")
-       cat("\n  Thank you for using bear!  Bye now. \n")
-       graphics.off()
-              }      
-             }
-           }
         }
       }
      }
@@ -255,6 +261,12 @@ create.products_sum(Totalplot)
     else{
      filelocxx <- system.file("extdata", "Paralleldata.rda", package="bear")
      load(filelocxx)  ## because it is a *.rda data file
+      if(file.exists("SinglePara_demo.csv")){
+         write.csv(Paralleldata,file="SinglePara_demo_02.csv",row.names=FALSE)}
+      else{write.csv(Paralleldata,file="SinglePara_demo.csv",row.names=FALSE)}
+      if(file.exists("SinglePara_demo.RData")){
+         saveRDS(Paralleldata,file="SinglePara_demo_02.RData")}
+      else{saveRDS(Paralleldata,file="SinglePara_demo.RData")}
      
      with(entertitle.demo(), {
      description_ParaNCAinput()  
@@ -279,7 +291,7 @@ create.products_sum(Totalplot)
 create.products_sum(Totalplot)
 ###
       
-    if (pick == 1){
+    if (lambda_z_calc == 5){
         description_pointselect()
         cat("\n")
         show(SingleRdata)
@@ -288,7 +300,7 @@ create.products_sum(Totalplot)
         ParaNCA.MIXmenu()
         }
     else {
-    if (pick == 2){
+    if (lambda_z_calc == 0){
       cat("\n")
         show(SingleRdata)
         show(SingleTdata)
@@ -296,7 +308,7 @@ create.products_sum(Totalplot)
        ParaNCA.MIXmenu()
        }
     else {
-    if (pick == 3){
+    if (lambda_z_calc == 1){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
@@ -304,7 +316,7 @@ create.products_sum(Totalplot)
        ParaNCA.MIXmenu()
        }
     else {
-    if (pick == 4){
+    if (lambda_z_calc == 2){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata) 
@@ -312,7 +324,7 @@ create.products_sum(Totalplot)
        ParaNCA.MIXmenu()
        }
     else {
-    if (pick == 5){
+    if (lambda_z_calc == 3){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
@@ -320,26 +332,13 @@ create.products_sum(Totalplot)
        ParaNCA.MIXmenu()
        }
    else {
-    if (pick == 6){
+    if (lambda_z_calc == 4){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
        ParaTTTAIC.MIX(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
        ParaNCA.MIXmenu()
        }
-   else {
-    if (pick == 7){
-        cat("\n")
-        ParaNCA.MIXmenu()
-       }       
-   else {
-    if (pick == 8){
-       cat("\n")
-       cat("\n  Thank you for using bear!  Bye now. \n")
-       graphics.off()
-              }      
-             }
-           }
         }
       }
      }
@@ -352,6 +351,12 @@ create.products_sum(Totalplot)
      if(multiple){
      filelocxx <- system.file("extdata", "Multipledata.rda", package="bear")
      load(filelocxx)  ## because it is a *.rda data file
+     if(file.exists("Multiple2x2x2_demo.csv")){
+        write.csv(Multipledata,file="Multiple2x2x2_demo_02.csv",row.names=FALSE)}
+     else{write.csv(Multipledata,file="Multiple2x2x2_demo.csv",row.names=FALSE)}
+     if(file.exists("Multiple2x2x2_demo.RData")){
+        saveRDS(Multipledata,file="Multiple2x2x2_demo_02.RData")}
+     else{saveRDS(Multipledata,file="Multiple2x2x2_demo.RData")}     
      
      with(Multiplentertitle.demo(), {
      description_NCAinput()  
@@ -380,7 +385,7 @@ create.products_sum(Totalplot)
 create.products_sum(Totalplot)
 ###
            
-    if (pick == 1){
+    if (lambda_z_calc == 5){
         description_pointselect()
         show(SingleRdata0)
         show(SingleTdata0)
@@ -389,7 +394,7 @@ create.products_sum(Totalplot)
          MultipleNCA.BANOVAmenu()
         }
     else {
-    if (pick == 2){
+    if (lambda_z_calc == 0){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
@@ -397,7 +402,7 @@ create.products_sum(Totalplot)
         MultipleNCA.BANOVAmenu()
        }
     else {
-    if (pick == 3){
+    if (lambda_z_calc == 1){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
@@ -405,7 +410,7 @@ create.products_sum(Totalplot)
         MultipleNCA.BANOVAmenu()
        }
     else {
-    if (pick == 4){
+    if (lambda_z_calc == 2){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
@@ -413,7 +418,7 @@ create.products_sum(Totalplot)
         MultipleNCA.BANOVAmenu()
        }
     else {
-    if (pick == 5){
+    if (lambda_z_calc == 3){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
@@ -421,26 +426,13 @@ create.products_sum(Totalplot)
         MultipleNCA.BANOVAmenu()
        }
    else {
-    if (pick == 6){
+    if (lambda_z_calc == 4){
         show(SingleRdata0)
         show(SingleTdata0)
         cat("\n")
        MultipleTTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, TlastD,SingleRdata0,SingleTdata0) 
        MultipleNCA.BANOVAmenu()
        }
-   else {
-    if (pick == 7){
-        cat("\n")
-        MultipleNCA.BANOVAmenu()
-       }       
-   else {
-    if (pick == 8){
-       cat("\n")
-       cat("\n  Thank you for using bear!  Bye now. \n")
-       graphics.off()
-              }      
-             }
-           }
         }
        }
       }
@@ -452,6 +444,12 @@ create.products_sum(Totalplot)
     description_NCAinput()
     filelocxx <- system.file("extdata", "TotalSingledata.rda", package="bear")
     load(filelocxx)  ## because it is a *.rda data file
+    if(file.exists("Single2x2x2_demo.csv")){
+       write.csv(TotalSingledata,file="Single2x2x2_demo_02.csv",row.names=FALSE)}
+    else{write.csv(TotalSingledata,file="Single2x2x2_demo.csv",row.names=FALSE)}
+    if(file.exists("Single2x2x2_demo.RData")){
+       saveRDS(TotalSingledata,file="Single2x2x2_demo_02.RData")}
+    else{saveRDS(TotalSingledata,file="Single2x2x2_demo.RData")}         
     
     cat("\n\n")
      ##NCAanalyze or NCAGLManalyze
@@ -479,7 +477,7 @@ create.products_sum(Totalplot)
 create.products_sum(Totalplot)
 ###
 
-    if (pick == 1){
+    if (lambda_z_calc == 5){
       cat("\n")
         description_pointselect()
         show(SingleRdata)
@@ -489,7 +487,7 @@ create.products_sum(Totalplot)
         }
 
     else {
-    if (pick == 2){
+    if (lambda_z_calc == 0){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
@@ -498,7 +496,7 @@ create.products_sum(Totalplot)
        }
        
     else {
-    if (pick == 3){
+    if (lambda_z_calc == 1){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
@@ -506,7 +504,7 @@ create.products_sum(Totalplot)
         NCA.BANOVAmenu()
        }
     else {
-    if (pick == 4){
+    if (lambda_z_calc == 2){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
@@ -514,7 +512,7 @@ create.products_sum(Totalplot)
         NCA.BANOVAmenu()
        }
     else {
-    if (pick == 5){
+    if (lambda_z_calc == 3){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
@@ -522,26 +520,13 @@ create.products_sum(Totalplot)
         NCA.BANOVAmenu()
          }
    else {
-    if (pick == 6){
+    if (lambda_z_calc == 4){
         cat("\n")
         show(SingleRdata)
         show(SingleTdata)
         TTTAIC.BANOVA(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1)
         NCA.BANOVAmenu()
         }
-    else {
-    if (pick == 7){
-        cat("\n")
-        NCA.BANOVAmenu()
-         }
-     else {
-    if (pick == 8){
-       cat("\n")
-       cat("\n  Thank you for using bear!  Bye now. \n")
-       graphics.off()
-              }
-             }
-           }
         }
        }
       }
