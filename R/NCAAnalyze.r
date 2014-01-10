@@ -1,7 +1,7 @@
 ###
 ###  Input assay data Menu for Data Analysis for Single dose (don't analyze anything with this?  YJ)
-###  This script has two parts: multiple & else (i.e., single); all are non-replicate; if replicate -> RepNCAanalyze.r  -YJ
-### 
+###  This script has two parts: multiple & else (i.e., single) and all are non-replicate;
+###  if replicate -> RepNCAanalyze.r  -YJ
 
 
 NCAanalyze<-function(TotalSingledata,Dose,Tau,TlastD,xaxis,yaxis,separateWindows=TRUE,
@@ -20,6 +20,7 @@ DosingTau<-DosingTau
 Tlastz<-Tlastz
 xlabz<-xlabz
 ylabz<-ylabz
+IndivDP_output<-IndivDP_output
 
 ### file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
 ###                "All with Linear Trapezoidal Method")
@@ -43,10 +44,10 @@ description_drug()
                     time=Ref$time, conc=Ref$conc)
     }
     SingleRdata0<-Refdata[ do.call(order, Refdata) ,]
-    show(SingleRdata0)
+    ### show(SingleRdata0)
     SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
     SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
-    SingleRdata1 <- na.omit(SingleRdata1)
+    ### SingleRdata1 <- na.omit(SingleRdata1)    ### for v2.6.1
 
 ##SingleRdata1-->for select 2-6 points
 cat("\n\n")
@@ -60,14 +61,23 @@ cat("\n\n")
                      time=Test$time, conc=Test$conc)
    }
      SingleTdata0<-Testdata[ do.call(order, Testdata) ,]
-     show(SingleTdata0)
+     ### show(SingleTdata0)
      SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
      SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
-     SingleTdata1 <- na.omit(SingleTdata1)
+     ### SingleTdata1 <- na.omit(SingleTdata1)    ### for v2.6.1 - IDP output
 
 SingleRdata<-subset(SingleRdata0, time >=TlastD)
+show(SingleRdata0);cat("\n\n")
+if(IndivDP_output){
+SingleRTdata<-SingleRdata
+indiv_dp.output(SingleRTdata)
+}
 SingleTdata<-subset(SingleTdata0, time >=TlastD)
-
+show(SingleTdata0)
+if(IndivDP_output){
+SingleRTdata<-SingleTdata
+indiv_dp.output(SingleRTdata)
+}
 ##SingleTdata1-->for select 2-6 points
 cat("\n\n")
 #'Total" for NCAplot
@@ -110,7 +120,7 @@ create.products_sum(Totalplot)
      ##  load(comdataname)
      comdata<-readRDS(file.choose())
      comdata<-edit(comdata)
-     comdata<- na.omit(comdata)
+     ### comdata<- na.omit(comdata)    ### for v2.6.1 -IDP output
      colnames(comdata)<-list("subj","time","conc","conc_data","drug")
      cat("\n\n")
      description_drug()
@@ -244,10 +254,15 @@ Refdata<-data.frame(subj=Ref$subj, seq= Ref$seq, prd=Ref$prd, drug=c(1),
                     time=Ref$time, conc=Ref$conc)
 }
 SingleRdata<-Refdata[ do.call(order, Refdata) ,]
-show(SingleRdata)
+show(SingleRdata)  ### similar to Refdata but sorted by subjects
+if(IndivDP_output){
+SingleRTdata<-SingleRdata
+indiv_dp.output(SingleRTdata)
+}
 SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
 SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
-SingleRdata1 <- na.omit(SingleRdata1)
+###  we can output "individual data points for ref. & test product here"  -YJ
+### SingleRdata1 <- na.omit(SingleRdata1)    ### for v2.6.1
 
 ##SingleRdata1-->for select 2-6 points
 cat("\n\n")
@@ -261,10 +276,15 @@ Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2),
                      time=Test$time, conc=Test$conc)
 }
 SingleTdata<-Testdata[ do.call(order, Testdata) ,]
-show(SingleTdata)
+show(SingleTdata)  ### similar to Testdata but sorted by subjects
+if(IndivDP_output){
+SingleRTdata<-SingleTdata
+indiv_dp.output(SingleRTdata)
+}
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
-SingleTdata1 <- na.omit(SingleTdata1)
+### we can output "individual data points for ref. & test product here"  --YJ
+### SingleTdata1 <- na.omit(SingleTdata1)    ### for v2.6.1 - IDP output
 
 ##SingleTdata1-->for select 2-6 points
 cat("\n\n")
@@ -307,7 +327,7 @@ create.products_sum(Totalplot)
      ##  load(comdataname)
      comdata<-readRDS(file.choose())
      comdata<-edit(comdata)
-     comdata<- na.omit(comdata)
+     ### comdata<- na.omit(comdata)    ### for v2.6.1 -IDP output
      colnames(comdata)<-list("subj","time","conc","conc_data","drug")
      cat("\n\n")
      description_drug()

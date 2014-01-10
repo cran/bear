@@ -43,6 +43,8 @@ lambda_z_regr_select_test<- lambda_z_regr_select_test
 pdf(lambda_z_regression_lines,paper="a4")  ### now prepare to save as pdf here.  -YJ
 logo_plot_desc()
 ###
+SingleRdata<-na.omit(SingleRdata)  ### v2.6.1
+SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
 
 #split dataframe into sub-dataframe by subject for reference data
  if(replicated){

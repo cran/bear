@@ -32,6 +32,12 @@ cat("\n\n")
     cat("                                                                            \n")
     cat("****************************************************************************\n")
     cat("\n\n")
+###
+### different from ARC(), aic()..., etc., here we trim 'SingleRdata1' and 'SingleTdata1' since v2.6.1
+###
+SingleRdata1<-na.omit(SingleRdata1)  ### v2.6.1 since the original dataset was used to output IDP, not trim at all 
+SingleTdata1<-na.omit(SingleTdata1)  ### before arriving here, so we trim it now; otherwise it causes errors. -YJ
+
 #split dataframe into sub-dataframe by subject for reference data
 if(replicated){
        R.split<-split(SingleRdata1, list(SingleRdata1$code))

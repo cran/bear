@@ -210,12 +210,22 @@ if(parallel){
    cat(" column#2: drug                                                                    \n")
    cat("            ->1: Ref.                                                              \n")
    cat("            ->2: Test                                                              \n")
+  if(pAUC){
+   cat(" column#3: Cmax_ss                                                                 \n")
+   cat(" column#4: AUC(tau)ss                                                              \n")
+   cat(" column#5: pAUC                                                                    \n")
+   cat(" column#6: ln(Cmax_ss)                                                             \n")
+   cat(" column#7: ln(AUC(tau)ss)                                                          \n")
+   cat(" column#8: ln(pAUC)                                                                \n")
+   cat("***********************************************************************************\n")  
+  }
+  else{
    cat(" column#3: Cmax_ss                                                                 \n")
    cat(" column#4: AUC(tau)ss                                                              \n")
    cat(" column#5: lnCmax_ss                                                               \n")
    cat(" column#6: lnAUC(tau)ss                                                            \n")
    cat("***********************************************************************************\n")
-MultipleParaMIXcsv()
+MultipleParaMIXcsv()}
  }
  else{
 cat("***********************************************************************************\n")
@@ -225,6 +235,18 @@ cat(" column#1: subject no.(subj)                                               
 cat(" column#2: drug                                                                    \n")
 cat("            ->1: Ref.                                                              \n")
 cat("            ->2: Test                                                              \n")
+if(pAUC){
+cat(" column#3: Cmax                                                                    \n")
+cat(" column#4: AUC0t                                                                   \n")
+cat(" column#5: AUC0INF                                                                 \n")
+cat(" column#6: pAUC                                                                    \n")
+cat(" column#7: ln(Cmax)                                                                \n")
+cat(" column#8: ln(AUC0t)                                                               \n")
+cat(" column#9: ln(AUC0INF)                                                            \n")
+cat(" column#10: ln(pAUC)                                                               \n")
+cat("***********************************************************************************\n") 
+}
+else{
 cat(" column#3: Cmax                                                                    \n")
 cat(" column#4: AUC0t                                                                   \n")
 cat(" column#5: AUC0INF                                                                 \n")
@@ -232,7 +254,7 @@ cat(" column#6: ln(Cmax)                                                        
 cat(" column#7: ln(AUC0t)                                                               \n")
 cat(" column#8: ln(AUC0INF)                                                            \n")
 cat("***********************************************************************************\n") 
-ParaMIXcsv()
+ParaMIXcsv()}
    }
  }
  else{  
@@ -320,6 +342,18 @@ ParaMIXcsv()
    cat(" column#4: period (prd)                                                            \n")
    cat("            ->Period 1: 1st-treatment period                                       \n")
    cat("            ->Period 2: 2nd-treatment period                                       \n")
+   if(pAUC){
+   cat(" column#5: Cmax                                                                    \n")
+   cat(" column#6: AUC0t                                                                   \n")
+   cat(" column#7: AUC0INF                                                                 \n")
+   cat(" column#8: pAUC                                                                    \n")
+   cat(" column#9: ln(Cmax)                                                                \n")
+   cat(" column#10: ln(AUC0t)                                                               \n")
+   cat(" column#11: ln(AUC0INF)                                                            \n")
+   cat(" column#12: ln(pAUC)                                                               \n")
+   cat("***********************************************************************************\n")   
+   }
+   else{
    cat(" column#5: Cmax                                                                    \n")
    cat(" column#6: AUC0t                                                                   \n")
    cat(" column#7: AUC0INF                                                                 \n")
@@ -327,6 +361,7 @@ ParaMIXcsv()
    cat(" column#9: ln(AUC0t)                                                               \n")
    cat(" column#10: ln(AUC0INF)                                                            \n")
    cat("***********************************************************************************\n")
+   }
    }
 }
         if(replicated){

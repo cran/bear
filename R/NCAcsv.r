@@ -32,7 +32,7 @@ if (pick == 1){
         } 
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
          if(parallel){
@@ -77,7 +77,7 @@ if (pick == 1){
         }
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
         if(parallel){
@@ -121,7 +121,7 @@ if (pick == 1){
         } 
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
         if(parallel){
@@ -165,7 +165,7 @@ else {
         } 
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
        if(parallel){
@@ -209,7 +209,7 @@ else {
         } 
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
         if(parallel){
@@ -253,7 +253,7 @@ else {
         } 
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames,  sep="\t",dec=",")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
          if(parallel){
@@ -297,7 +297,7 @@ else {
         } 
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
          if(parallel){
@@ -341,7 +341,7 @@ else {
         }
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
           if(parallel){
@@ -385,7 +385,7 @@ else {
         } 
         TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
         TotalSingledata<-edit(TotalSingledata)
-        TotalSingledata<-na.omit(TotalSingledata)
+        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
         cat("\n\n")
         show(TotalSingledata)
         if(parallel){

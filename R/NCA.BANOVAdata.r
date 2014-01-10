@@ -27,7 +27,7 @@ cat("\n")
         }
      }
      TotalSingledata<-edit(TotalSingledata)
-     TotalSingledata<- na.omit(TotalSingledata)
+     ### TotalSingledata<-na.omit(TotalSingledata)     ### for v2.6.1
      show(TotalSingledata)
      cat("\n")
        cat("Enter the file name (no extension!):\n")
@@ -129,7 +129,7 @@ else {
 ##     load(TotalSinglename)
      TotalSingledata<-readRDS(file.choose())
      TotalSingledata<-edit(TotalSingledata)
-     TotalSingledata<- na.omit(TotalSingledata)
+     ### TotalSingledata<- na.omit(TotalSingledata)    ### for 2.6.1 
      if(parallel){
       colnames(TotalSingledata)<-list("subj", "drug","time", "conc")
      }

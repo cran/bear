@@ -44,6 +44,8 @@ lambda_z_regr_select_test<- lambda_z_regr_select_test
 pdf(lambda_z_regression_lines,paper="a4")  ### now prepare to save as pdf here.  -YJ
 logo_plot_desc()
 ###
+SingleRdata<-na.omit(SingleRdata)  ### v2.6.1 since the original dataset was used to output IDP, not trim at all 
+SingleTdata<-na.omit(SingleTdata)  ### before arriving here, so we trim it now; otherwise it causes errors. -YJ
 
 #split dataframe into sub-dataframe by subject for reference data
  if(replicated){

@@ -18,14 +18,16 @@ OutputFilez<-function(){
    lambda_z_regr_select_test<-NULL                     ### NCA.r, ARS.r, aic.r, TTT.r, TTTAIC.r & TTTARS.r
    NCAsave_pivotal_param_RData_export<-NULL            ### NCAsave.r, NCAoutput.r
    NCAsave_pivotal_param_csv_export<-NULL              ### NCAsave.r, NCAoutput.r
+   IDP_output_ref<-NULL                                ### Indiv_dp.output()
+   IDP_output_test<-NULL                               ### Indiv_dp.output()
    
 ## create random batch number & system.date() for the head of output files
 
    xFile_ext<-""
-   xFile_ext<-paste(xFile_ext,sample(1001001:9786999,1,replace=F),sep="") ## as random run batch#
-   xFile_ext<-paste(xFile_ext,"_",sep="")
-   xFile_ext<-paste(xFile_ext,Sys.Date(),sep="")                          ## followed by the system date
-   xFile_ext<-paste(xFile_ext,"_",sep="")
+   xFile_ext<-paste(xFile_ext,sample(1001001:9786999,1,replace=F),"_",Sys.Date(),"_",sep="") ## as random run batch#
+   ### xFile_ext<-paste(xFile_ext,"_",sep="")
+   ### xFile_ext<-paste(xFile_ext,Sys.Date(),sep="")                          ## followed by the system date
+   ### xFile_ext<-paste(xFile_ext,"_",sep="")
    
 ## start to assign middle part of output file names now.
 
@@ -44,6 +46,8 @@ OutputFilez<-function(){
    ODplot_output_xfile<-paste(xFile_ext,"oda_plots",sep="")
    NCAsave_pivotal_param_RData_export<-paste(xFile_ext,"NCA_pivotal_param_export",sep="")
    NCAsave_pivotal_param_csv_export<-paste(xFile_ext,"NCA_pivotal_param_export",sep="")
+   IDP_output_ref<-paste(xFile_ext,"ref_IDP_output",sep="")
+   IDP_output_test<-paste(xFile_ext,"test_IDP_output",sep="")
    
 ## start to add file extension for output files (.txt, .csv, .pdf, etc)
 
@@ -62,4 +66,6 @@ OutputFilez<-function(){
    ODplot_output_xfile<<-paste(ODplot_output_xfile,".pdf",sep="")
    NCAsave_pivotal_param_RData_export<<-paste(NCAsave_pivotal_param_RData_export,".RData",sep="")
    NCAsave_pivotal_param_csv_export<<-paste(NCAsave_pivotal_param_csv_export,".csv",sep="")
+   IDP_output_ref<<-paste(IDP_output_ref,".csv",sep="")
+   IDP_output_test<<-paste(IDP_output_test,".csv",sep="")
 }

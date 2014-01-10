@@ -37,6 +37,8 @@ TotalData<-NULL
     
     filelocxx <- system.file("extdata", "TotalSingledata.rda", package="bear")
     load(filelocxx)
+    ### filelocxx <- system.file("extdata", "Single2x2x2.rda", package="bear")  ### v2.6.1 to test IDP function
+    ### TotalSingledata<-readRDS(filelocxx)                                     ### v2.6.1 to test IDP function
     write.csv(TotalSingledata,file="Single2x2x2_demo.csv",row.names=FALSE)
     saveRDS(TotalSingledata,file="Single2x2x2_demo.RData")
 

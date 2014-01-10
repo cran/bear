@@ -10,6 +10,7 @@ DosingTau<-DosingTau
 Tlastz<-Tlastz
 xlabz<-xlabz
 ylabz<-ylabz
+IndivDP_output<-IndivDP_output
 
 if (Demo){
       ##NCAanalyze or NCAGLManalyze

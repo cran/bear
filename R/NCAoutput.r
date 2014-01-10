@@ -76,8 +76,45 @@ zz <- file(nca_output_xfile, open="wt")
 ### sink(zz,split=TRUE)  ### see output on the screen simultaneously with this; 'split=TRUE' for debug...  -YJ
 sink(zz)                 ### for debugging, use the above line.
 description_version()
-cat(paste("\n***(1) All BE pivotal parameters have been saved in\n    -> (",pivotal_output_xfile,")\n\n",sep=""))
-cat(paste("***(2) All misc. PK parameters have been saved in\n    -> (",misc_pk_output_xfile,")\n\n",sep=""))
+cat(paste("\n***(1) All BE pivotal parameters have been saved in\n    -> (",pivotal_output_xfile,")\n",sep=""))
+cat(paste("***(2) All misc. PK parameters have been saved in\n    -> (",misc_pk_output_xfile,")\n",sep=""))
+### read setting files and display it ###
+bear.set<-readRDS("bear.setup.rds")
+plotz.set<-readRDS("plot.setup.rds")
+secondColumn<-as.character(plotz.set[,2])
+lambda_z_txt<-""
+lin.AUC_txt<-""
+BE_criteria_txt<-"lower limit"
+Dose_txt<-"dose given"
+Tau_txt<-"*multiple-dose only"
+Tlast_txt<-"*multiple-dose only"
+pAUC_txt<-""
+pAUC_start_txt<-"the starting time of pAUC"
+pAUC_end_txt<-"the end time of pAUC"
+IndivDP_output_txt<-""
+
+if(bear.set[1,2]==0) lambda_z_txt ="adj. R sq. (ARS)"
+if(bear.set[1,2]==1) lambda_z_txt ="Akaike info. criterion (AIC)"
+if(bear.set[1,2]==2) lambda_z_txt ="Two-Times-Tmax(TTT)"
+if(bear.set[1,2]==3) lambda_z_txt ="TTT and adj. ARS"
+if(bear.set[1,2]==4) lambda_z_txt ="TTT and AIC"
+if(bear.set[1,2]==5) lambda_z_txt ="manual selection"
+if(bear.set[1,2]==6) lambda_z_txt ="load previous selection (.RData)"
+lin.AUC_txt<-ifelse(bear.set[2,2]==0, "linear-up/log-down", "all linear")
+pAUC_txt<-ifelse(bear.set[7,2]==0,"No! full AUC","truncated/partical AUC")
+IndivDP_output_txt<-ifelse(bear.set[10,2]==0,"no IDP output","do IDP output")
+
+bear.set_txt<-data.frame(Methods=c("lambda_z estimate","trapezoidal AUC","BE criterion (LL)","Dose","Dosing Interval",
+                                    "Tlast","pAUC?","pAUC_start","pAUC_end","IDP output?"),
+                         Setting=c(bear.set[1,2],bear.set[2,2],bear.set[3,2],bear.set[4,2],bear.set[5,2],bear.set[6,2],
+                                   bear.set[7,2],bear.set[8,2],bear.set[9,2],bear.set[10,2]),
+                         which_is=c(lambda_z_txt,lin.AUC_txt,BE_criteria_txt,Dose_txt,Tau_txt,Tlast_txt,pAUC_txt,
+                                    pAUC_start_txt,pAUC_end_txt,IndivDP_output_txt))
+                        
+cat("\n -------------------  Project Settings ------------------\n\n");show(bear.set_txt);cat("\n")
+cat(paste(c(" The plot label of x-axis ->",secondColumn[[1]],"\n  and the label of y-axis ->",secondColumn[[2]])))  ### here cannot put 'xlabz' & 'ylabz'!  --YJ
+cat("\n --------------------------------------------------------\n\n")
+### end of read setting files and display it ###
 ### show mean/sd conc. by formulation here
 cat(" Summary of Mean Conc. (SD) vs. time by Formulation:-\n")
 cat("-----------------------------------------------------\n")
@@ -91,7 +128,7 @@ cat("\n--- Ref ---\n\n")
 show(Ref_sum)
 cat("-----------------------------------------------------\n")
 file.remove("sum_all_ref.csv","sum_all_test.csv")
-cat("\f")               ### formfeed (insert a page break) here
+### cat("\f")               ### formfeed (insert a page break) here
 cat("\n\n")
 cat("------------------------<<   NCA Summary and Outputs  >>-------------------\n\n")
 ### NCA_output
@@ -166,7 +203,7 @@ cat("------------------------<<   NCA Summary and Outputs  >>-------------------
           }
           }
 cat("\n\n")
-cat("\f")
+### cat("\f")
 cat("                    Reference                      \n")
 cat("---------------------------------------------------\n")
   #calculate AUC
@@ -552,7 +589,7 @@ cat("---------------------------------------------------\n")
               cat("\n\n")
   }  
 cat("\n\n")
-cat("\f")
+### cat("\f")
 cat("                         Test                      \n")
 cat("---------------------------------------------------\n")
 CmaxTest<-0
@@ -937,7 +974,7 @@ FluTest<-0
              if(pAUC) cat(" where *pAUC means ",pAUC_label,sep="")  ### make a note for 'pAUC'; ### for pAUC
              cat("\n\n") 
   }  
-cat("\f")    ### the next step is to show all PK parameters. -YJ 
+### cat("\f")    ### the next step is to show all PK parameters. -YJ 
  if(replicated){
   sumindexRR<-split(sumindexR,list(sumindexR$subj))
   sumindexTT<-split(sumindexT,list(sumindexT$subj))

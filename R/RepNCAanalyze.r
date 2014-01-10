@@ -17,6 +17,7 @@ DosingTau<-DosingTau
 Tlastz<-Tlastz
 xlabz<-xlabz
 ylabz<-ylabz
+IndivDP_output<-IndivDP_output
 
 ### file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
 ###                "All with Linear Trapezoidal Method")
@@ -116,7 +117,7 @@ create.products_sum(Totalplot)
      ##  load(comdataname)
      comdata<-readRDS(file.choose())
      comdata<-edit(comdata)
-     comdata<- na.omit(comdata)
+     ### comdata<- na.omit(comdata)   ### for v2.6.1 but IDP output function has been not implemented yet. -YJ
      colnames(comdata)<-list("subj", "time", "conc","conc_data","seq", "prd", "drug","code")
      cat("\n\n")
      description_drug()

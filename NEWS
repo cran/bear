@@ -1,5 +1,18 @@
+v2.6.1 (official release)
+    - added function to avoid the errors due to dummy input;
+    - re-organize the information about how to setup bear using file.show();
+      testing on Windows, linux and iMac OS X platforms; iMac will work with 
+      R.app or RStudio,but not TK GUI;
+    - added license (GPL-2|GPL-3) announcement for bear on all output or display 
+      pages;
+    - added the oupput function of individual data points (IDP output) with mean 
+      & sd for each time point;
+    - removed formfeed with NCAoutput(); it does not print correctly with a 
+      pdf printer; don't know why.
+    - fixed on-screen display content when it is pAUC;
+    - fixed some typo;
+    
 v2.6.0 (official release)
-    - 
     - decided not to implement data point interpolation for missing data value (C*)
       when doing partial AUC or truncated AUC analysis in bear; users may consider 
       to use an estimate/interpolation/extrapolation for missing data when 
@@ -7,10 +20,9 @@ v2.6.0 (official release)
       (1) http://forum.bebac.at/mix_entry.php?id=4655#p4681
       (2) http://forum.bebac.at/mix_entry.php?id=1933&page=0&category=0&order
                  =last_answer&descasc=DESC#p2323
-    - start implementing pAUC scheme... pAUC_NCA - done, pAUC-stat - done;
-      pAUC - NCA_Stat done; pAUC - DOA? interpolation pAUC? planning...
+    - added analysis for pAUC or truncated AUC (all noted as pAUC);
     - fixed AUMC to comply with linear-up/log-down trapezoidal rule as AUC.
-    - added study tracer up to the selected menu;
+    - added "study tracer" (footprint) following the selected items from menu;
     - create the export module for demo datasets;
     - enable demo datasets export through NCA and ANOVA for later testing purposes;
     - add 'plot.setup.rds'; plus original 'bear.setup.rds' of setup file for

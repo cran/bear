@@ -64,6 +64,8 @@ else{
 #cat("<<Output: linear regression model: conc. vs. time>>\n")
 #split dataframe into sub-dataframe by subject for reference data
 #"time.ref" means "kel"
+SingleRdata<-na.omit(SingleRdata)  ### v2.6.1
+SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
 
 if(replicated){
        R.split<-split(SingleRdata, list(SingleRdata$code))
