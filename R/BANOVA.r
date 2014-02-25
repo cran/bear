@@ -1,4 +1,4 @@
-###
+### will be called by BANOVAAnalyze() once.
 ### This is for non-replicate,non-parallel only; parallel or replicated --> RepMIX() --YJ
 ##ANOVA (lm)
 library(ICSNP)
@@ -27,6 +27,7 @@ Tlastz<-Tlastz
 xlabz<-xlabz
 ylabz<-ylabz
 
+
 ####
   lnCmax_theta1    <- BE_LL        # theta1: lower acceptance limit
   lnCmax_theta2    <- BE_UL
@@ -35,6 +36,9 @@ ylabz<-ylabz
   lnAUC0INF_theta1 <- BE_LL        # theta1: lower acceptance limit
   lnAUC0INF_theta2 <- BE_UL
 
+  lnCmax_ss<-NULL
+  lnAUCtau_ss<-NULL
+  
 if(pAUC) {lnpAUC_theta1<-BE_LL; lnpAUC_theta2<-BE_UL}   ### something can be wrong if this line is req.  -YJ
 ####
 
@@ -56,426 +60,251 @@ else{
 cat("*** A 2-trt,2-seq,and 2-period crossover single-dose design.\n\n")
 description_BE_criteria(BE_LL,BE_UL)
 }
-cat("\n\n")
-
+cat("\n")
 cat("             Statistical analysis (ANOVA(lm))              \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: Cmax_ss                       \n")
-cat("\n")
-Cmax_ss<- lm(log(Cmax_ss) ~ seq + subj:seq + prd + drug ,data=Data)
-BearAnova=anova(Cmax_ss)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(Cmax_ss ~ seq,data=Data)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(Cmax_ss ~ seq,data=Data)))
+lm.mod(Data$Cmax_ss, Data)  ### or can be written as 'lm.mod(TotalData$Cmax, TotalData)' shoud be the same.
 ###
-### the following is the same as Cmax_ss<- lm(log(Cmax_ss) ~ seq + subj:seq + prd + drug ,data=Data)!
-### the reason to do this is that we don't have to re-write more codes (around lines 277- 408) for nultiple-dose study;
+### the following is the same as Cmax_ss<- lm(Cmax_ss ~ seq + subj:seq + prd + drug ,data=Data)!
+### the reason to do this is that we don't have to re-write more codes (around lines 277- 408) for multiple-dose study;
 ### the data for multiple-dose was ported from TotalData with the same data column; Cmax of single-dose is
 ### replaced by Cmax_ss in the case of multiple-dose.
 ###
-Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug ,data=TotalData)
+### Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug ,data=TotalData)  ### not req. for later use; only for log(target)!
 }
 else{
 cat("   Dependent Variable: Cmax                       \n")
-cat("\n")
-Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug,data=TotalData)
-BearAnova=anova(Cmax)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("---\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(Cmax ~ seq,data=TotalData)))
-cat("---\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(Cmax ~ seq,data=TotalData)))
-cat("---\n")
-cat("Sum Sq. = Type III SS\n")
+lm.mod(TotalData$Cmax, TotalData)
+### Cmax<- lm(Cmax ~ seq + subj:seq + prd + drug,data=TotalData)
 }
-cat("\n")
+cat("\n\n")
 
 #GLM_AUC0t.txt
 cat("            Statistical analysis (ANOVA(lm))               \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: AUC(tau)ss                 \n")
-cat("\n")
-AUCtau_ss<- lm(AUCtau_ss ~ seq + subj:seq + prd + drug ,data=Data)
-BearAnova=anova(AUCtau_ss)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(AUCtau_ss ~ seq,data=Data)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(AUCtau_ss ~ seq,data=Data)))
-AUC0t<- lm(AUC0t ~ seq + subj:seq + prd + drug ,data=TotalData)
+lm.mod(Data$AUCtau_ss, Data)
+### AUC0t<- lm(AUC0t ~ seq + subj:seq + prd + drug ,data=TotalData)
 }
 else{
 cat("   Dependent Variable: AUC0t                      \n")
-cat("\n")
-AUC0t<- lm(AUC0t ~ seq + subj:seq + prd + drug ,data=TotalData)
-BearAnova=anova(AUC0t)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(AUC0t ~ seq,data=TotalData)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(AUC0t ~ seq,data=TotalData)))
+lm.mod(TotalData$AUC0t, TotalData)
+### AUC0t<- lm(AUC0t ~ seq + subj:seq + prd + drug ,data=TotalData)
 }
-cat("\n")
-cat("\n")
+cat("\n\n")
 ###
 ### GLM for pAUC
 ###
 if(pAUC){
 #GLM_pAUC.txt
-cat("\n\n")
-cat("        Statistical analysis (ANOVA(lm)and 90%CI)          \n")
+cat("             Statistical analysis (ANOVA(lm))              \n")
 cat("-----------------------------------------------------------\n")
 cat("   Dependent Variable: pAUC                                \n")
-cat("\n")
-AUC0INF<- lm(partAUC ~ seq + subj:seq + prd + drug ,data=TotalData)
-BearAnova=anova(AUC0INF)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(partAUC ~ seq,data=TotalData)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(partAUC ~ seq,data=TotalData)))
-cat("\n")
+lm.mod(TotalData$partAUC, TotalData)
+### AUC0INF<- lm(partAUC ~ seq + subj:seq + prd + drug ,data=TotalData)
 }
-
-if(multiple){
+else{
+if(multiple){    ### do nohting for multiple-dose since there is no 'AUC0INF' at all.
 }
 else{
 #GLM_AUC0INF.txt
-cat("        Statistical analysis (ANOVA(lm)and 90%CI)          \n")
+cat("             Statistical analysis (ANOVA(lm))              \n")
 cat("-----------------------------------------------------------\n")
-cat("   Dependent Variable: AUC0INF                  \n")
-cat("\n")
-AUC0INF<- lm(AUC0INF ~ seq + subj:seq + prd + drug ,data=TotalData)
-BearAnova=anova(AUC0INF)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(AUC0INF ~ seq,data=TotalData)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(AUC0INF ~ seq,data=TotalData)))
-cat("\n")
+cat("   Dependent Variable: AUC0INF                  \n") 
+lm.mod(TotalData$AUC0INF, TotalData)
+### AUC0INF<- lm(AUC0INF ~ seq + subj:seq + prd + drug ,data=TotalData)
 }
-#lnCmax or lnCmax_ss
+}
 cat("\n\n")
-cat("              Statistical analysis (ANOVA(lm))        \n")
+#lnCmax or lnCmax_ss
+cat("              Statistical analysis (ANOVA(lm))             \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: log(Cmax_ss)    \n")
-cat("\n")
-lnCmax_ss<- lm(log(Cmax_ss) ~ seq + subj:seq + prd + drug ,data=Data)
-BearAnova=anova(lnCmax_ss)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(log(Cmax_ss) ~ seq,data=Data)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(log(Cmax_ss) ~ seq,data=Data)))
-lnCmax<- lm(log(Cmax) ~ seq + subj:seq + prd + drug ,data=TotalData)
+lm.mod(log(Data$Cmax_ss), Data)
+lnCmax<- lm(log(Cmax) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
 }
 else{
 cat("   Dependent Variable: log(Cmax)                           \n")
-lnCmax<- lm(log(Cmax)~ seq + subj:seq + prd + drug,data=TotalData)
-### lnCmax<- aov(log(Cmax) ~ seq + subj:seq + prd + drug,data=TotalData)
-### print(summary(lnCmax))
-cat("\n")
-BearAnova=anova(lnCmax)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(log(Cmax) ~ seq,data=TotalData)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(log(Cmax) ~ seq,data=TotalData)))
+lm.mod(log(TotalData$Cmax), TotalData)
+lnCmax<- lm(log(Cmax)~ seq + subj:seq + prd + drug,data=TotalData)    ### yes! for later user.
 }
 cat("\n")
 if(multiple){
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnCmax_ss)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-cat("               =",formatC(100*sqrt(exp((anova(lnCmax_ss)[4,3]-anova(lnCmax_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
+if(anova(lnCmax_ss)[4,3]<anova(lnCmax_ss)[5,3]){
+   cat("               =",0,"% (due to a negative variance component)\n")
+   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+   }
+ else{
+   cat("               =",formatC(100*sqrt(exp((anova(lnCmax_ss)[4,3]-anova(lnCmax_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
+}
 cat("    MSResidual =",anova(lnCmax_ss)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnCmax_ss)[4,3],"\n")
 }
 else{
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnCmax)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-cat("               =",formatC(100*sqrt(exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1),format="f",digits=3),"%\n")
+if(anova(lnCmax)[4,3]<anova(lnCmax)[5,3]){
+   cat("               =",0,"% (due to a negative variance component)\n")
+   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+   }
+ else{
+   cat("               =",formatC(100*sqrt(exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1),format="f",digits=3),"%\n")
+}
 cat("    MSResidual =",anova(lnCmax)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnCmax)[4,3],"\n")
 }
-cat("\n")
+cat("\n\n")
 
 #lnAUC0t or lnAUCtau_ss
 
-cat("              Statistical analysis (ANOVA(lm))    \n")
+cat("              Statistical analysis (ANOVA(lm))             \n")
 cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: log(AUCtau_ss) \n")
-cat("\n")
-lnAUCtau_ss<- lm(log(AUCtau_ss) ~ seq + subj:seq + prd + drug ,data=Data)
-BearAnova=anova(lnAUCtau_ss)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(log(AUCtau_ss) ~ seq,data=Data)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(log(AUCtau_ss) ~ seq,data=Data)))
-lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)
+lm.mod(log(Data$AUCtau_ss), Data)
+lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
 }
 else{
 cat("   Dependent Variable: log(AUC0t)     \n")
-cat("\n")
-lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)
-BearAnova=anova(lnAUC0t)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(lnAUC0t ~ seq,data=TotalData)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(lnAUC0t ~ seq,data=TotalData)))
+lm.mod(log(TotalData$AUC0t), TotalData)
+lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
 }
 cat("\n")
 if(multiple){
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUCtau_ss)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-cat("               =",formatC(100*sqrt(exp((anova(lnAUCtau_ss)[4,3]-anova(lnAUCtau_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
+if(anova(lnAUCtau_ss)[4,3]<anova(lnAUCtau_ss)[5,3]){
+   cat("               =",0,"% (due to a negative variance component)\n")
+   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+   }
+ else{
+   cat("               =",formatC(100*sqrt(exp((anova(lnAUCtau_ss)[4,3]-anova(lnAUCtau_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
+}
 cat("    MSResidual =",anova(lnAUCtau_ss)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUCtau_ss)[4,3],"\n")
 }
 else{
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUC0t)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-cat("               =",formatC(100*sqrt(exp((anova(lnAUC0t)[4,3]-anova(lnAUC0t)[5,3])/2)-1),format="f",digits=3),"%\n")
+if(anova(lnAUC0t)[4,3]<anova(lnAUC0t)[5,3]){
+   cat("               =",0,"% (due to a negative variance component)\n")
+   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+   }
+ else{
+   cat("               =",formatC(100*sqrt(exp((anova(lnAUC0t)[4,3]-anova(lnAUC0t)[5,3])/2)-1),format="f",digits=3),"%\n")
+}
 cat("    MSResidual =",anova(lnAUC0t)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0t)[4,3],"\n")
+
+### for negative variance component; run lme(); see Bebac Forum for more details. -YJ
+## ctrl <- lmeControl(opt='optim')
+## cat("\n\n  Statistical analysis (lme) - 2x2x2 BE study               \n")
+## modlnAUC0t<-lme(log(AUC0t) ~ drug + seq + prd,
+##                random=~1|subj/seq, ### control=ctrl,
+##                ### weights=varIdent(form = ~ 1 |subj/seq), 
+##                data=TotalData, method="REML")
+## cat("--------------------------------------------------------------------------\n")
+## cat("  Dependent Variable: log(AUC0t)                                 \n")       
+## cat("\n")
+## print(summary(modlnAUC0t))
+## ### add two new lines here
+## ### cat("\n Variance components for method=REML\n\n");VarCorr(modlnAUC0t);cat("\n\n")
+## ### getVarCov(modlnAUC0t, type = "marginal");cat("\n\n")
+## print(anova(modlnAUC0t))
+## ###
+## cat("\n")
+## cat("Type I Tests of Fixed Effects\n")
+## print(anova(modlnAUC0t)[2:4,])
+## cat("\n")
+## cat("Type III Tests of Fixed Effects\n")
+## print(anova(modlnAUC0t, type="marginal")[2:4,])
+## cat("\n\n")
+## ### prdcount==2 here (2x2x2)
+## upperAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][4,1])*exp(qt(0.95,summary(modlnAUC0t)[20][[1]][4,3])*summary(modlnAUC0t)[20][[1]][4,2])
+## lowerAUC0t<-100*exp(summary(modlnAUC0t)[20][[1]][4,1])*exp(-qt(0.95,summary(modlnAUC0t)[20][[1]][4,3])*summary(modlnAUC0t)[20][[1]][4,2])
+## SlnAUC0t<-(summary(modlnAUC0t)[20][[1]][4,1])
+## SE_lnAUC0t<-summary(modlnAUC0t)[20][[1]][4,2]
+## TL_lnAUC0t<-(SlnAUC0t-log(lnAUC0t_theta1))/SE_lnAUC0t
+## TU_lnAUC0t<-(SlnAUC0t-log(lnAUC0t_theta2))/SE_lnAUC0t
+## PTL_lnAUC0t<-pt(TL_lnAUC0t,L1+L2-2)
+## PTU_lnAUC0t<-pt(TU_lnAUC0t,L1+L2-2)
+## TAH_lnAUC0t<-SlnAUC0t/SE_lnAUC0t
+## NP_lnAUC0t<-log(lnAUC0t_theta2)/SE_lnAUC0t
+## EP_lnAUC0t<- pt((abs(TAH_lnAUC0t)-NP_lnAUC0t),L1+L2-2) - pt((-abs(TAH_lnAUC0t)-NP_lnAUC0t),L1+L2-2)
+## cat("**************** Classical (Shortest) 90% C.I. for lnAUC0t ****************\n")
+## cat("\n")
+## output<-data.frame(Point_estimate=c( formatC(100*exp(SlnAUC0t),format="f",digits=3)),
+##                    CI90_lower=c(formatC(lowerAUC0t,format="f",digits=3)),
+##                    CI90_upper=c(formatC(upperAUC0t,format="f",digits=3)))
+## dimnames(output) <- list("Ratio",
+##                           c("  Point Estimate",
+##                             "  CI90 lower",
+##                             "  CI90 upper" ))
+## show(output)
+## Point_estimate <- 100*exp(SlnAUC0t)
+## CI90_lower <- lowerAUC0t
+## delta_CI <- log(Point_estimate)-log(CI90_lower)
+## MSE <- 2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2
+## CVintra <- 100*sqrt(exp(MSE)-1)
+## cat("\n")
+## cat(" The estimated intra-subject CV for lnAUC0t =",formatC(CVintra, format="f", digits=5),"%\n")
+## cat(" CV(intra)% = 100*sqrt(exp(MSE)-1)), where MSE =",formatC(MSE, format="f", digits=5),"\n")
+## cat("---------------------------------------------------------------------------\n") 
+### end of for negative variance component
 }
-cat("\n")
 ###
 ### GLM for ln(pAUC)
 ###
-if(pAUC){
 cat("\n\n")
-cat("              Statistical analysis (ANOVA(lm))    \n")
+if(pAUC){
+cat("              Statistical analysis (ANOVA(lm))             \n")
 cat("-----------------------------------------------------------\n")
 cat("   Dependent Variable: log(pAUC)    \n")
-cat("\n")
-lnpAUC<- lm(log(partAUC) ~ seq + subj:seq + prd + drug ,data=TotalData)
-BearAnova=anova(lnpAUC)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(lnpAUC ~ seq,data=TotalData)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(lnpAUC ~ seq,data=TotalData)))
+lm.mod(log(TotalData$partAUC), TotalData)
+lnpAUC<- lm(log(partAUC) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
 cat("\n")
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnpAUC)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-cat("               =",formatC(100*sqrt(exp((anova(lnpAUC)[4,3]-anova(lnpAUC)[5,3])/2)-1),format="f",digits=3),"%\n")
+if(anova(lnpAUC)[4,3]<anova(lnpAUC)[5,3]){
+   cat("               =",0,"% (due to a negative variance component)\n")
+   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+   }
+ else{
+   cat("               =",formatC(100*sqrt(exp((anova(lnpAUC)[4,3]-anova(lnpAUC)[5,3])/2)-1),format="f",digits=3),"%\n")
+}
 cat("    MSResidual =",anova(lnpAUC)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnpAUC)[4,3],"\n")
 cat("\n")
 }
-### debugging ...
-### readline("...pause here");cat("\n\n")  ### OK! 
-
-if(multiple){
+else{
+if(multiple){    ### do nohting for multiple-dose since there is no 'AUC0INF' at all.
  }
 else{
-cat("              Statistical analysis (ANOVA(lm))    \n")
+cat("              Statistical analysis (ANOVA(lm))             \n")
 cat("-----------------------------------------------------------\n")
 cat("   Dependent Variable: log(AUC0INF)    \n")
-cat("\n")
-lnAUC0INF<- lm(log(AUC0INF) ~ seq + subj:seq + prd + drug ,data=TotalData)
-BearAnova=anova(lnAUC0INF)
-row.names(BearAnova)[4]="subj(seq)"
-show(BearAnova[2:5,])
-cat("\n")
-colnames(BearAnova)<- c(" DF","   Type I SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("\n")
-colnames(BearAnova)<- c(" DF"," Type III SS"," Mean Square"," F Value"," Pr > F")
-show(BearAnova[2:4,])
-cat("-----------------------------------------------------------\n")
-#
-# to adpat to SAS output
-#
-cat("\n")
-cat("Tests of Hypothesis using the Type I MS for \n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(lnAUC0INF ~ seq,data=TotalData)))
-cat("\n")
-cat("Tests of Hypothesis using the Type III MS for\n")
-cat("SUBJECT(SEQUENCE) as an error term\n\n")
-show(summary(aov(lnAUC0INF ~ seq,data=TotalData)))
+lm.mod(log(TotalData$AUC0INF),TotalData)
+lnAUC0INF<- lm(log(AUC0INF) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
 cat("\n")
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUC0INF)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-cat("               =",formatC(100*sqrt(exp((anova(lnAUC0INF)[4,3]-anova(lnAUC0INF)[5,3])/2)-1),format="f",digits=3),"%\n")
+if(anova(lnAUC0INF)[4,3]<anova(lnAUC0INF)[5,3]){
+   cat("               =",0,"% (due to a negative variance component)\n")
+   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+   }
+ else{
+   cat("               =",formatC(100*sqrt(exp((anova(lnAUC0INF)[4,3]-anova(lnAUC0INF)[5,3])/2)-1),format="f",digits=3),"%\n")
+}
 cat("    MSResidual =",anova(lnAUC0INF)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0INF)[4,3],"\n")     
 cat("\n")
+}
 }
 #####################################################################
 ###shortest confidence interval 
@@ -675,7 +504,7 @@ cat("*** Classical (Shortest) 90% C.I. for log(Cmax) ***\n")
 cat("\n")
 output<-data.frame(Point_estimate=c(formatC(100*exp(est_lnCmax),format="f",digits=3)),
                    CI90_lower=c(formatC(lowerCmax,format="f",digits=3)),
-                   CI90_upper=c( formatC(upperCmax,format="f",digits=3)))
+                   CI90_upper=c(formatC(upperCmax,format="f",digits=3)))
 dimnames(output) <- list("Ratio",
                           c("  Point Estimate",
                             "  CI90 lower",
@@ -707,21 +536,7 @@ description_TOST_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta
 else{
 description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
-cat("---------------------------------------------------------------------------\n")
-cat("Ref.:\n")
-cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-           \n")
-cat("   Bioequivalence Studies. 3rd ed.,Chapman & Hall/CRC,New York (2009).\n\n")
-cat("2. Schuirmann DJ. On hypothesis testing to determine if the mean of a  \n")
-cat("   normal distribution is continued in a known interval. Biometrics,37,\n")
-cat("   617(1981).                                                           \n\n")
-cat("3. Schuirmann DJ. A comparison of the two one-sided tests procedure and the \n")
-cat("   power approach for assessing the equivalence of average bioavailability.\n")
-cat("   Journal of Pharmacokinetics and Biopharmaceutics,15,657-680 (1987). \n\n")
-cat("4. Anderson S and Hauck WW.  A new procedure for testing equivalence in \n")
-cat("   comparative bioavailability and other clinical trials. Communications \n")
-cat("   in Statistics-Theory and Methods,12,2663-2692 (1983).                \n")
-cat("--------------------------------------------------------------------------\n")
-cat("\n\n")
+cat("---------------------------------------------------------------------------\n\n")
 cat("             *** Intra-subject and Inter-subject Residuals ***            \n")
 cat("--------------------------------------------------------------------------\n")
 II_lnCmax<-data.frame(subj=IntraInterlnCmax00$subj,
@@ -833,8 +648,8 @@ cat("**************** Classical (Shortest) 90% C.I. for lnAUC0t ****************
 }
 cat("\n")
 output<-data.frame(Point_estimate=c( formatC(100*exp(est_lnAUC0t),format="f",digits=3)),
-                   CI90_lower=c( formatC(lowerAUC0t,format="f",digits=3)),
-                   CI90_upper=c( formatC(upperAUC0t,format="f",digits=3)))
+                   CI90_lower=c(formatC(lowerAUC0t,format="f",digits=3)),
+                   CI90_upper=c(formatC(upperAUC0t,format="f",digits=3)))
 dimnames(output) <- list("Ratio",
                           c("  Point Estimate",
                             "  CI90 lower",
@@ -865,9 +680,7 @@ description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_thet
 else{
 description_TOST1_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
-cat("---------------------------------------------------------------------------\n")
-cat("\n")
-cat("\n")
+cat("---------------------------------------------------------------------------\n\n")
 cat("             *** Intra-subject and Inter-subject Residuals ***            \n")
 cat("--------------------------------------------------------------------------\n")
 II_lnAUC0t<-data.frame(subj=IntraInterlnAUC0t00$subj,
@@ -1003,9 +816,7 @@ description_TOST_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_thet
 else{
 description_TOST1_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
-cat("---------------------------------------------------------------------------\n")
-cat("\n")
-cat("\n")
+cat("---------------------------------------------------------------------------\n\n")
 cat("             *** Intra-subject and Inter-subject Residuals ***            \n")
 cat("--------------------------------------------------------------------------\n")
 II_lnpAUC<-data.frame(subj=IntraInterlnpAUC00$subj,
@@ -1106,8 +917,8 @@ cat("\n")
 cat("**************** Classical (Shortest) 90% C.I. for lnAUC0INF **************\n")
 cat("\n")
 output<-data.frame(Point_estimate=c( formatC(100*exp(est_lnAUC0INF),format="f",digits=3)),
-                   CI90_lower=c( formatC(LowerAUC0INF,format="f",digits=3)),
-                   CI90_upper=c( formatC(UpperAUC0INF,format="f",digits=3)))
+                   CI90_lower=c(formatC(LowerAUC0INF,format="f",digits=3)),
+                   CI90_upper=c(formatC(UpperAUC0INF,format="f",digits=3)))
 dimnames(output) <- list("Ratio",
                           c("  Point Estimate",
                             "  CI90 lower",
@@ -1138,9 +949,7 @@ description_TOST_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_th
 else{
 description_TOST1_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2 )
 }
-cat("---------------------------------------------------------------------------\n")
-cat("\n")
-cat("\n")
+cat("---------------------------------------------------------------------------\n\n")
 cat("             *** Intra-subject and Inter-subject Residuals ***            \n")
 cat("--------------------------------------------------------------------------\n")
 II_lnAUC0INF<-data.frame(subj=IntraInterlnAUC0INF00$subj,
@@ -1158,11 +967,22 @@ cat("Intra: Intra-subject residuals\n")
 cat("Stud_Intra: Studentized intra-subject residuals\n")
 cat("Inter: Inter-subject residuals\n")
 cat("Stud_Inter: Studentized inter-subject residuals\n")
-cat("**Ref: Chow SC and Liu JP. Design and Analysis of Bioavailability-          \n")
-cat("Bioequivalence Studies. 3rd ed.,Chapman & Hall/CRC,New York (2009).     \n")
-cat("---------------------------------------------------------------------\n") 
 cat("\n")
-cat("\n")
+cat("---------------------------------------------------------------------------\n")
+cat("Ref.:\n")
+cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-           \n")
+cat("   Bioequivalence Studies. 3rd ed.,Chapman & Hall/CRC,New York (2009).\n\n")
+cat("2. Schuirmann DJ. On hypothesis testing to determine if the mean of a  \n")
+cat("   normal distribution is continued in a known interval. Biometrics,37,\n")
+cat("   617(1981).                                                           \n\n")
+cat("3. Schuirmann DJ. A comparison of the two one-sided tests procedure and the \n")
+cat("   power approach for assessing the equivalence of average bioavailability.\n")
+cat("   Journal of Pharmacokinetics and Biopharmaceutics,15,657-680 (1987). \n\n")
+cat("4. Anderson S and Hauck WW.  A new procedure for testing equivalence in \n")
+cat("   comparative bioavailability and other clinical trials. Communications \n")
+cat("   in Statistics-Theory and Methods,12,2663-2692 (1983).                \n")
+cat("--------------------------------------------------------------------------\n")
+cat("\n\n")
 }
 if(ODAnalysis){
 cat("\n\n Generate ODA output now...\n");readline(" Press Enter to proceed...");cat("\n\n")

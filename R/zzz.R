@@ -6,7 +6,8 @@ packageStartupMessage("
 ....................................
                           
    bear (BE/BA for R) 
-   v2.6.1
+   v2.6.2
+   under license of GPL-2|GPL-3
                                                                    
    Please type 'go()' to run; or
    'about.bear()' to read more.               

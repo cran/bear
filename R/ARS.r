@@ -1,9 +1,11 @@
+###
 ### Aceto revised NCA codes for lambda_z (WinNolin)
 ### other methods like this: NCAselect(), aic(), TTT(), TTTAIC(), TTTARS(). 
+### all are no need to display output on-screen! since NCAoutput() will do that later??
 ###
 ARS<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, 
               TlastD,SingleRdata0,SingleTdata0,separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE,
-              replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)   ## switch Demo=TRUE  it seems OK. --YJ
+              replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)
 {
 options(warn=-1)
 description_ARS() #description for ARS
@@ -18,6 +20,10 @@ pAUC_end<-pAUC_end
 lambda_z_calc<-lambda_z_calc
 BE_LL<-BE_LL
 BE_UL<-BE_UL
+run.demo<-run.demo             ### No (0, default) or Yes (1)
+study.type<-study.type         ### 2x2x2 crossover (0, default), replicate (1) or parallel (2)
+dose.type<-dose.type           ### single-dose (0, default) or multiple-dose (1)
+
 ###
 ### label which AUC calculation method has been used. -YJ
 ###
@@ -1044,7 +1050,8 @@ RepARSoutput(sumindexR,sumindexT,R.split,T.split,keindex_ref,keindex_test,Dose,T
 RepNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
  if (Demo){
          #Demo=TRUE,MIX=FALSE
-         Repmenu() 
+         ### Repmenu()         ### re-route since v2.6.2; or it will get loop running...
+         cat("\n\n");go2menu()
         }
   else {
          if(MIX){
@@ -1066,7 +1073,8 @@ else{
         MultipleParaNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis,TlastD)
           if (Demo){
           #Demo=TRUE, BANOVA=FALSE
-          MultipleParamenu()
+          ### MultipleParamenu()  ### re-route this since v2.6.2 or it will get loop running...
+          cat("\n\n");go2menu()
           }
            else {
              if(MIX){
@@ -1084,7 +1092,8 @@ else{
       ParaNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis) 
       if (Demo){
          #Demo=TRUE, MIX=FALSE
-         Paramenu()
+         ### Paramenu()
+         cat("\n\n");go2menu()
         }
       else {
          if(MIX){
@@ -1106,7 +1115,8 @@ else{
         MultipleNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis,TlastD)
           if (Demo){
           #Demo=TRUE, BANOVA=FALSE
-          MultipleNCAmenu()
+          ### MultipleNCAmenu()   ### re-route; since v2.6.2 or it will get loop running...
+          cat("\n\n");go2menu()
           }
            else {
              if(BANOVA){
@@ -1124,12 +1134,14 @@ else{
        ARSoutput(sumindexR,sumindexT,R.split,T.split,keindex_ref,keindex_test,Dose,TotalData)
        if (Demo){
         #Demo=TRUE, BANOVA=FALSE
-        NCAmenu()
+        ### NCAmenu()
+        cat("\n\n");go2menu()
         }
        else {
          if(BANOVA){
-        ##Demo=FALSE, BANOVA=TRUE
+         ##Demo=FALSE, BANOVA=TRUE
          BANOVAanalyze(TotalData)
+         
          }
          else{
          #Demo=FALSE, BANOVA=FALSE

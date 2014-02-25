@@ -11,7 +11,7 @@ d88       88   d8(        )8b             )8b     888     8)
 888       88   888ooo88b   o8o89888     888
 888       88   888              88(        88     888
  o8ooo8         88bod8P     doooo888   d888b", cex=0.8, adj=c(0,0))
-text(100,180,"This report was generated using bear v2.6.1",cex = 1.2)
+text(100,180,"This report was generated using bear v2.6.2",cex = 1.2)
 text(70,170,"on:",cex=1.2)
 text(110,170,Sys.time(),cex = 1.2)
 text(100,150,

@@ -4,6 +4,7 @@ demoBANOVA<-function(replicated=FALSE,parallel=FALSE, multiple=FALSE)
 {
 
 TotalData<-NULL
+Fname<-Fname
 
 options(warn=-1)
 if(parallel){
@@ -20,17 +21,23 @@ if(parallel){
                                          7.27,8.13,7.38,8.02,7.47,8.44,8.06,7.74,7.24,7.14),
                              lnAUCtau_ss=c(10.32,10.27,9.93,9.91,9.63,10.3,9.75,10.58,10.26,9.86,10.21,10.01,10.32,10.03,
                                             9.7,10.5,9.66,10.47,10.37,10.13,10.77,10.26,9.88,9.59))               
-      show(TotalData)
-      if(file.exists("MultiplePara_stat_demo.csv")){
-         write.csv(TotalData,file="MultiplePara_stat_demo_02.csv",row.names=FALSE)}
-      else{write.csv(TotalData,file="MultiplePara_stat_demo.csv",row.names=FALSE)}
-      if(file.exists("MultiplePara_stat_demo.RData")){
-         saveRDS(TotalData,file="MultiplePara_stat_demo_02.RData")}
-      else{saveRDS(TotalData,file="MultiplePara_stat_demo.RData")}
-      cat("\n")
-      cat("\n")
+      show(TotalData);cat("\n\n")
+      Fname<<-"MultiplePara_stat_demo.csv"
+      ###
+      ### disable since v2.6.2; similar for the followings.  --YJ
+      ###
+      ### if(file.exists("MultiplePara_stat_demo.csv")){
+      ###    write.csv(TotalData,file="MultiplePara_stat_demo_02.csv",row.names=FALSE)}
+      ### else{write.csv(TotalData,file="MultiplePara_stat_demo.csv",row.names=FALSE)}
+      ### if(file.exists("MultiplePara_stat_demo.RData")){
+      ###    saveRDS(TotalData,file="MultiplePara_stat_demo_02.RData")}
+      ### else{saveRDS(TotalData,file="MultiplePara_stat_demo.RData")}
+      ### cat("\n")
+      ### cat("\n")
       MultipleParaMIXanalyze(TotalData) 
-      MultipleParaMIXmenu() 
+      ### MultipleParaMIXmenu()    ### will cause loop-run; changed since v2.6.2
+      graphics.off();cat("\n\n")
+      go2menu()
     } 
  else{
   TotalData<-data.frame (subj=c(1,2,3,4,5,6,7,8,9,10,
@@ -49,17 +56,20 @@ if(parallel){
                                  7.1577,7.2378,6.7719,7.0992,7.1172,7.0665,7.0665,7.1974,7.2064,7.2577), 
                        lnAUC0INF=c(7.333,6.7912,7.2226,6.9565,7.3588,7.2668,7.2123,7.2793,7.1740,6.3456,
                                    7.1624,7.2004,6.792,7.1148,7.1349,7.0750,7.0775,7.2116,7.2116,7.2619))          
-     show(TotalData)
-     if(file.exists("SinglePara_stat_demo.csv")){
-        write.csv(TotalData,file="SinglePara_stat_demo_02.csv",row.names=FALSE)}
-     else{write.csv(TotalData,file="SinglePara_stat_demo.csv",row.names=FALSE)}
-     if(file.exists("SinglePara_stat_demo.RData")){
-       saveRDS(TotalData,file="SinglePara_stat_demo_02.RData")}
-     else{saveRDS(TotalData,file="SinglePara_stat_demo.RData")}
-     cat("\n")
-     cat("\n")
+     show(TotalData);cat("\n\n") 
+     Fname<<-"SinglePara_stat_demo.csv"
+     ### if(file.exists("SinglePara_stat_demo.csv")){
+     ###    write.csv(TotalData,file="SinglePara_stat_demo_02.csv",row.names=FALSE)}
+     ### else{write.csv(TotalData,file="SinglePara_stat_demo.csv",row.names=FALSE)}
+     ### if(file.exists("SinglePara_stat_demo.RData")){
+     ###   saveRDS(TotalData,file="SinglePara_stat_demo_02.RData")}
+     ### else{saveRDS(TotalData,file="SinglePara_stat_demo.RData")}
+     ### cat("\n")
+     ### cat("\n")
      ParaMIXanalyze(TotalData) 
-     ParaMIXmenu() 
+     ### ParaMIXmenu()    ### cause loop-run; changed this since v2.6.2
+     graphics.off();cat("\n\n")
+     go2menu()
    }
  }
 else{ 
@@ -104,18 +114,21 @@ else{
                                  9.47,9.69,9.66,9.59,9.44,9.57,9.47,9.59,9.72,9.44,9.68,9.31,9.70,9.85,
                                  9.57,9.46,9.69,9.34,9.57,9.67,9.56,9.54,9.46,9.56,9.17,9.67,9.24,9.66,
                                  9.44,9.71,9.66,9.58,9.42,9.57,9.47,9.57,9.72,9.43,9.67,9.31,9.71,9.83))
-     show(TotalData)
-     if(file.exists("SingleRep_stat_demo.csv")){
-         write.csv(TotalData,file="SingleRep_stat_demo_02.csv",row.names=FALSE)}
-     else{write.csv(TotalData,file="SingleRep_stat_demo.csv",row.names=FALSE)}
-     if(file.exists("SingleRep_stat_demo.RData")){
-         saveRDS(TotalData,file="SingleRep_stat_demo_02.RData")}
-     else{saveRDS(TotalData,file="SingleRep_stat_demo.RData")}
-     
-     cat("\n")
-     cat("\n")
+     show(TotalData);cat("\n\n") 
+     Fname<<-"SingleRep_stat_demo.csv"
+     ### if(file.exists("SingleRep_stat_demo.csv")){
+     ###     write.csv(TotalData,file="SingleRep_stat_demo_02.csv",row.names=FALSE)}
+     ### else{write.csv(TotalData,file="SingleRep_stat_demo.csv",row.names=FALSE)}
+     ### if(file.exists("SingleRep_stat_demo.RData")){
+     ###     saveRDS(TotalData,file="SingleRep_stat_demo_02.RData")}
+     ### else{saveRDS(TotalData,file="SingleRep_stat_demo.RData")}
+     ### 
+     ### cat("\n")
+     ### cat("\n")
      RepMIXanalyze(TotalData) 
-     RepMIXmenu() 
+     ### RepMIXmenu()    ### cause loop-run; changed this since v2.6.2
+     graphics.off();cat("\n\n")
+     go2menu()
   }
  else{
     if(multiple){
@@ -135,17 +148,20 @@ else{
                                          8.05,7.5,7.27,8.13,8.23,7.38,8.02,7.47,7.61,8.44,8.06,7.74,7.24,7.14),
                              lnAUCtau_ss=c(10.32,10.27,9.93,9.91,9.63,9.22,10.66,10.3,8.57,9.19,8.56,9.19,9.75,10.58,10.26,9.86,10.21,10.01,
                                             10.32,10.03,9.7,10.5,10.16,9.66,10.47,10.37,10.13,10.77,10.77,10.26,9.88,9.59))               
-      show(TotalData)
-      if(file.exists("MultipleRep_stat_demo.csv")){
-         write.csv(TotalData,file="MultipleRep_stat_demo_02.csv",row.names=FALSE)}
-      else{write.csv(TotalData,file="MultipleRep_stat_demo.csv",row.names=FALSE)}
-      if(file.exists("MultipleRep_stat_demo.RData")){
-         saveRDS(TotalData,file="MultipleRep_stat_demo_02.RData")}
-      else{saveRDS(TotalData,file="MultipleRep_stat_demo.RData")}
-      cat("\n")
-      cat("\n")
+      show(TotalData);cat("\n\n") 
+      Fname<<-"MultipleRep_stat_demo.csv"
+      ### if(file.exists("MultipleRep_stat_demo.csv")){
+      ###    write.csv(TotalData,file="MultipleRep_stat_demo_02.csv",row.names=FALSE)}
+      ### else{write.csv(TotalData,file="MultipleRep_stat_demo.csv",row.names=FALSE)}
+      ### if(file.exists("MultipleRep_stat_demo.RData")){
+      ###    saveRDS(TotalData,file="MultipleRep_stat_demo_02.RData")}
+      ### else{saveRDS(TotalData,file="MultipleRep_stat_demo.RData")}
+      ### cat("\n")
+      ### cat("\n")
       MultipleBANOVAanalyze(TotalData) 
-      MultipleBANOVAmenu() 
+      ### MultipleBANOVAmenu()    ### cause loop-run; changed this since v2.6.2
+      graphics.off();cat("\n\n")
+      go2menu()
     } 
  else{
    TotalData<-data.frame (subj=as.factor(c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,
@@ -168,17 +184,20 @@ else{
                                  9.42,9.64,9.63,9.55,9.38,9.54,9.42,9.57,9.67,9.37,9.64,9.27,9.64,9.79),
                        lnAUC0INF=c(9.61,9.49,9.68,9.36,9.59,9.68,9.55,9.55,9.47,9.55,9.19,9.67,9.25,9.68,
                                   9.47,9.69,9.66,9.59,9.44,9.57,9.47,9.59,9.72,9.44,9.68,9.31,9.70,9.85))
-      show(TotalData)
-      if(file.exists("single2x2x2_stat_demo.csv")){
-         write.csv(TotalData,file="single2x2x2_stat_demo_02.csv",row.names=FALSE)}
-      else{write.csv(TotalData,file="single2x2x2_stat_demo.csv",row.names=FALSE)}
-      if(file.exists("single2x2x2_stat_demo.RData")){
-         saveRDS(TotalData,file="single2x2x2_stat_demo_02.RData")}
-      else{saveRDS(TotalData,file="single2x2x2_stat_demo.RData")}
-      cat("\n")
-      cat("\n")
+      show(TotalData);cat("\n\n") 
+      Fname<<-"single2x2x2_stat_demo.csv"
+      ### if(file.exists("single2x2x2_stat_demo.csv")){
+      ###    write.csv(TotalData,file="single2x2x2_stat_demo_02.csv",row.names=FALSE)}
+      ### else{write.csv(TotalData,file="single2x2x2_stat_demo.csv",row.names=FALSE)}
+      ### if(file.exists("single2x2x2_stat_demo.RData")){
+      ###    saveRDS(TotalData,file="single2x2x2_stat_demo_02.RData")}
+      ### else{saveRDS(TotalData,file="single2x2x2_stat_demo.RData")}
+      ### cat("\n")
+      ### cat("\n")
       BANOVAanalyze(TotalData) 
-      BANOVAmenu() 
+      ### BANOVAmenu()   ### cause loop-run; changed this since v2.6.2
+      graphics.off();cat("\n\n")
+      go2menu()
      }
    }
   }

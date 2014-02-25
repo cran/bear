@@ -539,12 +539,14 @@ tdata.split<-split(tdata,list(tdata$subj))
 if(replicated){
  if (Demo){
    if(MIX){
-    #Demo=TRUE, MIX=TRUE
+    #Demo=TRUE, MIX=TRUE   ### then go on...
     RepNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+    ### cat("\n\n");go2menu()
     } 
     else{
-    #Demo=TRUE, MIX=FALSE
-    RepNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+    #Demo=TRUE, MIX=FALSE  ### then stop here or it will cause loop running...
+    ### RepNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+    cat("\n\n");go2menu()
        }
     }   
  else {
@@ -553,7 +555,7 @@ if(replicated){
      RepNCAselectsave.MIX(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
      }
       else{
-     #Demo=FALSE, BANOVA=FALSE
+       #Demo=FALSE, BANOVA=FALSE
        RepNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)              
          }
      }
@@ -565,12 +567,14 @@ else{
        if(MIX){
        #Demo=TRUE, BANOVA=TRUE
        MultipleParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-       Tau, TlastD,SingleRdata0,SingleTdata0)
+                               Tau, TlastD,SingleRdata0,SingleTdata0)
+       ### cat("\n\n");go2menu()
         } 
        else{
        #Demo=TRUE, BANOVA=FALSE
-       MultipleParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-       Tau, TlastD,SingleRdata0,SingleTdata0)
+       ### MultipleParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+       ### Tau, TlastD,SingleRdata0,SingleTdata0)
+       cat("\n\n");go2menu()
         }
       }   
      else {
@@ -589,12 +593,14 @@ else{
     else{
     if (Demo){
        if(MIX){
-       #Demo=TRUE, BANOVA=TRUE
+        #Demo=TRUE, BANOVA=TRUE
         ParaNCAdemo.MIX(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+        ### cat("\n\n");go2menu()
         } 
         else{
        #Demo=TRUE, BANOVA=FALSE
-       ParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+       ### ParaNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+       cat("\n\n");go2menu()
        }
       }   
     else {
@@ -615,12 +621,14 @@ else{
    if(BANOVA){
     #Demo=TRUE, BANOVA=TRUE
     MultipleNCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-    Tau, TlastD,SingleRdata0,SingleTdata0)
+                           Tau, TlastD,SingleRdata0,SingleTdata0)
+    ### cat("\n\n");go2menu()
    } 
     else{
     #Demo=TRUE, BANOVA=FALSE
-    MultipleNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
-    Tau, TlastD,SingleRdata0,SingleTdata0)
+    ### MultipleNCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
+    ### Tau, TlastD,SingleRdata0,SingleTdata0)
+    cat("\n\n");go2menu()
        }
     }   
  else {
@@ -630,7 +638,7 @@ else{
      Tau, TlastD,SingleRdata0,SingleTdata0)
      }
       else{
-     #Demo=FALSE, BANOVA=FALSE
+       #Demo=FALSE, BANOVA=FALSE
        MultipleNCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split,
        Tau, TlastD,SingleRdata0,SingleTdata0)
         }
@@ -639,12 +647,14 @@ else{
  else{
  if (Demo){
    if(BANOVA){
-    #Demo=TRUE, BANOVA=TRUE
+    #Demo=TRUE, BANOVA=TRUE   ### then go on...
     NCAdemo.BANOVA(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+    ### cat("\n\n");go2menu()
    } 
     else{
-    #Demo=TRUE, BANOVA=FALSE
-    NCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+    #Demo=TRUE, BANOVA=FALSE  ### then stop here
+    ### NCAdemo(Totalplot,Dose, ref_data, test_data, SingleRdata, SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
+    cat("\n\n");go2menu()
        }
     }   
  else {
@@ -653,7 +663,7 @@ else{
      NCAselectsave.BANOVA(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
      }
       else{
-     #Demo=FALSE, BANOVA=FALSE
+       #Demo=FALSE, BANOVA=FALSE
        NCAselectsave(Totalplot, Dose, ref_data, test_data, SingleRdata,SingleRdata1,SingleTdata,SingleTdata1,xaxis, yaxis,rdata.split,tdata.split)
         }
       }

@@ -107,21 +107,21 @@ L2<-length(SeqLeg2$subj)
 if(parallel){
   if(multiple){
      if(pAUC){
-     MultipleParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnpAUC,
-     lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnpAUC_theta1,lnpAUC_theta2)
+     ### MultipleParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnpAUC,
+     ###     lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnpAUC_theta1,lnpAUC_theta2)
      MultipleParaMIXoutput(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnpAUC,test_lnCmax,test_lnAUC0t,
-     test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnpAUC_theta1,lnpAUC_theta2)
+         test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnpAUC_theta1,lnpAUC_theta2)
      }
      else{
      if(pAUC){
-     MultipleParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnpAUC,
-     lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnpAUC_theta1,lnpAUC_theta2)
+     ### MultipleParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnpAUC,
+     ###     lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnpAUC_theta1,lnpAUC_theta2)
      MultipleParaMIXoutput(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnpAUC,
      lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnpAUC_theta1,lnpAUC_theta2)
      }
      else{
-     MultipleParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,test_lnCmax,test_lnAUC0t,lnCmax_theta1,lnCmax_theta2,
-     lnAUC0t_theta1,lnAUC0t_theta2)
+     ### MultipleParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,test_lnCmax,test_lnAUC0t,lnCmax_theta1,lnCmax_theta2,
+     ###     lnAUC0t_theta1,lnAUC0t_theta2)
      MultipleParaMIXoutput(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,test_lnCmax,test_lnAUC0t,lnCmax_theta1,
      lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2)
      }
@@ -129,16 +129,16 @@ if(parallel){
   }
   else{
     if(pAUC){
-    ParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
-    test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,lnpAUC_theta1,
-    lnpAUC_theta2)
+    ### ParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
+    ### test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,lnpAUC_theta1,
+    ### lnpAUC_theta2)
     ParaMIXoutput(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
     test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,lnpAUC_theta1,
     lnpAUC_theta2)
     }
     else{
-    ParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
-    lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
+    ### ParaMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
+    ### lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
     ParaMIXoutput(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
     lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
     }
@@ -146,16 +146,20 @@ if(parallel){
 }
 else{ 
     if(pAUC){
-    RepMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
-    test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
-    lnpAUC_theta1,lnpAUC_theta2)
+    ### repeated functions here? the second one is the same as the first except to generate *.txt output file.
+    ### need to improve this.  -YJ
+    ### RepMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
+    ### test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
+    ### lnpAUC_theta1,lnpAUC_theta2)
     RepMIXoutput(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
     test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
     lnpAUC_theta1,lnpAUC_theta2)
     }
     else{
-    RepMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
-    lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
+    ### repeated functions here? the second one is the same as the first except to generate *.txt output file.
+    ### need to improve this.  -YJ
+    ### RepMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
+    ### lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
     RepMIXoutput(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
     lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
     }

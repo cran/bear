@@ -6,7 +6,7 @@ BE_UL<-BE_UL
  theta1<-BE_LL
  theta2<-BE_UL
 
-cat(paste("*** BE acceptance criterion is set within the range:",formatC(theta1*100,format="f",digits=3),"% - ",
-     formatC(theta2*100,format="f",digits=3),"%.",sep=""))
+cat(paste("*** BE acceptance criterion: (",formatC(theta1*100,format="f",digits=3),"% - ",
+     formatC(theta2*100,format="f",digits=3),"%.)",sep=""))
 cat("\n\n")
 }

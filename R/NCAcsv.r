@@ -1,7 +1,10 @@
-#choose separator and decimal type
+### choose separator and decimal type
+### re-coded on 2014/02/19
+###
 NCAcsv<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 cat("\n")
+Fname<-Fname
 file.menu <- c("separator = comma (,) &  decimal = point (.)",
                "separator = semicolon (;) &  decimal = comma (,)",
                "separator = semicolon (;) &  decimal = point (.)",
@@ -12,405 +15,68 @@ file.menu <- c("separator = comma (,) &  decimal = point (.)",
                "separator = colon (:) &  decimal = comma (,)",
                "separator = colon (:) &  decimal = point (.)",
                "Back to NCAmenu")
-cat("\n")
 pick <- menu(file.menu, title = " << Separator and decimal formats >> ", graphics=TRUE)
-if (pick == 1){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-         cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        } 
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-         if(parallel){
-             if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-           if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-           else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-           }
-        }
-     }
-     
- else {
+cat("\n\n")
+description_import()
+if(parallel){
+cnames<-c("subj", "drug","time", "conc")
+}
+else{
+ if(replicated){
+ cnames<-c("subj", "seq", "prd", "drug","time", "conc")
+ }
+ else{
+ cnames<-c("subj", "seq","prd", "time", "conc")
+ }
+}
+if (pick<10){
+if   (pick == 1){
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")}
   if (pick == 2){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-        cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        }
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-        if(parallel){
-         if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-           if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-           }
-          }
-        }
- else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")}
   if (pick == 3){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-        cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        } 
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-        if(parallel){
-         if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-           if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-           }
-          }
-        }  
-else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=".")}
   if (pick == 4){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-        cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        } 
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-       if(parallel){
-         if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{  
-           if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-           }
-          } 
-         } 
-else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=",")}
   if (pick == 5){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-        cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        } 
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-        if(parallel){
-          if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-           if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-          if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-           }
-          } 
-         }                   
-else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=" ",dec=".")}
   if (pick == 6){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-        cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        } 
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames,  sep="\t",dec=",")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-         if(parallel){
-          if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-           if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-           }
-          } 
-         }                             
-else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=",")}
   if (pick == 7){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-        cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        } 
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-         if(parallel){
-          if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-           if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-           }
-          }
-         }                    
-else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep="\t",dec=".")}
   if (pick == 8){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-         cnames<-c("subj", "drug","time", "conc")
-         }
-        else{
-        if(replicated){
-        cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-        }
-         else{
-        cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        }
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-          if(parallel){
-         if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-          if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-            }
-           }
-          }   
-else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=",")}
   if (pick == 9){
-  cat("\n\n")
-        description_import()
-        ## TotalSingledata.file <-readline()
-        ## TotalSingledata.file<-paste(TotalSingledata.file,".csv",sep="")
-        if(parallel){
-        cnames<-c("subj", "drug","time", "conc")
-        }
-        else{
-         if(replicated){
-         cnames<-c("subj", "seq", "prd", "drug","time", "conc")
-         }
-         else{
-         cnames<-c("subj", "seq","prd", "time", "conc")
-         }
-        } 
-        TotalSingledata<-read.csv(file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")
-        TotalSingledata<-edit(TotalSingledata)
-        ### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
-        cat("\n\n")
-        show(TotalSingledata)
-        if(parallel){
-         if(multiple){
-              return(MultipleParaNCAanalyze(TotalSingledata))
-               }
-              else{
-               return(ParaNCAanalyze(TotalSingledata))
-               }
-         }
-         else{ 
-          if(replicated){
-           return(RepNCAanalyze(TotalSingledata))
-           }
-         else{
-           if(multiple){
-              return(MultipleNCAanalyze(TotalSingledata))
-              }
-              else{ 
-              return(NCAanalyze(TotalSingledata))
-              } 
-            }
-           } 
-          }              
- else {
+       TotalSingledata<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=":",dec=".")}
+
+TotalSingledata<-edit(TotalSingledata)
+Fname<<- basename(xx) ### this will not work with 'Fname<<- basename(TotalSingledata)' 
+### TotalSingledata<-na.omit(TotalSingledata)   ### v2.6.1
+cat("\n\n")
+show(TotalSingledata)
+if(parallel){
+     if(multiple){
+         icd.check(TotalSingledata,parallel=TRUE,multiple=TRUE,replicated=FALSE,NCA.only=TRUE)
+       }
+      else{
+         icd.check(TotalSingledata,parallel=TRUE,multiple=FALSE,replicated=FALSE,NCA.only=TRUE)
+       }
+   }
+else{ 
+    if (replicated){
+         icd.check(TotalSingledata,parallel=FALSE,multiple=FALSE,replicated=TRUE,NCA.only=TRUE)
+     }
+   else{
+      if(multiple){
+         icd.check(TotalSingledata,parallel=FALSE,multiple=TRUE,replicated=FALSE,NCA.only=TRUE)
+          }
+       else{ 
+         icd.check(TotalSingledata,parallel=FALSE,multiple=FALSE,replicated=FALSE,NCA.only=TRUE)
+         } 
+   }  
+ }
+}
+else {   ### back to the upper menu 
   if (pick == 10){
      if(parallel){
          if(multiple){
@@ -435,12 +101,4 @@ else {
             }
            }
           }
-         }
-        }
-       }
-      }
-     }
-    }
-  }
- }
-}        
+}  ### end of NCAcsv.()  ###

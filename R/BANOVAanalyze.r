@@ -22,6 +22,9 @@ dosez<-dosez
 Tlastz<-Tlastz
 xlabz<-xlabz
 ylabz<-ylabz
+run.demo<-run.demo             ### No (0, default) or Yes (1)
+study.type<-study.type         ### 2x2x2 crossover (0, default), replicate (1) or parallel (2)
+dose.type<-dose.type           ### single-dose (0, default) or multiple-dose (1)
 
 if(multiple){
   if(pAUC){
@@ -230,13 +233,13 @@ IntraInterlnpAUC00<-IntraInterlnpAUC11[ do.call(order, IntraInterlnpAUC11) ,]
 }
 
 if(multiple){
-MultipleBANOVA(RefData,TestData,TotalData,L1,L2,
-       lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
-       lnAUC0t_MSinter,lnAUC0t_MSintra,lnAUC0t_SSinter,lnAUC0t_SSintra,
-       lnpAUC_MSinter,lnpAUC_MSintra,lnpAUC_SSinter,lnpAUC_SSintra,
-       IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnpAUC00,
-       lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,
-       lnpAUC_theta1,lnpAUC_theta2)
+### MultipleBANOVA(RefData,TestData,TotalData,L1,L2,
+###        lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
+###        lnAUC0t_MSinter,lnAUC0t_MSintra,lnAUC0t_SSinter,lnAUC0t_SSintra,
+###        lnpAUC_MSinter,lnpAUC_MSintra,lnpAUC_SSinter,lnpAUC_SSintra,
+###        IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnpAUC00,
+###        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,
+###        lnpAUC_theta1,lnpAUC_theta2)
 MultipleBANOVAoutput(RefData,TestData,TotalData,L1,L2,
        lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
        lnAUC0t_MSinter,lnAUC0t_MSintra,lnAUC0t_SSinter,lnAUC0t_SSintra,
@@ -313,14 +316,14 @@ IntraInterlnAUC0INFseq22<-data.frame(subj=Todata[[3]]$subj, Obs=Todata[[3]]$lnAU
 IntraInterlnAUC0INF11<-rbind(IntraInterlnAUC0INFseq11,IntraInterlnAUC0INFseq22)
 IntraInterlnAUC0INF00<-IntraInterlnAUC0INF11[ do.call(order, IntraInterlnAUC0INF11) ,]
 
-BANOVA(RefData,TestData,TotalData,L1,L2,                                   ### used to show lm() or lme() output on screen
-       lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
-       lnAUC0t_MSinter,lnAUC0t_MSintra,lnAUC0t_SSinter,lnAUC0t_SSintra,
-       lnAUC0INF_MSinter,lnAUC0INF_MSintra,lnAUC0INF_SSinter,lnAUC0INF_SSintra,
-       lnpAUC_MSinter,lnpAUC_MSintra,lnpAUC_SSinter,lnpAUC_SSintra,                      ### if pAUC
-       IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnAUC0INF00,IntraInterlnpAUC00,  ### if pAUC
-       lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,
-       lnAUC0INF_theta2,lnpAUC_theta1,lnpAUC_theta2)                                     ### if pAUC
+### BANOVA(RefData,TestData,TotalData,L1,L2,                                   ### used to show lm() or lme() output on screen
+###        lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
+###        lnAUC0t_MSinter,lnAUC0t_MSintra,lnAUC0t_SSinter,lnAUC0t_SSintra,
+###        lnAUC0INF_MSinter,lnAUC0INF_MSintra,lnAUC0INF_SSinter,lnAUC0INF_SSintra,
+###        lnpAUC_MSinter,lnpAUC_MSintra,lnpAUC_SSinter,lnpAUC_SSintra,                      ### if pAUC
+###        IntraInterlnCmax00,IntraInterlnAUC0t00,IntraInterlnAUC0INF00,IntraInterlnpAUC00,  ### if pAUC
+###        lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,
+###        lnAUC0INF_theta2,lnpAUC_theta1,lnpAUC_theta2)                                     ### if pAUC
 BANOVAoutput(RefData,TestData,TotalData,L1,L2,                             ### same as BONAVA(), but is used to generate ***.stat_sum.txt
        lnCmax_MSinter,lnCmax_MSintra,lnCmax_SSinter,lnCmax_SSintra,
        lnAUC0t_MSinter,lnAUC0t_MSintra,lnAUC0t_SSinter,lnAUC0t_SSintra,

@@ -1,8 +1,8 @@
 ###
-###  Input assay data Menu for Data Analysis for Single dose (don't analyze anything with this?  YJ)
-###  This script has two parts: multiple & else (i.e., single) and all are non-replicate;
+###  Input assay data Menu for Data Analysis for Single dose (don't analyze anything with this?  -YJ
+###  This script has two parts: single & multiple; and all are non-replicate;
 ###  if replicate -> RepNCAanalyze.r  -YJ
-
+###
 
 NCAanalyze<-function(TotalSingledata,Dose,Tau,TlastD,xaxis,yaxis,separateWindows=TRUE,
                      parallel=FALSE, MIX=FALSE, multiple=FALSE)

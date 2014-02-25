@@ -15,13 +15,13 @@ NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex
 {
 options(warn=-1)
 options(width=100)
-lin.AUC<-lin.AUC        ### for pAUC
+lin.AUC<-lin.AUC
 pAUC<-pAUC              ### for pAUC
 pAUC_start<-pAUC_start  ### for pAUC
 pAUC_end<-pAUC_end      ### for pAUC
 lnpAUC<-0               ### for pAUC
 
-cat("\n\n Generate NCA output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
+cat("\n\n Next to generate NCA output...\n");readline(" Press Enter to proceed...");cat("\n\n")
 Demo<-Demo  # set Demo as Global, see go.r
 Demo=TRUE   # add this line for testing; actually it can be demo or not demo... it's been forced to TRUE now. -YJ
 BE_LL<-BE_LL
@@ -30,7 +30,14 @@ dosez<-dosez
 Tlastz<-Tlastz
 xlabz<-xlabz
 ylabz<-ylabz
-
+Fname<-Fname    ### dataset file name
+####
+ctrl <- lmeControl(opt='optim')    ### default was 'nlminb' for lme(); but it will fail to converge frequently;
+                                   ### changed back to old default 'optim' & try
+                                   ### ref. link: ??lmeControl --> click 'nlem::lmeControl' for more inf.
+                                   ### & https://stats.stackexchange.com/questions/40647/lme-error-iteration-limit-reached
+                                   ### same for following lme().  --YJ
+####
 
 ## to avoid "not visible binding..." error message with codetool
 nca_output_xfile<- nca_output_xfile
@@ -74,47 +81,10 @@ cat("***************************************************************************
 #####################################################################################
 zz <- file(nca_output_xfile, open="wt")
 ### sink(zz,split=TRUE)  ### see output on the screen simultaneously with this; 'split=TRUE' for debug...  -YJ
-sink(zz)                 ### for debugging, use the above line.
+sink(zz)
 description_version()
 cat(paste("\n***(1) All BE pivotal parameters have been saved in\n    -> (",pivotal_output_xfile,")\n",sep=""))
 cat(paste("***(2) All misc. PK parameters have been saved in\n    -> (",misc_pk_output_xfile,")\n",sep=""))
-### read setting files and display it ###
-bear.set<-readRDS("bear.setup.rds")
-plotz.set<-readRDS("plot.setup.rds")
-secondColumn<-as.character(plotz.set[,2])
-lambda_z_txt<-""
-lin.AUC_txt<-""
-BE_criteria_txt<-"lower limit"
-Dose_txt<-"dose given"
-Tau_txt<-"*multiple-dose only"
-Tlast_txt<-"*multiple-dose only"
-pAUC_txt<-""
-pAUC_start_txt<-"the starting time of pAUC"
-pAUC_end_txt<-"the end time of pAUC"
-IndivDP_output_txt<-""
-
-if(bear.set[1,2]==0) lambda_z_txt ="adj. R sq. (ARS)"
-if(bear.set[1,2]==1) lambda_z_txt ="Akaike info. criterion (AIC)"
-if(bear.set[1,2]==2) lambda_z_txt ="Two-Times-Tmax(TTT)"
-if(bear.set[1,2]==3) lambda_z_txt ="TTT and adj. ARS"
-if(bear.set[1,2]==4) lambda_z_txt ="TTT and AIC"
-if(bear.set[1,2]==5) lambda_z_txt ="manual selection"
-if(bear.set[1,2]==6) lambda_z_txt ="load previous selection (.RData)"
-lin.AUC_txt<-ifelse(bear.set[2,2]==0, "linear-up/log-down", "all linear")
-pAUC_txt<-ifelse(bear.set[7,2]==0,"No! full AUC","truncated/partical AUC")
-IndivDP_output_txt<-ifelse(bear.set[10,2]==0,"no IDP output","do IDP output")
-
-bear.set_txt<-data.frame(Methods=c("lambda_z estimate","trapezoidal AUC","BE criterion (LL)","Dose","Dosing Interval",
-                                    "Tlast","pAUC?","pAUC_start","pAUC_end","IDP output?"),
-                         Setting=c(bear.set[1,2],bear.set[2,2],bear.set[3,2],bear.set[4,2],bear.set[5,2],bear.set[6,2],
-                                   bear.set[7,2],bear.set[8,2],bear.set[9,2],bear.set[10,2]),
-                         which_is=c(lambda_z_txt,lin.AUC_txt,BE_criteria_txt,Dose_txt,Tau_txt,Tlast_txt,pAUC_txt,
-                                    pAUC_start_txt,pAUC_end_txt,IndivDP_output_txt))
-                        
-cat("\n -------------------  Project Settings ------------------\n\n");show(bear.set_txt);cat("\n")
-cat(paste(c(" The plot label of x-axis ->",secondColumn[[1]],"\n  and the label of y-axis ->",secondColumn[[2]])))  ### here cannot put 'xlabz' & 'ylabz'!  --YJ
-cat("\n --------------------------------------------------------\n\n")
-### end of read setting files and display it ###
 ### show mean/sd conc. by formulation here
 cat(" Summary of Mean Conc. (SD) vs. time by Formulation:-\n")
 cat("-----------------------------------------------------\n")
@@ -1936,15 +1906,49 @@ if(replicated){
    L2<-length(SeqLeg2$subj)
 
     prdcount<-length(levels(TotalData$prd)) #count periods
+    
+    ########## original codes by YH;  but this would not be consistent with RepMIX(). So I changed this
+    ########## since random effect does not include 'treatment' (or noted as 'drug' or 'formula'). -YJ
+    ###
+    ### modCmax<-lme(Cmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### if(pAUC) modpAUC<-lme(partAUC ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### modlnCmax<-lme(lnCmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### modlnAUC0t<-lme(lnAUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### modlnAUC0INF<-lme(lnAUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### if(pAUC) modlnpAUC<-lme(lnpAUC ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+    ### 
+    ##########  end of original codes
+    
+    modCmax<-lme(Cmax ~ seq +  prd + drug , random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")
+    modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")
+    modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug, random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")
+               
+    if (pAUC){
+    modpAUC<-lme(partAUC ~ seq +  prd + drug, random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")}
 
-    modCmax<-lme(Cmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
-    modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
-    modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
-    if(pAUC) modpAUC<-lme(partAUC ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
-    modlnCmax<-lme(lnCmax ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
-    modlnAUC0t<-lme(lnAUC0t ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
-    modlnAUC0INF<-lme(lnAUC0INF ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
-    if(pAUC) modlnpAUC<-lme(lnpAUC ~ seq +  prd + drug , random=~1|subj, data=TotalData, method="REML" )
+    modlnCmax<-lme(log(Cmax) ~ seq +  prd + drug , random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")
+    modlnAUC0t<-lme(log(AUC0t) ~ seq +  prd + drug , random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")
+    modlnAUC0INF<-lme(log(AUC0INF) ~ seq +  prd + drug, random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")
+    if(pAUC){
+    modlnpAUC<-lme(log(partAUC) ~ seq +  prd + drug, random=~drug - 1|subj, control=ctrl,
+               weights=varIdent(form = ~ 1 | drug), 
+               data=TotalData, method="REML")}
 
      if(prdcount==3){
      upperCmax<-100*exp(summary(modlnCmax)[20][[1]][5,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][5,3])*summary(modlnCmax)[20][[1]][5,2])
@@ -2008,13 +2012,21 @@ if(replicated){
        L1<-length(RefData$subj)
        L2<-length(TestData$subj)
 
-       Cmax_ss<- lme(Cmax_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
-       AUCtau_ss<- lme(AUCtau_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
-       if(pAUC) pAUC_stat<- lme(partAUC ~  drug , random=~1|subj, data=TotalData, method="REML" )      ### for pAUC
-       lnCmax_ss<- lme(lnCmax_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
-       lnAUCtau_ss<- lme(lnAUCtau_ss ~  drug , random=~1|subj, data=TotalData, method="REML" )
-       if(pAUC) lnpAUC_stat<- lme(lnpAUC ~  drug , random=~1|subj, data=TotalData, method="REML" )
-
+       ### different from RepMIX()?  ---YJ
+###        Cmax_ss<- lme(Cmax_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+###        AUCtau_ss<- lme(AUCtau_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+###        if(pAUC) pAUC_stat<- lme(partAUC ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)      ### for pAUC
+###        lnCmax_ss<- lme(lnCmax_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+###        lnAUCtau_ss<- lme(lnAUCtau_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+       ###
+       ### change to be consistent with RepMIX() since v2.6.2   -YJ
+       Cmax_ss<- lm(Cmax_ss ~  drug, data=TotalData)
+       AUCtau_ss<- lm(AUCtau_ss ~  drug, data=TotalData)
+       if(pAUC) pAUC_stat<- lm(partAUC ~  drug, data=TotalData)      ### for pAUC
+       lnCmax_ss<- lm(lnCmax_ss ~  drug, data=TotalData)
+       lnAUCtau_ss<- lm(lnAUCtau_ss ~  drug, data=TotalData)
+       ###
+       
         ##90$CI (log transformation)
         upperCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
         lowerCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(-qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
@@ -2037,15 +2049,15 @@ if(replicated){
         test_AUC0t<-mean(TestData$lnAUC0t)
         test_AUC0INF<-mean(TestData$lnAUC0INF)
         if(pAUC) test_lnpAUC<-mean(TestData$lnpAUC)    ### for pAUC
-
-        modCmax<-lme(Cmax ~ drug , random=~1|subj, data=TotalData, method="REML" )
-        modAUC0t<-lme(AUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" )
-        modAUC0INF<-lme(AUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML" )
-        if(pAUC) modpAUC<-lme(partAUC ~ drug , random=~1|subj, data=TotalData, method="REML" )
-        modlnCmax<-lme(lnCmax ~ drug , random=~1|subj, data=TotalData, method="REML" )
-        modlnAUC0t<-lme(lnAUC0t ~ drug , random=~1|subj, data=TotalData, method="REML" )
-        modlnAUC0INF<-lme(lnAUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML" )
-        if(pAUC) modlnpAUC<-lme(lnpAUC ~ drug , random=~1|subj, data=TotalData, method="REML" )
+        
+        modCmax<-lme(Cmax ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+        modAUC0t<-lme(AUC0t ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+        modAUC0INF<-lme(AUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+        if(pAUC) modpAUC<-lme(partAUC ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+        modlnCmax<-lme(lnCmax ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+        modlnAUC0t<-lme(lnAUC0t ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+        modlnAUC0INF<-lme(lnAUC0INF ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
+        if(pAUC) modlnpAUC<-lme(lnpAUC ~ drug , random=~1|subj, data=TotalData, method="REML", control=ctrl)
 
         upperCmax<-100*exp(summary(modlnCmax)[20][[1]][2,1])*exp(qt(0.95,summary(modlnCmax)[20][[1]][2,3])*summary(modlnCmax)[20][[1]][2,2])
         lowerCmax<-100*exp(summary(modlnCmax)[20][[1]][2,1])*exp(-qt(0.95,summary(modlnCmax)[20][[1]][2,3])*summary(modlnCmax)[20][[1]][2,2])

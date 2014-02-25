@@ -51,21 +51,22 @@ cat("\n\n")
 SingleRdata<-subset(SingleRdata0,time >=TlastD)
 SingleTdata<-subset(SingleTdata0,time >=TlastD)
 ###
-### check icd earlier
+### check icd ? not quite well...
 ###
-R_subj_no<-SingleRdata$subj
-R_subj_no<-unique(R_subj_no)
-T_subj_no<-SingleTdata$subj
-T_subj_no<-unique(T_subj_no)
-
-if(!identical(R_subj_no,T_subj_no)) {       ### use identical() here to compare two objects to see if they are the same. --YJ
-   cat("\n\n The Subject codes of taking Ref. product are as follows:\n")
-   cat("-------------------------------------------------------------\n")
-   show(R_subj_no)
-   cat("\n\n The Subject codes of taking Tets product are as follows:\n")
-   cat("-------------------------------------------------------------\n")
-   show(T_subj_no)
-   icd.check()}
+### R_subj_no<-SingleRdata$subj
+### R_subj_no<-unique(R_subj_no)
+### T_subj_no<-SingleTdata$subj
+### T_subj_no<-unique(T_subj_no)
+### 
+### if(!identical(R_subj_no,T_subj_no)) {       ### use identical() here to compare two objects to see if they are the same. --YJ
+###    cat("\n\n The Subject codes of taking Ref. product are as follows:\n")
+###    cat("-------------------------------------------------------------\n")
+###    show(R_subj_no)
+###    cat("\n\n The Subject codes of taking Tets product are as follows:\n")
+###    cat("-------------------------------------------------------------\n")
+###    show(T_subj_no)
+###    icd.check()}
+### 
 
 ## SingleTdata1-->for select 2-6 points
 cat("\n\n")
@@ -193,22 +194,24 @@ indiv_dp.output(SingleRTdata)
 SingleTdata1<-Testdata[ do.call(order,Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
 ### SingleTdata1 <- na.omit(SingleTdata1)   ### for v2.6.1 - IDP output
+
 ###
 ### check icd earlier
 ###
-R_subj_no<-SingleRdata$subj
-R_subj_no<-unique(R_subj_no)
-T_subj_no<-SingleTdata$subj
-T_subj_no<-unique(T_subj_no)
-
-if(!identical(R_subj_no,T_subj_no)) {       ### use identical() here to compare two objects to see if they are the same. --YJ
-   cat("\n\n The Subject codes of taking Ref. product are as follows:\n")
-   cat("-------------------------------------------------------------\n")
-   show(R_subj_no)
-   cat("\n\n The Subject codes of taking Tets product are as follows:\n")
-   cat("-------------------------------------------------------------\n")
-   show(T_subj_no)
-   icd.check()}
+### R_subj_no<-SingleRdata$subj
+### R_subj_no<-unique(R_subj_no)
+### T_subj_no<-SingleTdata$subj
+### T_subj_no<-unique(T_subj_no)
+### 
+### if(!identical(R_subj_no,T_subj_no)) {       ### use identical() here to compare two objects to see if they are the same. --YJ
+###    cat("\n\n The Subject codes of taking Ref. product are as follows:\n")
+###    cat("-------------------------------------------------------------\n")
+###    show(R_subj_no)
+###    cat("\n\n The Subject codes of taking Tets product are as follows:\n")
+###    cat("-------------------------------------------------------------\n")
+###    show(T_subj_no)
+###    icd.check()}
+### 
 
 #'Total" for NCAplot
 Totalplot<- rbind(SingleRdata,SingleTdata)

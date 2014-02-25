@@ -1,39 +1,59 @@
 
-    How to setup bear : (close this dialog if you don't need it)
-
-    ----------- lambda_z estimation ----------    ------------- AUC calculation ------------  
-     Methods                            Values     Methods                            Values  
-    ------------------------------------------    ------------------------------------------  
-     Adjusted R sq. (ARS)................. 0       linear-up/log-down trapezoidal....... 0    
-     Akaike information criterion (AIC)... 1       all linear trapezoidal.............else    
-     Two-Times-Tmax(TTT).................. 2      ------------------------------------------  
-     TTT and ARS.......................... 3   
-     TTT and AIC.......................... 4      ----------- multiple-dose only -----------  
-     Select 2-6 data points manually...... 5      *Tlast: the time of the last dose given for 
-     Load previous selection (.RData)..... 6       the multiple-dose study; will be ignored   
-    ------------------------------------------     when it is a single-dose study; same as    
-                                                   Dosing interval.                           
-    -------------- BE criterion --------------    *x-axis label and y-axis label will be used 
-     lower limit (LL as %).......such as..80       in the plots of drug plasma conc. vs. time.
-     upper limit (UL) = 1/LL; so no need to set   ------------------------------------------  
-    ------------------------------------------    
+    How to setup bear : 
     
-    ------------ Indiv. DP output  -----------   -------------- partial AUC  --------------   
-     IndivDP_output: (0 - No, else - Yes)         pAUC: use truncated or partial AUC?         
-     to enable this function, the original        (0 - No, else - Yes)                        
-     dataset is required same sampling times      pAUC_start: the starting time of pAUC       
-     for each subject; time zero needs to be      pAUC_end: the end time of pAUC              
-     input as '0'; and if there is any missing    'pAUC_start' and 'pAUC_end' will be ignored 
-     data or conc. which is BLQ MUST be input     if pAUC is not disabled (= 0).              
-     as 'NA' (not to be deleted).                ------------------------------------------   
-    ------------------------------------------       
-    ------------------------------------------   (1) User can change these settings from the  
-     IDP output: individual data point output        top menu. Select [# Edit the setup files]
-     as .csv files. WARNING: do not use this         from the top menu and then scroll up this
-     function if you have irregular sampling         terminal to see more.                    
-     time (such as using real times) for each    (2) All these settings are not completely    
-     subject.                                        applied when running with demo dataset.  
-    ------------------------------------------   (3) *** WARNING: Be careful to set up correct
-                                                     methods; otherwise it may cause bear     
-                                                     crashed accidentally.                    
+    Methods                           setting     Methods                           setting  
+    ------------------------------------------    ------------------------------------------ 
+    run demo                     no(0),yes(1).    IndivDP_output               no(0), yes(1)
+ 
+    study design           2x2x2 crossover(0),    ----------- multiple-dose only -----------   
+                                 replicate(1),    *Tlast: the time of the last dose given for  
+                                  parallel(2).     the multiple-dose study; will be ignored    
+                                                   when it is a single-dose study; same as     
+    single-/multiple-dose      single-dose(0),     Dosing interval.                            
+                             multiple-dose(1).                                                 
+                                                  ------------------------------------------   
+    lambda_z estimation                           *x-axis label and y-axis label will be used  
+     Adjusted R sq. (ARS).................(0),     in the plots of drug plasma conc. vs. time.   
+     Akaike information criterion (AIC)...(1),    ------------------------------------------    
+     Two-Times-Tmax(TTT)..................(2),                                                   
+     TTT and ARS..........................(3),    -------------- partial AUC  --------------     
+     TTT and AIC..........................(4),     pAUC: use truncated or partial AUC?            
+     Select 2-6 data points manually......(5),     (0 - No, else - Yes)                           
+     Load previous selection (.RData).....(6).     pAUC_start: the starting time of pAUC          
+                                                   pAUC_end: the end time of pAUC               
+    trapezoidal AUC     linear-up/log-down(0),     'pAUC_start' and 'pAUC_end' will be ignored  
+                                all linear(1).     if pAUC is disabled (= 0).               
+                                                   'pAUC_start' must be less than 'pAUC_end'.
+    BE criterion lower limit (LL as %).... 80      ------------------------------------------ 
+     upper limit (UL) = 1/LL.                                                                                                              
+                                                   ------------ Indiv. DP output  ----------- 
+    ODA (outlier detection analysis)    no(0),      IndivDP_output: (no(0), yes(1))           
+                                       yes(1).      to enable this function, the original     
+                                                    dataset is required same sampling times   
+   ------------------------------------------       for each subject; time zero needs to be    
+   (1) User can change these settings from the      input as '0'; and if there is any missing 
+       top menu. Select [# Edit the setup files]    data or conc. which is BLQ MUST be input  
+       from the top menu and then scroll up this    as 'NA' (not to be deleted).              
+       terminal to see more.                      ***                                         
+   (2) All these settings are not completely        IDP output: individual data point output  
+       applied when running with demo dataset.      as .csv files. WARNING: do not use this   
+   (3) *** WARNING: Be careful to set up correct    function if you have irregular sampling   
+       methods; otherwise it may cause bear         time (such as using real times) for each  
+       crashed accidentally.                        subject.                                  
+   ------------------------------------------       ------------------------------------------  
+     
+     
     
+    
+    
+                                                 
+                                                 
+                                                 
+                                                 
+                                                 
+                                                 
+                                                 
+                                                 
+                                                 
+                                                 
+                                                 

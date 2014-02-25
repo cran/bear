@@ -24,6 +24,8 @@ xlabz<-xlabz
 ylabz<-ylabz
 IndivDP_output<-IndivDP_output
 
+Fname<-Fname    ### dataset file name
+
 ### 
 ### file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
 ###                "All with Linear Trapezoidal Method")
@@ -46,10 +48,11 @@ IndivDP_output<-IndivDP_output
 if(replicated){                      ### not for v2.6.1's IDP output yet... -YJ
     filelocxx <- system.file("extdata", "Replicateddata.rda", package="bear")
     load(filelocxx)  ## because it is a *.rda data file
+    Fname<<-"SingleRep_demo.csv"
 
     with(entertitle.demo(), {
      description_RepNCAinput()  
-     predata<-split(Replicateddata,  list(Replicateddata$prd,Replicateddata$subj))
+     predata<-split(Replicateddata, list(Replicateddata$prd,Replicateddata$subj))
      code<-NULL
      presubj<-NULL
      preseq<-NULL
@@ -97,7 +100,7 @@ SingleTdata<-Testdata[ do.call(order, Testdata) ,]
 show(SingleTdata)  ### ;write.csv(SingleTdata,file="RepSingleTdata.csv",row.names=FALSE)
 SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
 SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
-### SingleTdata1 <- na.omit(SingleTdata1)     ### for v2.6.1 but no IDP output function yet
+### SingleTdata1 <- na.omit(SingleTdata1)     ### for v2.6.1 but no IDP output function yet (replicate)
 
 Totalplot<- rbind(SingleRdata,SingleTdata)              
 ###
@@ -146,6 +149,7 @@ create.products_sum(Totalplot)
      if(multiple){
      filelocxx <- system.file("extdata", "MultipleParadata.rda", package="bear")
      load(filelocxx)  ## because it is a *.rda data file
+     Fname<<-"MultiplePara_demo.csv"
      
      with(Multiplentertitle.demo(), {
      description_ParaNCAinput()  
@@ -217,6 +221,7 @@ create.products_sum(Totalplot)
      else{
      filelocxx <- system.file("extdata", "Paralleldata.rda", package="bear")
      load(filelocxx)  ## because it is a *.rda data file
+     Fname<<-"SinglePara_demo.csv"
      
      with(entertitle.demo(), {
      description_ParaNCAinput()  
@@ -284,6 +289,7 @@ else{
   if(multiple){
      filelocxx <- system.file("extdata", "Multipledata.rda", package="bear")
      load(filelocxx)
+     Fname<<-"Multiple2x2x2_demo.csv"
      
      with(Multiplentertitle.demo(), {
      description_NCAinput()  
@@ -357,6 +363,7 @@ create.products_sum(Totalplot)
      load(filelocxx)
      ### filelocxx <- system.file("extdata", "Single2x2x2.rda", package="bear")  ### v2.6.1 to test IDP function
      ### TotalSingledata<-readRDS(filelocxx)                                     ### v2.6.1 to test IDP function
+     Fname<<-"Single2x2x2_demo.csv"
 
      with(entertitle.demo(), {
      description_NCAinput()  
@@ -418,7 +425,7 @@ create.products_sum(Totalplot)
       }
      }
     }
-   })    
+   })
    }
   }
  }

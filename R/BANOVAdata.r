@@ -1,16 +1,22 @@
 #input subject, time, test and ref concentration
+###
+### NCAdata(), NCAcsv() -> for ;NCA only' data input;
+### BANOVAdata(), BANOVAcsv() -> for 'statistical analysis only' data input;
+### NCA.BANOVAdata(), NCA.BANOVAcsv() for 'NCA -> statistical analysis' data input.
+###
 BANOVAdata<-function(TotalData,
                      replicated=FALSE,
                      parallel=FALSE,
                      multiple=FALSE)
 {
 cat("\n")
+Fname<-Fname
 pAUC<-pAUC           ### for pAUC
 
 file.menu <- c("Input/edit data from keyboard",
                "Import data file with .csv format",
                "Load data File with .RData format",
-               "Back to Statistical analysis",
+               "Back to the top menu",
                "Quit")
 cat("\n")
 if(parallel){
@@ -167,6 +173,7 @@ cat("       2:Test                                                              
                     }
              }
               saveRDS(TotalData,Totalname)
+              Fname<<-Totalname
            }
         else{
            saveRDS(TotalData,Totalname)
@@ -382,8 +389,9 @@ else {
      description_load() 
      ## Totalname <-readline()
      ## Totalname<-paste(Totalname,".RData",sep="")
-     TotalData<-readRDS(file.choose())
+     TotalData<-readRDS(xx<-file.choose())
      TotalData<-edit(TotalData)
+     Fname<<-basename(xx)
      TotalData<- na.omit(TotalData)
      if(parallel){
        if(multiple){
@@ -440,13 +448,8 @@ else {
 
   else {
   if (pick == 4){
-     cat("\n\n")
-     if(multiple){
-      Multiplestat1menu()
-     }
-     else{
-      Multiplestatmenu()
-      }   
+     graphics.off();cat("\n\n")
+     go2menu()
      }
   else {
   if (pick == 5){

@@ -17,7 +17,7 @@ options(warn=-1)
 ### plots of regression line for lambda_z_estimation
 lambda_z_regression_lines<-lambda_z_regression_lines
 ###
-### par(mfrow=c(1,1),las=1)   ### set 'ask=FASLE' (as default) to generate pdf file quickly, no more stop here.
+### par(mfrow=c(1,1),las=1)   ### set 'ask=FALSE' (as default) to generate pdf file quickly, no more stop here.
                               ### see ARS().  -YJ
 pdf(lambda_z_regression_lines,paper="a4")  ### now prepare to save as pdf here.  -YJ
 logo_plot_desc()

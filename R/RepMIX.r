@@ -6,6 +6,7 @@ RepMIX<-function(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC
     test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
     lnpAUC_theta1,lnpAUC_theta2,parallel=FALSE, multiple=FALSE)
 {
+### require(nlme)
 
 lin.AUC<-lin.AUC
 pAUC<-pAUC               ### for pAUC
@@ -27,11 +28,15 @@ ylabz<-ylabz
 
 if(pAUC){lnpAUC_theta1<-BE_LL; lnpAUC_theta2<-BE_UL}   ### something can be wrong if this line is req.  -YJ
 ####
-
-cat("\n")
+ctrl <- lmeControl(opt='optim')    ### default was 'nlminb' for lme(); but it will fail to converge frequently;
+                                   ### changed back to old default 'optim' & try
+                                   ### ref. link: ??lmeControl --> click 'nlem::lmeControl' for more inf.
+                                   ### & https://stats.stackexchange.com/questions/40647/lme-error-iteration-limit-reached
+                                   ### same for following lme().  --YJ
+####
 ##Cmax/Cmax_ss
-if(parallel){                   ## so here is for parallel BE!
-   if(multiple){
+if(parallel){                      ## so here is for parallel BE!
+   if(multiple){  ### here means for the parallel, multiple-dose study
     cat("*** This is a 2-treatment parallel multiple-dosed study.\n\n")
     description_BE_criteria(BE_LL,BE_UL)
     if(pAUC){
@@ -49,129 +54,57 @@ if(parallel){                   ## so here is for parallel BE!
     description_BE_criteria(BE_LL,BE_UL)
    }
  }
-else{ 
-    prdcount<-length(levels(TotalData$prd))   ## count periods (such as TRT/RTRT/etc.)
+else{   ### for replicated, sinlge-dose only! replicated study cannot have multiple-dose study. 
+    prdcount<-length(levels(TotalData$prd))   ## count # of periods (such as TRT/RTRT/etc.)
     cat(paste("*** This is a 2-treatment, 2-sequence, and ",prdcount,"-period replicated design.\n\n",sep=""))
     description_BE_criteria(BE_LL,BE_UL)
 } 
-cat("--------------------------------------------------------------------------\n")
-cat("\n")
+cat("-------------------------------------------------\n")
+cat("\n\n")
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
-   if(multiple){
-    modCmax_ss<-lm(Cmax_ss ~  drug, data=Data)
-   }
-   else{
-    modCmax<-lm(Cmax ~ drug, data=TotalData)
-   }
  }
 else{ 
-cat("  Statistical analysis (lme) - replicate BE study               \n")
-  modCmax<-lme(Cmax ~ seq +  prd + drug , random=~drug - 1|subj, 
-               weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
+cat("  Statistical analysis (lme) - replicate BE study             \n")
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: Cmax_ss                                                 \n")
-cat("\n")
-print(summary(modCmax_ss))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modCmax_ss)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modCmax_ss, type="marginal")[2:4,])
-}
+cat("  Dependent Variable: Cmax_ss                                             \n")
 }
 else{
-cat("  Dependent Variable: Cmax                                                 \n")
-cat("\n")
-print(summary(modCmax))
-if(! parallel){
-  cat("\n")
-  cat("Type I Tests of Fixed Effects\n")
-  print(anova(modCmax)[2:4,])
-  cat("\n")
-  cat("Type III Tests of Fixed Effects\n")
-  print(anova(modCmax, type="marginal")[2:4,])
+cat("  Dependent Variable: Cmax                                                \n")
 }
-}                                            
-cat("\n")
-cat("\n")
+### if(!parallel) show(TotalData$Cmax);readline(" pause here")
+lme_lm.mod(TotalData$Cmax, TotalData, lme.switch="A")  ### for multiple-dose, Cmax_ss == Cmax
+
 ##AUC0t/AUC(tau)ss
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
-  if(multiple){
-   modAUCtau_ss<-lm(AUCtau_ss ~ drug, data=Data) 
-  }
-  else{
-   modAUC0t<-lm(AUC0t ~ drug, data=TotalData)
-  }
  }
 else{ 
-cat("  Statistical analysis (lme) - replicate BE study               \n")
-modAUC0t<-lme(AUC0t ~ seq +  prd + drug , random=~drug - 1|subj, 
-               weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
+cat("  Statistical analysis (lme) - replicate BE study             \n")
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 if(multiple){
-cat("  Dependent Variable: AUCtau_ss                                        \n")
-cat("\n")
-print(summary(modAUCtau_ss))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modAUCtau_ss)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modAUCtau_ss, type="marginal")[2:4,])
-  }
+cat("  Dependent Variable: AUCtau_ss                                           \n")
 }
 else{
-cat("  Dependent Variable: AUC0t                                                \n")
-cat("\n")
-print(summary(modAUC0t))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modAUC0t)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modAUC0t, type="marginal")[2:4,])
-cat("\n")
-cat("\n")
+cat("  Dependent Variable: AUC0t                                               \n")
 }
-}        
+lme_lm.mod(TotalData$AUC0t, TotalData, lme.switch="B")
+
 ### for pAUC
 ###
 if(pAUC){
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
-   modpAUC<-lm(partAUC ~ drug, data=TotalData)
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study             \n")
-  modpAUC<-lme(partAUC ~ seq +  prd + drug, random=~drug - 1|subj, 
-               weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 cat("  Dependent Variable: partAUC                                 \n")
-cat("\n")
-print(summary(modpAUC))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modpAUC)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modpAUC,type="marginal")[2:4,])
-cat("\n")
-cat("\n")
-}
+lme_lm.mod(TotalData$partAUC, TotalData, lme.switch="D")
 }
 ### end of pAUC
 
@@ -180,169 +113,84 @@ if(multiple){
 }
 else{
 if(parallel){
-cat("  Statistical analysis (lm) - parallel BE study               \n")
-   modAUC0INF<-lm(AUC0INF ~ drug, data=TotalData)
+cat("  Statistical analysis (lm) - parallel BE study                 \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modAUC0INF<-lme(AUC0INF ~ seq +  prd + drug, random=~drug - 1|subj, 
-               weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
 } 
-cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: AUC0INF                                                 \n")
-cat("\n")
-print(summary(modAUC0INF))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modAUC0INF)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modAUC0INF, type="marginal")[2:4,])
-cat("\n")
-cat("\n")
-}
+cat("-------------------------------------------------\n")
+cat("  Dependent Variable: AUC0INF                                   \n")
+lme_lm.mod(TotalData$AUC0INF, TotalData, lme.switch="C")
 }
 
 ##lnCmax /lnCmax_ss
 if(parallel){
-cat("  Statistical analysis (lm) - parallel BE study               \n")
-  if(multiple){
-    modlnCmax_ss<-lm(log(Cmax_ss) ~ drug, data=Data)
-  }
-  else{
-    modlnCmax<-lm(log(Cmax) ~ drug, data=TotalData)
-### fm1<-lme(log(Cmax) ~ drug , random=~1|subj, data=TotalData, method="REML") # lme() model!
-   }
+cat("  Statistical analysis (lm) - parallel BE study                 \n")
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnCmax<-lme(log(Cmax) ~ seq +  prd + drug , random=~drug - 1|subj, 
-               weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
-               
-### modlnCmax2<-lme(log(Cmax) ~ seq +  prd + drug , random=~drug - 1|subj, 
-###                weights=varIdent(form = ~ 1 | drug), 
-###                data=TotalData, method="ML" )                  ### testing this new model  -YJ
-               
-###
-### calc sigma_sq value  -YJ
-###
-
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
+if(parallel){
 if(multiple){
-cat("  Dependent Variable: log(Cmax_ss)                                        \n")
-cat("\n")
-print(summary(modlnCmax_ss))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnCmax_ss)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnCmax_ss, type="marginal")[2:4,])
-cat("\n")
+cat("  Dependent Variable: log(Cmax_ss)                              \n")
+modlnCmax_ss<-lm(log(Cmax) ~ drug, data=TotalData)          ### this will be req. for later use.
+}
+else{
+cat("  Dependent Variable: log(Cmax)                                 \n")
+modlnCmax<-lm(log(Cmax) ~ drug, data=TotalData)             ### this will be req. for later use.
 }
 }
 else{
 cat("  Dependent Variable: log(Cmax)                                           \n")
-cat("\n")
-### test a new function -YJ
-### cat(" *** with model of lme(), method=REML ***\n\n")
-print(summary(modlnCmax))                               ### originally there is only this line. -YJ
-### cat("\n Variance components fro method=REML\n\n");VarCorr(modlnCmax)
-### cat("\n\n *** with model of lme(), method=ML ***\n\n")
-### print(summary(modlnCmax2))
-### cat("\n Variance components fro method=ML\n\n");VarCorr(modlnCmax2)
-####
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnCmax)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnCmax, type="marginal")[2:4,])
-cat("\n")
-cat("\n")
-cat("\n")
+modlnCmax<-lme(log(Cmax) ~ seq +  prd + drug , random=~drug - 1|subj, control=ctrl,
+                        weights=varIdent(form = ~ 1 | drug),
+                           data=TotalData, method="REML")   ### this will be req. for later use.
 }
-}
+lme_lm.mod(log(TotalData$Cmax), TotalData, lme.switch="A1")
 
 ## lnAUC0t/lnAUC(tau)ss 
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
-  if(multiple){
-     modlnAUCtau_ss<-lm(log(AUCtau_ss) ~ drug, data=Data )
-  }
-  else{
-     modlnAUC0t<-lm(log(AUC0t) ~ drug, data=TotalData)
-   }
  }
 else{ 
-cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnAUC0t<-lme(lnAUC0t ~ seq +  prd + drug , random=~drug - 1|subj, 
-               weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
+cat("  Statistical analysis (lme) - replicate BE study             \n")
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
+if(parallel){
 if(multiple){
-cat("  Dependent Variable: lnAUC(tau)ss                                      \n")
-cat("\n")
-print(summary(modlnAUCtau_ss))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnAUCtau_ss)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnAUCtau_ss, type="marginal")[2:4,])
+cat("  Dependent Variable: lnAUC(tau)ss                            \n")
+modlnAUCtau_ss<-lm(log(AUC0t) ~ drug, data=TotalData)   ### req. for later use. 
+}
+else{
+cat("  Dependent Variable: log(AUC0t)                              \n") 
+modlnAUC0t<-lm(log(AUC0t) ~ drug, data=TotalData)       ### req. for later use.
 }
 }
 else{
-cat("  Dependent Variable: log(AUC0t)                                 \n")       
-cat("\n")
-print(summary(modlnAUC0t))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnAUC0t)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnAUC0t, type="marginal")[2:4,])
-cat("\n")
-cat("\n")
-}
-}
+cat("  Dependent Variable: log(AUC0t)                              \n")     
+modlnAUC0t<-lme(log(AUC0t) ~ seq +  prd + drug , random=~drug - 1|subj, control=ctrl,
+                        weights=varIdent(form = ~ 1 | drug),
+                           data=TotalData, method="REML")
+}  
+lme_lm.mod(log(TotalData$AUC0t), TotalData, lme.switch="B1")
 ###
 ### doing ln(pAUC)
 ###
 if(pAUC){
 if(parallel){
 cat("  Statistical analysis (lm) - parallel BE study               \n")
- modlnpAUC<-lm(log(partAUC) ~drug, data=TotalData)
+modlnpAUC<-lm(log(partAUC) ~drug, data=TotalData)
  }
 else{ 
-cat("  Statistical analysis (lme) - replicate BE study               \n")
- modlnpAUC<-lme(log(partAUC) ~ seq +  prd + drug, random=~drug - 1|subj, 
+cat("  Statistical analysis (lme) - replicate BE study             \n")
+modlnpAUC<-lme(log(partAUC) ~ seq +  prd + drug, random=~drug - 1|subj, control=ctrl,
                weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
+               data=TotalData, method="REML")
 } 
-cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: log(pAUC)                                        \n")
-cat("\n")
-print(summary(modlnpAUC))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnpAUC)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnpAUC, type="marginal")[2:4,])
-cat("\n")
-cat("\n")
-}
+cat("-------------------------------------------------\n")
+cat("  Dependent Variable: log(pAUC)                               \n")
+lme_lm.mod(log(TotalData$partAUC), TotalData, lme.switch="D1")
 }
 ### end of ln(pAUC)
 ##lnAUC0INF
@@ -350,29 +198,18 @@ if(multiple){
 }
 else{
 if(parallel){
-cat("  Statistical analysis (lm) - parallel BE study               \n")
- modlnAUC0INF<-lm(log(AUC0INF) ~drug, data=TotalData)
+cat("  Statistical analysis (lm) - parallel BE study                \n")
+modlnAUC0INF<-lm(log(AUC0INF) ~drug, data=TotalData)
  }
 else{ 
 cat("  Statistical analysis (lme) - replicate BE study               \n")
-modlnAUC0INF<-lme(log(AUC0INF) ~ seq +  prd + drug, random=~drug - 1|subj, 
+modlnAUC0INF<-lme(log(AUC0INF) ~ seq +  prd + drug, random=~drug - 1|subj, control=ctrl,
                weights=varIdent(form = ~ 1 | drug), 
-               data=TotalData, method="REML" )
+               data=TotalData, method="REML")
 } 
-cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: log(AUC0INF)                                        \n")
-cat("\n")
-print(summary(modlnAUC0INF))
-cat("\n")
-if(! parallel){
-cat("Type I Tests of Fixed Effects\n")
-print(anova(modlnAUC0INF)[2:4,])
-cat("\n")
-cat("Type III Tests of Fixed Effects\n")
-print(anova(modlnAUC0INF, type="marginal")[2:4,])
-cat("\n")
-cat("\n")
-}
+cat("-------------------------------------------------\n")
+cat("  Dependent Variable: log(AUC0INF)                              \n")
+lme_lm.mod(log(TotalData$AUC0INF), TotalData, lme.switch="C1")
 }
 if(parallel){
 ### show(summary(modlnCmax))
@@ -510,7 +347,6 @@ SE_lnpAUC<-summary(modlnpAUC)[20][[1]][8,2]
 }
 }
 
-
 ####two-one side (TOST) and Anderson and Hauck's test
 
 if(multiple){
@@ -573,19 +409,19 @@ EP_lnpAUC<- pt((abs(TAH_lnpAUC)-NP_lnpAUC),L1+L2-2) - pt((-abs(TAH_lnpAUC)-NP_ln
 }
 
 if(parallel){
-cat("  Pivotal Parameters of BE Study - Summary Report  - parallel BE study                         \n")
+cat("  Summary Report: - Pivotal Parameters of Parallel BE Study -             \n")
  }
 else{ 
-cat("  Pivotal Parameters of BE Study - Summary Report  - replicate BE study                        \n")
+cat("  Summary Report: - Pivotal Parameters of Replicate BE Study -            \n")
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 if(multiple){
 cat("  Dependent Variable: log(Cmax_ss)                                        \n")
 }
 else{
 cat("  Dependent Variable: log(Cmax)                                           \n")
 }
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 if(parallel){
 cat("         n1(drug 1)=",L1 , "\n")
 cat("         n2(drug 2)=",L2 , "\n")
@@ -630,7 +466,7 @@ delta_CI <- log(Point_estimate)-log(CI90_lower)
 MSE <- 2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2
 CVintra <- 100*sqrt(exp(MSE)-1)
 cat("\n")
-cat(" The estimated intra-subject CV for Cmax =",formatC(CVintra, format="f", digits=5),"%\n")
+cat(" The estimated intra-subject CV for Cmax_ss =",formatC(CVintra, format="f", digits=5),"%\n")
 cat(" CV(intra)% = 100*sqrt(exp(MSE)-1)), where MSE =",formatC(MSE, format="f", digits=5),"\n")
 cat("---------------------------------------------------------------------------\n")
 }
@@ -747,19 +583,6 @@ description_TOST1_lnCmax(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_thet
 }
 }
 cat("---------------------------------------------------------------------------\n")
-cat("Ref.:\n")
-cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-       \n")
-cat("   Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).\n")
-cat("2. Schuirmann DJ. On hypothesis testing to determine if the mean of a  \n")
-cat("   normal distribution is continued in a known interval. Biometrics, 37, \n")
-cat("   617(1981).                                                           \n")
-cat("3. Schuirmann DJ. A comparison of the two one-sided tests procedure and the \n")
-cat("   power approach for assessing the equivalence of average bioavailability.\n")
-cat("   Journal of Pharmacokinetics and Biopharmaceutics, 15, 657-680 (1987). \n")
-cat("4. Anderson S and Hauck WW.  A new procedure for testing equivalence in \n")
-cat("   comparative bioavailability and other clinical trials. Communications \n")
-cat("   in Statistics-Theory and Methods, 12, 2663-2692 (1983).     \n")
-cat("--------------------------------------------------------------------------\n")
 cat("\n")
 cat("\n")
 
@@ -769,14 +592,14 @@ cat("  Pivotal  Parameters of BE Study - Summary Report  - parallel BE study    
 else{ 
 cat("  Pivotal  Parameters of BE Study - Summary Report  - replicate BE study   \n")
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 if(multiple){
 cat("  Dependent Variable: log(AUCtau_ss)                                      \n")
 }
 else{
 cat("  Dependent Variable: log(AUC0t)                                          \n")
 }                                         
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 if(parallel){
 cat("         n1(drug 1)=",L1 , "\n")
 cat("         n2(drug 2)=",L2 , "\n")
@@ -822,7 +645,7 @@ delta_CI <- log(Point_estimate)-log(CI90_lower)
 MSE <- 2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2
 CVintra <- 100*sqrt(exp(MSE)-1)
 cat("\n")
-cat(" The estimated intra-subject CV for Cmax =",formatC(CVintra, format="f", digits=5),"%\n")
+cat(" The estimated intra-subject CV for lnAUC(tau)ss =",formatC(CVintra, format="f", digits=5),"%\n")
 cat(" CV(intra)% = 100*sqrt(exp(MSE)-1)), where MSE =",formatC(MSE, format="f", digits=5),"\n")
 }
 cat("---------------------------------------------------------------------------\n")
@@ -842,16 +665,7 @@ cat("---------------------------------------------------------------------------
                             "  CI90 upper" ))
   show(round(tbldiff*100,3))
   cat("\n")
-  cat("Above R codes for Welch T test were kindly provided by Helmut Schutz.\n")
-  cat("--------------------------------------------------------------------\n")
-  cat("Ref.: \n")
-  cat("1. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=674\n")
-  cat("2. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=5126\n")
-  cat("3. Wang H and S-C Chow, A practical approach for comparing means of \n")
-  cat("   two groups without equal variance assumption, Statist. Med. 21:  \n")
-  cat("   3137-3151 (2002).\n")
-  cat("--------------------------------------------------------------------\n")
-  }
+}
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
@@ -886,7 +700,7 @@ delta_CI <- log(Point_estimate)-log(CI90_lower)
 MSE <- 2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2
 CVintra <- 100*sqrt(exp(MSE)-1)
 cat("\n")
-cat(" The estimated intra-subject CV for Cmax =",formatC(CVintra, format="f", digits=5),"%\n")
+cat(" The estimated intra-subject CV for lnAUC0t =",formatC(CVintra, format="f", digits=5),"%\n")
 cat(" CV(intra)% = 100*sqrt(exp(MSE)-1)), where MSE =",formatC(MSE, format="f", digits=5),"\n")
 }
 cat("---------------------------------------------------------------------------\n")
@@ -947,18 +761,17 @@ description_TOST1_lnAUC0t(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_the
 }
 cat("---------------------------------------------------------------------------\n")
 cat("\n")
-cat("\n")
 ### for ln(pAUC)
 if(pAUC){
 if(parallel){
-cat("  Pivotal Parameters of BE Study - Summary Report  - parallel BE study                         \n")
+cat("  Summary Report: - Pivotal Parameters of Parallel BE Study -             \n")
  }
 else{ 
-cat("  Pivotal Parameters of BE Study - Summary Report  - replicate BE study                        \n")
+cat("  Summary Report: - Pivotal Parameters of Replicate BE Study -            \n")
 } 
-cat("--------------------------------------------------------------------------\n")
-cat("  Dependent Variable: log(pAUC)                                        \n")
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
+cat("  Dependent Variable: log(pAUC)                                           \n")
+cat("-------------------------------------------------\n")
 if(parallel){
 cat("         n1(drug 1)=",L1 , "\n")
 cat("         n2(drug 2)=",L2 , "\n")
@@ -975,7 +788,7 @@ cat("         MEAN-test =",test_lnpAUC, "\n")
 cat("                SE =",SE_lnpAUC, "\n")
 cat("Estimate(test-ref) =",SlnpAUC, "\n")
 cat("\n")
-cat("**************** Classical (Shortest) 90% C.I. for lnAUC0INF **************\n")
+cat("**************** Classical (Shortest) 90% C.I. for lnpAUC **************\n")
 cat("\n")
 output<-data.frame(Point_estimate=c(formatC(100*exp(SlnpAUC),format="f",digits=3)),
                    CI90_lower=c(formatC(lowerlnpAUC,format="f",digits=3)),
@@ -992,7 +805,7 @@ delta_CI <- log(Point_estimate)-log(CI90_lower)
 MSE <- 2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2
 CVintra <- 100*sqrt(exp(MSE)-1)
 cat("\n")
-cat(" The estimated intra-subject CV for Cmax =",formatC(CVintra, format="f", digits=5),"%\n")
+cat(" The estimated intra-subject CV for lnpAUC =",formatC(CVintra, format="f", digits=5),"%\n")
 cat(" CV(intra)% = 100*sqrt(exp(MSE)-1)), where MSE =",formatC(MSE, format="f", digits=5),"\n")
 }
 cat("---------------------------------------------------------------------------\n")
@@ -1012,15 +825,6 @@ cat("---------------------------------------------------------------------------
                             "  CI90 upper" ))
   show(round(tbldiff*100,3))
   cat("\n")
-  cat("Above R codes for Welch T test were kindly provided by Helmut Schutz.\n")
-  cat("--------------------------------------------------------------------\n")
-  cat("Ref.: \n")
-  cat("1. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=674\n")
-  cat("2. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=5126\n")
-  cat("3. Wang H and S-C Chow, A practical approach for comparing means of \n")
-  cat("   two groups without equal variance assumption, Statist. Med. 21:  \n")
-  cat("   3137-3151 (2002).\n")
-  cat("--------------------------------------------------------------------\n")
   }
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
@@ -1050,21 +854,20 @@ description_TOST1_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_t
 }
 cat("---------------------------------------------------------------------------\n")
 cat("\n")
-cat("\n")
 }
 ### end of ln(pAUC)
 if(multiple){
 }
 else{
 if(parallel){
-cat("  Pivotal Parameters of BE Study - Summary Report  - parallel BE study                         \n")
+cat("  Summary Report: - Pivotal Parameters of Parallel BE Study -             \n")
  }
 else{ 
-cat("  Pivotal Parameters of BE Study - Summary Report  - replicate BE study                        \n")
+cat("  Summary Report: - Pivotal Parameters of Replicate BE Study -            \n")
 } 
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 cat("  Dependent Variable: log(AUC0INF)                                        \n")
-cat("--------------------------------------------------------------------------\n")
+cat("-------------------------------------------------\n")
 if(parallel){
 cat("         n1(drug 1)=",L1 , "\n")
 cat("         n2(drug 2)=",L2 , "\n")
@@ -1098,7 +901,7 @@ delta_CI <- log(Point_estimate)-log(CI90_lower)
 MSE <- 2*(delta_CI/((sqrt(1/L1+1/L2)*qt(0.95, L1+L2-2))))^2
 CVintra <- 100*sqrt(exp(MSE)-1)
 cat("\n")
-cat(" The estimated intra-subject CV for Cmax =",formatC(CVintra, format="f", digits=5),"%\n")
+cat(" The estimated intra-subject CV for lnAUC0INF =",formatC(CVintra, format="f", digits=5),"%\n")
 cat(" CV(intra)% = 100*sqrt(exp(MSE)-1)), where MSE =",formatC(MSE, format="f", digits=5),"\n")
 }
 cat("---------------------------------------------------------------------------\n")
@@ -1118,16 +921,7 @@ cat("---------------------------------------------------------------------------
                             "  CI90 upper" ))
   show(round(tbldiff*100,3))
   cat("\n")
-  cat("Above R codes for Welch T test were kindly provided by Helmut Schutz.\n")
-  cat("--------------------------------------------------------------------\n")
-  cat("Ref.: \n")
-  cat("1. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=674\n")
-  cat("2. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=5126\n")
-  cat("3. Wang H and S-C Chow, A practical approach for comparing means of \n")
-  cat("   two groups without equal variance assumption, Statist. Med. 21:  \n")
-  cat("   3137-3151 (2002).\n")
-  cat("--------------------------------------------------------------------\n")
-  }
+}
 cat("\n")
 cat("---------------------- Two One-Sided Tests (TOST) -------------------------\n")
 cat("\n")
@@ -1153,9 +947,33 @@ description_TOST_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_th
 }
 else{
 description_TOST1_lnAUC0INF(lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2)
+  }
+}
+if(parallel){
+cat("\n")
+cat("Codes for the Welch t-test were kindly provided by Helmut Schutz.   \n")
+cat("--------------------------------------------------------------------\n")
+cat("Ref.: \n")
+cat("1. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=674\n")
+cat("2. Helmut Schutz: http://forum.bebac.at/mix_entry.php?id=5126\n")
+cat("3. Wang H and S-C Chow, A practical approach for comparing means of \n")
+cat("   two groups without equal variance assumption, Statist. Med. 21:  \n")
+cat("   3137-3151 (2002).\n")
+cat("--------------------------------------------------------------------\n\n")
 }
 cat("---------------------------------------------------------------------------\n")
-cat("\n")
-cat("\n")
-  }
+cat("Ref.:                                                                      \n")
+cat("1. Chow SC and Liu JP. Design and Analysis of Bioavailability-             \n")
+cat("   Bioequivalence Studies. 3rd ed., Chapman & Hall/CRC, New York (2009).   \n")
+cat("2. Schuirmann DJ. On hypothesis testing to determine if the mean of a      \n")
+cat("   normal distribution is continued in a known interval. Biometrics, 37,   \n")
+cat("   617(1981).                                                              \n")
+cat("3. Schuirmann DJ. A comparison of the two one-sided tests procedure and the\n")
+cat("   power approach for assessing the equivalence of average bioavailability.\n")
+cat("   Journal of Pharmacokinetics and Biopharmaceutics, 15, 657-680 (1987).   \n")
+cat("4. Anderson S and Hauck WW.  A new procedure for testing equivalence in    \n")
+cat("   comparative bioavailability and other clinical trials. Communications   \n")
+cat("   in Statistics-Theory and Methods, 12, 2663-2692 (1983).                 \n")
+cat("-------------------------------------------------------------------------- \n")
+cat("\n\n")
 }

@@ -6,8 +6,8 @@ OutputFilez<-function(){
    anova_output_xfile<-NULL                            ### BANOVAoutput.r
    statSum_output_xfile<-NULL                          ### NCAoutput.r
    nca_output_xfile<-NULL                              ### NCAoutput.r
-   lm_stat_xfile<-NULL                                 ### RepMIXoutput.r
-   lme_stat_xfile<-NULL                                ### RepMIXoutput.r
+   lm_stat_xfile<-NULL                                 ### RepMIXoutput.r; for parallel study
+   lme_stat_xfile<-NULL                                ### RepMIXoutput.r; for replicate study
    pivotal_output_xfile<-NULL                          ### NCAoutput.r
    misc_pk_output_xfile<-NULL                          ### NCAoutput.r
    nca_plot_xfile<-NULL                                ### NCAplot.r

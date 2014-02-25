@@ -28,7 +28,7 @@ if(multiple){
     if (pick == 2){
         if(multiple){
         designtrace<<-paste(designtrace,"NCA only,",sep=" ")
-        Multiple1menu()
+        Multiple1menu()     ### this call call Multiplemenu() with 'multiple = TRUE" 
         }
         else{
         designtrace<<-paste(designtrace,"NCA only,",sep=" ")
@@ -38,7 +38,7 @@ if(multiple){
     if (pick == 3){
         if(multiple){
         designtrace<<-paste(designtrace,"stat analysis only,",sep=" ")
-        stat1menu()
+        stat1menu()     ### this call call statmenu() with 'multiple = TRUE"
         }
         else{
         designtrace<<-paste(designtrace,"stat analysis only,",sep=" ")
@@ -48,7 +48,7 @@ if(multiple){
     if (pick == 4){
         if(multiple){
         designtrace<<-paste(designtrace,"NCA - stat analysis,",sep=" ")
-        Multiplestat1menu()
+        Multiplestat1menu()     ### this call call Multiplestat1menu() with 'multiple = TRUE"
         }
         else{
         designtrace<<-paste(designtrace,"NCA - stat analysis,",sep=" ")

@@ -136,8 +136,9 @@ if(parallel){
    zz <- file(lm_stat_xfile, open="wt")}
  else{
    zz <- file(lme_stat_xfile, open="wt")}
-cat("\n\n Generate lm (linear model for the parallel study)\n or lme (linear mixed effect for the replicate study)\n output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
-sink(zz)
+cat("\n\n Generate lm (linear model for the parallel study)\n or lme (linear mixed effect for the replicate study)\n output now...\n")
+readline(" Press Enter to proceed...");cat("\n\n")
+sink(zz, split=TRUE)
 description_version()
 cat("  List of Input Data from NCA                  \n")
 cat("-----------------------------------------------\n")
@@ -186,21 +187,11 @@ cat("\n")
 cat(" Means                  \n")
 cat("----------------------------------------------------\n")
 
-show(seq_mean)
-cat("\n")
-cat("\n")
+show(seq_mean);cat("\n\n")
+show(subj_mean);cat("\n\n")
+show(prd_mean);cat("\n\n")
+show(drug_mean);cat("\n\n")
 
-show(subj_mean)
-cat("\n")
-cat("\n")
-          
-show(prd_mean)
-cat("\n")
-cat("\n")
-                   
-show(drug_mean)
-cat("\n")
-cat("\n")
 RepMIX(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
        test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,
        lnpAUC_theta1,lnpAUC_theta2)

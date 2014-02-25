@@ -24,30 +24,36 @@ pAUC_end<-NULL
 req.closezz<-FALSE
 IndivDP_output<-NULL
 IndivDP_output<<-FALSE
+run.demo<-NULL
+run.demo<<-FALSE
+study.type<-NULL
+dose.type<-NULL
 
 ### readme.1st.bear<- system.file("extdata", "bear_setup_readme.txt", package="bear")
 ### file.show(readme.1st.bear,encoding="UTF-8")
 
 if(file.exists("bear.setup.rds")){
      bear.set<-readRDS("bear.setup.rds")
-     if(nrow(bear.set)==9) {              ### when it was the previous version; then add the last row.  --YJ
-     cat("\n  The previous bear settig file has been modified.\n  IDP_output function has been added to current setting.\n\n")
-     df<-data.frame(Methods=c("IndivDP_output"),Setting=c(0))
-     bear.set<-rbind(bear.set,df)
-     saveRDS(bear.set,"bear.setup.rds")   ### this will keep the same setting as previously saved.
-     }
-     else if(nrow(bear.set)<9){           ### this will erase all previous setting
-     cat("\n  The previous bear settig file has been deleted.\n  Please edit the setting again.\n\n")
-     bear.set<-data.frame(Methods=c("lambda_z estimate","trapezoidal AUC","BE criterion (LL)","Dose",
-                                    "Dosing Interval","Tlast","pAUC","pAUC_start","pAUC_end","IndivDP_output"),
-                          Setting=c(0,0,80,1e+05,24,120,0,1,8,0))
+     ### if(nrow(bear.set)==9) {              ### when it was the previous version; then add the last row.  --YJ
+     ### cat("\n  The previous bear settig file has been modified.\n  IDP_output setting has been added to current setting.\n\n")
+     ### df<-data.frame(Methods=c("IndivDP_output"),Setting=c(0))
+     ### bear.set<-rbind(bear.set,df)
+     ### saveRDS(bear.set,"bear.setup.rds")   ### this will keep the same setting as previously saved.
+     ### }
+     if(nrow(bear.set)<14){           ### this will erase all previous setting
+     cat("\n  The previous set-up file has been updated.\n  Please edit the set-up file again.\n\n")
+     bear.set<-data.frame(Methods=c("run demo","study design","single-/multiple-dose","lambda_z estimate",
+                                    "trapezoidal AUC","BE criterion (LL)","ODA","dose","dosing interval",
+                                    "Tlast","pAUC","pAUC_start","pAUC_end","indivDP_output"),
+                          Setting=c(0,0,0,0,0,80,0,1e+05,24,120,0,1,8,0))
      saveRDS(bear.set,"bear.setup.rds")
      }
   }
  else{
-     bear.set<-data.frame(Methods=c("lambda_z estimate","trapezoidal AUC","BE criterion (LL)","Dose",
-                                    "Dosing Interval","Tlast","pAUC","pAUC_start","pAUC_end","IndivDP_output"),
-                          Setting=c(0,0,80,1e+05,24,120,0,1,8,0))
+     bear.set<-data.frame(Methods=c("run demo","study design","single-/multiple-dose","lambda_z estimate",
+                                    "trapezoidal AUC","BE criterion (LL)","ODA","dose","dosing interval",
+                                    "Tlast","pAUC","pAUC_start","pAUC_end","indivDP_output"),
+                          Setting=c(0,0,0,0,0,80,0,1e+05,24,120,0,1,8,0))
      saveRDS(bear.set,"bear.setup.rds")
 }
 if(file.exists("plot.setup.rds")){
@@ -61,19 +67,27 @@ else{
     saveRDS(plotz.set,"plot.setup.rds")
     secondColumn<-as.character(plotz.set[,2])   ### to remove 'level' from a list of data.frame(). ---YJ
 }   ### ref. link: http://stackoverflow.com/questions/16770753/remove-level-from-a-list-extract-to-a-data-fram (THX!)
-  
-  lambda_z_calc<<-bear.set[1,2]
-  lin.AUC<<-ifelse(bear.set[2,2]==0, FALSE, TRUE)
-  IndivDP_output<<-ifelse(bear.set[10,2]==0, FALSE, TRUE)
-  BE_LL<<- bear.set[3,2]/100
-  BE_UL<<- 1./(bear.set[3,2]/100)   ### here cannot write as "BE_UL<<- 1./BE_LL"; otherwise, BE_UL is NaN!  --YJ
-  dosez<<- bear.set[4,2];DosingTau<<- bear.set[5,2];Tlastz<<- bear.set[6,2]
-  pAUC<<-ifelse(bear.set[7,2]==0, FALSE, TRUE)
-  pAUC_start<<-bear.set[8,2];pAUC_end<<-bear.set[9,2]
+
+  run.demo<<-ifelse(bear.set[1,2]==0, FALSE, TRUE)  ### FALSE (0) or TRUE(1)
+  study.type<<-bear.set[2,2]
+  dose.type<<-bear.set[3,2]
+  lambda_z_calc<<-bear.set[4,2]
+  lin.AUC<<-ifelse(bear.set[5,2]==0, FALSE, TRUE)
+  ODAnalysis<<-ifelse(bear.set[7,2]==0, FALSE, TRUE)
+  IndivDP_output<<-ifelse(bear.set[14,2]==0, FALSE, TRUE)
+  BE_LL<<- bear.set[6,2]/100
+  BE_UL<<- 1./(bear.set[6,2]/100)   ### here cannot write as "BE_UL<<- 1./BE_LL"; otherwise, BE_UL will become 'NaN'!  --YJ
+  dosez<<- bear.set[8,2];DosingTau<<- bear.set[9,2];Tlastz<<- bear.set[10,2]
+  pAUC<<-ifelse(bear.set[11,2]==0, FALSE, TRUE)
+  pAUC_start<<-bear.set[12,2];pAUC_end<<-bear.set[13,2]
   xlabz<<- secondColumn[[1]];ylabz<<- secondColumn[[2]]
 
+  run.demo_txt<-"no"
+  study.type_txt<-"2x2x2 crossover"
+  dose.type_txt<-"single-dose"
   lambda_z_txt<-""
   lin.AUC_txt<-""
+  ODAnalysis_txt<-""
   BE_criteria_txt<-"lower limit"
   Dose_txt<-"dose given"
   Tau_txt<-"*multiple-dose only"
@@ -83,22 +97,32 @@ else{
   pAUC_end_txt<-"the end time of pAUC"
   IndivDP_output_txt<-""
   
-  if(bear.set[1,2]==0) lambda_z_txt ="adj. R sq. (ARS)"
-  if(bear.set[1,2]==1) lambda_z_txt ="Akaike info. criterion (AIC)"
-  if(bear.set[1,2]==2) lambda_z_txt ="Two-Times-Tmax(TTT)"
-  if(bear.set[1,2]==3) lambda_z_txt ="TTT and adj. ARS"
-  if(bear.set[1,2]==4) lambda_z_txt ="TTT and AIC"
-  if(bear.set[1,2]==5) lambda_z_txt ="manual selection"
-  if(bear.set[1,2]==6) lambda_z_txt ="load previous selection (.RData)"
-  lin.AUC_txt<-ifelse(bear.set[2,2]==0, "linear-up/log-down", "all linear")
-  pAUC_txt<-ifelse(bear.set[7,2]==0,"No! full AUC","truncated/partical AUC")
-  IndivDP_output_txt<-ifelse(bear.set[10,2]==0,"no IDP output","do IDP output")
+  if(bear.set[1,2]!=0) run.demo_txt   ="yes"
+  if(bear.set[2,2]==1) study.type_txt ="replicate study"
+  if(bear.set[2,2]==2) study.type_txt ="parallel study"
+  if(bear.set[3,2]!=0) dose.type_txt  ="multiple dose"
   
-  bear.set_txt<-data.frame(Methods=c("lambda_z estimate","trapezoidal AUC","BE criterion (LL)","Dose","Dosing Interval",
+  if(bear.set[4,2]==0) lambda_z_txt ="adj. R sq. (ARS)"
+  if(bear.set[4,2]==1) lambda_z_txt ="Akaike info. criterion (AIC)"
+  if(bear.set[4,2]==2) lambda_z_txt ="Two-Times-Tmax(TTT)"
+  if(bear.set[4,2]==3) lambda_z_txt ="TTT and adj. ARS"
+  if(bear.set[4,2]==4) lambda_z_txt ="TTT and AIC"
+  if(bear.set[4,2]==5) lambda_z_txt ="manual selection"
+  if(bear.set[4,2]==6) lambda_z_txt ="load previous selection (.RData)"
+  
+  lin.AUC_txt<-ifelse(bear.set[5,2]==0, "linear-up/log-down", "all linear")
+  ODAnalysis_txt<-ifelse(bear.set[7,2]==0, "no", "yes")
+  pAUC_txt<-ifelse(bear.set[11,2]==0,"all AUC","truncated/partial AUC")
+  IndivDP_output_txt<-ifelse(bear.set[14,2]==0,"no","yes")
+  
+  bear.set_txt<-data.frame(Methods=c("run demo?","study design?","single-/multiple-dose","lambda_z estimate",
+                                     "trapezoidal AUC","BE criterion (LL)","ODA?","dose?","dosing interval",
                                      "Tlast","pAUC?","pAUC_start","pAUC_end","IDP output?"),
-                          Setting=c(bear.set[1,2],bear.set[2,2],bear.set[3,2],bear.set[4,2],bear.set[5,2],bear.set[6,2],
-                                    bear.set[7,2],bear.set[8,2],bear.set[9,2],bear.set[10,2]),
-                          which_is=c(lambda_z_txt,lin.AUC_txt,BE_criteria_txt,Dose_txt,Tau_txt,Tlast_txt,pAUC_txt,
+                          Setting=c(bear.set[1,2],bear.set[2,2],bear.set[3,2],bear.set[4,2],bear.set[5,2],
+                                    bear.set[6,2],bear.set[7,2],bear.set[8,2],bear.set[9,2],bear.set[10,2],
+                                    bear.set[11,2],bear.set[12,2],bear.set[13,2],bear.set[14,2]),
+                          which_is=c(run.demo_txt,study.type_txt,dose.type_txt,lambda_z_txt,lin.AUC_txt,
+                                     BE_criteria_txt,ODAnalysis_txt,Dose_txt,Tau_txt,Tlast_txt,pAUC_txt,
                                      pAUC_start_txt,pAUC_end_txt,IndivDP_output_txt))
 
   cat("\n -------------------  Current settings ------------------\n\n");show(bear.set_txt);cat("\n")

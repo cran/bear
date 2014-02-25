@@ -1061,8 +1061,9 @@ if(replicated){
 RepTTTARSoutput(sumindexR, sumindexT,R.split,T.split,keindex_ref,keindex_test,Dose,TotalData)
 RepNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis)
  if (Demo){
-        #Demo=TRUE, MIX=FALSE
-         Repmenu()
+         #Demo=TRUE, MIX=FALSE
+         ### Repmenu()
+         cat("\n\n");go2menu()
         }
        else {
          if(MIX){
@@ -1084,7 +1085,8 @@ else{
         MultipleParaNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis,TlastD)
           if (Demo){
           #Demo=TRUE, BANOVA=FALSE
-          MultipleParamenu()
+          ### MultipleParamenu()
+          cat("\n\n");go2menu()
           }
            else {
              if(MIX){
@@ -1102,7 +1104,8 @@ else{
       ParaNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis) 
       if (Demo){
          #Demo=TRUE, MIX=FALSE
-         Paramenu()
+         ### Paramenu()
+         cat("\n\n");go2menu()
         }
        else {
          if(MIX){
@@ -1124,7 +1127,8 @@ else{
         MultipleNCAplot(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis,TlastD)
           if (Demo){
           #Demo=TRUE, BANOVA=FALSE
-          MultipleNCAmenu()
+          ### MultipleNCAmenu()
+          cat("\n\n");go2menu()
           }
            else {
              if(BANOVA){
@@ -1143,7 +1147,8 @@ else{
 
       if (Demo){
         #Demo=TRUE, BANOVA=FALSE
-        NCAmenu()
+        ### NCAmenu()
+        cat("\n\n");go2menu()
           }
        else {
          if(BANOVA){

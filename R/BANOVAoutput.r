@@ -103,7 +103,7 @@ rseq<-as.data.frame(sapply(TotalData1, tapply, TotalData1$seq, mean))
 rprd<-as.data.frame(sapply(TotalData1, tapply, TotalData1$prd, mean))
 
 #ANOVA.txt
-cat("\n\n Generate anova output now...\n");readline(" Press Enter to proceed...");cat("\n\n")
+cat("\n\n Next to generate anova output...\n");readline(" Press Enter to proceed...");cat("\n\n")
 zz <- file(anova_output_xfile, open="wt")
 sink(zz, split=TRUE)   ### for debugging... -YJ
 description_version()

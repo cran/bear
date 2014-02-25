@@ -1,6 +1,7 @@
 ##
-## will be called by NCA.BANOVAmenu(); demo fro "NCA -> ANOVA" (both) ONLY
-##
+### will be called by NCA.BANOVAmenu(); demo for "NCA -> ANOVA" (both) ONLY
+### statistical analysis only-> demoBANOVA()
+###
 demomenu1<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 {
 Demo<-Demo  ## set Demo as Global see go.r
@@ -24,6 +25,11 @@ xlabz<-xlabz
 ylabz<-ylabz
 IndivDP_output<-IndivDP_output
 
+Fname<-Fname    ### dataset file name
+
+back.from.banova<-back.from.banova    ### to add a 'flag' here for demo of NCA -> BANOVA; to avoid looping
+back.from.banova<<-TRUE
+
 ### file.menu <- c("Linear-up/log-down Trapezoidal Method (default)",
 ###                "All with Linear Trapezoidal Method")
 ### pick <- menu(file.menu, title = " << Method Selections for AUC Calculation>> ", graphics=TRUE)
@@ -44,7 +50,7 @@ IndivDP_output<-IndivDP_output
 if(replicated){
     filelocxx <- system.file("extdata", "Replicateddata.rda", package="bear")
     load(filelocxx)  ## because it is a *.rda data file
-
+    Fname<<-"SingleRep_demo.csv"
     with(entertitle.demo(), {
      description_RepNCAinput()  
      predata<-split(Replicateddata,list(Replicateddata$prd,Replicateddata$subj))
@@ -145,6 +151,7 @@ create.products_sum(Totalplot)
      if(multiple){
       filelocxx <- system.file("extdata", "MultipleParadata.rda", package="bear")
       load(filelocxx)  ## because it is a *.rda data file; leave it as was
+      Fname<<-"MultiplePara_demo.csv"
       
       with(Multiplentertitle.demo(), {
       description_ParaNCAinput()  
@@ -223,6 +230,7 @@ create.products_sum(Totalplot)
     else{
      filelocxx <- system.file("extdata", "Paralleldata.rda", package="bear")
      load(filelocxx)  ## because it is a *.rda data file
+     Fname<<-"SinglePara_demo.csv"
      
      with(entertitle.demo(), {
      description_ParaNCAinput()  
@@ -298,6 +306,7 @@ create.products_sum(Totalplot)
      if(multiple){
      filelocxx <- system.file("extdata", "Multipledata.rda", package="bear")
      load(filelocxx)  ## because it is a *.rda data file
+     Fname<<-"Multiple2x2x2_demo.csv"
      
      with(Multiplentertitle.demo(), {
      description_NCAinput()  
@@ -379,6 +388,7 @@ create.products_sum(Totalplot)
     load(filelocxx)  ## because it is a *.rda data file                      
     ### filelocxx <- system.file("extdata", "Single2x2x2.rda", package="bear")   ### v2.6.1 to test IDP function
     ### TotalSingledata<-readRDS(filelocxx)
+    Fname<<-"Single2x2x2_demo.csv"
     
     cat("\n\n")
      ##NCAanalyze or NCAGLManalyze
@@ -396,7 +406,7 @@ create.products_sum(Totalplot)
       }      
       SingleRdata1<-Refdata[ do.call(order, Refdata) ,]
       SingleRdata1$conc[SingleRdata1$conc == 0] <- NA
-      ### SingleRdata1 <- na.omit(SingleRdata1)     ### for v2.6.1 IDP output function
+      ### SingleRdata1 <- na.omit(SingleRdata1)     ### for v2.6.1 IDP output function; to keep 'NA' for missing or BLQ data
       cat("\n\n")
       Test<-rbind(Singledata[[2]],Singledata[[3]])
       Testdata<-data.frame(subj=Test$subj, seq= Test$seq, prd=Test$prd, drug=c(2), time=Test$time, conc=Test$conc)
@@ -408,7 +418,7 @@ create.products_sum(Totalplot)
       }      
       SingleTdata1<-Testdata[ do.call(order, Testdata) ,]
       SingleTdata1$conc[SingleTdata1$conc == 0] <- NA
-      ### SingleTdata1 <- na.omit(SingleTdata1)     ### for v2.6.1 IDP output function
+      ### SingleTdata1 <- na.omit(SingleTdata1)     ### for v2.6.1 IDP output function; to keep 'NA' for missing or BLQ data
       Totalplot<- rbind(SingleRdata,SingleTdata)
 ###
 create.products_sum(Totalplot)
