@@ -10,6 +10,7 @@ BANOVAcsv<-function(replicated=FALSE, parallel=FALSE, multiple=FALSE)
 cat("\n")
 
 Fname<-Fname
+pAUC<-pAUC
 
 file.menu <- c("separator = comma (,) &  decimal = point (.)",
                "separator = semicolon (;) &  decimal = comma (,)",
@@ -25,23 +26,35 @@ cat("\n\n")
 description_import()
 if(parallel){
   if(multiple){
-     cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+     if(pAUC){
+     cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","partAUC","lnCmax_ss","lnAUCtau_ss","lnpAUC")}
+     else{
+     cnames<-c("subj","drug","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")}
   }
   else{
-     cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+     if(pAUC){
+     cnames<-c("subj","drug","Cmax", "AUC0t","partAUC","AUC0INF","lnCmax","lnAUC0t","lnAUC0INF","lnpAUC")}
+     else{
+     cnames<-c("subj","drug","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")}
   }
 } 
 else{ 
   if(multiple){
-     cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")
+     if(pAUC){
+     cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","partAUC","lnCmax_ss","lnAUCtau_ss","lnpAUC")}
+     else{
+     cnames<-c("subj","drug","seq", "prd","Cmax_ss","AUCtau_ss","lnCmax_ss","lnAUCtau_ss")}
    }
    else{
-     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")
+     if(pAUC){
+     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t","partAUC","AUC0INF","lnCmax","lnAUC0t","lnAUC0INF","lnpAUC")}
+     else{
+     cnames<-c("subj","drug","seq", "prd","Cmax", "AUC0t", "AUC0INF","lnCmax","lnAUC0t","lnAUC0INF")}
    }
 } 
 pick <- menu(file.menu, title = " << Separator and decimal formats >> ", graphics=TRUE)
 if (pick<10){
-if   (pick == 1){ #### BANOVAcsv() uses 'TotalData' instead of 'TotalSingledata' as NCAcsv() & NCA.BANOVAcsv() did.
+  if (pick == 1){ #### BANOVAcsv() uses 'TotalData' instead of 'TotalSingledata' as NCAcsv() & NCA.BANOVAcsv() did.
        TotalData<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=",",dec=".")}
   if (pick == 2){
        TotalData<-read.csv(xx<-file.choose(),header=TRUE,row.names=NULL,col.names=cnames, sep=";",dec=",")}

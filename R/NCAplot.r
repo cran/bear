@@ -1,4 +1,6 @@
-##export with pdf file
+###
+### export NCA plots with pdf file; will be called by ARS(), aic(), TTT(), etc.
+### 
 NCAplot<-function(Totalplot,SingleRdata,SingleTdata,TotalData,xaxis,yaxis,TlastD,
                   replicated=FALSE,parallel=FALSE,multiple=FALSE)
 {
@@ -66,16 +68,15 @@ if(replicated){
         
         }
         else{
-        
-        paraR.split<-split( Totalplotpara[[1]], list(Totalplotpara[[1]]$subj))
-        paraT.split<-split( Totalplotpara[[2]], list(Totalplotpara[[2]]$subj))
+           paraR.split<-split( Totalplotpara[[1]], list(Totalplotpara[[1]]$subj))
+           paraT.split<-split( Totalplotpara[[2]], list(Totalplotpara[[2]]$subj))
           }
         }
        else{
-         LR<-data.frame(subj=Totalplot$subj,  seq=Totalplot$seq, prd=Totalplot$prd, drug=Totalplot$drug,
-               time=Totalplot$time,  conc=Totalplot$conc)
-         Totals.split<-split(TotalData, list(TotalData$drug))
-         L<-length(Totals.split[[1]]$subj)
+           LR<-data.frame(subj=Totalplot$subj,  seq=Totalplot$seq, prd=Totalplot$prd, drug=Totalplot$drug,
+                          time=Totalplot$time,  conc=Totalplot$conc)
+           Totals.split<-split(TotalData, list(TotalData$drug))
+           L<-length(Totals.split[[1]]$subj)
          
          }
      LR$conc[LR$conc == 0] <- NA
@@ -99,12 +100,10 @@ for(i in seq_along(R.split)){     ### for Ref. here; it's parallel design, no cr
         ggdata<-data.frame(time=xx1,conc=yy1)
         ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
         ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-        p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-        p<- p + scale_fill_discrete(guide=FALSE)
-        p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-            labs(list(title = main,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-        p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                      axis.title.y=element_text(size=16,face="bold"))
+        p<-ggplot(ggdata, aes(time,conc)) + scale_fill_discrete(guide=FALSE) + 
+           geom_point(colour="black",size=3) + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + 
+           theme(plot.title=element_text(size=16,face="bold"), axis.title.x=element_text(size=16,face="bold"), 
+                 axis.title.y=element_text(size=16,face="bold"))
         print(p)
          }
       else{
@@ -115,12 +114,10 @@ for(i in seq_along(R.split)){     ### for Ref. here; it's parallel design, no cr
         ggdata<-data.frame(time=xx1,conc=yy1)
         ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
         ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-        p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-        p<- p + scale_fill_discrete(guide=FALSE)
-        p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-            labs(list(title = main,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-        p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                      axis.title.y=element_text(size=16,face="bold"))
+        p<-ggplot(ggdata, aes(time,conc)) + scale_fill_discrete(guide=FALSE) + 
+           geom_point(colour="black",size=3) + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + 
+           theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+                 axis.title.y=element_text(size=16,face="bold"))
         print(p)
          }
       }                                                     
@@ -133,12 +130,10 @@ for(i in seq_along(T.split)){          ### for Test here
          ggdata<-data.frame(time=xx1,conc=yy1)
          ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
          ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-         p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-         p<- p + scale_fill_discrete(guide=FALSE)
-         p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-             labs(list(title = main,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-         p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                       axis.title.y=element_text(size=16,face="bold"))
+         p<-ggplot(ggdata, aes(time,conc)) + scale_fill_discrete(guide=FALSE) + 
+            geom_point(colour="black",size=3) + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + 
+            theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                  axis.title.y=element_text(size=16,face="bold"))
          print(p)         
         }
      else{ 
@@ -149,12 +144,10 @@ for(i in seq_along(T.split)){          ### for Test here
          ggdata<-data.frame(time=xx1,conc=yy1)
          ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
          ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-         p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-         p<- p + scale_fill_discrete(guide=FALSE)
-         p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-             labs(list(title = main,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-         p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                       axis.title.y=element_text(size=16,face="bold"))
+         p<-ggplot(ggdata, aes(time,conc)) + scale_fill_discrete(guide=FALSE) + 
+            geom_point(colour="black",size=3) + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + 
+            theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                  axis.title.y=element_text(size=16,face="bold"))
          print(p)         
         }
       }                                     
@@ -173,16 +166,14 @@ for(i in seq_along(s.split)){
       for (i in seq_along(ggdata$time)) ggdata$trt[i]<-paste("Period# ",ggdata$prd[i]," ",
                                        ifelse(ggdata$drug[i]==1,"Ref.","Test"),sep="")
       ### show(ggdata);readline("")  ### works great! -YJ
-      p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) ### ,linetype=trt))  ### OK now.  -YJ
-      p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-          labs(list(title = main,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-      p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                    axis.title.y=element_text(size=16,face="bold"))
-      p<- p + scale_colour_discrete(name="Treatment:-") +
-               scale_shape_discrete(name ="Treatment:-",solid=FALSE)
-      p<- p + theme(legend.title = element_text(size=14, face="bold"), legend.text=element_text(size = 12, face = "bold"))
-      p<- p + theme(legend.position=c(0.85,0.85)) + theme(legend.background=element_blank()) +
-              theme(legend.key=element_blank())    ### make legend has the same background as plot. -YJ
+      p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) + 
+         geom_point(colour="black",size=3) + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + 
+         theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+         axis.title.y=element_text(size=16,face="bold")) + scale_colour_discrete(name="Treatment:-") + 
+         scale_shape_discrete(name ="Treatment:-",solid=FALSE) + 
+         theme(legend.title = element_text(size=14, face="bold"), legend.text=element_text(size = 12, face = "bold")) + 
+         theme(legend.position=c(0.85,0.85)) + theme(legend.background=element_blank()) + 
+         theme(legend.key=element_blank())
       print(p)
       }
       else{
@@ -194,16 +185,14 @@ for(i in seq_along(s.split)){
          ggdata<-data.frame(time=xx1,conc=yy1,Treatment=as.factor(s.split[[i]]$drug),trt=c(""),stringsAsFactors=F)
          for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
          ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-         p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) ### ,linetype=trt))  ### OK now.  -YJ
-         p<- p + scale_fill_discrete(guide=FALSE)
-         p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-             labs(list(title = main,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-         p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                       axis.title.y=element_text(size=16,face="bold"))
-         p<- p + scale_colour_discrete(name="Treatment:- ") +
-                 scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-         p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-         p<- p + theme(legend.position="top")
+         p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) + 
+            scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + 
+            geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + 
+            theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                  axis.title.y=element_text(size=16,face="bold")) + scale_colour_discrete(name="Treatment:- ") + 
+            scale_shape_discrete(name ="Treatment:- ",solid=FALSE) + 
+            theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) + 
+            theme(legend.position="top")
          print(p)
         }
         else{
@@ -215,16 +204,14 @@ for(i in seq_along(s.split)){
                            trt=c(""),stringsAsFactors=F)
         for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
         ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-        p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) ### ,linetype=trt))  ### OK now.  -YJ
-        p<- p + scale_fill_discrete(guide=FALSE)
-        p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-            labs(list(title = main,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-        p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                      axis.title.y=element_text(size=16,face="bold"))
-        p<- p + scale_colour_discrete(name="Treatment:- ") +
-                scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-        p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-        p<- p + theme(legend.position="top")
+        p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) + 
+           scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + 
+           geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + 
+           theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                 axis.title.y=element_text(size=16,face="bold")) + 
+           scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) + 
+           theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) + 
+           theme(legend.position="top")
         print(p)
         }     
  }            
@@ -244,13 +231,11 @@ if(parallel){
         ggdata<-data.frame(time=xx1,conc=yy1)
         ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
         ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-        p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-        p<- p + scale_y_log10()
-        p<- p + scale_fill_discrete(guide=FALSE)
-        p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-            labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-        p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                      axis.title.y=element_text(size=16,face="bold"))
+        p<-ggplot(ggdata, aes(time,conc)) + scale_y_log10() + 
+           scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + 
+           labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + 
+           theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                 axis.title.y=element_text(size=16,face="bold"))
         print(p)        
          }
       else{
@@ -261,13 +246,11 @@ if(parallel){
         ggdata<-data.frame(time=xx1,conc=yy1)
         ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
         ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-        p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-        p<- p + scale_y_log10()
-        p<- p + scale_fill_discrete(guide=FALSE)
-        p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-            labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-        p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                      axis.title.y=element_text(size=16,face="bold"))
+        p<-ggplot(ggdata, aes(time,conc)) + scale_y_log10() + scale_fill_discrete(guide=FALSE) + 
+           geom_point(colour="black",size=3) + geom_line(size=1) + 
+           labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + 
+           theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                 axis.title.y=element_text(size=16,face="bold"))
         print(p)        
         }
       }                                                     
@@ -281,13 +264,11 @@ for(i in seq_along(paraT.split)){
         ggdata<-data.frame(time=xx1,conc=yy1)
         ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
         ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-        p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-        p<- p + scale_y_log10()
-        p<- p + scale_fill_discrete(guide=FALSE)
-        p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-            labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-        p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                      axis.title.y=element_text(size=16,face="bold"))
+        p<-ggplot(ggdata, aes(time,conc)) + scale_y_log10() + scale_fill_discrete(guide=FALSE) + 
+           geom_point(colour="black",size=3) + geom_line(size=1) + 
+           labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + 
+           theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                 axis.title.y=element_text(size=16,face="bold"))
         print(p)        
          }
       else
@@ -299,13 +280,11 @@ for(i in seq_along(paraT.split)){
         ggdata<-data.frame(time=xx1,conc=yy1)
         ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
         ### write.csv(ggdata,file="ggdata.csv",row.names=FALSE)    ### for testing with dataset before implemented. -YJ
-        p<-ggplot(ggdata, aes(time,conc)) ### ,linetype=trt))  ### OK now.  -YJ
-        p<- p + scale_y_log10()
-        p<- p + scale_fill_discrete(guide=FALSE)
-        p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-            labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-        p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                      axis.title.y=element_text(size=16,face="bold"))
+        p<-ggplot(ggdata, aes(time,conc)) + scale_y_log10() + scale_fill_discrete(guide=FALSE) + 
+           geom_point(colour="black",size=3) + geom_line(size=1) + 
+           labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + 
+           theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                 axis.title.y=element_text(size=16,face="bold"))
         print(p)        
         }
       }                                            
@@ -324,17 +303,14 @@ else{
       for (i in seq_along(ggdata$time)) ggdata$trt[i]<-paste("Period# ",ggdata$prd[i]," ",
                                        ifelse(ggdata$drug[i]==1,"Ref.","Test"),sep="")
       ### show(ggdata);readline("")  ### works great! -YJ
-      p<-ggplot(ggdata, aes(time, conc, group=trt, colour=trt, shape=trt)) ### ,linetype=trt))  ### OK now.  -YJ
-      p<- p + scale_y_log10()
-      p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-          labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "),size=16,face="bold"))   ### xlab, ylab works in this way. -YJ
-      p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                    axis.title.y=element_text(size=16,face="bold"))
-      p<- p + scale_colour_discrete(name="Treatment:-\n") +
-               scale_shape_discrete(name ="Treatment:-\n",solid=FALSE)
-      p<- p + theme(legend.title = element_text(size=14, face="bold"), legend.text=element_text(size = 12, face = "bold"))
-      p<- p + theme(legend.position=c(0.85,0.85)) + theme(legend.background=element_blank()) +
-              theme(legend.key=element_blank())    ### make legend has the same background as plot. -YJ
+      p<-ggplot(ggdata, aes(time, conc, group=trt, colour=trt, shape=trt)) + 
+         scale_y_log10() + geom_point(colour="black",size=3) + geom_line(size=1) + 
+         labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "),size=16,face="bold")) + 
+         theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+               axis.title.y=element_text(size=16,face="bold")) + 
+         scale_colour_discrete(name="Treatment:-\n") + scale_shape_discrete(name ="Treatment:-\n",solid=FALSE) + 
+         theme(legend.title = element_text(size=14, face="bold"), legend.text=element_text(size = 12, face = "bold")) + 
+         theme(legend.position=c(0.85,0.85)) + theme(legend.background=element_blank()) + theme(legend.key=element_blank())
       print(p)
     }
     else{
@@ -343,19 +319,14 @@ else{
        yy1<-Ls.split[[i]]$conc   
        main<-paste(c("Subject#", Ls.split[[i]]$subj[1]),collapse=" ")
        ### 
-       ggdata<-data.frame(time=xx1,conc=yy1,Treatment=as.factor(Ls.split[[i]]$drug),trt=c(""),stringsAsFactors=F)
-       for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
-       p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) ### ,linetype=trt))  ### OK now.  -YJ
-       p<- p + scale_y_log10()
-       p<- p + scale_fill_discrete(guide=FALSE)
-       p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-           labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "),size=16,face="bold"))   ### xlab, ylab works in this way. -YJ
-       p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                     axis.title.y=element_text(size=16,face="bold"))
-       p<- p + scale_colour_discrete(name="Treatment:- ") +
-               scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-       p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-       p<- p + theme(legend.position="top")
+       p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) + 
+          scale_y_log10() + scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + 
+          labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "),size=16,face="bold")) + 
+          theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), 
+                axis.title.y=element_text(size=16,face="bold")) + scale_colour_discrete(name="Treatment:- ") + 
+          scale_shape_discrete(name ="Treatment:- ",solid=FALSE) + 
+          theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) + 
+          theme(legend.position="top")
        print(p)
         }
       else{
@@ -371,18 +342,15 @@ else{
        ggdata<-data.frame(time=Ls.split[[i]]$time,conc=Ls.split[[i]]$conc,Treatment=as.factor(Ls.split[[i]]$drug),
                           trt=c(""),stringsAsFactors=F)
        for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
-       p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) ### ,linetype=trt))  ### OK now.  -YJ
-       p<- p + scale_y_log10()
-       p<- p + scale_fill_discrete(guide=FALSE)
-       p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-           labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "),size=16,face="bold"))   ### xlab, ylab works in this way. -YJ
-       p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                     axis.title.y=element_text(size=16,face="bold"))
-       p<- p + scale_colour_discrete(name="Treatment:- ") +
-               scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-       p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-       p<- p + theme(legend.position="top")
+       p<-ggplot(ggdata, aes(time,conc,group=trt,colour=trt,shape=trt)) +
+          scale_y_log10() + scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + 
+          labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "),size=16,face="bold")) + 
+          theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"), axis.title.y=element_text(size=16,face="bold")) + 
+          scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) + 
+          theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) + 
+          theme(legend.position="top")
        print(p)
+       ### cat("  Yes, I pass from here...\n")  ## for debugging purpose. -YJ
         }
       } 
       
@@ -400,22 +368,20 @@ yy1<-SingleTdata$conc
    ### show(ggdata);readline("")
    ### write.csv(ggdata,file="spggdata.csv",row.names=FALSE)
    main<-"Spaghetti plot - Test Product\n"
-   p<-ggplot(ggdata, aes(time, conc, group=code)) ### ,linetype=trt))  ### need to fix here.  -YJ
+   p<-ggplot(ggdata, aes(time, conc, group=code)) + ### ,linetype=trt))  ### need to fix here.  -YJ
    ### p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + theme(legend.position="none")
-   p<- p + geom_line(size=0.5) + labs(list(title = main,x=xaxis,y=yaxis))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+      theme(legend.position="none") + geom_line(size=0.5) + 
+      labs(list(title = main,x=xaxis,y=yaxis)) +  ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
    ### log scale plot  -YJ
    main<-"Spaghetti plot - Test Product \n(as log10(Conc.) vs.Time)"
-   p<-ggplot(ggdata, aes(time, conc, group=code,)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_y_log10()
-   ### p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + theme(legend.position="none")
-   p<- p + geom_line(colour="blue", size=0.5) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+   p<-ggplot(ggdata, aes(time, conc, group=code,)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_y_log10() + theme(legend.position="none") + geom_line(colour="blue", size=0.5) + 
+      labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
 }
 else{
@@ -426,20 +392,19 @@ else{
    ggdata<-data.frame(subj=SingleTdata$subj,time=xx1,conc=yy1)
    ### write.csv(ggdata,file="spggdata.csv",row.names=FALSE)
    main<-"Spaghetti plot - Test Product\n"
-   p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+   p<-ggplot(ggdata, aes(time, conc, group=subj)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_fill_discrete(guide=FALSE) + geom_line(size=1) + 
+      labs(list(title = main,x=xaxis,y=yaxis)) +  ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
    ### log scale plot  -YJ
    main<-"Spaghetti plot - Test Product \n(as log10(Conc.) vs.Time)"
-   p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_y_log10()
-   p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + geom_line(colour="blue", size=1) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+   p<-ggplot(ggdata, aes(time, conc, group=subj)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_y_log10() + scale_fill_discrete(guide=FALSE) +
+      geom_line(colour="blue", size=1) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
    }
    else{
@@ -449,20 +414,18 @@ else{
     ggdata<-data.frame(subj=SingleTdata$subj,time=SingleTdata$time,conc=SingleTdata$conc)
     ### write.csv(ggdata,file="spggdata.csv",row.names=FALSE)
     main<-"Spaghetti plot - Test Product\n"
-    p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis))  ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-              axis.title.y=element_text(size=16,face="bold"))
+    p<-ggplot(ggdata, aes(time, conc, group=subj)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+       scale_fill_discrete(guide=FALSE) + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold"))
     print(p)
     ### log scale plot  -YJ
     main<-"Spaghetti plot - Test Product \n(as log10(Conc.) vs.Time)"
-    p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_line(colour="blue", size=1) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))  ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-              axis.title.y=element_text(size=16,face="bold"))
+    p<-ggplot(ggdata, aes(time, conc, group=subj)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) + 
+       geom_line(colour="blue", size=1) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold"))
     print(p)
       }
     }         
@@ -477,22 +440,20 @@ if(replicated){
    ggdata<-data.frame(code=SingleRdata$code,time=xx1,conc=yy1)
    ### write.csv(ggdata,file="spggdata.csv",row.names=FALSE)
    main<-"Spaghetti plot - Ref. Product\n"
-   p<-ggplot(ggdata, aes(time, conc, group=code)) ### ,linetype=trt))  ### need to fix here.  -YJ
+   p<-ggplot(ggdata, aes(time, conc, group=code)) + ### ,linetype=trt))  ### need to fix here.  -YJ
    ### p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + theme(legend.position="none")
-   p<- p + geom_line(size=0.5) + labs(list(title = main,x=xaxis,y=yaxis))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+      theme(legend.position="none") + geom_line(size=0.5) + labs(list(title = main,x=xaxis,y=yaxis)) + ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
    ### log scale plot  -YJ
    main<-"Spaghetti plot - Ref. Product \n(as log10(Conc.) vs.Time)"
-   p<-ggplot(ggdata, aes(time, conc, group=code)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_y_log10()
+   p<-ggplot(ggdata, aes(time, conc, group=code)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_y_log10() + theme(legend.position="none") + 
    ### p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + theme(legend.position="none")
-   p<- p + geom_line(colour="blue", size=0.5) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+      geom_line(colour="blue", size=0.5) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
 }
 else{
@@ -503,20 +464,18 @@ else{
    ggdata<-data.frame(subj=SingleRdata$subj,time=xx1,conc=yy1)
    ### write.csv(ggdata,file="spggdata.csv",row.names=FALSE)
    main<-"Spaghetti plot - Ref. Product\n"
-   p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+   p<-ggplot(ggdata, aes(time, conc, group=subj)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_fill_discrete(guide=FALSE) + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis)) + ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
    ### log scale plot  -YJ
    main<-"Spaghetti plot - Ref. Product \n(as log10(Conc.) vs.Time)"
-   p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_y_log10()
-   p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + geom_line(colour="blue", size=1) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+   p<-ggplot(ggdata, aes(time, conc, group=subj)) +  ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_y_log10() + scale_fill_discrete(guide=FALSE) + geom_line(colour="blue", size=1) + 
+      labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
    }
    else{
@@ -526,20 +485,20 @@ else{
    ggdata<-data.frame(subj=SingleRdata$subj,time=SingleRdata$time,conc=SingleRdata$conc)
    ### write.csv(ggdata,file="spggdata.csv",row.names=FALSE)
    main<-"Spaghetti plot - Ref. Product\n"
-   p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + geom_line(size=1) + labs(list(title = main,x=xaxis,y=yaxis))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+   p<-ggplot(ggdata, aes(time, conc, group=subj)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_fill_discrete(guide=FALSE) + geom_line(size=1) + 
+      labs(list(title = main,x=xaxis,y=yaxis)) +  ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
    ### log scale plot  -YJ
    main<-"Spaghetti plot - Ref. Product \n(as log10(Conc.) vs.Time)"
-   p<-ggplot(ggdata, aes(time, conc, group=subj)) ### ,linetype=trt))  ### need to fix here.  -YJ
-   p<- p + scale_y_log10()
-   p<- p + scale_fill_discrete(guide=FALSE)
-   p<- p + geom_line(colour="blue", size=1) + labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))  ### xlab, ylab works in this way. -YJ
-   p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-             axis.title.y=element_text(size=16,face="bold"))
+   p<-ggplot(ggdata, aes(time, conc, group=subj)) + ### ,linetype=trt))  ### need to fix here.  -YJ
+      scale_y_log10() +
+      scale_fill_discrete(guide=FALSE) + geom_line(colour="blue", size=1) + 
+      labs(list(title = main,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + ### xlab, ylab works in this way. -YJ
+      theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+            axis.title.y=element_text(size=16,face="bold"))
    print(p)
   }
 }             
@@ -565,39 +524,33 @@ yy1<-na.omit(yy1)
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    ??? what's for? I don't know. -YJ
     dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) ###, position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    ### p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + theme(legend.position="none")
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ###, position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + theme(legend.position="none") + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +   ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))+
+       theme(legend.position="top")
     print(p)
 
 ###
 ### show error bar with whiscker bar
 ###
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ### , position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ### , position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) +
+       geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) + scale_colour_discrete(name="Treatment:- ") +
+       ### p<- p + theme(axis.ticks=element_line(size=14)) +
+       scale_shape_discrete(name ="Treatment:- ",solid=FALSE) + 
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
 }
 else{
@@ -619,33 +572,28 @@ else{
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    
     dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) ###, position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=yaxis))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ###, position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=yaxis)) +   ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) + scale_colour_discrete(name="Treatment:- ") +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) ###, position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ###, position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + 
+       geom_line(size=1) + labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)    
                 }
     else{
@@ -663,34 +611,28 @@ else{
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    
     dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) ### , position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ### , position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) + scale_colour_discrete(name="Treatment:- ") +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=0.) ###, position = pd) +  ### here we use +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=0.) + ###, position = pd) +  ### here we use +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) + scale_colour_discrete(name="Treatment:- ") +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)    
     }
   }
@@ -712,37 +654,32 @@ else{
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    
     dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.)  ### , position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.)  + ### , position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+                  axis.title.y=element_text(size=16,face="bold")) +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     ### 
     ### show the error bar with this plot   --YJ same for ggplot() too.
     ###
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) +
+       geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     }
     else{
@@ -758,37 +695,33 @@ else{
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    
     dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) ### , position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ### , position = pd) +  ### here we omit +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) +
+       geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     ### 
     ### show the error bar with this plot   --YJ same for ggplot() too.
     ###
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    p<- p + scale_y_log10()
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    ### p<- p + theme(axis.ticks=element_line(size=14))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       scale_y_log10() + scale_fill_discrete(guide=FALSE) +
+       geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) + ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       ### theme(axis.ticks=element_line(size=14)) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     }   
    }
@@ -817,38 +750,34 @@ yy1<-na.omit(yy1)
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    
     ### dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.)  ### , position = pd) +  ### here we omit +/- 'sd' --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ### p<- p + scale_y_log10()      ### for linear plot
-    ### p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + theme(legend.position="none")
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.)  + ### , position = pd) +  ### here we omit +/- 'sd' --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10()  +    ### for linear plot
+       ### scale_fill_discrete(guide=FALSE) +
+       theme(legend.position="none") + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
 
 ###
 ### show error bar with whiscker bar
 ###
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ###  p<- p + scale_y_log10()                      ### for linear plot. -YJ
-    ### p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + theme(legend.position="none")
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +                      ### for linear plot. -YJ
+       ### scale_fill_discrete(guide=FALSE) +
+       theme(legend.position="none") + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
 }
 else{
@@ -872,35 +801,31 @@ else{
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    
     ### dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.)  ### , position = pd) +  ### here we omit +/- 'sd' --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ### p<- p + scale_y_log10()      ### for linear plot
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ### , position = pd) +  ### here we omit +/- 'sd' --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +      ### for linear plot
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     ##        
     ## show the error bar with this plot
     ## 
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ### , position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ###  p<- p + scale_y_log10()                      ### for linear plot. -YJ
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ### , position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +                      ### for linear plot. -YJ
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)    
                 }
     else{
@@ -913,41 +838,32 @@ else{
     ## 
     ### the following 5 lines may not req. since they have been calc. previously. --YJ
     ###
-    ### ggdata<-data.frame(Treatment=Totalplot$drug,time=xx1,conc=yy1,trt=c(""),stringsAsFactors=F)
-    ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
-    # The errorbars overlapped, so use position_dodge to move them horizontally; from Cookbook for R.
-    ### pd <- position_dodge(.1)  # move them .05 to the left and right    
-    ### dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) ###, position = pd) +  ### here we omit +/- 'sd' --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ### p<- p + scale_y_log10()      ### for linear plot
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ###, position = pd) +  ### here we omit +/- 'sd' --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +      ### for linear plot
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     ##        
     ## show the error bar with this plot
     ## 
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ###  p<- p + scale_y_log10()                      ### for linear plot. -YJ
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +                      ### for linear plot. -YJ
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)    
     }
   }
@@ -970,35 +886,31 @@ else{
     ### pd <- position_dodge(.1)  # move them .05 to the left and right    
     ### dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) ###, position = pd) +  ### here we omit +/- 'sd' --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ### p<- p + scale_y_log10()      ### for linear plot
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.) + ###, position = pd) +  ### here we omit +/- 'sd' --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +      ### for linear plot
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     ##        
     ## show the error bar with this plot
     ## 
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ###  p<- p + scale_y_log10()                      ### for linear plot. -YJ
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +                      ### for linear plot. -YJ
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +   ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     }
     else{
@@ -1006,45 +918,32 @@ else{
     yy1<-Totalplot$conc
     yy1<-na.omit(yy1)
     ##        
-    ## shrink the error bar to none; set width of whiskers = 0 && erro.col="white"; not to show error bar with this plot
-    ## 
-    ### the following 5 lines may not req. since they have been calc. previously. --YJ
-    ###
-    ### ggdata<-data.frame(Treatment=Totalplot$drug,time=xx1,conc=yy1,trt=c(""),stringsAsFactors=F)
-    ### for (i in 1:length(ggdata$time)){if(ggdata$Treatment[i]==1) ggdata$trt[i]<-"Ref." else ggdata$trt[i]<-"Test"}
-    # The errorbars overlapped, so use position_dodge to move them horizontally; from Cookbook for R.
-    ### pd <- position_dodge(.1)  # move them .05 to the left and right    
-    ### dfc <- summarySE(ggdata, measurevar="conc", groupvars=c("time","trt"))
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc, ymax=conc), width=0.)  ### , position = pd) +  ### here we omit +/- 'sd' --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ### p<- p + scale_y_log10()      ### for linear plot
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc, ymax=conc), width=0.)  + ### , position = pd) +  ### here we omit +/- 'sd' --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +     ### for linear plot
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main1,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     ##        
     ## show the error bar with this plot
     ## 
     p<-ggplot(dfc, aes(x=time,y=conc,group=trt,colour=trt,shape=trt)) + ### ,linetype=trt))  ### OK now.  -YJ
-              geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
-              ### geom_line(position=pd) + geom_point(position=pd)
-    ###  p<- p + scale_y_log10()                      ### for linear plot. -YJ
-    p<- p + scale_fill_discrete(guide=FALSE)
-    p<- p + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
-        labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" ")))   ### xlab, ylab works in this way. -YJ
-    p<- p + theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
-                  axis.title.y=element_text(size=16,face="bold"))
-    p<- p + scale_colour_discrete(name="Treatment:- ") +
-            scale_shape_discrete(name ="Treatment:- ",solid=FALSE)
-    p<- p + theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold"))
-    p<- p + theme(legend.position="top")
+       geom_errorbar(aes(ymin=conc-sd, ymax=conc+sd), width=1.5) + ###, position = pd) +  ### here we used +/- 'sd', not 'se'!!  --YJ
+       ### geom_line(position=pd) + geom_point(position=pd) +
+       ### scale_y_log10() +                      ### for linear plot. -YJ
+       scale_fill_discrete(guide=FALSE) + geom_point(colour="black",size=3) + geom_line(size=1) + ### scale_shape(solid = FALSE) + 
+       labs(list(title = main2,x=xaxis,y=paste(yaxis,"(as log10 Scale)",sep=" "))) +  ### xlab, ylab works in this way. -YJ
+       theme(plot.title=element_text(size=16,face="bold"),axis.title.x=element_text(size=16,face="bold"),
+             axis.title.y=element_text(size=16,face="bold")) +
+       scale_colour_discrete(name="Treatment:- ") + scale_shape_discrete(name ="Treatment:- ",solid=FALSE) +
+       theme(legend.title = element_text(size=16, face="bold"), legend.text=element_text(size = 14, face = "bold")) +
+       theme(legend.position="top")
     print(p)
     }   
    }

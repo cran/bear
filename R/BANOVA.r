@@ -125,40 +125,55 @@ cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: log(Cmax_ss)    \n")
 lm.mod(log(Data$Cmax_ss), Data)
-lnCmax<- lm(log(Cmax) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
+### lnCmax_ss<- lm(log(Cmax) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user. error in v2.6.2. -YJ
+### lnCmax<- lm(log(Cmax) ~ seq + subj:seq + prd + drug ,data=TotalData)      ### here lnCmax ==lnCmax_ss
 }
 else{
 cat("   Dependent Variable: log(Cmax)                           \n")
 lm.mod(log(TotalData$Cmax), TotalData)
-lnCmax<- lm(log(Cmax)~ seq + subj:seq + prd + drug,data=TotalData)    ### yes! for later user.
+### lnCmax<- lm(log(Cmax)~ seq + subj:seq + prd + drug,data=TotalData)    ### yes! for later user
 }
 cat("\n")
-if(multiple){
-cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnCmax_ss)[5,3])-1),format="f",digits=3),"%\n")
-cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-if(anova(lnCmax_ss)[4,3]<anova(lnCmax_ss)[5,3]){
-   cat("               =",0,"% (due to a negative variance component)\n")
-   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
-   }
- else{
-   cat("               =",formatC(100*sqrt(exp((anova(lnCmax_ss)[4,3]-anova(lnCmax_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
-}
-cat("    MSResidual =",anova(lnCmax_ss)[5,3],"\n")
-cat("MSSubject(seq) =",anova(lnCmax_ss)[4,3],"\n")
-}
-else{
+lnCmax<- lm(log(Cmax)~ seq + subj:seq + prd + drug,data=TotalData)  ### yes! for later user; ; here lnCmax ==lnCmax_ss for md.
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnCmax)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
 if(anova(lnCmax)[4,3]<anova(lnCmax)[5,3]){
    cat("               =",0,"% (due to a negative variance component)\n")
    cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
    }
- else{
+else{
    cat("               =",formatC(100*sqrt(exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1),format="f",digits=3),"%\n")
 }
 cat("    MSResidual =",anova(lnCmax)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnCmax)[4,3],"\n")
-}
+### re-marked the following
+###
+### if(multiple){
+### cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnCmax_ss)[5,3])-1),format="f",digits=3),"%\n")
+### cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
+### if(anova(lnCmax_ss)[4,3]<anova(lnCmax_ss)[5,3]){
+###    cat("               =",0,"% (due to a negative variance component)\n")
+###    cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+###    }
+###  else{
+###    cat("               =",formatC(100*sqrt(exp((anova(lnCmax_ss)[4,3]-anova(lnCmax_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
+### }
+### cat("    MSResidual =",anova(lnCmax_ss)[5,3],"\n")
+### cat("MSSubject(seq) =",anova(lnCmax_ss)[4,3],"\n")
+### }
+### else{
+### cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnCmax)[5,3])-1),format="f",digits=3),"%\n")
+### cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
+### if(anova(lnCmax)[4,3]<anova(lnCmax)[5,3]){
+###    cat("               =",0,"% (due to a negative variance component)\n")
+###    cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+###    }
+###  else{
+###    cat("               =",formatC(100*sqrt(exp((anova(lnCmax)[4,3]-anova(lnCmax)[5,3])/2)-1),format="f",digits=3),"%\n")
+### }
+### cat("    MSResidual =",anova(lnCmax)[5,3],"\n")
+### cat("MSSubject(seq) =",anova(lnCmax)[4,3],"\n")
+### }
 cat("\n\n")
 
 #lnAUC0t or lnAUCtau_ss
@@ -168,28 +183,16 @@ cat("-----------------------------------------------------------\n")
 if(multiple){
 cat("   Dependent Variable: log(AUCtau_ss) \n")
 lm.mod(log(Data$AUCtau_ss), Data)
-lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
+### lnAUCtau_ss<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user. error in v2.6.2. -YJ
+### lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)       ### same as lnCmax_ss; should be simplified here.
 }
 else{
 cat("   Dependent Variable: log(AUC0t)     \n")
 lm.mod(log(TotalData$AUC0t), TotalData)
-lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
+### lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)       ### yes! for later user.
 }
 cat("\n")
-if(multiple){
-cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUCtau_ss)[5,3])-1),format="f",digits=3),"%\n")
-cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
-if(anova(lnAUCtau_ss)[4,3]<anova(lnAUCtau_ss)[5,3]){
-   cat("               =",0,"% (due to a negative variance component)\n")
-   cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
-   }
- else{
-   cat("               =",formatC(100*sqrt(exp((anova(lnAUCtau_ss)[4,3]-anova(lnAUCtau_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
-}
-cat("    MSResidual =",anova(lnAUCtau_ss)[5,3],"\n")
-cat("MSSubject(seq) =",anova(lnAUCtau_ss)[4,3],"\n")
-}
-else{
+lnAUC0t<- lm(log(AUC0t) ~ seq + subj:seq + prd + drug ,data=TotalData)  ### yes! for later user; here lnAUC0t == lnAUCtau_ss for md.
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUC0t)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
 if(anova(lnAUC0t)[4,3]<anova(lnAUC0t)[5,3]){
@@ -201,6 +204,31 @@ if(anova(lnAUC0t)[4,3]<anova(lnAUC0t)[5,3]){
 }
 cat("    MSResidual =",anova(lnAUC0t)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0t)[4,3],"\n")
+### if(multiple){
+### cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUCtau_ss)[5,3])-1),format="f",digits=3),"%\n")
+### cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
+### if(anova(lnAUCtau_ss)[4,3]<anova(lnAUCtau_ss)[5,3]){
+###    cat("               =",0,"% (due to a negative variance component)\n")
+###    cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+###    }
+###  else{
+###    cat("               =",formatC(100*sqrt(exp((anova(lnAUCtau_ss)[4,3]-anova(lnAUCtau_ss)[5,3])/2)-1),format="f",digits=3),"%\n")
+### }
+### cat("    MSResidual =",anova(lnAUCtau_ss)[5,3],"\n")
+### cat("MSSubject(seq) =",anova(lnAUCtau_ss)[4,3],"\n")
+### }
+### else{
+### cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUC0t)[5,3])-1),format="f",digits=3),"%\n")
+### cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
+### if(anova(lnAUC0t)[4,3]<anova(lnAUC0t)[5,3]){
+###    cat("               =",0,"% (due to a negative variance component)\n")
+###    cat("*** the above CV_intra is estimated from lm() which may be different\n    from that obtained from lme().\n\n")
+###    }
+###  else{
+###    cat("               =",formatC(100*sqrt(exp((anova(lnAUC0t)[4,3]-anova(lnAUC0t)[5,3])/2)-1),format="f",digits=3),"%\n")
+### }
+### cat("    MSResidual =",anova(lnAUC0t)[5,3],"\n")
+### cat("MSSubject(seq) =",anova(lnAUC0t)[4,3],"\n")
 
 ### for negative variance component; run lme(); see Bebac Forum for more details. -YJ
 ## ctrl <- lmeControl(opt='optim')
@@ -257,7 +285,7 @@ cat("MSSubject(seq) =",anova(lnAUC0t)[4,3],"\n")
 ## cat(" CV(intra)% = 100*sqrt(exp(MSE)-1)), where MSE =",formatC(MSE, format="f", digits=5),"\n")
 ## cat("---------------------------------------------------------------------------\n") 
 ### end of for negative variance component
-}
+## }
 ###
 ### GLM for ln(pAUC)
 ###
@@ -282,15 +310,15 @@ cat("    MSResidual =",anova(lnpAUC)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnpAUC)[4,3],"\n")
 cat("\n")
 }
-else{
-if(multiple){    ### do nohting for multiple-dose since there is no 'AUC0INF' at all.
+
+if(multiple){    ### do nothing for multiple-dose since there is no 'AUC0INF' at all.
  }
 else{
 cat("              Statistical analysis (ANOVA(lm))             \n")
 cat("-----------------------------------------------------------\n")
 cat("   Dependent Variable: log(AUC0INF)    \n")
 lm.mod(log(TotalData$AUC0INF),TotalData)
-lnAUC0INF<- lm(log(AUC0INF) ~ seq + subj:seq + prd + drug ,data=TotalData)   ### yes! for later user.
+lnAUC0INF<- lm(log(AUC0INF) ~ seq + subj:seq + prd + drug, data=TotalData)   ### yes! for later user.
 cat("\n")
 cat("Intra_subj. CV = 100*sqrt(exp(MSResidual)-1) =",formatC(100*sqrt(exp(anova(lnAUC0INF)[5,3])-1),format="f",digits=3),"%\n")
 cat("Inter_subj. CV = 100*sqrt(exp((MSSubject(seq)-MSResidual)/2)-1)\n")
@@ -304,7 +332,6 @@ if(anova(lnAUC0INF)[4,3]<anova(lnAUC0INF)[5,3]){
 cat("    MSResidual =",anova(lnAUC0INF)[5,3],"\n")
 cat("MSSubject(seq) =",anova(lnAUC0INF)[4,3],"\n")     
 cat("\n")
-}
 }
 #####################################################################
 ###shortest confidence interval 

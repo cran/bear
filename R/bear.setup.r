@@ -45,7 +45,7 @@ if(file.exists("bear.setup.rds")){
      bear.set<-data.frame(Methods=c("run demo","study design","single-/multiple-dose","lambda_z estimate",
                                     "trapezoidal AUC","BE criterion (LL)","ODA","dose","dosing interval",
                                     "Tlast","pAUC","pAUC_start","pAUC_end","indivDP_output"),
-                          Setting=c(0,0,0,0,0,80,0,1e+05,24,120,0,1,8,0))
+                          Setting=c(0,0,0,0,0,80,0,1e+05,24,120,0,121,128,0))
      saveRDS(bear.set,"bear.setup.rds")
      }
   }
@@ -53,7 +53,7 @@ if(file.exists("bear.setup.rds")){
      bear.set<-data.frame(Methods=c("run demo","study design","single-/multiple-dose","lambda_z estimate",
                                     "trapezoidal AUC","BE criterion (LL)","ODA","dose","dosing interval",
                                     "Tlast","pAUC","pAUC_start","pAUC_end","indivDP_output"),
-                          Setting=c(0,0,0,0,0,80,0,1e+05,24,120,0,1,8,0))
+                          Setting=c(0,0,0,0,0,80,0,1e+05,24,120,0,121,128,0))
      saveRDS(bear.set,"bear.setup.rds")
 }
 if(file.exists("plot.setup.rds")){

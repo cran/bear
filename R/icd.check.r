@@ -115,6 +115,8 @@ T_subj_no<-unique(T_subj_no)
 ### use identical() here to compare two objects to see if they are the same. --YJ
 ###
 ### if(!identical(R_subj_no,T_subj_no) && !(parallel||replicated)) {
+### run.demo<-run.demo  ### for testing purpuses
+### if(run.demo) {      ### for testing purpuses
 if(!identical(R_subj_no,T_subj_no) && !parallel) {
    cat("\n\n The Subject codes of taking Ref. product are as follows:\n")
    cat("-------------------------------------------------------------\n")

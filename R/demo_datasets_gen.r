@@ -44,7 +44,7 @@ TotalData<-NULL
 
 ### end of exporting all raw datasets ###
 
-### datasets for 'statistical analysis' import ###    
+### datasets for 'statistical analysis' import ###   standalone dataset!!  -YJ
     
     TotalData<-data.frame (subj=as.factor(c(1,17,2,18,3,20,7,23,8,24,9,25,10,26,
                                              11,27,28,13,29,14,15,31,16,32)),
@@ -166,6 +166,6 @@ TotalData<-NULL
      saveRDS(TotalData,file="Single2x2x2_stat_demo.RData")
 
 ### end of exporting all datasets for 'statistical analysis' ###
-     readline("\n All built-in demo datasets have been exported successfully!\n Press Enter to continue...\n\n")
+     readline("\n All built-in demo dataset have been exported.\n Press Enter to continue...\n\n")
 }
      

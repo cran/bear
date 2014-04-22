@@ -1,6 +1,8 @@
 ###
 ### This is for parallel or replicated crossover BE study. non-replicate --> BANOVA() --YJ
 ###
+### for parallel study, here uses lm() and NCAoutput() uses lme(); but the results are the same.
+###
 
 RepMIX<-function(TotalData,L1,L2,ref_lnCmax,ref_lnAUC0t,ref_lnAUC0INF,ref_lnpAUC,test_lnCmax,test_lnAUC0t,test_lnAUC0INF,
     test_lnpAUC,lnCmax_theta1,lnCmax_theta2,lnAUC0t_theta1,lnAUC0t_theta2,lnAUC0INF_theta1,lnAUC0INF_theta2,

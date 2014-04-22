@@ -31,27 +31,15 @@ multiple=ifelse(dose.type==1, TRUE, FALSE)
 back.from.banova<-NULL
 back.from.banova<<-FALSE
 
-Fname<-NULL                   ### Fname: the name of the input data file 
+Fname<-NULL                   ### Fname: the name of the input dataset file 
 Fname<<-""
 
-### for debug ###
-## cat("\n BE_UL =",BE_UL,"\n\n")
-## cat(" BE_LL =",BE_LL,"\n\n")
-## show(lin.AUC);cat("\n\n")
-## cat("lambda_z_calc =",lambda_z_calc,"\n\n");readline()
-## show(xlabz);show(ylabz)
 ###
-
   cat("\n*** You have selected the following -> (new)\n")
-  file.menu <- c("* Start data analysis                ",
-                 ### "* Single dose study                  ",
-                 ### "- Multiple dose study                ",
-                 ### "* Single dose study (with ODA)",
-                 ### "- Multiple dose study (with ODA)",
-                 "* Edit setup files (if necessary)    ",
-                 "* Generate/export all demo dataset   ",
-                 "# Quit                               ") ### ,
-                 ### "* View cheat-sheet for setting bear")
+  file.menu <- c("* Start data analysis     ",
+                 "* Edit setup files        ",
+                 "* Export all demo dataset ",
+                 "# Quit                    ")
    cat("\n")
   pick <- menu(file.menu, title = " << Top menu (select from 1~4) >> ", graphics=TRUE)
     if (pick == 1){
@@ -72,30 +60,6 @@ Fname<<-""
        }
     }
        
-    ### if (pick == 3){
-    ###    cat("\n\n")
-    ###    ODAnalysis<<-TRUE    ## here needs "<<-"; otherwise it won't work.
-    ###    alarm()
-    ###    cat("\n For now, ODA is only for non-replicated crossover and     \n")
-    ###    cat(" non-parallel. Thus, if you choose to run with a replicated  \n")
-    ###    cat(" or parallel dataset later, ODA will not be performed.       \n")
-    ###    readline(" Press Enter to proceed...\n")
-    ###    designtrace<<-paste(designtrace,"Single-dosed, with ODA,\n",sep=" ")
-    ###    Singlego()
-    ###    }
-    ###    
-    ### if (pick == 4){
-    ###     cat("\n\n")
-    ###     ODAnalysis<<-TRUE   ## here needs "<<-"; otherwise it won't work.
-    ###     alarm()
-    ###     cat("\n For now, ODA is only for non-replicated crossover and     \n")
-    ###     cat(" non-parallel. Thus, if you choose to run with a replicated  \n")
-    ###     cat(" or parallel dataset later, ODA will not be performed.       \n")
-    ###     readline(" Press Enter to proceed...\n")
-    ###     designtrace<<-paste(designtrace,"Multiple-dosed, with ODA,\n",sep=" ")
-    ###     Multiplego()
-    ###    }
-       
     if (pick == 2){
         graphics.off()
         ### readme.1st.bear<- system.file("extdata", "bear_setup_readme.txt", package="bear")
@@ -106,7 +70,7 @@ Fname<<-""
         bear_setup_display<-readPNG(system.file("img","bear_setup.png",package="bear"),TRUE)
         ### bear_setup_display<-readPNG("bear_setup.png",TRUE)  ### for testing
         grid.raster(bear_setup_display,width=unit(1,"npc"),height=unit(1,"npc"))   ### this one works great without showing border. -YJ
-        ### ### readline(" Press Enetr to continue...");graphics.off()  ### for testing
+        ### ### readline(" Press Enter to continue...");graphics.off()  ### for testing
         ###
         bear.set<-readRDS("bear.setup.rds");bear.set<-edit(bear.set)
         while(bear.set[12,2]>=bear.set[13,2]){
@@ -130,9 +94,12 @@ Fname<<-""
         saveRDS(bear.set,"bear.setup.rds");graphics.off()
         plotz.set<-readRDS("plot.setup.rds")
         secondColumn<-as.character(plotz.set[,2])    ### to remove 'level' from a list of data.frame(). ---YJ
-        xlabzz<-readline( "             The label of x-axis (time): ")
+        ### xlabzz<-readline( "             The label of x-axis (time): ")
+        cat(" Press Enter if not to change these.\n\n")
+        xlabzz<-readline(paste("  [",secondColumn[[1]],"] (time) -> "))
         if(xlabzz=="") xlabzz<-secondColumn[[1]]     ### if just press Enter key, no change will be made.
-        ylabzz<-readline( " the label of y-axis (drug plasma conc): ")
+        ### ylabzz<-readline( " the label of y-axis (drug plasma conc): ")
+        ylabzz<-readline(paste("  [",secondColumn[[2]],"] (conc.) -> "))
         if(ylabzz=="") ylabzz<-secondColumn[[2]]     ### if just press Enter key, no change will be made.
         plotz.set<-data.frame(axis_label=c("x-axis","y-axis"),Setting=c(xlabzz,ylabzz))
         saveRDS(plotz.set,"plot.setup.rds");cat("\n\n")
@@ -150,22 +117,5 @@ Fname<<-""
     if (pick == 4){
         cat("\n>  Thank you for using bear!  Bye now. \n\n")
         graphics.off()
-        ### options(error = expression(NULL))
-        ### stop(" Thank you for using bear!  Bye now.", call.=FALSE)
        }
-       
-    ### if (pick == 8){
-    ###     cat("\n")
-    ###     ### display cheatsheet as graphic
-    ###     par(mar=c(0, 0, 0, 0)) 
-    ###     plot(0, xlim=c(0, 210), ylim=c(0, 297), col="white")  ### will show ugly border line. too bad!  -YJ
-    ###     bear_setup_display<-readPNG(system.file("img","bear_setup.png",package="bear"),TRUE)
-    ###     ### logo<-readPNG("bear_setup.png",TRUE)  ### for testing
-    ###     grid.raster(bear_setup_display,width=unit(1,"npc"),height=unit(1,"npc"))   ### this one works great without showing border. -YJ
-    ###     ### readline(" Press Enetr to continue...");dev.off()  ### for testing
-    ###     ###
-    ###     ### readline("\n\n... Press Enter to continue.")
-    ###     ### graphics.off()   ### keep it on screen
-    ###     go2menu()
-    ###    }
 }

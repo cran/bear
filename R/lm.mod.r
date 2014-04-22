@@ -45,5 +45,10 @@ cat("Tests of Hypothesis using the Type III MS for\n")
 cat("SUBJECT(SEQUENCE) as an error term\n\n")
 show(summary(aov(target ~ seq,data=inputdata)))
 cat("---\n")
-cat("Sum Sq. = Type III SS\n")
+cat("Sum Sq. = Type III SS\n\n")
+### tests for carryover effects and direct formulation effect
+cat(" Tests for carryover effects and direct formulation effects\n")
+cat("------------------------------------------------------------")
+show(summary(aov(target~seq*drug + Error(subj),data=inputdata)))
+cat("------------------------------------------------------------\n")
 }

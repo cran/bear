@@ -1,6 +1,8 @@
 ###
 ### to generate two .txt & one csv outputs for NCA; NCA() is for manual data selection loaded from previous saved .*RData file. -YJ
 ###
+### for parallel study, here uses lme() and RepMix() uses lm(); but the results are the same.
+###
 NCAoutput<-function(sumindexR, sumindexT, R.split, T.split, keindex_ref, keindex_test, Dose, TotalData,
                     rdata.split,tdata.split, Tau, TlastD,
                     NCA=TRUE,
@@ -2011,31 +2013,39 @@ if(replicated){
 
        L1<-length(RefData$subj)
        L2<-length(TestData$subj)
-
-       ### different from RepMIX()?  ---YJ
-###        Cmax_ss<- lme(Cmax_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
-###        AUCtau_ss<- lme(AUCtau_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
-###        if(pAUC) pAUC_stat<- lme(partAUC ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)      ### for pAUC
-###        lnCmax_ss<- lme(lnCmax_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
-###        lnAUCtau_ss<- lme(lnAUCtau_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+       ###
+       ### different from RepMIX()? here uses lme() for parallel, not lm(); but we get same results for both lm() and lme(). ---YJ
+       ###
+       Cmax_ss<- lme(Cmax_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+       AUCtau_ss<- lme(AUCtau_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+       if(pAUC) pAUC_stat<- lme(partAUC ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)      ### for pAUC
+       lnCmax_ss<- lme(lnCmax_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
+       lnAUCtau_ss<- lme(lnAUCtau_ss ~  drug, random=~1|subj, data=TotalData, method="REML", control=ctrl)
        ###
        ### change to be consistent with RepMIX() since v2.6.2   -YJ
-       Cmax_ss<- lm(Cmax_ss ~  drug, data=TotalData)
-       AUCtau_ss<- lm(AUCtau_ss ~  drug, data=TotalData)
-       if(pAUC) pAUC_stat<- lm(partAUC ~  drug, data=TotalData)      ### for pAUC
-       lnCmax_ss<- lm(lnCmax_ss ~  drug, data=TotalData)
-       lnAUCtau_ss<- lm(lnAUCtau_ss ~  drug, data=TotalData)
+       ### Cmax_ss<- lm(Cmax_ss ~  drug, data=TotalData)
+       ### AUCtau_ss<- lm(AUCtau_ss ~  drug, data=TotalData)
+       ### if(pAUC) modlnpAUC<- lm(log(partAUC) ~  drug, data=TotalData)           ### for pAUC; err in v2.6.2
+       ### modlnCmax_ss<- lm(lnCmax_ss ~  drug, data=TotalData)                    ### err in v2.6.2; here Cmax==Cmax_ss
+       ### modlnAUCtau_ss<- lm(lnAUCtau_ss ~  drug, data=TotalData)                 ### err in v2.6.2; here AUC0t==AUCtau_ss
        ###
        
-        ##90$CI (log transformation)
-        upperCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
-        lowerCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(-qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
-        upperAUC0t<-100*exp(summary(lnAUCtau_ss)[20][[1]][2,1])*exp(qt(0.95,summary(lnAUCtau_ss)[20][[1]][2,3])*summary(lnAUCtau_ss)[20][[1]][2,2])
-        lowerAUC0t<-100*exp(summary(lnAUCtau_ss)[20][[1]][2,1])*exp(-qt(0.95,summary(lnAUCtau_ss)[20][[1]][2,3])*summary(lnAUCtau_ss)[20][[1]][2,2])
-        if(pAUC){                                    ### for pAUC
-        upperlnpAUC<-100*exp(summary(lnpAUC_stat)[20][[1]][2,1])*exp(qt(0.95,summary(lnpAUC_stat)[20][[1]][2,3])*summary(lnpAUC_stat)[20][[1]][2,2])
-        lowerlnpAUC<-100*exp(summary(lnpAUC_stat)[20][[1]][2,1])*exp(-qt(0.95,summary(lnpAUC_stat)[20][[1]][2,3])*summary(lnpAUC_stat)[20][[1]][2,2])
-        }
+       ##90$CI (log transformation)
+       upperCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
+       lowerCmax<-100*exp(summary(lnCmax_ss)[20][[1]][2,1])*exp(-qt(0.95,summary(lnCmax_ss)[20][[1]][2,3])*summary(lnCmax_ss)[20][[1]][2,2])
+       upperAUC0t<-100*exp(summary(lnAUCtau_ss)[20][[1]][2,1])*exp(qt(0.95,summary(lnAUCtau_ss)[20][[1]][2,3])*summary(lnAUCtau_ss)[20][[1]][2,2])
+       lowerAUC0t<-100*exp(summary(lnAUCtau_ss)[20][[1]][2,1])*exp(-qt(0.95,summary(lnAUCtau_ss)[20][[1]][2,3])*summary(lnAUCtau_ss)[20][[1]][2,2])
+       if(pAUC){  ### for pAUC
+       upperlnpAUC<-100*exp(summary(lnpAUC_stat)[20][[1]][2,1])*exp(qt(0.95,summary(lnpAUC_stat)[20][[1]][2,3])*summary(lnpAUC_stat)[20][[1]][2,2])
+       lowerlnpAUC<-100*exp(summary(lnpAUC_stat)[20][[1]][2,1])*exp(-qt(0.95,summary(lnpAUC_stat)[20][[1]][2,3])*summary(lnpAUC_stat)[20][[1]][2,2])}
+       ### upperCmax<-100*exp(summary(modlnCmax_ss)$coefficients[2,1])*exp(qt(0.95,summary(modlnCmax_ss)$df[2])*summary(modlnCmax_ss)$coefficients[2,2]) 
+       ### lowerCmax<-100*exp(summary(modlnCmax_ss)$coefficients[2,1])*exp(-qt(0.95,summary(modlnCmax_ss)$df[2])*summary(modlnCmax_ss)$coefficients[2,2])
+       ### upperAUC0t<-100*exp(summary(modlnAUCtau_ss)$coefficients[2,1])*exp(qt(0.95,summary(modlnAUCtau_ss)$df[2])*summary(modlnAUCtau_ss)$coefficients[2,2])
+       ### lowerAUC0t<-100*exp(summary(modlnAUCtau_ss)$coefficients[2,1])*exp(-qt(0.95,summary(modlnAUCtau_ss)$df[2])*summary(modlnAUCtau_ss)$coefficients[2,2])
+       ### if(pAUC){
+       ### upperlnpAUC<-100*exp(summary(modlnpAUC)$coefficients[2,1])*exp(qt(0.95,summary(modlnpAUC)$df[2])*summary(modlnpAUC)$coefficients[2,2])
+       ### lowerlnpAUC<-100*exp(summary(modlnpAUC)$coefficients[2,1])*exp(-qt(0.95,summary(modlnpAUC)$df[2])*summary(modlnpAUC)$coefficients[2,2])
+       ### }
         }
       else{
         L1<-length(RefData$subj)

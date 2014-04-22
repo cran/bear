@@ -5,6 +5,12 @@ demoBANOVA<-function(replicated=FALSE,parallel=FALSE, multiple=FALSE)
 
 TotalData<-NULL
 Fname<-Fname
+pAUC<-pAUC
+if(pAUC){
+cat("\n Since the demo dataset does not include any pAUC parameter,\n pAUC temporarily switches to FALSE now.\n")
+readline(" Press Enter to continue...\n\n")
+pAUC<<-FALSE     ### BANOVA demo dataset never have pAUC parameters included for 'statistical only.' -YJ
+}
 
 options(warn=-1)
 if(parallel){

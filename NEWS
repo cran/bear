@@ -1,3 +1,22 @@
+v2.6.3 (official release)
+     - added the tests for carryover effects and the direct formulation effects with
+       lm.mod() for 2x2x2 crossover study;
+     - took care of switching pAUC to be FALSE when running 'statistical analysis only';
+       since the demo dataset for 'statistical analysis only' does not include any
+       pAUC parameter (demoBANOVA());
+     - fixed BANOVA() again to simplify the codes;
+     - started working with new release of R v3.0.3;
+     - fixed BANOVAcsv() for dataset input if doing pAUC;
+     - demo dataset do not have any pAUC example for statistical-only runs;
+     - BANOVA() for pAUC stats. and 2x2x2 crossover with multiple-dose stats.;
+     - fixed default values for 'pAUC_start' and 'pAUC_end' with '121' & '128',
+       instead of '1' & '8' respectively; since the 'pAUC_start' & 'pAUC_end' 
+       counts from time zero, not from one dosing interval, especially for multiple-dose;
+       otherwise, it will cause error, such as 'Na/NaN/Inf -> y...'
+     - fixed NCAplot() hopefully to speed-up plotting and enhance efficiency; 
+     - changed parallel study in NCAoutput() as lme(); in RepMix() the parallel
+       uses lm(); but the results are the same.
+
 v2.6.2 (official release)
     - added lme_lm.mod() to simplify original RepMix();
     - added lm.mod() to simplify original BANOVA(); also fixed an error in original 
