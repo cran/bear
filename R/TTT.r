@@ -95,6 +95,8 @@ SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
           xr<-which.max(R.split[[j]]$conc)
           tmax_ref<-R.split[[j]]$time[xr]
           if(multiple){
+          sx<-R.split[[j]][R.split[[j]]$time-TlastD >=((R.split[[j]]$time[xr]-TlastD)*2),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           Lm1<-lm(log(conc)~(time),R.split[[j]][R.split[[j]]$time-TlastD >=((R.split[[j]]$time[xr]-TlastD)*2),])
           if (is.nan(summary(Lm1)$adj.r.squared)==TRUE || summary(Lm1)$adj.r.squared==0){
                #NAToUnknown(x=ke, unknown=0)
@@ -102,6 +104,8 @@ SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
                  }
           }
           else{
+          sx<-R.split[[j]][R.split[[j]]$time>=(R.split[[j]]$time[xr]*2),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           Lm1<-lm(log(conc)~time,R.split[[j]][R.split[[j]]$time>=(R.split[[j]]$time[xr]*2),])
           }
           ke[j]<-(-coef(Lm1)[2])
@@ -449,6 +453,8 @@ if(replicated){
       xt<-which.max(T.split[[j]]$conc)
       tmax_test<-T.split[[j]][xt,5]
       if(multiple){
+      sx<-T.split[[j]][T.split[[j]]$time-TlastD>=((T.split[[j]]$time[xt]-TlastD)*2),]
+      if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
       Lm2<-lm(log(conc)~time,T.split[[j]][T.split[[j]]$time-TlastD>=((T.split[[j]]$time[xt]-TlastD)*2),])
       if (is.nan(summary(Lm2)$adj.r.squared)==TRUE || summary(Lm2)$adj.r.squared==0){
                #NAToUnknown(x=ke, unknown=0)
@@ -456,6 +462,8 @@ if(replicated){
                  } 
        }
       else{
+      sx<-T.split[[j]][T.split[[j]]$time>=(T.split[[j]]$time[xt]*2),]
+      if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
       Lm2<-lm(log(conc)~time,T.split[[j]][T.split[[j]]$time>=(T.split[[j]]$time[xt]*2),])
        }
       ke1[j]<-(-coef(Lm2)[2])

@@ -91,6 +91,8 @@ SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
        xr<-which.max(R.split[[j]]$conc)
 
        for (i in (nrow(R.split[[j]])-2):(which.max(R.split[[j]]$conc)+1)) {
+          sx<-R.split[[j]][i:nrow(R.split[[j]]),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           f2 <-  function(i) return(cbind((nrow(R.split[[j]])-i+1),
                 (extractAIC(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),])))[2]))
           overview <- as.data.frame(do.call(rbind,lapply((i+1):(nrow(R.split[[j]])-2),f2)))
@@ -434,6 +436,8 @@ if(replicated){
       xt<-which.max(T.split[[j]]$conc)
 
       for (i in (nrow(T.split[[j]])-2):(which.max(T.split[[j]]$conc)+1)) {
+          sx<-T.split[[j]][i:nrow(T.split[[j]]),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           f2 <-  function(i) return(cbind((nrow(T.split[[j]])-i+1),
                 (extractAIC(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),])))[2]))
           overview <- as.data.frame(do.call(rbind,lapply((i+1):(nrow(T.split[[j]])-2),f2)))

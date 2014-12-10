@@ -1,4 +1,4 @@
-## Summarizes data.
+## Summarizes data; called by NACplot().
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
 ##   data: a data frame.
 ##   measurevar: the name of a column that contains the variable to be summariezed
@@ -7,6 +7,9 @@
 ##   conf.interval: the percent range of the confidence interval (default is 95%)
 ## from: Cookbook for R, http://www.cookbook-r.com/
 ##
+## use plyr::ddply(...) since v2.6.4 to suppress the note of 'no visual global function definition fro 'ddply''.
+##
+
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
     require(plyr)
@@ -18,7 +21,7 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
     }
 
     # This is the summary; it's not easy to understand... AGREE. -YJ
-    datac <- ddply(data, groupvars, .drop=.drop,
+    datac <- plyr::ddply(data, groupvars, .drop=.drop,
                    .fun= function(xx, col, na.rm) {
                            c( N    = length2(xx[,col], na.rm=na.rm),
                               mean = mean   (xx[,col], na.rm=na.rm),
@@ -53,10 +56,9 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 normDataWithin <- function(data=NULL, idvar, measurevar, betweenvars=NULL,
                            na.rm=FALSE, .drop=TRUE) {
     require(plyr)
-   
 
     # Measure var on left, idvar + between vars on right of formula.
-    data.subjMean <- ddply(data, c(idvar, betweenvars), .drop=.drop,
+    data.subjMean <- plyr::ddply(data, c(idvar, betweenvars), .drop=.drop,
      .fun = function(xx, col, na.rm) {
         c(subjMean = mean(xx[,col], na.rm=na.rm))
       },

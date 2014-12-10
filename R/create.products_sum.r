@@ -2,7 +2,7 @@
 ### 1. functions to create "sum_all_ref.csv" & "sum_all_test.csv"
 ### 2. will be called by NCAanalyze(), demomenu(), demomenu1() & RepNCAanalyze()  --YJ
 ### 3. create .csv files will be loaded back in NCAoutput()
-### 4. can be different with replicate BE...; no! it's the same.
+### 4. can be different with replicate BE...? no! it's the same.
 ### 
 create.products_sum<-function(Totalplot){
 ###

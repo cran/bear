@@ -1,7 +1,8 @@
 ###
-### Aceto revised NCA codes for lambda_z (WinNolin)
-### other methods like this: NCAselect(), aic(), TTT(), TTTAIC(), TTTARS(). 
-### all are no need to display output on-screen! since NCAoutput() will do that later??
+### Aceto revised NCA codes for lambda_z (WinNolin); why use 'aic', not 'AIC"? because 'AIC' 
+### is one of reserved keywords (for function, AIC()) by R. --YJ
+### other methods like this: NCAselect(), aic(), TTT(), TTTAIC(), TTTARS().
+### all are no need to display output on-screen! since NCAoutput() will do that later.
 ###
 ARS<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1, Tau, 
               TlastD,SingleRdata0,SingleTdata0,separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE,
@@ -13,6 +14,7 @@ description_ARS() #description for ARS
 ### select AUC calculation method
 ### selection has been made in NCA.BANOVAanalyze()
 ###
+conc<-NULL
 lin.AUC<-lin.AUC
 pAUC<-pAUC               ### for pAUC
 pAUC_start<-pAUC_start
@@ -105,6 +107,8 @@ SingleTdata<-na.omit(SingleTdata)  ### before arriving here, so we trim it now; 
        xr<-which.max(R.split[[j]]$conc)
        tmax_ref<-R.split[[j]][xr,5] 
             for (i in (length(R.split[[j]]$conc)-2):(which.max(R.split[[j]]$conc)+1)) {
+               sx<-R.split[[j]][i:nrow(R.split[[j]]),]
+               if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
                r<- r.adj - summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared
                if (is.nan(r)==TRUE){
                NAToUnknown(x=ke, unknown=0)
@@ -459,6 +463,8 @@ if(replicated){
       xt<-which.max(T.split[[j]]$conc)
       tmax_test<-T.split[[j]][xt,5] 
           for (i in (length(T.split[[j]]$conc)-2):(which.max(T.split[[j]]$conc)+1)) {
+          sx<-T.split[[j]][i:nrow(T.split[[j]]),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           r<- r.adj - summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
           if (is.nan(r)==TRUE){
                NAToUnknown(x=ke1, unknown=0)

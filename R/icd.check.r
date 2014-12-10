@@ -1,4 +1,6 @@
 ### check if the dataset is the incompletes dataset (icd)
+### will be called by NCAcsv(), NCA.BANOVAdata(), and NCA.BANOVAcsv().
+###
 icd.check<-function(TotalSingledata, multiple=FALSE, replicated=FALSE, parallel=FALSE, NCA.only=TRUE)
 {
 

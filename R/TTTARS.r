@@ -97,6 +97,8 @@ SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
        r.adj2=0
         if(multiple){
          for (i in (nrow(R.split[[j]])-2):(min(seq_along(R.split[[j]]$time)[R.split[[j]]$time-TlastD >= (R.split[[j]]$time[which.max(R.split[[j]]$conc)]-TlastD)*2]))) {
+          sx<-R.split[[j]][i:nrow(R.split[[j]]),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           r<- r.adj2 - summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared
           if (is.nan(r)==TRUE){
                cat("Warning: data points used for log-linear regression were last three points. \n")
@@ -111,6 +113,8 @@ SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
          }
         else{
          for (i in (nrow(R.split[[j]])-2):(min(seq_along(R.split[[j]]$time)[R.split[[j]]$time>=R.split[[j]]$time[which.max(R.split[[j]]$conc)]*2]))) {
+          sx<-R.split[[j]][i:nrow(R.split[[j]]),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           r<- r.adj2 - summary(lm(log(conc)~time,R.split[[j]][i:nrow(R.split[[j]]),]))$adj.r.squared
           if (is.nan(r)==TRUE){
                NAToUnknown(x=ke, unknown=0)
@@ -455,6 +459,8 @@ if(replicated){
       r.adj2=0
       if(multiple){
        for (i in (nrow(T.split[[j]])-2):(min(seq_along(T.split[[j]]$time)[T.split[[j]]$time-TlastD>= (T.split[[j]]$time[which.max(T.split[[j]]$conc)]-TlastD)*2]))) {
+          sx<-T.split[[j]][i:nrow(T.split[[j]]),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
           r<-r.adj2 - summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
           if (is.nan(r)==TRUE){
                cat("Warning: data points used for log-linear regression were last three points. \n")
@@ -469,7 +475,9 @@ if(replicated){
        } 
       else{
         for (i in (nrow(T.split[[j]])-2):(min(seq_along(T.split[[j]]$time)[T.split[[j]]$time>=T.split[[j]]$time[which.max(T.split[[j]]$conc)]*2]))) {
-           r<-r.adj2 - summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
+          sx<-T.split[[j]][i:nrow(T.split[[j]]),]
+          if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
+          r<-r.adj2 - summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
          if (is.nan(r)==TRUE){
                NAToUnknown(x=ke1, unknown=0)
                cat("Warning: data points used for log-linear regression may include Cmax \n")
@@ -478,6 +486,8 @@ if(replicated){
          else{
            if (r <(0.0001)) {
            n_TTT_ARS = nrow(T.split[[j]])-i+1
+           sx<-T.split[[j]][i:nrow(T.split[[j]]),]
+           if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
            r.adj2 = summary(lm(log(conc)~time,T.split[[j]][i:nrow(T.split[[j]]),]))$adj.r.squared
                  }
               }

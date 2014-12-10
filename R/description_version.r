@@ -9,16 +9,21 @@ cat(" d88    88 d8(   )8b       )8b  888  8)            \n")
 cat(" 888    88 888ooo88b o8o89888   888                \n")
 cat(" 888    88 888       88(   88   888                \n")
 cat("   o8ooo8   88bod8P   doooo8b  d888b             \n\n")
-cat(" This report was generated using bear v2.6.3\n")
-cat(" on:-",date(),"\n")
+cat(" This report was generated using bear v2.6.4\n")
+cat(" on:-",date(),"\n\n")
 username<-Sys.info()[['user']]
+cat(" R version:",gsub("R version ","",R.Version()[['version.string']],fixed=TRUE),"\n")
 osname_version<-c(paste(Sys.info()[['sysname']],"-",Sys.info()[['version']],"\n",
                   Sys.info()[['release']],",",Sys.info()[['machine']]))
-cat(" running on:",osname_version,"\n")
+cat(" system OS:",osname_version,"\n")
 cat(" user id:",username,"\n\n")
-cat(" bear is developed by Hsin-ya Lee & Yung-jin Lee.\n")
+cat(" bear is developed by Hsin-ya Lee & Yung-jin Lee,\n")
+cat(" and is under license of GPL-2|GPL-3.\n")
 cat(" contact: Yung-jin Lee <mobilepk at gmail.com> \n\n")
-cat(" bear is under license of GPL-2|GPL-3.\n\n")
+cat(" citation:\n")
+cat("  Lee, Hsin-ya and Lee, Yung-jin (2014). bear: Data Analysis Tool for\n")
+cat("  Average Bioequivalence and Bioavailability. R package version 2.6.4,\n")
+cat("  <URL: http://CRAN.R-project.org/package=bear>.\n")
 cat("..................................................\n\n")
 cat(" input data:",Fname,"\n\n")
 ### read setting files and display it ###
@@ -31,7 +36,7 @@ dose.type_txt<-"single-dose"
 lambda_z_txt<-""
 lin.AUC_txt<-""
 ODAnalysis_txt<-""
-BE_criteria_txt<-"lower limit"
+BE_criteria_txt<-"lower limit (%)"
 Dose_txt<-"dose given"
 Tau_txt<-"*multiple-dose only"
 Tlast_txt<-"*multiple-dose only"
@@ -41,7 +46,7 @@ pAUC_end_txt<-"the end time of pAUC"
 IndivDP_output_txt<-""
 
   if(bear.set[1,2]!=0) run.demo_txt   ="yes"
-  if(bear.set[2,2]==1) study.type_txt ="replicate study"
+  if(bear.set[2,2]==1) study.type_txt ="replicate crossover"
   if(bear.set[2,2]==2) study.type_txt ="parallel study"
   if(bear.set[3,2]!=0) dose.type_txt  ="multiple dose"
   

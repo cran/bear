@@ -1,6 +1,9 @@
 ###
-### Aceto revised NCA codes for lambda_z (WinNolin); why use 'aic', not 'AIC"? because 'AIC' is one of reserved keywords by R. --YJ
-### other methods like this: NCAselect(), ARS(), TTT(), TTTAIC(), TTTARS(). 
+### Aceto revised NCA codes for lambda_z (WinNolin); why use 'aic', not 'AIC"? because 'AIC' 
+### is one of reserved keywords (for function, AIC()) by R. --YJ
+### other methods like this: NCAselect(), ARS(), TTT(), TTTAIC(), TTTARS().
+### all are no need to display output on-screen! since NCAoutput() will do that later.
+###
 
 aic<-function(Dose, xaxis,yaxis,Totalplot,SingleRdata,SingleTdata,SingleRdata1,SingleTdata1,Tau, TlastD,SingleRdata0,SingleTdata0,
               separateWindows=TRUE,Demo=FALSE, BANOVA=FALSE,replicated=FALSE, MIX=FALSE, parallel=FALSE, multiple=FALSE)
@@ -11,6 +14,7 @@ description_AIC()
 ### select AUC calculation method
 ### selection has been made in NCA.BANOVAanalyze()
 ###
+conc<-NULL
 lin.AUC<-lin.AUC
 pAUC<-pAUC               ### for pAUC
 pAUC_start<-pAUC_start
@@ -94,7 +98,9 @@ SingleTdata<-na.omit(SingleTdata)  ### v2.6.1
       for(j in seq_along(R.split)){
       
          xr<-which.max(R.split[[j]]$conc)
-         f1 <-  function(xr) return(cbind((nrow(R.split[[j]])-xr+1),
+         sx<-R.split[[j]][xr:nrow(R.split[[j]]),]
+         if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
+         f1 <- function(xr) return(cbind((nrow(R.split[[j]])-xr+1),
                (extractAIC(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),])))[2],
                summary(lm(log(conc)~time,R.split[[j]][xr:nrow(R.split[[j]]),]))$adj.r.squared))
          overview <- as.data.frame(do.call(rbind,lapply((xr+1):(nrow(R.split[[j]])-2),f1)))
@@ -439,9 +445,11 @@ if(replicated){
     aic1<-0
     for(j in seq_along(T.split)){
       xt<-which.max(T.split[[j]]$conc)
-      f2 <-  function(xt) return(cbind((nrow(T.split[[j]])-xt+1),
+      sx<-T.split[[j]][xt:nrow(T.split[[j]]),]
+      if(is.na(sx$conc)||is.nan(sx$conc)||is.infinite(sx$conc)) cat("\n\n  Ooops! Please switch to manual selection of data points\n  for lambda_z estimation.\n\n")  ### since v2.6.4
+      f2 <- function(xt) return(cbind((nrow(T.split[[j]])-xt+1),
             (extractAIC(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),])))[2],
-             summary(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),]))$adj.r.squared))
+            summary(lm(log(conc)~time,T.split[[j]][xt:nrow(T.split[[j]]),]))$adj.r.squared))
       overview <- as.data.frame(do.call(rbind,lapply((xt+1):(nrow(T.split[[j]])-2),f2)))
       names(overview) <- c("n","AIC","adjR2")
 

@@ -34,11 +34,13 @@ xlabz<-xlabz
 ylabz<-ylabz
 Fname<-Fname    ### dataset file name
 ####
-ctrl <- lmeControl(opt='optim')    ### default was 'nlminb' for lme(); but it will fail to converge frequently;
-                                   ### changed back to old default 'optim' & try
-                                   ### ref. link: ??lmeControl --> click 'nlem::lmeControl' for more inf.
-                                   ### & https://stats.stackexchange.com/questions/40647/lme-error-iteration-limit-reached
-                                   ### same for following lme().  --YJ
+ctrl <- lmeControl(opt='optim', msMaxIter=1000)
+        ### added 'msMaxIter=1000' since v.2.6.4 because it still causes converge limit reached...
+        ### default was 'nlminb' for lme(); but it will fail to converge frequently;
+        ### changed back to old default 'optim' & try
+        ### ref. link: ??lmeControl --> click 'nlem::lmeControl' for more inf.
+        ### & https://stats.stackexchange.com/questions/40647/lme-error-iteration-limit-reached
+        ### same for following lme().  --YJ
 ####
 
 ## to avoid "not visible binding..." error message with codetool

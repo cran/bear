@@ -31,6 +31,7 @@ dose.type<-NULL
 
 ### readme.1st.bear<- system.file("extdata", "bear_setup_readme.txt", package="bear")
 ### file.show(readme.1st.bear,encoding="UTF-8")
+cat("\n If the next step goes crahsed, please make sure the working directory\n has writing permission. Use setwd() to set your working directory.\n\n")
 
 if(file.exists("bear.setup.rds")){
      bear.set<-readRDS("bear.setup.rds")
@@ -40,7 +41,7 @@ if(file.exists("bear.setup.rds")){
      ### bear.set<-rbind(bear.set,df)
      ### saveRDS(bear.set,"bear.setup.rds")   ### this will keep the same setting as previously saved.
      ### }
-     if(nrow(bear.set)<14){           ### this will erase all previous setting
+     if(nrow(bear.set)<14){           ### total 14 items; this will erase all previous setting
      cat("\n  The previous set-up file has been updated.\n  Please edit the set-up file again.\n\n")
      bear.set<-data.frame(Methods=c("run demo","study design","single-/multiple-dose","lambda_z estimate",
                                     "trapezoidal AUC","BE criterion (LL)","ODA","dose","dosing interval",

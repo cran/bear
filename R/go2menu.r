@@ -34,6 +34,7 @@ back.from.banova<<-FALSE
 Fname<-NULL                   ### Fname: the name of the input dataset file 
 Fname<<-""
 
+cat(" *** All output files will be placed in the folder of\n",getwd(),"***.\n\n")
 ###
   cat("\n*** You have selected the following -> (new)\n")
   file.menu <- c("* Start data analysis     ",
